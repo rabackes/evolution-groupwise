@@ -1,0 +1,13 @@
+#!/usr/bin/make -f
+export DEB_BUILD_MAINT_OPTIONS = hardening=+all
+
+%:
+	dh $@ --buildsystem=cmake
+
+# The tests start a mock POA on localhost
+override_dh_auto_test:
+	dh_auto_test --no-parallel
+
+# GW_CMAKE_FLAGS: extra options, e.g. -DWITH_EVOLUTION_UI=OFF for a trial build
+override_dh_auto_configure:
+	dh_auto_configure -- $(GW_CMAKE_FLAGS)

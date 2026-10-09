@@ -1,0 +1,11 @@
+build/
+obj-*/
+debian/.debhelper/
+debian/evolution-groupwise/
+debian/files
+debian/*.substvars
+debian/*.log
+debian/debhelper-build-stamp
+__pycache__/
+gwsdk_web_services.pdf
+docs/handbuch/Benutzerhandbuch.pdf

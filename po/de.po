@@ -1,0 +1,2086 @@
+# German translations for evolution-groupwise package
+# German messages for evolution-groupwise.
+# Copyright (C) 2026 THE evolution-groupwise'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the evolution-groupwise package.
+# Automatically generated, 2026.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: evolution-groupwise\n"
+"Report-Msgid-Bugs-To: rbackes@bond.de\n"
+"POT-Creation-Date: 2026-09-30 16:37+0200\n"
+"PO-Revision-Date: 2026-09-27 18:27+0200\n"
+"Last-Translator: Automatically generated\n"
+"Language-Team: none\n"
+"Language: de\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
+#: src/addressbook/e-book-backend-groupwise.c:117
+msgid "The address book is not set up for GroupWise"
+msgstr "Das Adressbuch ist nicht für GroupWise eingerichtet"
+
+#: src/addressbook/e-book-backend-groupwise.c:237
+#: src/addressbook/e-book-backend-groupwise.c:272
+#: src/addressbook/e-book-backend-groupwise.c:318
+#: src/addressbook/e-book-backend-groupwise.c:375
+#: src/calendar/e-cal-backend-groupwise.c:139
+msgid "Not connected"
+msgstr "Nicht verbunden"
+
+#: src/addressbook/e-book-backend-groupwise.c:286
+#, c-format
+msgid "Contact %s not found"
+msgstr "Kontakt %s nicht gefunden"
+
+#: src/addressbook/e-book-backend-groupwise.c:312
+#: src/addressbook/e-book-backend-groupwise.c:369
+msgid "The GroupWise Address Book of the system cannot be changed"
+msgstr "Das GroupWise-Adressbuch des Systems kann nicht geändert werden"
+
+#: src/addressbook/e-gw-contact.c:594 src/addressbook/e-gw-contact.c:702
+msgid "Contact lists cannot be stored in GroupWise address books"
+msgstr ""
+"Kontaktlisten können nicht in GroupWise-Adressbüchern gespeichert werden"
+
+#: src/addressbook/e-gw-contact.c:601
+msgid "A contact needs a name"
+msgstr "Ein Kontakt braucht einen Namen"
+
+#: src/addressbook/e-gw-contact.c:709
+msgid "Not a contact"
+msgstr "Kein Kontakt"
+
+#: src/calendar/e-cal-backend-groupwise.c:435
+msgid "The calendar is not set up for GroupWise"
+msgstr "Der Kalender ist nicht für GroupWise eingerichtet"
+
+#: src/calendar/e-cal-backend-groupwise.c:1218
+msgid "accepted"
+msgstr "angenommen"
+
+#: src/calendar/e-cal-backend-groupwise.c:1221
+msgid "declined"
+msgstr "abgelehnt"
+
+#: src/calendar/e-cal-backend-groupwise.c:1224
+msgid "tentative"
+msgstr "vorläufig"
+
+#: src/calendar/e-cal-backend-groupwise.c:1227
+msgid "delegated"
+msgstr "delegiert"
+
+#: src/calendar/e-cal-backend-groupwise.c:1230
+msgid "no answer yet"
+msgstr "noch keine Antwort"
+
+#: src/calendar/e-cal-backend-groupwise.c:2417
+#, c-format
+msgid ""
+"“%s” is the preparation or travel time of an appointment. Move or delete the "
+"appointment itself; the travel time is changed or taken away on the page "
+"“Travel Time” of the appointment."
+msgstr ""
+"„%s“ ist die Vorbereitungs- bzw. Reisezeit eines Termins. Verschieben oder "
+"löschen Sie den Termin selbst; die Reisezeit ändern oder entfernen Sie auf "
+"der Seite „Reisezeit“ des Termins."
+
+#: src/calendar/e-cal-backend-groupwise.c:2689
+#, c-format
+msgid ""
+"“%s” is a meeting you organized in this calendar. Answer the invitation in "
+"the calendar of the account that received it."
+msgstr ""
+"„%s“ ist eine Besprechung, die Sie in diesem Kalender organisiert haben. "
+"Beantworten Sie die Einladung im Kalender des Kontos, das sie erhalten hat."
+
+#: src/calendar/e-gw-calendar.c:1102
+msgid "An appointment needs a start"
+msgstr "Ein Termin braucht einen Beginn"
+
+#: src/calendar/e-gw-calendar.c:1225
+msgid "Only appointments, tasks and memos can be stored in GroupWise"
+msgstr ""
+"In GroupWise können nur Termine, Aufgaben und Notizen gespeichert werden"
+
+#: src/calendar/e-gw-calendar.c:1390
+msgid "GroupWise does not support this kind of recurrence"
+msgstr "GroupWise unterstützt diese Art der Wiederholung nicht"
+
+#: src/calendar/e-gw-calendar.c:1602
+msgid "The item on the server is of another kind"
+msgstr "Das Element auf dem Server ist von anderer Art"
+
+#: src/calendar/e-gw-calendar.c:1617
+msgid "Cannot read the item on the server"
+msgstr "Das Element auf dem Server kann nicht gelesen werden"
+
+#: src/camel/camel-groupwise-folder.c:135
+msgid "The folder has no store"
+msgstr "Der Ordner gehört zu keinem Konto"
+
+#: src/camel/camel-groupwise-folder.c:1588
+msgid "The Mailbox folder is not known"
+msgstr "Der Ordner Mailbox ist nicht bekannt"
+
+#: src/camel/camel-groupwise-folder.c:1882
+#: src/camel/camel-groupwise-folder.c:2004
+#: src/camel/camel-groupwise-store.c:658
+#: src/camel/camel-groupwise-transport.c:220
+msgid "The account is read-only"
+msgstr "Das Konto ist schreibgeschützt"
+
+#: src/camel/camel-groupwise-folder.c:1891
+msgid ""
+"A search result folder shows messages of other folders; nothing can be moved "
+"or copied into it"
+msgstr ""
+"Ein Suchergebnisordner zeigt Nachrichten anderer Ordner; in ihn kann nichts "
+"verschoben oder kopiert werden"
+
+#: src/camel/camel-groupwise-folder.c:2010
+msgid ""
+"GroupWise can only store drafts this way. Messages can be moved or copied "
+"between GroupWise folders."
+msgstr ""
+"GroupWise kann auf diesem Weg nur Entwürfe speichern. Nachrichten lassen "
+"sich zwischen GroupWise-Ordnern verschieben oder kopieren."
+
+#: src/camel/camel-groupwise-folder.c:2037
+msgid "The server returned no ID for the draft"
+msgstr "Der Server hat keine ID für den Entwurf geliefert"
+
+#: src/camel/camel-groupwise-folder.c:2241
+#, c-format
+msgid "Cannot get the message %s"
+msgstr "Die Nachricht %s kann nicht abgerufen werden"
+
+#: src/camel/camel-groupwise-folder.c:2287
+msgid "This message is not available in offline mode."
+msgstr "Diese Nachricht ist offline nicht verfügbar."
+
+#: src/camel/camel-groupwise-folder.c:2297
+#, c-format
+msgid "Cannot read the message %s"
+msgstr "Die Nachricht %s kann nicht gelesen werden"
+
+#: src/camel/camel-groupwise-folder.c:2525
+#, c-format
+msgid "Cannot create folder cache %s: %s"
+msgstr "Der Ordner-Cache %s kann nicht angelegt werden: %s"
+
+#: src/camel/camel-groupwise-mime.c:199
+msgid ""
+"GroupWise cannot send signed or encrypted messages: the server builds the "
+"message for the recipients itself. Send it without signature and encryption."
+msgstr ""
+"GroupWise kann keine signierten oder verschlüsselten Nachrichten senden: Der "
+"Server baut die Nachricht für die Empfänger selbst zusammen. Senden Sie sie "
+"ohne Signatur und Verschlüsselung."
+
+#: src/camel/camel-groupwise-mime.c:439
+msgid "The message has no recipients"
+msgstr "Die Nachricht hat keine Empfänger"
+
+#: src/camel/camel-groupwise-provider.c:26
+msgid "Checking for New Mail"
+msgstr "Abrufen neuer Nachrichten"
+
+#: src/camel/camel-groupwise-provider.c:28
+msgid "_Apply filters and the junk test to new messages in the Mailbox"
+msgstr "_Filter und Junk-Prüfung auf neue Nachrichten in der Mailbox anwenden"
+
+#: src/camel/camel-groupwise-provider.c:30
+msgid "Options"
+msgstr "Optionen"
+
+#: src/camel/camel-groupwise-provider.c:32
+msgid "Copy folder content locally for _offline operation"
+msgstr "Ordnerinhalte für den _Offline-Betrieb lokal kopieren"
+
+#: src/camel/camel-groupwise-provider.c:34
+msgid "_Read-only: never change anything on the server"
+msgstr "_Schreibgeschützt: nie etwas auf dem Server ändern"
+
+#: src/camel/camel-groupwise-provider.c:36
+msgid "GroupWise Rules"
+msgstr "GroupWise-Regeln"
+
+#: src/camel/camel-groupwise-provider.c:38
+msgid "Run the rules for _startup and exit when Evolution starts and quits"
+msgstr ""
+"Regeln für _Starten und Beenden beim Start und Ende von Evolution ausführen"
+
+#: src/camel/camel-groupwise-provider.c:40
+msgid "Run the rules for opening and closing _folders"
+msgstr "Regeln für das Öffnen und Schließen von _Ordnern ausführen"
+
+#: src/camel/camel-groupwise-provider.c:46
+msgid "Default GroupWise SOAP port"
+msgstr "Standard-SOAP-Port von GroupWise"
+
+#: src/camel/camel-groupwise-provider.c:52
+msgid "GroupWise"
+msgstr "GroupWise"
+
+#: src/camel/camel-groupwise-provider.c:54
+msgid ""
+"For accessing GroupWise mailboxes through the SOAP interface of the Post "
+"Office Agent."
+msgstr ""
+"Für den Zugriff auf GroupWise-Postfächer über die SOAP-Schnittstelle des "
+"Post Office Agent."
+
+#: src/camel/camel-groupwise-store.c:47
+msgid "Password"
+msgstr "Passwort"
+
+#: src/camel/camel-groupwise-store.c:48
+msgid ""
+"This option will connect to the GroupWise server using a plaintext password."
+msgstr ""
+"Mit dieser Option meldet sich Evolution mit einem Klartext-Passwort am "
+"GroupWise-Server an."
+
+#: src/camel/camel-groupwise-store.c:278
+msgid "You must be working online to complete this operation"
+msgstr "Für diesen Vorgang müssen Sie online arbeiten"
+
+#: src/camel/camel-groupwise-store.c:321
+#: src/camel/camel-groupwise-transport.c:125
+#, c-format
+msgid "GroupWise server %s"
+msgstr "GroupWise-Server %s"
+
+#: src/camel/camel-groupwise-store.c:323
+#, c-format
+msgid "GroupWise mail of %s as proxy of %s on %s"
+msgstr "GroupWise-Mail von %s (Proxy-Zugriff als %s) auf %s"
+
+#: src/camel/camel-groupwise-store.c:325
+#, c-format
+msgid "GroupWise mail for %s on %s"
+msgstr "GroupWise-Mail für %s auf %s"
+
+#: src/camel/camel-groupwise-store.c:438
+#, c-format
+msgid "%s has not granted you the right to read mail"
+msgstr "%s hat Ihnen kein Recht zum Lesen von Mail gegeben"
+
+#: src/camel/camel-groupwise-store.c:520 src/camel/camel-groupwise-store.c:552
+#: src/camel/camel-groupwise-store.c:673 src/camel/camel-groupwise-store.c:734
+#: src/camel/camel-groupwise-store.c:824
+#, c-format
+msgid "No such folder: %s"
+msgstr "Ordner nicht vorhanden: %s"
+
+#: src/camel/camel-groupwise-store.c:580
+msgid "The mailbox has no Mailbox folder"
+msgstr "Das Postfach hat keinen Mailbox-Ordner"
+
+#: src/camel/camel-groupwise-store.c:601
+msgid "The mailbox has no Trash folder"
+msgstr "Das Postfach hat keinen Papierkorb"
+
+#: src/camel/camel-groupwise-store.c:625
+msgid ""
+"The mailbox has no Junk Mail folder; switch on the junk mail handling of "
+"GroupWise"
+msgstr ""
+"Das Postfach hat keinen Ordner „Junk Mail“; schalten Sie die Junk-Mail-"
+"Verwaltung von GroupWise ein"
+
+#: src/camel/camel-groupwise-store.c:679
+#, c-format
+msgid "%s is a system folder of GroupWise"
+msgstr "%s ist ein Systemordner von GroupWise"
+
+#: src/camel/camel-groupwise-store.c:728
+msgid "A folder name must not contain \"/\""
+msgstr "Ein Ordnername darf kein „/“ enthalten"
+
+#: src/camel/camel-groupwise-store-summary.c:360
+msgid "Mailbox"
+msgstr "Mailbox"
+
+#: src/camel/camel-groupwise-store-summary.c:361
+#: src/evolution/e-groupwise-junk-tab.c:528
+msgid "Junk Mail"
+msgstr "Junkmail"
+
+#: src/camel/camel-groupwise-store-summary.c:362
+msgid "Trash"
+msgstr "Papierkorb"
+
+#: src/camel/camel-groupwise-store-summary.c:363
+msgid "Sent Items"
+msgstr "Ausgangsnachrichten"
+
+#: src/camel/camel-groupwise-store-summary.c:364
+msgid "Work In Progress"
+msgstr "In Arbeit"
+
+#: src/camel/camel-groupwise-store-summary.c:365
+msgid "Cabinet"
+msgstr "Aktenschrank"
+
+#: src/camel/camel-groupwise-store-summary.c:366
+#: src/camel/camel-groupwise-store-summary.c:367
+msgid "Tasklist"
+msgstr "Jobliste"
+
+#: src/camel/camel-groupwise-store-summary.c:368
+#: src/registry/module-groupwise-backend.c:261
+msgid "Calendar"
+msgstr "Kalender"
+
+#: src/camel/camel-groupwise-store-summary.c:369
+msgid "Contacts"
+msgstr "Kontakte"
+
+#: src/camel/camel-groupwise-store-summary.c:370
+msgid "Documents"
+msgstr "Dokumente"
+
+#: src/camel/camel-groupwise-transport.c:89
+msgid "No session"
+msgstr "Keine Sitzung"
+
+#: src/camel/camel-groupwise-transport.c:112
+msgid "The GroupWise account for sending was not found"
+msgstr "Das GroupWise-Konto zum Senden wurde nicht gefunden"
+
+#: src/camel/camel-groupwise-transport.c:126
+#, c-format
+msgid "GroupWise mail delivery via %s"
+msgstr "GroupWise-Mailversand über %s"
+
+#: src/camel/camel-groupwise-transport.c:248
+#, c-format
+msgid "Sending through GroupWise failed: %s"
+msgstr "Senden über GroupWise fehlgeschlagen: %s"
+
+#: src/evolution/e-groupwise-access-tab.c:59
+msgid "Subscribe to my _alarms"
+msgstr "Meine _Alarme abonnieren"
+
+#: src/evolution/e-groupwise-access-tab.c:60
+msgid "Subscribe to my _notifications"
+msgstr "Meine _Benachrichtigungen abonnieren"
+
+#: src/evolution/e-groupwise-access-tab.c:61
+msgid "_Modify options, rules and folders"
+msgstr "_Optionen, Regeln und Ordner ändern"
+
+#: src/evolution/e-groupwise-access-tab.c:62
+msgid "Read items marked _private"
+msgstr "Als _privat markierte Objekte lesen"
+
+#: src/evolution/e-groupwise-access-tab.c:63
+msgid "Modify _security options"
+msgstr "_Sicherheitsoptionen ändern"
+
+#: src/evolution/e-groupwise-access-tab.c:155
+msgid "Grant Proxy Access"
+msgstr "Proxy-Zugriff gewähren"
+
+#: src/evolution/e-groupwise-access-tab.c:157
+#: src/evolution/e-groupwise-junk-tab.c:70
+#: src/evolution/e-groupwise-mail-ui.c:414
+#: src/evolution/e-groupwise-rule-editor.c:1329
+#: src/evolution/e-groupwise-rules-tab.c:351
+#: src/evolution/e-groupwise-sent-items.c:456
+#: src/evolution/e-groupwise-sent-items.c:507
+#: src/evolution/e-groupwise-settings-window.c:375
+#: src/evolution/e-groupwise-signatures-tab.c:228
+#: src/evolution/e-groupwise-travel-page.c:769
+msgid "_Cancel"
+msgstr "_Abbrechen"
+
+#: src/evolution/e-groupwise-access-tab.c:157
+#: src/evolution/e-groupwise-junk-tab.c:70
+msgid "_Add"
+msgstr "_Hinzufügen"
+
+#: src/evolution/e-groupwise-access-tab.c:163
+msgid "The e-mail address or the name of a user of the GroupWise system:"
+msgstr "Die E-Mail-Adresse oder der Name eines Benutzers im GroupWise-System:"
+
+#: src/evolution/e-groupwise-access-tab.c:219
+msgid "Mail/Phone"
+msgstr "Mail/Telefon"
+
+#: src/evolution/e-groupwise-access-tab.c:219
+msgid "Appointments"
+msgstr "Termine"
+
+#: src/evolution/e-groupwise-access-tab.c:219
+msgid "Reminder Notes"
+msgstr "Erinnerungsnotizen"
+
+#: src/evolution/e-groupwise-access-tab.c:219
+#: src/registry/module-groupwise-backend.c:261
+msgid "Tasks"
+msgstr "Aufgaben"
+
+#: src/evolution/e-groupwise-access-tab.c:228
+msgid ""
+"These users may open your mailbox as proxy, with the rights below. “All "
+"users” applies to everybody in the GroupWise system."
+msgstr ""
+"Diese Benutzer dürfen Ihr Postfach als Proxy öffnen, mit den Rechten "
+"darunter. „Alle Benutzer“ gilt für jeden im GroupWise-System."
+
+#: src/evolution/e-groupwise-access-tab.c:237
+#: src/evolution/e-groupwise-proxy-tab.c:167
+#: src/evolution/e-groupwise-rules-tab.c:404
+#: src/evolution/e-groupwise-signatures-tab.c:285
+msgid "Name"
+msgstr "Name"
+
+#: src/evolution/e-groupwise-access-tab.c:239
+#: src/evolution/e-groupwise-proxy-tab.c:169
+msgid "E-mail address"
+msgstr "E-Mail-Adresse"
+
+#: src/evolution/e-groupwise-access-tab.c:254
+msgid "A_dd User…"
+msgstr "Benutzer _hinzufügen …"
+
+#: src/evolution/e-groupwise-access-tab.c:259
+msgid "_Remove User"
+msgstr "Benutzer _entfernen"
+
+#: src/evolution/e-groupwise-access-tab.c:270
+msgid "Read"
+msgstr "Lesen"
+
+#: src/evolution/e-groupwise-access-tab.c:271
+msgid "Write"
+msgstr "Schreiben"
+
+#: src/evolution/e-groupwise-access-tab.c:365
+msgid "All users"
+msgstr "Alle Benutzer"
+
+#: src/evolution/e-groupwise-access-tab.c:468
+msgid "Proxy Access"
+msgstr "Proxy-Zugriff"
+
+#: src/evolution/e-groupwise-junk-tab.c:68
+msgid "Add an Address or Domain"
+msgstr "Adresse oder Domain hinzufügen"
+
+#: src/evolution/e-groupwise-junk-tab.c:76
+msgid ""
+"An e-mail address (name@example.com) or an Internet domain (example.com; it "
+"takes its subdomains along):"
+msgstr ""
+"Eine E-Mail-Adresse (name@example.com) oder eine Internet-Domain (example."
+"com; sie schließt ihre Subdomains ein):"
+
+#: src/evolution/e-groupwise-junk-tab.c:162
+msgid "Move to the _Junk List"
+msgstr "Auf die _Junk-Liste verschieben"
+
+#: src/evolution/e-groupwise-junk-tab.c:163
+msgid "Move to the _Block List"
+msgstr "Auf die _Blockliste verschieben"
+
+#: src/evolution/e-groupwise-junk-tab.c:164
+msgid "Move to the _Trust List"
+msgstr "Auf die _Vertrauensliste verschieben"
+
+#: src/evolution/e-groupwise-junk-tab.c:245
+msgid "Address or domain"
+msgstr "Adresse oder Domain"
+
+#: src/evolution/e-groupwise-junk-tab.c:262
+#: src/evolution/e-groupwise-signatures-tab.c:303
+msgid "A_dd…"
+msgstr "_Hinzufügen …"
+
+#: src/evolution/e-groupwise-junk-tab.c:266
+#: src/evolution/e-groupwise-rules-tab.c:422
+#: src/evolution/e-groupwise-signatures-tab.c:228
+#: src/evolution/e-groupwise-signatures-tab.c:305
+msgid "_Remove"
+msgstr "_Entfernen"
+
+#: src/evolution/e-groupwise-junk-tab.c:298
+msgid ""
+"GroupWise sorts Internet mail with these lists and settings, for every "
+"client. The context menu of a message offers them too (Junk Mail)."
+msgstr ""
+"GroupWise sortiert Internet-Mail nach diesen Listen und Einstellungen, für "
+"jedes Programm. Das Kontextmenü einer Nachricht bietet sie ebenfalls an "
+"(GroupWise-Junkmail)."
+
+#: src/evolution/e-groupwise-junk-tab.c:304
+msgid "Use the _junk list (into the Junk Mail folder)"
+msgstr "_Junk-Liste verwenden (in den Ordner Junk Mail)"
+
+#: src/evolution/e-groupwise-junk-tab.c:305
+msgid "Use the _block list (not delivered)"
+msgstr "_Blockliste verwenden (nicht zugestellt)"
+
+#: src/evolution/e-groupwise-junk-tab.c:306
+msgid "Mail from senders in no _personal address book is junk"
+msgstr ""
+"Mail von Absendern, die in keinem _persönlichen Adressbuch stehen, ist Junk"
+
+#: src/evolution/e-groupwise-junk-tab.c:307
+msgid "_Appointments from senders in no personal address book are junk"
+msgstr ""
+"_Termine von Absendern, die in keinem persönlichen Adressbuch stehen, sind "
+"Junk"
+
+#: src/evolution/e-groupwise-junk-tab.c:310
+msgid "_Delete junk mail automatically after"
+msgstr "Junk-Mail automatisch _löschen nach"
+
+#: src/evolution/e-groupwise-junk-tab.c:314
+msgid "days"
+msgstr "Tagen"
+
+#: src/evolution/e-groupwise-junk-tab.c:321
+msgid "Mail from these addresses and domains goes into the Junk Mail folder."
+msgstr "Mail von diesen Adressen und Domains kommt in den Ordner Junk Mail."
+
+#: src/evolution/e-groupwise-junk-tab.c:322
+msgid "Junk List"
+msgstr "Junk-Liste"
+
+#: src/evolution/e-groupwise-junk-tab.c:324
+msgid "Mail from these addresses and domains is not delivered."
+msgstr "Mail von diesen Adressen und Domains wird nicht zugestellt."
+
+#: src/evolution/e-groupwise-junk-tab.c:325
+msgid "Block List"
+msgstr "Blockliste"
+
+#: src/evolution/e-groupwise-junk-tab.c:327
+msgid ""
+"Mail from these addresses and domains is never junk, whatever the other "
+"lists say."
+msgstr ""
+"Mail von diesen Adressen und Domains ist nie Junk, was auch immer die "
+"anderen Listen sagen."
+
+#: src/evolution/e-groupwise-junk-tab.c:329
+msgid "Trust List"
+msgstr "Vertrauensliste"
+
+#: src/evolution/e-groupwise-mail-ui.c:148
+msgid "restoring messages"
+msgstr "Nachrichten wiederherstellen"
+
+#: src/evolution/e-groupwise-mail-ui.c:359
+msgid "updating the junk mail lists"
+msgstr "Junk-Mail-Listen aktualisieren"
+
+#: src/evolution/e-groupwise-mail-ui.c:386
+msgid "Junk the Sender"
+msgstr "Sender als Junk einstufen"
+
+#: src/evolution/e-groupwise-mail-ui.c:386
+msgid ""
+"Future mail goes into the Junk Mail folder; this message goes there now."
+msgstr ""
+"Künftige Mail kommt in den Ordner Junk Mail; diese Nachricht kommt jetzt "
+"dorthin."
+
+#: src/evolution/e-groupwise-mail-ui.c:386
+msgid "_Junk"
+msgstr "Als _Junk einstufen"
+
+#: src/evolution/e-groupwise-mail-ui.c:387
+msgid "Block the Sender"
+msgstr "Sender blockieren"
+
+#: src/evolution/e-groupwise-mail-ui.c:387
+msgid ""
+"Future mail is not delivered; this message goes into the Junk Mail folder."
+msgstr ""
+"Künftige Mail wird nicht zugestellt; diese Nachricht kommt in den Ordner "
+"Junk Mail."
+
+#: src/evolution/e-groupwise-mail-ui.c:387
+msgid "_Block"
+msgstr "_Blockieren"
+
+#: src/evolution/e-groupwise-mail-ui.c:388
+msgid "Trust the Sender"
+msgstr "Sender als verbürgt einstufen"
+
+#: src/evolution/e-groupwise-mail-ui.c:388
+msgid ""
+"Mail from the sender is never junk; this message goes back into the Mailbox."
+msgstr ""
+"Mail vom Sender ist nie Junk; diese Nachricht kommt zurück in die Mailbox."
+
+#: src/evolution/e-groupwise-mail-ui.c:388
+msgid "_Trust"
+msgstr "Als _verbürgt einstufen"
+
+#: src/evolution/e-groupwise-mail-ui.c:428
+#, c-format
+msgid "Only the _address %s"
+msgstr "Nur die _Adresse %s"
+
+#: src/evolution/e-groupwise-mail-ui.c:430
+#, c-format
+msgid "Only the _addresses of the %u senders"
+msgstr "Nur die _Adressen der %u Sender"
+
+#: src/evolution/e-groupwise-mail-ui.c:434
+#, c-format
+msgid "The whole _domain %s (with its subdomains)"
+msgstr "Die ganze _Domain %s (mit ihren Subdomains)"
+
+#: src/evolution/e-groupwise-mail-ui.c:436
+msgid "Their whole _domains (with their subdomains)"
+msgstr "Ihre ganzen _Domains (mit ihren Subdomains)"
+
+#: src/evolution/e-groupwise-mail-ui.c:442
+msgid ""
+"This applies to Internet mail only; the lists are in the GroupWise Settings "
+"of the account."
+msgstr ""
+"Das gilt nur für Internet-Mail; die Listen stehen in den GroupWise-"
+"Einstellungen des Kontos."
+
+#: src/evolution/e-groupwise-mail-ui.c:969
+msgid "_Restore"
+msgstr "_Wiederherstellen"
+
+#: src/evolution/e-groupwise-mail-ui.c:971
+msgid "Put the selected messages back into the folders they were deleted from"
+msgstr ""
+"Die ausgewählten Nachrichten in die Ordner zurücklegen, aus denen sie "
+"gelöscht wurden"
+
+#: src/evolution/e-groupwise-mail-ui.c:1011
+msgid "GroupWise _Settings…"
+msgstr "GroupWise-_Einstellungen …"
+
+#: src/evolution/e-groupwise-mail-ui.c:1013
+msgid ""
+"Settings the GroupWise server keeps for the account: junk mail handling and "
+"more"
+msgstr ""
+"Einstellungen, die der GroupWise-Server für das Konto hält: Junk-Mail-"
+"Verwaltung und mehr"
+
+#: src/evolution/e-groupwise-mail-ui.c:1015
+msgid "GroupWise _Junk Mail"
+msgstr "GroupWise-_Junkmail"
+
+#: src/evolution/e-groupwise-mail-ui.c:1018
+msgid "Junk Mail _Settings…"
+msgstr "Junkmail-_Einstellungen …"
+
+#: src/evolution/e-groupwise-mail-ui.c:1020
+msgid "The junk mail handling of GroupWise: settings and lists"
+msgstr "Die Junkmail-Verwaltung von GroupWise: Einstellungen und Listen"
+
+#: src/evolution/e-groupwise-mail-ui.c:1024
+msgid "_Junk the Sender…"
+msgstr "Sender als _Junk einstufen …"
+
+#: src/evolution/e-groupwise-mail-ui.c:1026
+msgid "Put the sender or the sender's domain onto the junk list of GroupWise"
+msgstr "Den Sender oder seine Domain auf die Junk-Liste von GroupWise setzen"
+
+#: src/evolution/e-groupwise-mail-ui.c:1030
+msgid "_Block the Sender…"
+msgstr "Sender _blockieren …"
+
+#: src/evolution/e-groupwise-mail-ui.c:1032
+msgid "Put the sender or the sender's domain onto the block list of GroupWise"
+msgstr "Den Sender oder seine Domain auf die Blockliste von GroupWise setzen"
+
+#: src/evolution/e-groupwise-mail-ui.c:1036
+msgid "_Trust the Sender…"
+msgstr "Sender als _verbürgt einstufen …"
+
+#: src/evolution/e-groupwise-mail-ui.c:1038
+msgid "Put the sender or the sender's domain onto the trust list of GroupWise"
+msgstr ""
+"Den Sender oder seine Domain auf die Vertrauensliste von GroupWise setzen"
+
+#: src/evolution/e-groupwise-mail-ui.c:1042
+msgid "Delivery _Status…"
+msgstr "_Zustellstatus …"
+
+#: src/evolution/e-groupwise-mail-ui.c:1044
+msgid ""
+"What happened to the message at each recipient: delivered, opened, deleted …"
+msgstr ""
+"Was mit der Nachricht bei jedem Empfänger geschah: zugestellt, geöffnet, "
+"gelöscht …"
+
+#: src/evolution/e-groupwise-mail-ui.c:1048
+msgid "Resen_d…"
+msgstr "_Neu senden …"
+
+#: src/evolution/e-groupwise-mail-ui.c:1050
+msgid ""
+"Open the message to change it and send it anew; sending asks whether the "
+"original is retracted"
+msgstr "Die Nachricht öffnen, um sie zu ändern und neu zu senden; beim Senden wird gefragt, ob das Original zurückgezogen wird"
+
+#: src/evolution/e-groupwise-mail-ui.c:1054
+msgid "Re_tract…"
+msgstr "_Zurückziehen …"
+
+#: src/evolution/e-groupwise-mail-ui.c:1056
+msgid "Take the selected messages back from the recipients' mailboxes"
+msgstr ""
+"Die ausgewählten Nachrichten aus den Postfächern der Empfänger zurückholen"
+
+#: src/evolution/e-groupwise-proxy-tab.c:86
+msgid "Account is made anew on OK"
+msgstr "Konto wird mit OK neu eingerichtet"
+
+#: src/evolution/e-groupwise-proxy-tab.c:88
+#: src/evolution/e-groupwise-rule-editor.c:144
+msgid "Account"
+msgstr "Konto"
+
+#: src/evolution/e-groupwise-proxy-tab.c:88
+msgid "Account (no longer granted)"
+msgstr "Konto (Zugriff nicht mehr gewährt)"
+
+#: src/evolution/e-groupwise-proxy-tab.c:90
+msgid "Account is removed on OK"
+msgstr "Konto wird mit OK entfernt"
+
+#: src/evolution/e-groupwise-proxy-tab.c:92
+msgid "Account is added on OK"
+msgstr "Konto wird mit OK eingerichtet"
+
+#: src/evolution/e-groupwise-proxy-tab.c:155
+msgid ""
+"These users have granted you proxy access to their mailboxes. Added as an "
+"account, a mailbox appears beside your own, in the folder list in grey, with "
+"its calendars (not shown until you tick them), task and memo lists and "
+"address books. You read it and send in its name with the rights its user "
+"granted you."
+msgstr ""
+"Diese Benutzer haben Ihnen Proxy-Zugriff auf ihr Postfach gewährt. Als Konto "
+"eingerichtet, erscheint ein Postfach neben Ihrem eigenen, in der Ordnerliste "
+"in grauer Schrift, mit seinen Kalendern (sichtbar erst, wenn Sie sie "
+"ankreuzen), Aufgaben- und Notizlisten und Adressbüchern. Sie lesen darin und "
+"senden in seinem Namen mit den Rechten, die sein Benutzer Ihnen gegeben hat."
+
+#: src/evolution/e-groupwise-proxy-tab.c:171
+msgid "In Evolution"
+msgstr "In Evolution"
+
+#: src/evolution/e-groupwise-proxy-tab.c:186
+msgid "_Add as Account"
+msgstr "Als Konto _einrichten"
+
+#: src/evolution/e-groupwise-proxy-tab.c:189
+msgid "_Remove Account"
+msgstr "Konto _entfernen"
+
+#: src/evolution/e-groupwise-proxy-tab.c:519
+#, c-format
+msgid "%s (Proxy)"
+msgstr "%s (Proxy)"
+
+#: src/evolution/e-groupwise-proxy-tab.c:664
+msgid "Proxy accounts need an account made as a GroupWise collection"
+msgstr ""
+"Proxy-Konten brauchen ein Konto, das als GroupWise-Sammlung eingerichtet ist"
+
+#: src/evolution/e-groupwise-proxy-tab.c:683
+msgid "Proxy Accounts"
+msgstr "Proxy-Konten"
+
+#: src/evolution/e-groupwise-rule-editor.c:46
+msgid "New item"
+msgstr "Neues Objekt"
+
+#: src/evolution/e-groupwise-rule-editor.c:47
+msgid "Filed item"
+msgstr "Abgelegtes Objekt"
+
+#: src/evolution/e-groupwise-rule-editor.c:48
+msgid "Completed item"
+msgstr "Erledigtes Objekt"
+
+#: src/evolution/e-groupwise-rule-editor.c:49
+msgid "Open folder"
+msgstr "Ordner öffnen"
+
+#: src/evolution/e-groupwise-rule-editor.c:50
+msgid "Close folder"
+msgstr "Ordner schließen"
+
+#: src/evolution/e-groupwise-rule-editor.c:51
+msgid "Startup"
+msgstr "Starten"
+
+#: src/evolution/e-groupwise-rule-editor.c:52
+msgid "Exit"
+msgstr "Beenden"
+
+#: src/evolution/e-groupwise-rule-editor.c:53
+msgid "User activated"
+msgstr "Benutzeraktiviert"
+
+#: src/evolution/e-groupwise-rule-editor.c:60
+msgid "_Received"
+msgstr "_Empfangen"
+
+#: src/evolution/e-groupwise-rule-editor.c:61
+msgid "_Sent"
+msgstr "_Gesendet"
+
+#: src/evolution/e-groupwise-rule-editor.c:62
+msgid "_Personal"
+msgstr "_Persönlich"
+
+#: src/evolution/e-groupwise-rule-editor.c:63
+msgid "_Draft"
+msgstr "E_ntwurf"
+
+#: src/evolution/e-groupwise-rule-editor.c:70
+msgid "_Mail"
+msgstr "_Mail"
+
+#: src/evolution/e-groupwise-rule-editor.c:71
+msgid "P_hone message"
+msgstr "_Telefonnachricht"
+
+#: src/evolution/e-groupwise-rule-editor.c:72
+msgid "_Appointment"
+msgstr "_Termin"
+
+#: src/evolution/e-groupwise-rule-editor.c:73
+msgid "_Task"
+msgstr "_Aufgabe"
+
+#: src/evolution/e-groupwise-rule-editor.c:74
+msgid "Reminder _note"
+msgstr "Erinnerungs_notiz"
+
+#: src/evolution/e-groupwise-rule-editor.c:92
+msgid "High"
+msgstr "Hoch"
+
+#: src/evolution/e-groupwise-rule-editor.c:92
+msgid "Standard"
+msgstr "Standard"
+
+#: src/evolution/e-groupwise-rule-editor.c:92
+msgid "Low"
+msgstr "Niedrig"
+
+#: src/evolution/e-groupwise-rule-editor.c:95
+#: src/evolution/e-groupwise-rule-editor.c:135
+#: src/evolution/e-groupwise-sent-items.c:144
+msgid "To"
+msgstr "An"
+
+#: src/evolution/e-groupwise-rule-editor.c:95
+#: src/evolution/e-groupwise-rule-editor.c:136
+#: src/evolution/e-groupwise-sent-items.c:140
+msgid "CC"
+msgstr "CC"
+
+#: src/evolution/e-groupwise-rule-editor.c:95
+#: src/evolution/e-groupwise-sent-items.c:142
+msgid "BC"
+msgstr "BC"
+
+#: src/evolution/e-groupwise-rule-editor.c:98
+#: src/evolution/e-groupwise-sent-items.c:63
+msgid "Accepted"
+msgstr "Akzeptiert"
+
+#: src/evolution/e-groupwise-rule-editor.c:98
+#: src/evolution/e-groupwise-sent-items.c:69
+msgid "Completed"
+msgstr "Erledigt"
+
+#: src/evolution/e-groupwise-rule-editor.c:98
+#: src/evolution/e-groupwise-sent-items.c:59
+msgid "Opened"
+msgstr "Geöffnet"
+
+#: src/evolution/e-groupwise-rule-editor.c:99
+msgid "Has been read"
+msgstr "Gelesen"
+
+#: src/evolution/e-groupwise-rule-editor.c:99
+msgid "Private"
+msgstr "Privat"
+
+#: src/evolution/e-groupwise-rule-editor.c:103
+msgid "Third-party item downloaded"
+msgstr "Fremdherstellerelement heruntergeladen"
+
+#: src/evolution/e-groupwise-rule-editor.c:103
+msgid "Archived by a third party"
+msgstr "Von Drittanbieter archiviert"
+
+#: src/evolution/e-groupwise-rule-editor.c:104
+msgid "Third-party program code replaced"
+msgstr "Programmcode des Fremdherstellers wurde ersetzt"
+
+#: src/evolution/e-groupwise-rule-editor.c:104
+msgid "Third-party item restored"
+msgstr "Fremdherstellerelement wiederhergestellt"
+
+#: src/evolution/e-groupwise-rule-editor.c:107
+msgid "Collapsed"
+msgstr "Komprimiert"
+
+#: src/evolution/e-groupwise-rule-editor.c:107
+msgid "Watched"
+msgstr "Beobachtet"
+
+#: src/evolution/e-groupwise-rule-editor.c:107
+msgid "Ignored"
+msgstr "Ignoriert"
+
+#: src/evolution/e-groupwise-rule-editor.c:110
+msgid "File"
+msgstr "Datei"
+
+#: src/evolution/e-groupwise-rule-editor.c:110
+msgid "Audio"
+msgstr "Audio"
+
+#: src/evolution/e-groupwise-rule-editor.c:110
+msgid "Movie"
+msgstr "Film"
+
+#: src/evolution/e-groupwise-rule-editor.c:110
+msgid "Object (OLE)"
+msgstr "Objekt (OLE)"
+
+#: src/evolution/e-groupwise-rule-editor.c:111
+msgid "Document reference"
+msgstr "Dokumentverweis"
+
+#: src/evolution/e-groupwise-rule-editor.c:111
+msgid "Mail"
+msgstr "Mail"
+
+#: src/evolution/e-groupwise-rule-editor.c:111
+msgid "Appointment"
+msgstr "Termin"
+
+#: src/evolution/e-groupwise-rule-editor.c:112
+msgid "Task"
+msgstr "Job"
+
+#: src/evolution/e-groupwise-rule-editor.c:112
+msgid "Note"
+msgstr "Notiz"
+
+#: src/evolution/e-groupwise-rule-editor.c:112
+msgid "Phone message"
+msgstr "Tel. Nachricht"
+
+#: src/evolution/e-groupwise-rule-editor.c:115
+msgid "Me"
+msgstr "ich"
+
+#: src/evolution/e-groupwise-rule-editor.c:118
+msgid "Reply requested"
+msgstr "Antwort erbeten"
+
+#: src/evolution/e-groupwise-rule-editor.c:134
+msgid "From"
+msgstr "Von"
+
+#: src/evolution/e-groupwise-rule-editor.c:137
+msgid "Subject"
+msgstr "Betreff"
+
+#: src/evolution/e-groupwise-rule-editor.c:138
+msgid "My subject"
+msgstr "Mein Betreff"
+
+#: src/evolution/e-groupwise-rule-editor.c:139
+msgid "Message"
+msgstr "Nachricht"
+
+#: src/evolution/e-groupwise-rule-editor.c:140
+msgid "Place"
+msgstr "Ort"
+
+#: src/evolution/e-groupwise-rule-editor.c:141
+msgid "Attachments"
+msgstr "Anlagen"
+
+#: src/evolution/e-groupwise-rule-editor.c:142
+msgid "Annotation"
+msgstr "Anmerkung"
+
+#: src/evolution/e-groupwise-rule-editor.c:143
+msgid "Posted by"
+msgstr "Aufgegeben von"
+
+#: src/evolution/e-groupwise-rule-editor.c:145
+msgid "Caller's name"
+msgstr "Name des Anrufers"
+
+#: src/evolution/e-groupwise-rule-editor.c:146
+msgid "Caller's company"
+msgstr "Firma des Anrufers"
+
+#: src/evolution/e-groupwise-rule-editor.c:147
+msgid "Caller's phone number"
+msgstr "Telefonnummer des Anrufers"
+
+#: src/evolution/e-groupwise-rule-editor.c:148
+msgid "Created"
+msgstr "Erstellt"
+
+#: src/evolution/e-groupwise-rule-editor.c:149
+#: src/evolution/e-groupwise-sent-items.c:50
+msgid "Delivered"
+msgstr "Zugestellt"
+
+#: src/evolution/e-groupwise-rule-editor.c:150
+#: src/evolution/e-groupwise-sent-items.c:68
+msgid "Started"
+msgstr "Angefangen"
+
+#: src/evolution/e-groupwise-rule-editor.c:151
+msgid "End"
+msgstr "Ende"
+
+#: src/evolution/e-groupwise-rule-editor.c:152
+msgid "Due by"
+msgstr "Erledigen bis"
+
+#: src/evolution/e-groupwise-rule-editor.c:153
+msgid "Assigned date"
+msgstr "In Auftrag gegeben am"
+
+#: src/evolution/e-groupwise-rule-editor.c:154
+msgid "Completed date"
+msgstr "Abschlussdatum"
+
+#: src/evolution/e-groupwise-rule-editor.c:155
+msgid "Size"
+msgstr "Größe"
+
+#: src/evolution/e-groupwise-rule-editor.c:157
+#, no-c-format
+msgid "% complete"
+msgstr "% abgeschlossen"
+
+#: src/evolution/e-groupwise-rule-editor.c:158
+msgid "Task priority"
+msgstr "Jobpriorität"
+
+#: src/evolution/e-groupwise-rule-editor.c:159
+msgid "Task category"
+msgstr "Jobkategorie"
+
+#: src/evolution/e-groupwise-rule-editor.c:160
+msgid "Number accepted"
+msgstr "Akzeptierte Anzahl"
+
+#: src/evolution/e-groupwise-rule-editor.c:161
+msgid "Number replied"
+msgstr "Beantwortete Anzahl"
+
+#: src/evolution/e-groupwise-rule-editor.c:162
+msgid "Number completed"
+msgstr "Anzahl erledigt"
+
+#: src/evolution/e-groupwise-rule-editor.c:163
+msgid "Number deleted"
+msgstr "Gelöschte Anzahl"
+
+#: src/evolution/e-groupwise-rule-editor.c:164
+msgid "Number opened"
+msgstr "Geöffnete Anzahl"
+
+#: src/evolution/e-groupwise-rule-editor.c:165
+msgid "Total recipients"
+msgstr "Empfänger gesamt"
+
+#: src/evolution/e-groupwise-rule-editor.c:166
+msgid "Priority"
+msgstr "Priorität"
+
+#: src/evolution/e-groupwise-rule-editor.c:167
+msgid "Copy type"
+msgstr "Kopieart"
+
+#: src/evolution/e-groupwise-rule-editor.c:168
+msgid "Item status"
+msgstr "Status d. Nachricht"
+
+#: src/evolution/e-groupwise-rule-editor.c:169
+msgid "Extended item status"
+msgstr "Erweiterter Status der Nachricht"
+
+#: src/evolution/e-groupwise-rule-editor.c:170
+msgid "Thread state"
+msgstr "Thread-Zustand"
+
+#: src/evolution/e-groupwise-rule-editor.c:171
+msgid "Attachment list"
+msgstr "Anlagenliste"
+
+#: src/evolution/e-groupwise-rule-editor.c:172
+msgid "Personal attachments"
+msgstr "Persönliche Anlagen"
+
+#: src/evolution/e-groupwise-rule-editor.c:173
+msgid "Mentioned"
+msgstr "Erwähnt"
+
+#: src/evolution/e-groupwise-rule-editor.c:174
+msgid "Send options"
+msgstr "Sendeoptionen"
+
+#: src/evolution/e-groupwise-rule-editor.c:191
+msgid "contains"
+msgstr "enthält"
+
+#: src/evolution/e-groupwise-rule-editor.c:192
+msgid "does not contain"
+msgstr "enthält nicht"
+
+#: src/evolution/e-groupwise-rule-editor.c:193
+msgid "begins with"
+msgstr "beginnt mit"
+
+#: src/evolution/e-groupwise-rule-editor.c:194
+msgid "matches"
+msgstr "entspricht"
+
+#: src/evolution/e-groupwise-rule-editor.c:195
+msgid "is not"
+msgstr "ist nicht"
+
+#: src/evolution/e-groupwise-rule-editor.c:197
+msgid "on today plus (days)"
+msgstr "am heute plus (Tage)"
+
+#: src/evolution/e-groupwise-rule-editor.c:198
+msgid "not on today plus (days)"
+msgstr "nicht am heute plus (Tage)"
+
+#: src/evolution/e-groupwise-rule-editor.c:199
+msgid "before today plus (days)"
+msgstr "vor heute plus (Tage)"
+
+#: src/evolution/e-groupwise-rule-editor.c:200
+msgid "on or before today plus (days)"
+msgstr "am oder vor heute plus (Tage)"
+
+#: src/evolution/e-groupwise-rule-editor.c:201
+msgid "after today plus (days)"
+msgstr "nach heute plus (Tage)"
+
+#: src/evolution/e-groupwise-rule-editor.c:202
+msgid "on or after today plus (days)"
+msgstr "am oder nach heute plus (Tage)"
+
+#: src/evolution/e-groupwise-rule-editor.c:203
+msgid "="
+msgstr "="
+
+#: src/evolution/e-groupwise-rule-editor.c:204
+msgid "≠"
+msgstr "≠"
+
+#: src/evolution/e-groupwise-rule-editor.c:205
+msgid ">"
+msgstr ">"
+
+#: src/evolution/e-groupwise-rule-editor.c:206
+msgid "≥"
+msgstr "≥"
+
+#: src/evolution/e-groupwise-rule-editor.c:207
+msgid "<"
+msgstr "<"
+
+#: src/evolution/e-groupwise-rule-editor.c:208
+msgid "≤"
+msgstr "≤"
+
+#: src/evolution/e-groupwise-rule-editor.c:209
+msgid "= field"
+msgstr "= Feld"
+
+#: src/evolution/e-groupwise-rule-editor.c:210
+msgid "≠ field"
+msgstr "≠ Feld"
+
+#: src/evolution/e-groupwise-rule-editor.c:211
+msgid "> field"
+msgstr "> Feld"
+
+#: src/evolution/e-groupwise-rule-editor.c:212
+msgid "≥ field"
+msgstr "≥ Feld"
+
+#: src/evolution/e-groupwise-rule-editor.c:213
+msgid "< field"
+msgstr "< Feld"
+
+#: src/evolution/e-groupwise-rule-editor.c:214
+msgid "≤ field"
+msgstr "≤ Feld"
+
+#: src/evolution/e-groupwise-rule-editor.c:235
+msgid "Send mail"
+msgstr "Mail senden"
+
+#: src/evolution/e-groupwise-rule-editor.c:236
+msgid "Forward"
+msgstr "Weiterleiten"
+
+#: src/evolution/e-groupwise-rule-editor.c:237
+msgid "Forward as attachment"
+msgstr "Als Anlage weiterleiten"
+
+#: src/evolution/e-groupwise-rule-editor.c:238
+msgid "Delegate"
+msgstr "Delegieren"
+
+#: src/evolution/e-groupwise-rule-editor.c:239
+msgid "Reply to sender"
+msgstr "Antworten"
+
+#: src/evolution/e-groupwise-rule-editor.c:240
+msgid "Accept"
+msgstr "Akzeptieren"
+
+#: src/evolution/e-groupwise-rule-editor.c:241
+msgid "Category"
+msgstr "Kategorie"
+
+#: src/evolution/e-groupwise-rule-editor.c:242
+msgid "Delete / decline"
+msgstr "Löschen / Ablehnen"
+
+#: src/evolution/e-groupwise-rule-editor.c:243
+msgid "Prune message"
+msgstr "Nachricht tilgen"
+
+#: src/evolution/e-groupwise-rule-editor.c:244
+msgid "Move to folder"
+msgstr "In Ordner verschieben"
+
+#: src/evolution/e-groupwise-rule-editor.c:245
+msgid "Link to folder"
+msgstr "Mit Ordner verknüpfen"
+
+#: src/evolution/e-groupwise-rule-editor.c:246
+msgid "Mark private"
+msgstr "Als privat markieren"
+
+#: src/evolution/e-groupwise-rule-editor.c:247
+msgid "Mark read"
+msgstr "Als gelesen markieren"
+
+#: src/evolution/e-groupwise-rule-editor.c:248
+msgid "Mark unread"
+msgstr "Als ungelesen markieren"
+
+#: src/evolution/e-groupwise-rule-editor.c:249
+msgid "Stop rule processing"
+msgstr "Regelverarbeitung beenden"
+
+#: src/evolution/e-groupwise-rule-editor.c:250
+msgid "Reply unconditionally (dangerous)"
+msgstr "Unbedingt antworten (gefährlich)"
+
+#: src/evolution/e-groupwise-rule-editor.c:257
+msgid "Busy"
+msgstr "Belegt"
+
+#: src/evolution/e-groupwise-rule-editor.c:258
+msgid "Tentative"
+msgstr "Vorläufig"
+
+#: src/evolution/e-groupwise-rule-editor.c:259
+msgid "Free"
+msgstr "Frei"
+
+#: src/evolution/e-groupwise-rule-editor.c:260
+msgid "Out of office"
+msgstr "Abwesend"
+
+#: src/evolution/e-groupwise-rule-editor.c:661
+msgid "is"
+msgstr "ist"
+
+#: src/evolution/e-groupwise-rule-editor.c:661
+msgid "includes"
+msgstr "beinhaltet"
+
+#: src/evolution/e-groupwise-rule-editor.c:802
+msgid "Added to the other field"
+msgstr "Wird zum anderen Feld addiert"
+
+#: src/evolution/e-groupwise-rule-editor.c:808
+msgid "Remove the condition"
+msgstr "Bedingung entfernen"
+
+#: src/evolution/e-groupwise-rule-editor.c:967
+msgid "Earlier"
+msgstr "Früher"
+
+#: src/evolution/e-groupwise-rule-editor.c:971
+msgid "Later"
+msgstr "Später"
+
+#: src/evolution/e-groupwise-rule-editor.c:975
+msgid "Remove the action"
+msgstr "Aktion entfernen"
+
+#: src/evolution/e-groupwise-rule-editor.c:983
+msgid "Folder:"
+msgstr "Ordner:"
+
+#: src/evolution/e-groupwise-rule-editor.c:991
+msgid "addresses, separated by commas"
+msgstr "Adressen, durch Kommas getrennt"
+
+#: src/evolution/e-groupwise-rule-editor.c:993
+msgid "To:"
+msgstr "An:"
+
+#: src/evolution/e-groupwise-rule-editor.c:1002
+msgid "Subject:"
+msgstr "Betreff:"
+
+#: src/evolution/e-groupwise-rule-editor.c:1015
+msgid "Message:"
+msgstr "Nachricht:"
+
+#: src/evolution/e-groupwise-rule-editor.c:1024
+msgid "Show as:"
+msgstr "Anzeigen als:"
+
+#: src/evolution/e-groupwise-rule-editor.c:1032
+msgid "Comment:"
+msgstr "Kommentar:"
+
+#: src/evolution/e-groupwise-rule-editor.c:1048
+msgid "Category:"
+msgstr "Kategorie:"
+
+#: src/evolution/e-groupwise-rule-editor.c:1328
+msgid "Edit Rule"
+msgstr "Regel bearbeiten"
+
+#: src/evolution/e-groupwise-rule-editor.c:1328
+msgid "New Rule"
+msgstr "Neue Regel"
+
+#: src/evolution/e-groupwise-rule-editor.c:1331
+msgid "_Save"
+msgstr "_Speichern"
+
+#: src/evolution/e-groupwise-rule-editor.c:1343
+msgid ""
+"This rule has conditions or actions Evolution cannot show; it is shown as "
+"far as possible and cannot be saved here. Edit it in the GroupWise client."
+msgstr ""
+"Diese Regel enthält Bedingungen oder Aktionen, die Evolution nicht "
+"darstellen kann. Sie wird so weit wie möglich angezeigt und kann hier nicht "
+"gespeichert werden; bearbeiten Sie sie im GroupWise-Client."
+
+#: src/evolution/e-groupwise-rule-editor.c:1359
+msgid "Rule _name:"
+msgstr "Regel_name:"
+
+#: src/evolution/e-groupwise-rule-editor.c:1369
+msgid "When _event is:"
+msgstr "Wenn _Ereignis:"
+
+#: src/evolution/e-groupwise-rule-editor.c:1382
+msgid "(any folder)"
+msgstr "(beliebiger Ordner)"
+
+#: src/evolution/e-groupwise-rule-editor.c:1383
+msgid "_Folder:"
+msgstr "_Ordner:"
+
+#: src/evolution/e-groupwise-rule-editor.c:1394
+msgid "Item types:"
+msgstr "Objekttypen:"
+
+#: src/evolution/e-groupwise-rule-editor.c:1398
+msgid "Regardless of conflicts"
+msgstr "Unabhängig von Konflikten"
+
+#: src/evolution/e-groupwise-rule-editor.c:1399
+msgid "Only without a conflict"
+msgstr "Nur ohne Konflikt"
+
+#: src/evolution/e-groupwise-rule-editor.c:1400
+msgid "Only with a conflict"
+msgstr "Nur bei Konflikt"
+
+#: src/evolution/e-groupwise-rule-editor.c:1403
+msgid "Appointment con_flicts:"
+msgstr "Termin_konflikte:"
+
+#: src/evolution/e-groupwise-rule-editor.c:1407
+msgid "Conditions"
+msgstr "Bedingungen"
+
+#: src/evolution/e-groupwise-rule-editor.c:1409
+msgid "All conditions must be met (and)"
+msgstr "Alle Bedingungen müssen zutreffen (und)"
+
+#: src/evolution/e-groupwise-rule-editor.c:1410
+msgid "Any condition must be met (or)"
+msgstr "Eine Bedingung muss zutreffen (oder)"
+
+#: src/evolution/e-groupwise-rule-editor.c:1443
+msgid "Add _Condition"
+msgstr "_Bedingung hinzufügen"
+
+#: src/evolution/e-groupwise-rule-editor.c:1449
+msgid "Actions"
+msgstr "Aktionen"
+
+#: src/evolution/e-groupwise-rule-editor.c:1459
+#, c-format
+msgid "Action “%s”"
+msgstr "Aktion „%s“"
+
+#: src/evolution/e-groupwise-rule-editor.c:1473
+msgid "Add _Action"
+msgstr "_Aktion hinzufügen"
+
+#: src/evolution/e-groupwise-rule-editor.c:1502
+msgid "The rule needs a name."
+msgstr "Die Regel braucht einen Namen."
+
+#: src/evolution/e-groupwise-rule-editor.c:1510
+msgid "The rule needs at least one action."
+msgstr "Die Regel braucht mindestens eine Aktion."
+
+#: src/evolution/e-groupwise-rules-tab.c:264
+#, c-format
+msgid "Copy of %s"
+msgstr "Kopie von %s"
+
+#: src/evolution/e-groupwise-rules-tab.c:325
+#, c-format
+msgid "The rule cannot be run: %s"
+msgstr "Die Regel kann nicht ausgeführt werden: %s"
+
+#: src/evolution/e-groupwise-rules-tab.c:348
+#, c-format
+msgid "Run the rule “%s” now?"
+msgstr "Die Regel „%s“ jetzt ausführen?"
+
+#: src/evolution/e-groupwise-rules-tab.c:350
+msgid ""
+"GroupWise applies it to the items of your mailbox at once; what it does "
+"cannot be undone here."
+msgstr ""
+"GroupWise wendet sie sofort auf die Objekte Ihres Postfachs an; was sie tut, "
+"lässt sich hier nicht rückgängig machen."
+
+#: src/evolution/e-groupwise-rules-tab.c:351
+msgid "_Run"
+msgstr "_Ausführen"
+
+#: src/evolution/e-groupwise-rules-tab.c:389
+msgid ""
+"GroupWise runs these rules in the given order when their event happens, for "
+"every client. The changes go to GroupWise on OK."
+msgstr ""
+"GroupWise führt diese Regeln in der angegebenen Reihenfolge aus, wenn ihr "
+"Ereignis eintritt, für alle Programme. Änderungen überträgt Evolution mit OK "
+"an GroupWise."
+
+#: src/evolution/e-groupwise-rules-tab.c:402
+msgid "On"
+msgstr "Aktiv"
+
+#: src/evolution/e-groupwise-rules-tab.c:406
+msgid "Event"
+msgstr "Ereignis"
+
+#: src/evolution/e-groupwise-rules-tab.c:419
+msgid "_New…"
+msgstr "_Neu …"
+
+#: src/evolution/e-groupwise-rules-tab.c:420
+#: src/evolution/e-groupwise-signatures-tab.c:304
+msgid "_Edit…"
+msgstr "_Bearbeiten …"
+
+#: src/evolution/e-groupwise-rules-tab.c:421
+msgid "C_opy"
+msgstr "_Kopieren"
+
+#: src/evolution/e-groupwise-rules-tab.c:423
+msgid "_Up"
+msgstr "Nach _oben"
+
+#: src/evolution/e-groupwise-rules-tab.c:424
+msgid "Do_wn"
+msgstr "Nach _unten"
+
+#: src/evolution/e-groupwise-rules-tab.c:425
+msgid "R_un…"
+msgstr "A_usführen …"
+
+#: src/evolution/e-groupwise-rules-tab.c:430
+msgid "Evolution runs the rules for _startup and exit when it starts and quits"
+msgstr ""
+"Evolution führt die Regeln für _Starten und Beenden beim eigenen Start und "
+"Ende aus"
+
+#: src/evolution/e-groupwise-rules-tab.c:433
+msgid "Evolution runs the rules for opening and closing _folders"
+msgstr ""
+"Evolution führt die Regeln für das Öffnen und Schließen von _Ordnern aus"
+
+#: src/evolution/e-groupwise-rules-tab.c:660
+msgid "Rules"
+msgstr "Regeln"
+
+#: src/evolution/e-groupwise-sent-items.c:51
+msgid "Undeliverable"
+msgstr "Nicht zustellbar"
+
+#: src/evolution/e-groupwise-sent-items.c:52
+msgid "Transferred"
+msgstr "Übertragen"
+
+#: src/evolution/e-groupwise-sent-items.c:53
+msgid "Transfer delayed"
+msgstr "Übertragung verzögert"
+
+#: src/evolution/e-groupwise-sent-items.c:54
+msgid "Transfer failed"
+msgstr "Übertragung fehlgeschlagen"
+
+#: src/evolution/e-groupwise-sent-items.c:55
+msgid "Downloaded"
+msgstr "Heruntergeladen"
+
+#: src/evolution/e-groupwise-sent-items.c:56
+msgid "Downloaded by another program"
+msgstr "Von anderem Programm heruntergeladen"
+
+#: src/evolution/e-groupwise-sent-items.c:57
+msgid "Retraction requested"
+msgstr "Zurückziehen angefordert"
+
+#: src/evolution/e-groupwise-sent-items.c:58
+msgid "Retracted"
+msgstr "Zurückgezogen"
+
+#: src/evolution/e-groupwise-sent-items.c:60
+msgid "Deleted"
+msgstr "Gelöscht"
+
+#: src/evolution/e-groupwise-sent-items.c:61
+msgid "Undeleted"
+msgstr "Wiederhergestellt"
+
+#: src/evolution/e-groupwise-sent-items.c:62
+msgid "Purged"
+msgstr "Getilgt"
+
+#: src/evolution/e-groupwise-sent-items.c:64
+msgid "Declined"
+msgstr "Abgelehnt"
+
+#: src/evolution/e-groupwise-sent-items.c:65
+msgid "Replied"
+msgstr "Beantwortet"
+
+#: src/evolution/e-groupwise-sent-items.c:66
+msgid "Forwarded"
+msgstr "Weitergeleitet"
+
+#: src/evolution/e-groupwise-sent-items.c:67
+msgid "Shared"
+msgstr "Freigegeben"
+
+#: src/evolution/e-groupwise-sent-items.c:70
+msgid "Marked incomplete"
+msgstr "Als unerledigt markiert"
+
+#: src/evolution/e-groupwise-sent-items.c:71
+msgid "Delegated"
+msgstr "Delegiert"
+
+#: src/evolution/e-groupwise-sent-items.c:200
+msgid "No status yet"
+msgstr "Noch kein Status"
+
+#: src/evolution/e-groupwise-sent-items.c:259
+#, c-format
+msgid "The delivery status could not be read: %s"
+msgstr "Der Zustellstatus kann nicht gelesen werden: %s"
+
+#: src/evolution/e-groupwise-sent-items.c:260
+msgid "Unknown error"
+msgstr "Unbekannter Fehler"
+
+#: src/evolution/e-groupwise-sent-items.c:285
+msgid "Delivery Status"
+msgstr "Zustellstatus"
+
+#: src/evolution/e-groupwise-sent-items.c:286
+msgid "_Close"
+msgstr "S_chließen"
+
+#: src/evolution/e-groupwise-sent-items.c:295
+#: src/evolution/e-groupwise-sent-items.c:447
+#: src/evolution/e-groupwise-sent-items.c:503
+msgid "(No subject)"
+msgstr "(Kein Betreff)"
+
+#: src/evolution/e-groupwise-sent-items.c:309
+msgid "Reading the delivery status from the GroupWise server…"
+msgstr "Der Zustellstatus wird vom GroupWise-Server gelesen …"
+
+#: src/evolution/e-groupwise-sent-items.c:323
+msgid "Recipient / Event"
+msgstr "Empfänger / Ereignis"
+
+#: src/evolution/e-groupwise-sent-items.c:326
+msgid "Time"
+msgstr "Zeitpunkt"
+
+#: src/evolution/e-groupwise-sent-items.c:397
+msgid "retracting messages"
+msgstr "Zurückziehen der Nachrichten"
+
+#: src/evolution/e-groupwise-sent-items.c:446
+#, c-format
+msgid "Retract “%s” from the recipients?"
+msgstr "„%s“ bei den Empfängern zurückziehen?"
+
+#: src/evolution/e-groupwise-sent-items.c:450
+#, c-format
+msgid "Retract the %u selected messages from the recipients?"
+msgstr "Die %u ausgewählten Nachrichten bei den Empfängern zurückziehen?"
+
+#: src/evolution/e-groupwise-sent-items.c:453
+msgid ""
+"GroupWise takes the message out of the mailboxes of the recipients in "
+"GroupWise; the sent message stays in the Sent Items, with the recipients "
+"shown as retracted. Recipients outside GroupWise have got it already."
+msgstr ""
+"GroupWise holt die Nachricht aus den Postfächern der Empfänger in GroupWise; "
+"die gesendete Nachricht bleibt in den Ausgangsnachrichten, die Empfänger "
+"erscheinen dort als „zurückgezogen“. Empfänger außerhalb von GroupWise haben "
+"sie bereits erhalten."
+
+#: src/evolution/e-groupwise-sent-items.c:457
+#: src/evolution/e-groupwise-sent-items.c:509
+msgid "_Retract"
+msgstr "_Zurückziehen"
+
+#: src/evolution/e-groupwise-sent-items.c:502
+#, c-format
+msgid "Retract the original message “%s” from the recipients?"
+msgstr "Die ursprüngliche Nachricht „%s“ bei den Empfängern zurückziehen?"
+
+#: src/evolution/e-groupwise-sent-items.c:505
+msgid ""
+"The message is sent anew. GroupWise can take the original out of the "
+"mailboxes of the recipients in GroupWise; recipients outside GroupWise have "
+"got it already."
+msgstr "Die Nachricht wird neu gesendet. GroupWise kann das Original aus den Postfächern der Empfänger in GroupWise zurückholen; Empfänger außerhalb von GroupWise haben es bereits erhalten."
+
+#: src/evolution/e-groupwise-sent-items.c:508
+msgid "_Do Not Retract"
+msgstr "_Nicht zurückziehen"
+
+#: src/evolution/e-groupwise-sent-items.c:552
+#: src/evolution/e-groupwise-sent-items.c:577
+msgid "opening the message to resend it"
+msgstr "Öffnen der Nachricht zum Neusenden"
+
+#: src/evolution/e-groupwise-settings-window.c:160
+#, c-format
+msgid "The settings cannot be read from the server: %s"
+msgstr "Die Einstellungen können nicht vom Server gelesen werden: %s"
+
+#: src/evolution/e-groupwise-settings-window.c:248
+#, c-format
+msgid "The settings cannot be saved: %s"
+msgstr "Die Einstellungen können nicht gespeichert werden: %s"
+
+#: src/evolution/e-groupwise-settings-window.c:284
+msgid "Saving the settings on the server…"
+msgstr "Die Einstellungen werden auf dem Server gespeichert …"
+
+#: src/evolution/e-groupwise-settings-window.c:340
+#, c-format
+msgid "GroupWise Settings – %s"
+msgstr "GroupWise-Einstellungen – %s"
+
+#: src/evolution/e-groupwise-settings-window.c:378
+msgid "_OK"
+msgstr "_OK"
+
+#: src/evolution/e-groupwise-settings-window.c:386
+msgid "Reading the settings from the server…"
+msgstr "Die Einstellungen werden vom Server gelesen …"
+
+#: src/evolution/e-groupwise-signatures-tab.c:227
+#, c-format
+msgid "Remove the signature “%s” from GroupWise?"
+msgstr "Die Signatur „%s“ aus GroupWise entfernen?"
+
+#: src/evolution/e-groupwise-signatures-tab.c:276
+msgid ""
+"These signatures are kept in GroupWise and apply to every client. Changes "
+"made here or in Evolution's signature preferences go to GroupWise. Evolution "
+"adds the default signature to new messages of this account."
+msgstr ""
+"Diese Signaturen liegen in GroupWise und gelten für alle Programme. "
+"Änderungen hier oder in Evolutions Signatur-Einstellungen überträgt "
+"Evolution an GroupWise. Die Standardsignatur fügt Evolution in neue "
+"Nachrichten dieses Kontos ein."
+
+#: src/evolution/e-groupwise-signatures-tab.c:289
+msgid "Default"
+msgstr "Standard"
+
+#: src/evolution/e-groupwise-signatures-tab.c:306
+msgid "Make _Default"
+msgstr "Als _Standard"
+
+#: src/evolution/e-groupwise-signatures-tab.c:471
+msgid "Signatures"
+msgstr "Signaturen"
+
+#: src/evolution/e-groupwise-travel-page.c:322
+msgid "hours"
+msgstr "Stunden"
+
+#: src/evolution/e-groupwise-travel-page.c:324
+msgid "minutes"
+msgstr "Minuten"
+
+#: src/evolution/e-groupwise-travel-page.c:341
+msgid ""
+"Time blocked in your calendar before and after the appointment, for example "
+"to prepare or to get there. It is only yours: attendees of a meeting do not "
+"get it."
+msgstr ""
+"Zeit, die vor und nach dem Termin in Ihrem Kalender blockiert wird, z. B. "
+"zur Vorbereitung oder für die Anreise. Sie gilt nur für Sie: Teilnehmer "
+"einer Besprechung erhalten sie nicht."
+
+#: src/evolution/e-groupwise-travel-page.c:357
+msgid "_Before the appointment:"
+msgstr "_Vor dem Termin:"
+
+#: src/evolution/e-groupwise-travel-page.c:358
+msgid "_After the appointment:"
+msgstr "_Nach dem Termin:"
+
+#: src/evolution/e-groupwise-travel-page.c:360
+msgid "Travel times before/after the appointment are the _same"
+msgstr "Reisezeiten vor/nach Termin sind _gleich"
+
+#: src/evolution/e-groupwise-travel-page.c:765
+msgid "The appointment overlaps with busy time in your calendar"
+msgstr "Der Termin überschneidet sich mit belegter Zeit in Ihrem Kalender"
+
+#: src/evolution/e-groupwise-travel-page.c:768
+msgid "The preparation and travel time of the appointment counts, too."
+msgstr "Die Vorbereitungs- und Reisezeit des Termins zählt dabei mit."
+
+#: src/evolution/e-groupwise-travel-page.c:770
+msgid "_Save Anyway"
+msgstr "_Trotzdem speichern"
+
+#: src/evolution/e-groupwise-travel-page.c:933
+msgid "_Travel Time"
+msgstr "_Reisezeit"
+
+#: src/evolution/e-groupwise-ui-utils.c:101
+msgid ""
+"The password of the account is not in the keyring; let Evolution remember it"
+msgstr ""
+"Das Passwort des Kontos steht nicht im Schlüsselbund; lassen Sie es von "
+"Evolution speichern"
+
+#: src/evolution/e-groupwise-ui-utils.c:109
+#: src/registry/module-groupwise-backend.c:521
+msgid "The account has no GroupWise settings"
+msgstr "Das Konto hat keine GroupWise-Einstellungen"
+
+#: src/evolution/e-groupwise-ui-utils.c:128
+msgid "The password was not accepted"
+msgstr "Das Passwort wurde nicht angenommen"
+
+#: src/evolution/e-groupwise-ui-utils.c:129
+msgid "Cannot connect to the GroupWise server"
+msgstr "Keine Verbindung zum GroupWise-Server"
+
+#: src/evolution/e-groupwise-ui-utils.c:134
+#, c-format
+msgid "%s has not granted you the right to change settings, rules and folders"
+msgstr ""
+"%s hat Ihnen kein Recht gegeben, Einstellungen, Regeln und Ordner zu ändern"
+
+#: src/evolution/e-groupwise-vacation-tab.c:125
+msgid ""
+"GroupWise answers mail with this text while the rule is on and the date "
+"range lasts, each sender once, and shows you as out of office in the "
+"calendar for the range."
+msgstr ""
+"GroupWise beantwortet Mail mit diesem Text, solange die Regel eingeschaltet "
+"ist und der Zeitraum läuft, jeden Sender einmal, und zeigt Sie für den "
+"Zeitraum im Kalender als abwesend."
+
+#: src/evolution/e-groupwise-vacation-tab.c:131
+msgid "_Turn on my out of office rule"
+msgstr "Meine Abwesenheitsregel _einschalten"
+
+#: src/evolution/e-groupwise-vacation-tab.c:135
+msgid "_Only in this date range:"
+msgstr "_Nur in diesem Zeitraum:"
+
+#: src/evolution/e-groupwise-vacation-tab.c:144
+msgid "_From:"
+msgstr "_Von:"
+
+#: src/evolution/e-groupwise-vacation-tab.c:145
+msgid "_To:"
+msgstr "_Bis:"
+
+#: src/evolution/e-groupwise-vacation-tab.c:148
+msgid "_Whole days"
+msgstr "_Ganze Tage"
+
+#: src/evolution/e-groupwise-vacation-tab.c:164
+msgid "_Subject:"
+msgstr "_Betreff:"
+
+#: src/evolution/e-groupwise-vacation-tab.c:165
+msgid "_Message:"
+msgstr "_Nachricht:"
+
+#: src/evolution/e-groupwise-vacation-tab.c:167
+msgid "_Include the sender's message in the reply"
+msgstr "Nachricht des Senders in die Antwort _aufnehmen"
+
+#: src/evolution/e-groupwise-vacation-tab.c:169
+msgid "Reply"
+msgstr "Antwort"
+
+#: src/evolution/e-groupwise-vacation-tab.c:174
+msgid "Reply to _external users (outside the GroupWise system)"
+msgstr "_Externen Benutzern antworten (außerhalb des GroupWise-Systems)"
+
+#: src/evolution/e-groupwise-vacation-tab.c:182
+msgid "Only my _contacts"
+msgstr "Nur meinen _Kontakten"
+
+#: src/evolution/e-groupwise-vacation-tab.c:183
+msgid "E_veryone"
+msgstr "_Allen"
+
+#: src/evolution/e-groupwise-vacation-tab.c:186
+msgid "Reply to:"
+msgstr "Antworten an:"
+
+#: src/evolution/e-groupwise-vacation-tab.c:187
+msgid "S_ubject:"
+msgstr "Be_treff:"
+
+#: src/evolution/e-groupwise-vacation-tab.c:188
+msgid "M_essage:"
+msgstr "Nachr_icht:"
+
+#: src/evolution/e-groupwise-vacation-tab.c:190
+msgid ""
+"External senders get this subject and text, not the ones of the reply tab."
+msgstr ""
+"Externe Sender erhalten diesen Betreff und Text, nicht die der Registerkarte "
+"„Antwort“."
+
+#: src/evolution/e-groupwise-vacation-tab.c:196
+msgid "External Users"
+msgstr "Externe Benutzer"
+
+#: src/evolution/e-groupwise-vacation-tab.c:375
+msgid "Out of Office"
+msgstr "Abwesenheit"
+
+#: src/evolution/module-groupwise-configuration.c:117
+msgid "Configuration"
+msgstr "Konfiguration"
+
+#: src/evolution/module-groupwise-configuration.c:134
+msgid "_Server (POA):"
+msgstr "_Server (POA):"
+
+#: src/evolution/module-groupwise-configuration.c:140
+msgid "SOAP _port:"
+msgstr "SOAP-_Port:"
+
+#: src/evolution/module-groupwise-configuration.c:146
+msgid "User_name:"
+msgstr "_Benutzername:"
+
+#: src/evolution/module-groupwise-configuration.c:150
+msgid ""
+"The connection is encrypted (TLS) when the post office offers it. A "
+"certificate of an internal certificate authority is trusted once it is "
+"confirmed, or permanently when the authority is in ~/.config/evolution-"
+"groupwise/ca/."
+msgstr ""
+"Die Verbindung wird verschlüsselt (TLS), wenn das Post Office es anbietet. "
+"Dem Zertifikat einer internen Zertifizierungsstelle wird vertraut, sobald es "
+"bestätigt ist, oder dauerhaft, wenn die Zertifizierungsstelle in ~/.config/"
+"evolution-groupwise/ca/ liegt."
+
+#: src/evolution/module-groupwise-configuration.c:220
+msgid "Server cannot be empty"
+msgstr "Der Server darf nicht leer sein"
+
+#: src/evolution/module-groupwise-configuration.c:222
+msgid "User name cannot be empty"
+msgstr "Der Benutzername darf nicht leer sein"
+
+#: src/libegroupwise/e-gw-connection.c:249
+msgid "Empty document"
+msgstr "Leeres Dokument"
+
+#: src/libegroupwise/e-gw-connection.c:258
+msgid "XML decoding error: no SOAP body"
+msgstr "XML-Fehler: kein SOAP-Body"
+
+#: src/libegroupwise/e-gw-connection.c:267
+msgid "SOAP fault"
+msgstr "SOAP-Fehler"
+
+#: src/libegroupwise/e-gw-connection.c:275
+msgid "XML decoding error: no status"
+msgstr "XML-Fehler: kein Status"
+
+#: src/libegroupwise/e-gw-connection.c:293
+msgid "The password is not correct"
+msgstr "Das Passwort ist nicht korrekt"
+
+#: src/libegroupwise/e-gw-connection.c:295
+msgid "The user was not found on the post office"
+msgstr "Der Benutzer wurde im Post Office nicht gefunden"
+
+#: src/libegroupwise/e-gw-connection.c:297
+msgid "The session with the server is no longer valid"
+msgstr "Die Sitzung mit dem Server ist nicht mehr gültig"
+
+#: src/libegroupwise/e-gw-connection.c:299
+msgid "**No Error Description given**"
+msgstr "**Keine Fehlerbeschreibung vorhanden**"
+
+#: src/libegroupwise/e-gw-connection.c:339
+#: src/libegroupwise/e-gw-connection.c:958
+#, c-format
+msgid "Invalid server address %s"
+msgstr "Ungültige Serveradresse %s"
+
+#: src/libegroupwise/e-gw-connection.c:367
+#, c-format
+msgid "Error connecting to %s: %s"
+msgstr "Fehler beim Verbinden mit %s: %s"
+
+#: src/libegroupwise/e-gw-connection.c:379
+#: src/libegroupwise/e-gw-connection.c:988
+#, c-format
+msgid "HTTP %u %s"
+msgstr "HTTP %u %s"
+
+#: src/libegroupwise/e-gw-connection.c:524
+msgid "The server returned no session"
+msgstr "Der Server hat keine Sitzung geliefert"
+
+#: src/libegroupwise/e-gw-connection.c:798
+msgid "A password is required"
+msgstr "Ein Passwort ist erforderlich"
+
+#: src/libegroupwise/e-gw-connection.c:909
+#: src/libegroupwise/e-gw-connection.c:1020
+msgid "Not logged in"
+msgstr "Nicht angemeldet"
+
+#: src/libegroupwise/e-gw-connection.c:985
+#, c-format
+msgid "Cannot download %s"
+msgstr "%s kann nicht heruntergeladen werden"
+
+#: src/libegroupwise/e-gw-connection.c:1257
+msgid "The server returned no time"
+msgstr "Der Server hat keine Uhrzeit geliefert"
+
+#: src/libegroupwise/e-gw-connection.c:1390
+msgid "The server returned no folder ID"
+msgstr "Der Server hat keine Ordner-ID geliefert"
+
+#: src/libegroupwise/e-gw-connection.c:1472
+#: src/libegroupwise/e-gw-connection.c:1518
+msgid "The server returned no ID"
+msgstr "Der Server hat keine ID geliefert"
+
+#: src/libegroupwise/e-gw-connection.c:1654
+msgid "The server started no free/busy search"
+msgstr "Der Server hat keine Frei/Belegt-Suche gestartet"
+
+#: src/libegroupwise/e-gw-proxy.c:174
+#, c-format
+msgid "No GroupWise user “%s”"
+msgstr "Kein GroupWise-Benutzer „%s“"
+
+#: src/registry/gw-signatures.c:106
+msgid "Signature"
+msgstr "Signatur"
+
+#: src/registry/module-groupwise-backend.c:261
+msgid "Notes"
+msgstr "Notizen"
+
+#, c-format
+#~ msgid "%s (proxy)"
+#~ msgstr "%s (Proxy)"
+
+#~ msgid "Start date"
+#~ msgstr "Beginn"
+
+#~ msgid "Due / end date"
+#~ msgstr "Fällig / Ende"
+
+#~ msgid "Size (bytes)"
+#~ msgstr "Größe (Bytes)"
+
+#~ msgid "Empty item"
+#~ msgstr "Objekt leeren"
+
+#~ msgid "Archive"
+#~ msgstr "Archivieren"
+
+#~ msgid "Junk Mail Handling of GroupWise"
+#~ msgstr "Junk-Mail-Verwaltung von GroupWise"

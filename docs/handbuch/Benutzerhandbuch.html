@@ -1,0 +1,880 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<title>evolution-groupwise – Benutzerhandbuch</title>
+<!--
+  Benutzerhandbuch von evolution-groupwise. Das PDF entsteht mit
+  build-pdf.sh (WeasyPrint).
+
+  Copyright (C) 2026 bond Software Entwicklung GmbH
+  SPDX-License-Identifier: LGPL-2.1-or-later
+-->
+<style>
+@page {
+	size: A4;
+	margin: 22mm 20mm 22mm 22mm;
+	@top-left { content: "evolution-groupwise"; font: 8.5pt "DejaVu Sans", sans-serif; color: #777; }
+	@top-right { content: string(chapter); font: 8.5pt "DejaVu Sans", sans-serif; color: #777; }
+	@bottom-center { content: "Seite " counter(page) " von " counter(pages); font: 8.5pt "DejaVu Sans", sans-serif; color: #777; }
+}
+@page :first {
+	@top-left { content: none; }
+	@top-right { content: none; }
+	@bottom-center { content: none; }
+}
+html { font: 10.5pt/1.45 "DejaVu Serif", "Liberation Serif", serif; color: #1c1c1c; }
+h1, h2, h3, .title, .toc, th { font-family: "DejaVu Sans", "Liberation Sans", sans-serif; }
+h1 { font-size: 17pt; color: #1f4e79; border-bottom: 1.5pt solid #1f4e79; padding-bottom: 3pt;
+     margin: 0 0 12pt 0; page-break-before: always; string-set: chapter content(); }
+h2 { font-size: 12.5pt; color: #1f4e79; margin: 16pt 0 5pt 0; page-break-after: avoid; }
+h3 { font-size: 11pt; margin: 12pt 0 4pt 0; page-break-after: avoid; }
+p { margin: 0 0 7pt 0; text-align: justify; hyphens: auto; }
+ul, ol { margin: 0 0 8pt 0; padding-left: 18pt; }
+li { margin-bottom: 3pt; }
+code, .path { font: 9pt "DejaVu Sans Mono", monospace; background: #f1f3f5; padding: 0 2pt; }
+pre { font: 8.8pt/1.35 "DejaVu Sans Mono", monospace; background: #f1f3f5; border-left: 3pt solid #9bb7d4;
+      padding: 6pt 8pt; margin: 4pt 0 10pt 0; white-space: pre-wrap; page-break-inside: avoid; }
+.menu { font-family: "DejaVu Sans", sans-serif; font-size: 9.5pt; font-style: italic; }
+table { border-collapse: collapse; width: 100%; margin: 4pt 0 10pt 0; font-size: 9.5pt; page-break-inside: avoid; }
+th, td { border: 0.6pt solid #b7c3cf; padding: 3pt 5pt; vertical-align: top; text-align: left; }
+th { background: #e6edf4; }
+.note { border: 0.8pt solid #d9b44a; background: #fdf7e3; padding: 5pt 8pt; margin: 6pt 0 10pt 0; page-break-inside: avoid; }
+.note b:first-child { font-family: "DejaVu Sans", sans-serif; }
+
+/* Titelseite */
+.cover { height: 240mm; display: flex; flex-direction: column; justify-content: space-between; }
+.cover .title { margin-top: 55mm; }
+.cover .title h0 { display: block; font-size: 30pt; font-weight: bold; color: #1f4e79; }
+.cover .title .sub { font-size: 16pt; color: #333; margin-top: 6pt; }
+.cover .title .desc { font-family: "DejaVu Serif", serif; font-size: 11.5pt; margin-top: 18pt; color: #444; max-width: 130mm; }
+.cover .meta { font-family: "DejaVu Sans", sans-serif; font-size: 9.5pt; color: #555; border-top: 1pt solid #1f4e79; padding-top: 6pt; }
+
+/* Inhaltsverzeichnis */
+.toc { page-break-before: always; }
+.toc h2 { font-size: 17pt; margin-top: 0; border-bottom: 1.5pt solid #1f4e79; padding-bottom: 3pt; }
+.toc ol { list-style: none; padding-left: 0; }
+.toc ol ol { padding-left: 14pt; }
+.toc li { margin: 2pt 0; }
+.toc a { color: #1c1c1c; text-decoration: none; }
+.toc a::after { content: leader(".") target-counter(attr(href), page); }
+.toc > ol > li > a { font-weight: bold; }
+a { color: #1f4e79; }
+figure { margin: 8pt 0 10pt 0; text-align: center; page-break-inside: avoid; }
+figure img { max-width: 100%; border: 0.6pt solid #c8ccd0; }
+figcaption { font-size: 8.5pt; color: #666; margin-top: 3pt; }
+</style>
+</head>
+<body>
+
+<section class="cover">
+	<div class="title">
+		<h0>evolution-groupwise</h0>
+		<div class="sub">Benutzerhandbuch</div>
+		<div class="desc">GroupWise-Postfächer in Evolution: E-Mail, Adressbücher, Kalender, Aufgaben und
+			Notizen über die SOAP-Schnittstelle des GroupWise Post Office Agent.</div>
+	</div>
+	<div class="meta">
+		Version 0.8.2 · Oktober 2026<br>
+		bond Software Entwicklung GmbH<br>
+		Lizenz: GNU Lesser General Public License 2.1 oder neuer
+	</div>
+</section>
+
+<nav class="toc">
+	<h2>Inhalt</h2>
+	<ol>
+		<li><a href="#ueberblick">1&nbsp;&nbsp;Überblick</a></li>
+		<li><a href="#installation">2&nbsp;&nbsp;Installation</a></li>
+		<li><a href="#konto">3&nbsp;&nbsp;Konto einrichten</a>
+			<ol>
+				<li><a href="#zertifikat">Zertifikat des POA</a></li>
+				<li><a href="#gw-einstellungen">GroupWise-Einstellungen</a></li>
+				<li><a href="#abwesenheit">Abwesenheit</a></li>
+				<li><a href="#regeln">Regeln</a></li>
+				<li><a href="#proxy-zugriff">Proxy-Zugriff auf Ihr Postfach</a></li>
+			</ol></li>
+		<li><a href="#mail">4&nbsp;&nbsp;E-Mail</a>
+			<ol>
+				<li><a href="#mail-ordner">4.1&nbsp;&nbsp;Ordner und Nachrichten</a></li>
+				<li><a href="#mail-senden">4.2&nbsp;&nbsp;Schreiben und Senden</a></li>
+				<li><a href="#mail-papierkorb">4.3&nbsp;&nbsp;Löschen und Papierkorb</a></li>
+				<li><a href="#mail-beschriftungen">4.4&nbsp;&nbsp;Beschriftungen und Kategorien</a></li>
+				<li><a href="#mail-junk">4.5&nbsp;&nbsp;Junk-Mail</a></li>
+				<li><a href="#mail-suche">4.6&nbsp;&nbsp;Suchergebnisordner</a></li>
+				<li><a href="#mail-offline">4.7&nbsp;&nbsp;Offline arbeiten</a></li>
+				<li><a href="#mail-proxy">4.8&nbsp;&nbsp;Proxy-Zugriff auf andere Postfächer</a></li>
+			</ol></li>
+		<li><a href="#kalender">5&nbsp;&nbsp;Kalender</a>
+			<ol>
+				<li><a href="#kal-liste">5.1&nbsp;&nbsp;Die Kalender eines Kontos</a></li>
+				<li><a href="#kal-termine">5.2&nbsp;&nbsp;Termine und Serien</a></li>
+				<li><a href="#kal-besprechungen">5.3&nbsp;&nbsp;Besprechungen und Einladungen</a></li>
+				<li><a href="#kal-verschieben">5.4&nbsp;&nbsp;Termine zwischen Kalendern verschieben</a></li>
+				<li><a href="#kal-kategorien">5.5&nbsp;&nbsp;Kategorien</a></li>
+				<li><a href="#kal-eigenschaften">5.6&nbsp;&nbsp;Farbe und Eigenschaften</a></li>
+				<li><a href="#kal-reisezeit">5.7&nbsp;&nbsp;Vorbereitungs- und Reisezeit</a></li>
+			</ol></li>
+		<li><a href="#aufgaben">6&nbsp;&nbsp;Aufgaben und Notizen</a></li>
+		<li><a href="#adressbuecher">7&nbsp;&nbsp;Adressbücher</a></li>
+		<li><a href="#grenzen">8&nbsp;&nbsp;Grenzen und Hinweise</a></li>
+		<li><a href="#fehlersuche">9&nbsp;&nbsp;Fehlersuche</a></li>
+	</ol>
+</nav>
+
+<!-- ============================================================ -->
+<h1 id="ueberblick">1&nbsp;&nbsp;Überblick</h1>
+
+<p>evolution-groupwise bindet GroupWise-Postfächer direkt in das E-Mail- und Groupware-Programm
+<b>Evolution</b> ein. Es spricht mit dem GroupWise Post Office Agent (POA) über dessen SOAP-Schnittstelle,
+also auf dem gleichen Weg wie GroupWise Web. Ein zusätzlicher Dienst oder Umweg über IMAP ist nicht nötig.</p>
+
+<p>Mit einer einzigen Anmeldung stehen zur Verfügung:</p>
+<ul>
+	<li><b>E-Mail</b>: alle Ordner des Postfachs, lesen und schreiben, verschieben, kopieren, löschen,
+		Entwürfe, Senden über GroupWise – die Empfänger erhalten eine echte GroupWise-Nachricht.</li>
+	<li><b>Adressbücher</b>: das GroupWise-Adressbuch (nur lesen), „Häufige Kontakte“ und die persönlichen
+		Adressbücher (lesen und schreiben), mit Autovervollständigung beim Schreiben.</li>
+	<li><b>Kalender</b>: Termine, ganztägige Termine, Serien, Erinnerungen, Besprechungen mit Einladungen und
+		Antworten, Frei/Belegt-Suche; die eigenen Unterkalender, Proxy-Kalender und für Sie freigegebene
+		Kalender als eigene Kalender.</li>
+	<li><b>Proxy-Zugriff</b>: Postfächer anderer Benutzer, die Ihnen Proxy-Rechte gegeben haben, als eigene
+		Konten neben Ihrem – Mail, Kalender, Aufgaben, Notizen und Adressbücher, lesen und in deren Namen
+		schreiben; und die Verwaltung, wer auf Ihr eigenes Postfach zugreifen darf.</li>
+	<li><b>Aufgaben und Notizen</b> aus dem GroupWise-Kalender.</li>
+	<li><b>Kategorien</b> von GroupWise als Beschriftungen (E-Mail) und Kategorien (Kalender).</li>
+</ul>
+
+<h2>Voraussetzungen</h2>
+<table>
+	<tr><th style="width:32%">Komponente</th><th>Anforderung</th></tr>
+	<tr><td>Evolution und evolution-data-server</td><td>3.52 oder neuer (z.&nbsp;B. openSUSE Leap 16,
+		openSUSE Tumbleweed, Ubuntu 24.04, aktuelles Fedora). Die Funktion „Wiederherstellen“ im Papierkorb
+		benötigt Evolution 3.56.</td></tr>
+	<tr><td>GroupWise</td><td>Post Office Agent mit aktiver SOAP-Schnittstelle (Standardport 7191);
+		entwickelt und getestet mit GroupWise 26.2.</td></tr>
+	<tr><td>Zugangsdaten</td><td>GroupWise-Benutzer-ID und Passwort.</td></tr>
+</table>
+
+<!-- ============================================================ -->
+<h1 id="installation">2&nbsp;&nbsp;Installation</h1>
+
+<h2>Installation aus einem Paket</h2>
+<p>Für openSUSE und Fedora gibt es RPM-Pakete, für Debian und Ubuntu ein .deb-Paket. Installieren Sie
+das Paket mit der Paketverwaltung Ihres Systems, zum Beispiel unter openSUSE:</p>
+<pre>sudo zypper install ./evolution-groupwise-0.8.2-0.x86_64.rpm \
+                    ./evolution-groupwise-lang-0.8.2-0.noarch.rpm</pre>
+<p>oder unter Debian/Ubuntu:</p>
+<pre>sudo apt install ./evolution-groupwise_0.8.2_amd64.deb</pre>
+<p>Das Paket <code>evolution-groupwise-lang</code> enthält die deutsche Übersetzung (zurzeit; weitere Sprachen folgen). Starten Sie danach
+Evolution und die Hintergrunddienste neu, am einfachsten durch Ab- und Anmelden oder mit:</p>
+<pre>evolution --force-shutdown</pre>
+
+<h2>Aus den Quellen bauen</h2>
+<p>Für Entwickler und zum Testen lässt sich das Modul mit CMake bauen und ohne Administratorrechte in das
+Heimatverzeichnis installieren. Die Befehle dafür stehen in der Datei <span class="path">README.de.md</span>
+der Quellen. Eine solche Entwicklerinstallation muss vor der Installation eines Pakets wieder entfernt
+werden, sonst lädt Evolution jedes Modul doppelt.</p>
+
+<!-- ============================================================ -->
+<h1 id="konto">3&nbsp;&nbsp;Konto einrichten</h1>
+
+<ol>
+	<li>Wählen Sie in Evolution <span class="menu">Datei → Neu → E-Mail-Konto</span>.</li>
+	<li>Geben Sie Ihren Namen und Ihre E-Mail-Adresse ein.</li>
+	<li>Wählen Sie als Servertyp <b>GroupWise</b>. Server, Port (7191) und Benutzername werden aus der
+		E-Mail-Adresse vorbelegt: aus <i>benutzer@firma.de</i> wird der Benutzer <i>benutzer</i> auf dem Server
+		<i>mail.firma.de</i>. Korrigieren Sie die Werte, wenn Ihre GroupWise-Benutzer-ID oder der POA anders
+		heißen.</li>
+	<li>Schließen Sie den Assistenten ab und geben Sie beim ersten Verbinden Ihr Passwort ein. Evolution
+		kann es im Schlüsselbund speichern.</li>
+</ol>
+<p>Eine Seite für den Postausgang gibt es nicht: Nachrichten werden über GroupWise selbst versendet.
+Das Konto erscheint anschließend in der E-Mail-Ansicht, und seine Adressbücher, Kalender, Aufgaben- und
+Notizlisten stehen unter der Überschrift des Kontos in den jeweiligen Ansichten.</p>
+
+<h2 id="zertifikat">Zertifikat des POA</h2>
+<p>GroupWise stellt die Zertifikate seiner Agenten meist mit einer eigenen, internen Zertifizierungsstelle
+(CA) aus, der Linux zunächst nicht vertraut. Evolution fragt deshalb beim ersten Verbinden, wie der
+GroupWise-Client auch, ob es dem Zertifikat des POA vertrauen soll. Prüfen Sie die angezeigten Angaben und
+wählen Sie <span class="menu">Dauerhaft akzeptieren</span>; die Zustimmung gilt für das ganze Konto mit seinen
+Kalendern und Adressbüchern. Wird das Zertifikat des POA später erneuert, fragt Evolution einmal neu –
+ebenfalls wie der GroupWise-Client.</p>
+<p>Das Zertifikat muss auf den Namen ausgestellt sein, unter dem Sie den POA ansprechen (zum Beispiel
+<i>mail.example.com</i>); sonst lehnt Evolution die Verbindung trotz Zustimmung als unsicher ab.</p>
+<div class="note"><b>Für Administratoren:</b> Ist die CA des GroupWise-Systems bekannt, entfällt auch die
+Rückfrage nach einer Erneuerung. Legen Sie die CA-Datei (PEM)
+<ul>
+	<li>für alle Benutzer eines Rechners nach <span class="path">/etc/pki/trust/anchors/</span> (openSUSE) bzw.
+		<span class="path">/usr/local/share/ca-certificates/</span> (Debian/Ubuntu) und führen Sie
+		<code>sudo update-ca-certificates</code> aus, oder</li>
+	<li>nur für einen Benutzer nach <span class="path">~/.config/evolution-groupwise/ca/</span>.</li>
+</ul>
+Der POA liefert die CA nicht mit, wohl aber der GroupWise-Administrationsdienst (Port 9710) in seiner
+Zertifikatskette. Vergleichen Sie vor dem Einsetzen den Fingerabdruck mit dem in der
+GroupWise-Administration:
+<pre>openssl s_client -connect mail.example.com:9710 -showcerts &lt;/dev/null 2&gt;/dev/null \
+  | awk '/BEGIN CERT/{n++} n==2{print} /END CERT/ &amp;&amp; n==2{exit}' &gt; groupwise-ca.pem
+openssl x509 -in groupwise-ca.pem -noout -subject -fingerprint -sha256</pre>
+</div>
+
+<h2>Kontooptionen</h2>
+<p>Unter <span class="menu">Bearbeiten → Einstellungen → E-Mail-Konten → Bearbeiten</span> finden Sie:</p>
+<table>
+	<tr><th style="width:42%">Option</th><th>Bedeutung</th></tr>
+	<tr><td>Filter und Junk-Prüfung auf neue Nachrichten in der Mailbox anwenden</td><td>Evolutions eigene
+		Filterregeln und die Junk-Erkennung laufen über neu eingegangene Nachrichten. Dafür lädt Evolution
+		jede neue Nachricht vollständig; deshalb ist die Option ausgeschaltet, solange Sie sie nicht
+		brauchen.</td></tr>
+	<tr><td>Ordnerinhalte für den Offline-Betrieb lokal kopieren</td><td>Nachrichten werden vorab
+		heruntergeladen, damit sie auch ohne Verbindung lesbar sind.</td></tr>
+	<tr><td>Schreibgeschützt: nie etwas auf dem Server ändern</td><td>Evolution liest nur. Gelesen-Status,
+		Verschieben, Löschen und Senden werden nicht auf den Server übertragen – nützlich zum
+		Ausprobieren.</td></tr>
+	<tr><td>Regeln für Starten und Beenden beim Start und Ende von Evolution ausführen</td><td>Siehe Abschnitt
+		„Regeln“: Evolution lässt GroupWise die Regeln mit dem Ereignis <i>Starten</i> bzw. <i>Beenden</i>
+		ausführen. Aus, solange Sie es nicht einschalten.</td></tr>
+	<tr><td>Regeln für das Öffnen und Schließen von Ordnern ausführen</td><td>Ebenso für die Ereignisse
+		<i>Ordner öffnen</i> und <i>Ordner schließen</i>.</td></tr>
+</table>
+
+<h2 id="gw-einstellungen">GroupWise-Einstellungen</h2>
+<p>Einstellungen, die der GroupWise-Server selbst für Ihr Postfach hält, bearbeiten Sie im Fenster
+<b>GroupWise-Einstellungen</b>: Klicken Sie in der Ordnerliste mit der rechten Maustaste auf den Namen des
+GroupWise-Kontos und wählen Sie <span class="menu">GroupWise-Einstellungen …</span>. Das Fenster liest die
+Einstellungen beim Öffnen vom Server und schreibt Ihre Änderungen mit <span class="menu">OK</span> zurück; sie
+gelten dann für alle Programme, auch für den GroupWise-Client und GroupWise Web. Es hat die Registerkarten
+<b>Abwesenheit</b>, <b>Regeln</b> (siehe unten), <b>Junkmail</b> (siehe Abschnitt 4.5), <b>Signaturen</b>
+(siehe Abschnitt 4.2),
+<b>Proxy-Konten</b> (siehe Abschnitt 4.8) und <b>Proxy-Zugriff</b> (siehe unten). Im
+GroupWise-Client finden Sie dieselben Einstellungen im Menü <i>Werkzeuge</i>.</p>
+<p>Bei einem Proxy-Konto (Abschnitt 4.8) zeigt <span class="menu">GroupWise-Einstellungen …</span> die
+Abwesenheit und die Junk-Mail-Einstellungen des anderen Postfachs. Das setzt voraus, dass der andere
+Benutzer Ihnen das Proxy-Recht „Einstellungen, Regeln und Ordner ändern“ gegeben hat; sonst meldet das
+Fenster dies. Die Registerkarten „Proxy-Konten“ und „Proxy-Zugriff“ gibt es dort nicht.</p>
+
+<h2 id="abwesenheit">Abwesenheit</h2>
+<p>Die Registerkarte <b>Abwesenheit</b> entspricht der Abwesenheitsregel des GroupWise-Clients:</p>
+<figure><img src="Einstellungen-Abwesenheit.png" alt="GroupWise-Einstellungen, Registerkarte Abwesenheit" style="width: 13cm"><figcaption>GroupWise-Einstellungen, Registerkarte Abwesenheit</figcaption></figure>
+<ul>
+	<li><b>Meine Abwesenheitsregel einschalten</b> – solange die Regel eingeschaltet ist (und der Zeitraum
+		läuft, falls einer gesetzt ist), beantwortet GroupWise eingehende Mail automatisch, jeden Sender nur
+		einmal.</li>
+	<li><b>Nur in diesem Zeitraum</b> – von und bis zu einem Tag (<b>Ganze Tage</b>) oder zu einer Uhrzeit.
+		GroupWise trägt für den Zeitraum einen Termin mit dem Status <i>Abwesend</i> in Ihren Kalender ein und
+		entfernt ihn wieder, wenn Sie die Regel ausschalten. Nach dem Ende des Zeitraums antwortet GroupWise
+		nicht mehr, auch wenn die Regel eingeschaltet bleibt.</li>
+	<li><b>Antwort</b> – Betreff und Text der automatischen Antwort; der Betreff erscheint in Klammern hinter
+		dem Betreff der ursprünglichen Nachricht. Wahlweise wird die Nachricht des Senders in die Antwort
+		aufgenommen.</li>
+	<li><b>Externe Benutzer</b> – ob auch Sendern außerhalb des GroupWise-Systems geantwortet wird, allen oder
+		nur Ihren Kontakten, mit einem eigenen Betreff und Text (der Text der Registerkarte „Antwort“ gilt für
+		sie nicht).</li>
+</ul>
+
+<h2 id="regeln">Regeln</h2>
+<p>Die Registerkarte <b>Regeln</b> entspricht <i>Werkzeuge → Regeln</i> im GroupWise-Client. GroupWise führt die
+Regeln selbst aus, für alle Programme, in der Reihenfolge der Liste.</p>
+<figure><img src="Einstellungen-Regeln.png" alt="GroupWise-Einstellungen, Registerkarte Regeln" style="width: 13cm"><figcaption>GroupWise-Einstellungen, Registerkarte Regeln</figcaption></figure>
+<ul>
+	<li><b>Liste</b>: das Häkchen <i>Aktiv</i> schaltet eine Regel ein oder aus; <span class="menu">Nach oben</span>
+		und <span class="menu">Nach unten</span> ändern die Reihenfolge; <span class="menu">Neu …</span>,
+		<span class="menu">Bearbeiten …</span> (oder Doppelklick), <span class="menu">Kopieren</span> und
+		<span class="menu">Entfernen</span> wie gewohnt. Alle Änderungen überträgt Evolution mit
+		<span class="menu">OK</span> an GroupWise.</li>
+	<li><span class="menu">Ausführen …</span> lässt GroupWise die gespeicherte Regel sofort auf die Objekte Ihres
+		Postfachs anwenden (nach einer Rückfrage), zum Beispiel eine benutzeraktivierte Regel.</li>
+</ul>
+<p>Der <b>Regel-Editor</b> hat nicht ganz den Umfang des GroupWise-Clients, ist dafür aber deutlich einfacher zu
+bedienen und sollte im Alltag ausreichen:</p>
+<figure><img src="Regel-Editor.png" alt="Der Regel-Editor" style="width: 16cm"><figcaption>Der Regel-Editor</figcaption></figure>
+<ul>
+	<li><b>Ereignis</b>: <i>Neues Objekt</i> (mit den Quellen Empfangen, Gesendet, Persönlich, Entwurf),
+		<i>Abgelegtes Objekt</i>, <i>Ordner öffnen</i>, <i>Ordner schließen</i> (jeweils für einen Ordner oder
+		jeden), <i>Erledigtes Objekt</i>, <i>Starten</i>, <i>Beenden</i> und <i>Benutzeraktiviert</i>.</li>
+	<li><b>Objekttypen</b>: Mail, Telefonnachricht, Termin, Aufgabe, Erinnerungsnotiz; für Termine auch, ob die
+		Regel nur ohne oder nur bei einem Terminkonflikt greift.</li>
+	<li><b>Bedingungen</b>: beliebig viele, verknüpft mit „Alle Bedingungen müssen zutreffen (und)“ oder
+		„Eine Bedingung muss zutreffen (oder)“ (eine Ebene, ohne verschachtelte Gruppen). Die Felder heißen wie
+		im GroupWise-Client:
+		<ul>
+			<li>Texte (enthält, enthält nicht, beginnt mit, entspricht, ist nicht): Von, An, CC, Betreff, Mein
+				Betreff, Nachricht, Ort, Anlagen, Anmerkung, Aufgegeben von, Konto, Name, Firma und
+				Telefonnummer des Anrufers;</li>
+			<li>Datumsangaben, verglichen mit heute plus einer Anzahl Tage (z.&nbsp;B. „vor heute plus −3“ =
+				älter als drei Tage): Erstellt, Zugestellt, Angefangen, Ende, Erledigen bis, In Auftrag gegeben
+				am, Abschlussdatum;</li>
+			<li>Zahlen (=, ≠, &gt;, ≥, &lt;, ≤): Größe, % abgeschlossen, Jobpriorität; Jobkategorie (ein
+				Buchstabe);</li>
+			<li>Zähler versendeter Objekte – Akzeptierte, Beantwortete, Erledigte, Gelöschte, Geöffnete Anzahl,
+				Empfänger gesamt – mit einer Zahl oder mit einem anderen Zähler (plus einem Zuschlag), etwa
+				„Erledigte Anzahl = Feld Empfänger gesamt“: alle Empfänger haben die Aufgabe erledigt;</li>
+			<li>Auswahlfelder: Priorität (Hoch, Standard, Niedrig), Kopieart (An, CC, BC), Status d. Nachricht
+				(Akzeptiert, Erledigt, Geöffnet, Gelesen, Privat), Erweiterter Status der Nachricht (Zustände der
+				Archivierung durch Drittanbieter), Thread-Zustand (Komprimiert, Beobachtet, Ignoriert),
+				Anlagenliste und Persönliche Anlagen (Datei, Audio, Film, Objekt (OLE), Dokumentverweis, Mail,
+				Termin, Job, Notiz, Tel. Nachricht), Erwähnt (ich), Sendeoptionen (Antwort erbeten).</li>
+		</ul>
+		Felder für Dokumente und Bibliotheken sowie X-Felder von Internet-Mails bietet der Editor nicht an.</li>
+	<li><b>Aktionen</b>, in ihrer Reihenfolge: Mail senden, Weiterleiten, Als Anlage weiterleiten, Delegieren,
+		Antworten, Akzeptieren, Kategorie, Löschen/Ablehnen, Nachricht tilgen, In Ordner verschieben, Mit Ordner
+		verknüpfen, Als privat markieren, Als gelesen markieren, Als ungelesen markieren, Regelverarbeitung
+		beenden und zuletzt <b>Unbedingt antworten (gefährlich)</b>.</li>
+</ul>
+<div class="note"><b>Antworten und unbedingt antworten:</b> <i>Antworten</i> ist die automatische Antwort von
+GroupWise: sie antwortet jedem Absender höchstens einmal am Tag und vermeidet Nachrichtenschleifen.
+<i>Unbedingt antworten (gefährlich)</i> ist deren Vorläufer und antwortet ohne jede Einschränkung auf jede
+Nachricht – zwei solche Regeln, eine Mailingliste oder eine andere Abwesenheitsnotiz können sich endlos
+gegenseitig antworten. Verwenden Sie sie nur, wenn Sie sie wirklich brauchen.</div>
+<p>Regeln mit Bestandteilen, die der Editor nicht darstellen kann (verschachtelte Bedingungsgruppen,
+Dokument- oder X-Felder, andere Aktionen wie Archivieren), zeigt er nur an; Sie können sie aber ein- und ausschalten, verschieben, ausführen und
+entfernen. Bearbeiten Sie sie im GroupWise-Client.</p>
+<p>Die Ereignisse <i>Starten</i>, <i>Beenden</i>, <i>Ordner öffnen</i> und <i>Ordner schließen</i> löst in
+GroupWise der Client aus, nicht der Server. Mit den beiden Kontrollkästchen unter der Liste (auch in den
+Kontooptionen) bestimmen Sie, ob Evolution das übernimmt: beim Start und Ende von Evolution bzw. beim Öffnen
+und Verlassen eines Ordners. Beide sind anfangs aus – bedenken Sie, dass solche Regeln zum Beispiel Nachrichten
+endgültig löschen können.</p>
+
+<h2 id="proxy-zugriff">Proxy-Zugriff auf Ihr Postfach</h2>
+<p>Die Registerkarte <b>Proxy-Zugriff</b> entspricht dem Proxy-Zugriff in den Sicherheitsoptionen des
+GroupWise-Clients: Sie legt fest, wer Ihr Postfach als Proxy öffnen darf und mit welchen Rechten.</p>
+<figure><img src="Einstellungen-Proxy-Zugriff.png" alt="GroupWise-Einstellungen, Registerkarte Proxy-Zugriff" style="width: 13cm"><figcaption>GroupWise-Einstellungen, Registerkarte Proxy-Zugriff</figcaption></figure>
+<ul>
+	<li>Die Liste zeigt die Benutzer mit Zugriff; ganz oben steht <b>Alle Benutzer</b>, die Rechte für jeden im
+		GroupWise-System (typisch: Termine lesen, für die Frei/Belegt-Planung).</li>
+	<li><span class="menu">Benutzer hinzufügen …</span> fragt nach der E-Mail-Adresse oder dem Namen eines
+		GroupWise-Benutzers; er bekommt zunächst das Recht, Mail und Termine zu lesen.
+		<span class="menu">Benutzer entfernen</span> nimmt ihm den Zugriff.</li>
+	<li>Für den ausgewählten Benutzer setzen Sie darunter die Rechte: <b>Lesen</b> und <b>Schreiben</b> für
+		Mail/Telefon, Termine, Erinnerungsnotizen und Aufgaben (Schreiben schließt Lesen ein), dazu
+		<i>Meine Alarme abonnieren</i>, <i>Meine Benachrichtigungen abonnieren</i>, <i>Optionen, Regeln und
+		Ordner ändern</i>, <i>Als privat markierte Objekte lesen</i> und <i>Sicherheitsoptionen
+		ändern</i>.</li>
+</ul>
+<p>Mit <span class="menu">OK</span> überträgt Evolution die Änderungen an GroupWise.</p>
+
+<!-- ============================================================ -->
+<h1 id="mail">4&nbsp;&nbsp;E-Mail</h1>
+
+<h2 id="mail-ordner">4.1&nbsp;&nbsp;Ordner und Nachrichten</h2>
+<p>Evolution zeigt alle Ordner des GroupWise-Postfachs, wie der GroupWise-Client zuerst die Systemordner
+in seiner Reihenfolge – Mailbox, Ausgangsnachrichten, Jobliste, In Arbeit (Entwürfe), Junkmail, Papierkorb,
+Aktenschrank mit allen Unterordnern –, darunter Ihre eigenen Ordner und die Suchergebnisordner nach
+Namen. Die Systemordner tragen die Namen, die auch der GroupWise-Client in Ihrer Sprache zeigt. Legen Sie
+in Evolution selbst eine Reihenfolge fest (Kontextmenü eines Ordners,
+<span class="menu">Sortierreihenfolge bearbeiten …</span>), gilt diese. Freigegebene Ordner anderer Benutzer, deren übergeordneter Ordner nicht
+mehr existiert, blendet Evolution wie der GroupWise-Client aus. Ordner lassen
+sich anlegen, umbenennen, verschieben und löschen. Systemordner wie die Mailbox oder der Papierkorb
+bleiben, wie sie sind.</p>
+<ul>
+	<li><b>Nachrichtenliste</b>: Absender, Betreff, Datum, Größe, Anhangs-Symbol, Priorität und
+		Gelesen-Status kommen direkt aus GroupWise. Der Inhalt einer Nachricht wird erst beim Öffnen
+		geladen.</li>
+	<li><b>Originalnachricht</b>: Von außen eingegangene Nachrichten zeigt Evolution so, wie sie ankamen,
+		mit allen Kopfzeilen.</li>
+	<li><b>Geänderter Betreff</b>: Haben Sie den Betreff einer Nachricht im GroupWise-Client geändert,
+		zeigt Evolution den geänderten Betreff.</li>
+	<li><b>Gelesen/ungelesen</b> wird in beide Richtungen abgeglichen. Das bloße Ansehen in der Liste
+		markiert nichts als gelesen.</li>
+	<li><b>Verschieben und Kopieren</b> innerhalb des Kontos geschieht auf dem Server: Eine kopierte
+		Nachricht ist in GroupWise dieselbe Nachricht in einem weiteren Ordner.</li>
+	<li><b>Einladungen</b> in der Mailbox erscheinen als Nachrichten; beantworten Sie sie in der
+		Nachrichtenansicht oder im Kalender. Beantwortete Einladungen verschwinden wie im
+		GroupWise-Client aus der Mailbox.</li>
+</ul>
+<p>Evolution prüft regelmäßig auf neue Nachrichten. Zwischen zwei vollständigen Abgleichen (höchstens
+alle 15 Minuten) fragt es nur die Änderungen seit dem letzten Mal ab.</p>
+
+<h2 id="mail-senden">4.2&nbsp;&nbsp;Schreiben und Senden</h2>
+<p>Nachrichten werden über GroupWise versendet: Interne Empfänger erhalten eine native GroupWise-Nachricht,
+externe eine normale E-Mail. Die gesendete Nachricht liegt danach in den Ausgangsnachrichten.</p>
+<ul>
+	<li><b>HTML und Text</b>, eingebettete Bilder, Anhänge und die Priorität werden übernommen.</li>
+	<li><b>Entwürfe</b> werden im Ordner <i>In Arbeit</i> gespeichert und sind so auch im
+		GroupWise-Client zu sehen.</li>
+	<li><b>Weiterleiten als Anhang</b>: Leiten Sie eine GroupWise-Nachricht als Anhang weiter, hängt
+		GroupWise die Nachricht selbst an, wie der GroupWise-Client. Interne Empfänger sehen sie als
+		GroupWise-Nachricht und nicht als MIME-Datei.</li>
+	<li><b>Absender</b>: Gesendet wird immer über das Konto, zu dem die gewählte Absenderidentität gehört.
+		Mehrere GroupWise-Konten nebeneinander sind möglich.</li>
+</ul>
+<h3>Zustellstatus und Zurückziehen</h3>
+<p>Wie im GroupWise-Client sehen Sie bei gesendeten Nachrichten, was bei den Empfängern damit geschah, und
+können sie zurückziehen. Beides steht im Ordner <i>Ausgangsnachrichten</i> eines GroupWise-Kontos im
+Kontextmenü einer Nachricht und im Menü <span class="menu">Nachricht</span>:</p>
+<ul>
+	<li><span class="menu">Zustellstatus …</span> öffnet für die ausgewählte Nachricht ein Fenster mit allen
+		Empfängern (An, CC, BC) und darunter jedem Ereignis mit Zeitpunkt: zugestellt, geöffnet,
+		gelöscht, beantwortet, weitergeleitet, zurückgezogen, bei Terminen angenommen oder abgelehnt
+		(mit Kommentar) und weitere. Bei Empfängern außerhalb von GroupWise steht meist nur
+		„Übertragen“.</li>
+	<li><span class="menu">Neu senden …</span> öffnet die Nachricht wie im GroupWise-Client in einem neuen
+		Nachrichtenfenster, in dem Sie sie ändern können. Die Signatur steht auf „Keine“, weil die
+		Nachricht ihre Signatur schon enthält. Beim <span class="menu">Senden</span> fragt Evolution,
+		ob die ursprüngliche Nachricht bei den Empfängern zurückgezogen werden soll:
+		<span class="menu">Zurückziehen</span>, <span class="menu">Nicht zurückziehen</span> oder
+		<span class="menu">Abbrechen</span> (zurück ins Nachrichtenfenster).</li>
+	<li><span class="menu">Zurückziehen …</span> holt die ausgewählten Nachrichten nach einer Rückfrage aus
+		den Postfächern der Empfänger in GroupWise zurück. Die gesendete Nachricht bleibt in den
+		Ausgangsnachrichten; ihr Zustellstatus zeigt die Empfänger dann als „Zurückgezogen“. Empfänger
+		außerhalb von GroupWise haben die Nachricht bereits erhalten. Bei einem nur lesbaren Konto
+		fehlt der Eintrag.</li>
+</ul>
+<h3>Signaturen</h3>
+<p>Ihre Signaturen aus GroupWise stehen in Evolution zur Verfügung: im Feld <span class="menu">Signatur:</span>
+des Nachrichten-Editors und unter <span class="menu">Bearbeiten → Einstellungen → Editoreinstellungen →
+Signaturen</span>, mit Bildern. Die Standardsignatur von GroupWise fügt Evolution in neue Nachrichten des
+Kontos ein, auch wenn GroupWise vor dem Senden fragen soll; im Editor wählen Sie eine andere oder „Keine“.
+Die Signaturen eines Proxy-Kontos tragen den Namen des Kontos, etwa „Karl – Karl Napp (Proxy)“.</p>
+<p>Signaturen bearbeiten Sie im Fenster <b>GroupWise-Einstellungen</b>, Registerkarte <b>Signaturen</b>:</p>
+<figure><img src="Einstellungen-Signaturen.png" alt="GroupWise-Einstellungen, Registerkarte Signaturen" style="width: 13cm"><figcaption>GroupWise-Einstellungen, Registerkarte Signaturen</figcaption></figure>
+<ul>
+	<li><span class="menu">Hinzufügen …</span> und <span class="menu">Bearbeiten …</span> öffnen Evolutions
+		Signatur-Editor; beim Speichern überträgt Evolution die Signatur an GroupWise.</li>
+	<li><span class="menu">Entfernen</span> löscht die Signatur, auch in GroupWise.</li>
+	<li><span class="menu">Als Standard</span> macht die ausgewählte Signatur mit <span class="menu">OK</span> zur
+		Standardsignatur in GroupWise und zur Signatur des Kontos in Evolution.</li>
+</ul>
+<p>Auch Änderungen und Löschungen unter <span class="menu">Editoreinstellungen → Signaturen</span> überträgt
+Evolution an GroupWise. Neue Signaturen, die Sie dort mit <span class="menu">Hinzufügen</span> anlegen, bleiben
+dagegen nur in Evolution, weil sie keinem Konto zugeordnet sind. Änderungen im GroupWise-Client übernimmt
+Evolution beim nächsten Verbinden des Kontos. Entfernen Sie ein ganzes Konto, bleiben seine Signaturen in
+GroupWise erhalten.</p>
+<div class="note"><b>Empfehlung: Nachrichten in HTML schreiben.</b> Schreiben Sie im GroupWise-Client eine
+einfache Nachricht, verwendet er ein eigenes, erweitertes Textformat, das noch aus den Anfängen von GroupWise
+stammt. Dieses Format kann Evolution nicht verarbeiten; eine Nur-Text-Nachricht ist bei Evolution daher
+wirklich nur Text. Sinnvoller ist das HTML-Format, der heutige Standard für E-Mail. Stellen Sie unter
+<span class="menu">Bearbeiten → Einstellungen → Editoreinstellungen</span> die Auswahl
+<span class="menu">Nachrichten formatieren als</span> auf <b>HTML</b>. Dann fügt Evolution die Signatur mit
+Formatierung und Bildern ein, so wie GroupWise sie speichert. Schreiben Sie dagegen im Format „Einfacher
+Text“, fügt Evolution die Textfassung der Signatur ein, und die bleibt auch dann reiner Text, wenn Sie das
+Format in der Auswahl über dem Nachrichtentext nachträglich auf HTML umschalten; erst eine erneute
+Auswahl der Signatur (zum Beispiel „Keine“ und dann wieder die Signatur) holt die HTML-Fassung.</div>
+
+<div class="note"><b>Hinweis:</b> Signierte oder verschlüsselte Nachrichten (S/MIME, PGP) können nicht über
+GroupWise versendet werden, weil der POA die Nachricht für die Empfänger selbst zusammenbaut. Evolution
+meldet das beim Senden.</div>
+
+<h2 id="mail-papierkorb">4.3&nbsp;&nbsp;Löschen und Papierkorb</h2>
+<p>Gelöschte Nachrichten wandern in den GroupWise-Papierkorb, wie im GroupWise-Client.</p>
+<ul>
+	<li><b>Wiederherstellen</b>: Markieren Sie Nachrichten im Papierkorb und wählen Sie
+		<span class="menu">Wiederherstellen</span> ganz oben im Kontextmenü oder unter
+		<span class="menu">Bearbeiten → Wiederherstellen</span>. Die Nachrichten kehren in die Ordner zurück,
+		aus denen sie gelöscht wurden. Existiert ein Ordner nicht mehr, kommen sie in die Mailbox.
+		(Benötigt Evolution 3.56.)</li>
+	<li><b>Papierkorb leeren</b> (Kontextmenü des Papierkorbs bzw. des Kontos,
+		<span class="menu">Papierkorb leeren</span>) löscht endgültig, was in keinem anderen Ordner mehr liegt. Nachrichten,
+		die noch in einem anderen Ordner liegen (weil nur eine Kopie gelöscht wurde), verlassen lediglich
+		den Papierkorb und bleiben in ihren Ordnern erhalten.</li>
+	<li><b>Endgültig löschen</b> (<span class="menu">Umschalt+Entf</span> bzw. Löschen und Bereinigen)
+		entfernt eine Nachricht ohne Umweg über den Papierkorb aus allen Ordnern.</li>
+</ul>
+
+<h2 id="mail-beschriftungen">4.4&nbsp;&nbsp;Beschriftungen und Kategorien</h2>
+<p>GroupWise-Kategorien erscheinen in Evolution als <b>Beschriftungen</b>. Die vier vordefinierten
+Kategorien von GroupWise entsprechen Evolutions Standard-Beschriftungen:</p>
+<table>
+	<tr><th>GroupWise</th><th>Evolution</th></tr>
+	<tr><td>Urgent (Dringend)</td><td>Wichtig</td></tr>
+	<tr><td>Personal (Persönlich)</td><td>Persönlich</td></tr>
+	<tr><td>Follow-up (Nachverfolgung)</td><td>Zu erledigen</td></tr>
+	<tr><td>Low priority (Niedrige Priorität)</td><td>Später</td></tr>
+</table>
+<ul>
+	<li>Ihre <b>eigenen Kategorien</b> werden beim Verbinden mit ihrer GroupWise-Farbe in Evolutions
+		Beschriftungsliste aufgenommen (<span class="menu">Bearbeiten → Einstellungen →
+		E-Mail-Einstellungen → Beschriftungen</span>). Kategorien, die in GroupWise ausgeblendet sind,
+		bleiben draußen.</li>
+	<li>Setzen oder entfernen Sie eine Beschriftung (Kontextmenü <span class="menu">Beschriftung</span>),
+		wird die Kategorie in GroupWise gesetzt bzw. entfernt. Eine Beschriftung, die GroupWise noch nicht
+		als Kategorie kennt – etwa „Arbeit“ –, wird dort als neue Kategorie angelegt.</li>
+	<li>Im GroupWise-Client gesetzte Kategorien erscheinen beim nächsten Abgleich in Evolution.</li>
+</ul>
+
+<h3>Folgenachricht und Jobliste</h3>
+<p>Was Evolution „Folgenachricht“ nennt, ist keine eigene Nachricht, sondern eine <b>Markierung zur
+Nachverfolgung</b> an einer vorhandenen Nachricht (englisch „Follow-Up“: nachfassen, sich noch darum
+kümmern), wahlweise mit Fälligkeitsdatum. Die Nachrichtenliste zeigt sie mit einer Fahne, erledigte mit
+einem Haken. Genau das ist in GroupWise die <b>Jobliste</b>, und Evolution gleicht beides in beide
+Richtungen ab:</p>
+<ul>
+	<li><span class="menu">Als Folgenachricht markieren …</span> setzt die Nachricht auf die Jobliste, mit dem
+		dort gewählten Fälligkeitsdatum (<span class="menu">Fällig am</span>). Die Nachricht bleibt in ihrem
+		Ordner; im GroupWise-Client erscheint sie zusätzlich in der Jobliste.</li>
+	<li><span class="menu">Als abgeschlossen markieren</span> hakt sie in der Jobliste als erledigt ab;
+		wird der Haken im GroupWise-Client wieder entfernt, ist sie in Evolution wieder offen.</li>
+	<li><span class="menu">Markierung löschen</span> nimmt sie von der Jobliste; die Nachricht selbst
+		bleibt erhalten.</li>
+	<li>Umgekehrt zeigt Evolution Nachrichten, die im GroupWise-Client auf die Jobliste gesetzt wurden,
+		als markiert, mit Fälligkeit und Erledigt-Zustand. Den Text der Markierung („Folgenachricht“,
+		„Antworten“ …) kennt GroupWise nicht; er bleibt nur in Evolution.</li>
+</ul>
+<p>Markierungen, die Sie schon vor Version 0.8.0 in Evolution gesetzt hatten, überträgt Evolution beim
+ersten Abgleich auf die Jobliste.</p>
+
+<h2 id="mail-junk">4.5&nbsp;&nbsp;Junk-Mail</h2>
+<p>GroupWise sortiert unerwünschte Internet-Mail selbst: nach einer <b>Junk-Liste</b> (Mails kommen in den
+Ordner „Junkmail“), einer <b>Blockliste</b> (Mails werden gar nicht zugestellt) und einer
+<b>Vertrauensliste</b> (Mails sind nie Junk, sie hat Vorrang). Einträge sind E-Mail-Adressen oder
+Internet-Domains. Für interne Mail aus dem GroupWise-System gelten die Listen nicht.</p>
+<ul>
+	<li><b>Als unerwünscht markieren</b> (Kontextmenü <span class="menu">Als unerwünscht markieren</span> oder
+		<span class="menu">Strg+J</span>): Die Nachricht wandert in den Ordner „Junkmail“, und ihr
+		Absender kommt auf die Junk-Liste von GroupWise (und von der Vertrauensliste).</li>
+	<li><b>Als erwünscht markieren</b> (Kontextmenü <span class="menu">Als erwünscht markieren</span> oder
+		<span class="menu">Umschalt+Strg+J</span>) im Ordner „Junkmail“: Die Nachricht kehrt in die
+		Mailbox zurück, und ihr Absender kommt auf die Vertrauensliste (und von Junk- und Blockliste).</li>
+	<li>Evolution zeigt keinen zusätzlichen, eigenen Junk-Ordner mehr; Nachrichten, die Evolutions eigene
+		Junk-Prüfung erkennt, werden nur verschoben, die Listen bleiben unverändert.</li>
+</ul>
+<p>Wie im GroupWise-Client können Sie auch gezielt eine Adresse oder eine ganze Domain einordnen: Das
+Kontextmenü einer Nachricht hat, direkt unter Evolutions eigenen Einträgen, das Untermenü
+<span class="menu">GroupWise-Junkmail</span> mit</p>
+<ul>
+	<li><span class="menu">Sender als verbürgt einstufen …</span> – auf die Vertrauensliste; die Nachricht
+		kommt aus „Junkmail“ zurück in die Mailbox,</li>
+	<li><span class="menu">Sender als Junk einstufen …</span> – auf die Junk-Liste; die Nachricht kommt in
+		den Ordner „Junkmail“,</li>
+	<li><span class="menu">Sender blockieren …</span> – auf die Blockliste; künftige Mail wird nicht mehr
+		zugestellt, die Nachricht kommt in den Ordner „Junkmail“,</li>
+	<li><span class="menu">Junkmail-Einstellungen …</span> – öffnet die GroupWise-Einstellungen des Kontos
+		auf der Registerkarte „Junkmail“.</li>
+</ul>
+<p>Ein Dialog fragt jeweils, ob nur die Adresse oder die ganze Domain (mit ihren Subdomains) eingetragen
+wird. In den Ordnern eines Proxy-Kontos (Abschnitt 4.8) wirkt das Untermenü auf die Listen des anderen
+Postfachs; dafür braucht es das Proxy-Recht „Einstellungen, Regeln und Ordner ändern“.</p>
+<p>Darunter steht <span class="menu">Absender zum Adressbuch hinzufügen</span> (in Evolution sonst nur im
+Menü <span class="menu">Nachricht</span>): Ein Dialog lässt das Zieladressbuch wählen, über
+<span class="menu">Vollständig bearbeiten</span> ergänzen Sie weitere Angaben. Steht die Einstellung
+„Mail von Absendern, die in keinem persönlichen Adressbuch stehen, ist Junk“, gilt ein Absender in einem
+Ihrer persönlichen GroupWise-Adressbücher damit als erwünscht.</p>
+<p>Die Einstellungen und Listen selbst bearbeiten Sie im Fenster <b>GroupWise-Einstellungen</b>, das Sie
+über das Kontextmenü des GroupWise-Kontos in der Ordnerliste öffnen
+(<span class="menu">GroupWise-Einstellungen …</span>). Auf der Registerkarte <b>Junkmail</b> können Sie</p>
+<figure><img src="Einstellungen-Junkmail.png" alt="GroupWise-Einstellungen, Registerkarte Junkmail" style="width: 13cm"><figcaption>GroupWise-Einstellungen, Registerkarte Junkmail</figcaption></figure>
+<ul>
+	<li>Junk-Liste und Blockliste ein- oder ausschalten,</li>
+	<li>Mails und Termine von Absendern, die in keinem persönlichen Adressbuch stehen, als Junk einstufen,</li>
+	<li>Junk-Mail nach einer Anzahl Tage automatisch löschen,</li>
+	<li>die drei Listen ansehen und Einträge hinzufügen oder entfernen,</li>
+	<li>Einträge über das Kontextmenü einer Liste in eine der anderen verschieben
+		(<span class="menu">Auf die Junk-Liste verschieben</span>, <span class="menu">Auf die Blockliste
+		verschieben</span>, <span class="menu">Auf die Vertrauensliste verschieben</span>).</li>
+</ul>
+<p>Mit <span class="menu">OK</span> werden die Änderungen an GroupWise übertragen und gelten dann für alle
+Programme, auch den GroupWise-Client. Den Ordner „Junkmail“ legt GroupWise an, sobald die
+Junk-Mail-Verwaltung eingeschaltet ist.</p>
+
+<h2 id="mail-suche">4.6&nbsp;&nbsp;Suchergebnisordner</h2>
+<p>Suchergebnisordner von GroupWise (zum Beispiel „Alle Mails“) zeigt Evolution als Ordner an. Löschen
+und Verschieben wirken in dem Ordner, in dem die Nachricht wirklich liegt; in einen Suchergebnisordner
+selbst kann nichts verschoben werden. Diese Ordner werden höchstens alle 15 Minuten abgeglichen und
+nicht für den Offline-Betrieb kopiert.</p>
+<div class="note"><b>Grenze:</b> Über SOAP liefert der POA nur einen Teil der Treffer eines
+Suchergebnisordners (im Test gut 4000 von über 60&nbsp;000). Für vollständige Suchen verwenden Sie die
+Suche von Evolution oder Evolutions eigene Suchordner (<span class="menu">Bearbeiten →
+Suchordner</span>).</div>
+
+<h2 id="mail-offline">4.7&nbsp;&nbsp;Offline arbeiten</h2>
+<p>Ordnerstruktur und Nachrichtenliste bleiben auch ohne Verbindung sichtbar, ebenso bereits geöffnete
+Nachrichten. Mit der Kontooption „Ordnerinhalte für den Offline-Betrieb lokal kopieren“ oder der
+gleichnamigen Ordnereigenschaft lädt Evolution die Nachrichten vorab. Änderungen, die offline entstehen
+(gelesen, Beschriftungen), werden beim nächsten Verbinden übertragen.</p>
+
+<h2 id="mail-proxy">4.8&nbsp;&nbsp;Proxy-Zugriff auf andere Postfächer</h2>
+<p>Hat Ihnen ein anderer Benutzer im GroupWise-Client Proxy-Rechte auf sein Postfach gegeben, können Sie
+es in Evolution als <b>Proxy-Konto</b> neben Ihrem eigenen Konto öffnen. Der GroupWise-Client schaltet dafür
+das ganze Fenster auf das andere Postfach um; in Evolution stehen beide Postfächer gleichzeitig in der
+Ordnerliste. Name und Ordner eines Proxy-Kontos erscheinen in <b>grauer Schrift</b>. Zum Proxy-Konto gehören
+auch die Kalender (mit Unterkalendern), Aufgaben- und Notizlisten und die persönlichen Adressbücher des
+anderen Benutzers; sie stehen in den jeweiligen Ansichten unter der Überschrift des Proxy-Kontos.</p>
+<p>So richten Sie ein Proxy-Konto ein:</p>
+<ol>
+	<li>Klicken Sie in der Ordnerliste mit der rechten Maustaste auf Ihr GroupWise-Konto und wählen Sie
+		<span class="menu">GroupWise-Einstellungen …</span>.</li>
+	<li>Die Registerkarte <b>Proxy-Konten</b> listet alle Benutzer, die Ihnen Proxy-Rechte gegeben haben.
+		Die Spalte „In Evolution“ zeigt, für wen es schon ein Konto gibt.</li>
+	<li>Wählen Sie den Benutzer aus und klicken Sie auf <span class="menu">Als Konto einrichten</span>
+		(bzw. <span class="menu">Konto entfernen</span>). Mit <span class="menu">OK</span> legt Evolution das
+		Konto an oder entfernt es.</li>
+</ol>
+<figure><img src="Einstellungen-Proxy-Konten.png" alt="GroupWise-Einstellungen, Registerkarte Proxy-Konten" style="width: 13cm"><figcaption>GroupWise-Einstellungen, Registerkarte Proxy-Konten</figcaption></figure>
+<p>Ein Proxy-Konto heißt „<i>Name</i> (Proxy)“ und ist ein eigenständiges Konto: Sie können es unter
+<span class="menu">Bearbeiten → Einstellungen → E-Mail-Konten</span> umbenennen, deaktivieren oder
+entfernen – mit seinen Kalendern und Adressbüchern –, ohne Ihr eigenes Konto zu berühren. Es meldet sich mit Ihrem eigenen Passwort als Proxy am
+anderen Postfach an; beim Einrichten legt Evolution Ihr Passwort dafür auch für das Proxy-Konto im
+Schlüsselbund ab. Ändern Sie Ihr GroupWise-Passwort, fragt Evolution beim Proxy-Konto einmal danach. Zum
+Konto gehört eine Absenderidentität mit Namen und Adresse des anderen Benutzers:</p>
+<ul>
+	<li><b>Lesen</b>: alle Ordner des anderen Postfachs, wie beim eigenen Konto.</li>
+	<li><b>Kalender</b>: Die Kalender, Aufgaben- und Notizlisten des Proxy-Kontos sind anfangs <b>nicht
+		angekreuzt</b>, also nicht sichtbar; kreuzen Sie in der Kalenderliste an, was Sie sehen möchten –
+		zum Beispiel die Ressource eines Besprechungsraums. Hat der andere Benutzer Ihnen das Schreibrecht für
+		Termine (bzw. Aufgaben, Erinnerungsnotizen) gegeben, können Sie darin Einträge anlegen, ändern und
+		löschen; sonst nur lesen. Erinnerungen für seine Termine erhalten Sie nicht.</li>
+	<li><b>Adressbücher</b>: seine persönlichen Adressbücher (lesen und schreiben), ohne
+		Autovervollständigung beim Schreiben; das GroupWise-Adressbuch haben Sie ja schon im eigenen
+		Konto.</li>
+	<li><b>Senden</b>: Wählen Sie beim Schreiben die Identität des Proxy-Kontos als Absender. Die Nachricht
+		geht über die Proxy-Anmeldung im Namen des anderen Benutzers hinaus, wie im GroupWise-Client, und
+		liegt danach in dessen Ausgangsnachrichten.</li>
+	<li><b>Rechte</b>: Es gelten die Rechte, die der andere Benutzer Ihnen gegeben hat. Ohne Schreibrecht
+		für Mail ist das Konto schreibgeschützt (kein Verschieben, Löschen, Senden, Gelesen-Status). Ohne
+		Leserecht für Mail verbindet es sich nicht und meldet das.</li>
+	<li><b>Einstellungen</b>: Mit dem Proxy-Recht „Einstellungen, Regeln und Ordner ändern“ bearbeiten Sie
+		über das Kontextmenü des Proxy-Kontos (<span class="menu">GroupWise-Einstellungen …</span>) die
+		Abwesenheit und die Junk-Mail-Einstellungen des anderen Postfachs, und das Untermenü
+		<span class="menu">GroupWise-Junkmail</span> wirkt auf dessen Listen.</li>
+	<li>Nimmt der andere Benutzer die Proxy-Rechte zurück, steht das Konto auf der Registerkarte mit dem
+		Vermerk „Zugriff nicht mehr gewährt“; entfernen Sie es dort.</li>
+	<li>Proxy-Konten aus älteren Versionen (0.3, 0.4) führt die Registerkarte mit dem Vermerk „Konto wird mit
+		OK neu eingerichtet“; mit <span class="menu">OK</span> werden sie in der neuen Form angelegt.</li>
+</ul>
+<p>Die Kalender anderer Benutzer, die Sie im GroupWise-Client als Proxy-Kalender hinzugefügt haben,
+erscheinen unter Ihrem eigenen Konto (siehe Abschnitt 5.1) – außer für Benutzer, für die Sie ein
+Proxy-Konto eingerichtet haben: deren Kalender stehen dann nur beim Proxy-Konto.</p>
+
+<!-- ============================================================ -->
+<h1 id="kalender">5&nbsp;&nbsp;Kalender</h1>
+
+<h2 id="kal-liste">5.1&nbsp;&nbsp;Die Kalender eines Kontos</h2>
+<p>In der Kalenderansicht stehen unter dem Namen des Kontos, in dieser Reihenfolge:</p>
+<ol>
+	<li><b>Kalender</b> – der GroupWise-Hauptkalender. Er zeigt die Termine, die in keinem Unterkalender
+		liegen.</li>
+	<li><b>Ihre Unterkalender</b> (zum Beispiel „Privat“ oder „Schulungen“) – jeweils als eigener Kalender,
+		in der Farbe, die er in GroupWise hat. Ein Termin aus „Privat“ steht in Evolution nur in „Privat“,
+		auch wenn der GroupWise-Client ihn zusätzlich im Hauptkalender anzeigt.</li>
+	<li><b>Proxy-Kalender</b> – die Kalender anderer Benutzer, die Ihnen Proxy-Rechte eingeräumt haben
+		und die Sie im GroupWise-Client als Proxy-Kalender hinzugefügt haben. Evolution meldet sich dafür mit
+		Ihrem Passwort als Proxy am anderen Postfach an. Den Besitzer erkennt es an seiner eindeutigen
+		Kennung, auch wenn der Kalender oder der Benutzer umbenannt wurde. Eine Besprechung, an der Sie
+		selbst ebenfalls teilnehmen, zeigt Evolution wie der GroupWise-Client nur einmal: in Ihrem eigenen
+		Kalender bzw. Unterkalender und in dessen Farbe, nicht noch einmal im Proxy-Kalender. Fahren Sie mit
+		der Maus über einen Termin eines Proxy-Kalenders, nennt die Kurzinfo den Eigentümer als
+		„Organisator“. Im Termin-Editor erscheint dieser Eintrag nicht; der Termin bleibt ein normaler
+		Termin.</li>
+	<li><b>Freigegebene Kalender</b> – Kalender, die andere Benutzer für Sie freigegeben haben, mit dem
+		Namen des Besitzers in Klammern.</li>
+</ol>
+<p>Proxy-Kalender und freigegebene Kalender sind derzeit <b>nur lesbar</b>; für sie gibt es auch keine
+Erinnerungen. Abonnierte Internet-Kalender, die GroupWise selbst abruft, werden nicht angezeigt – solche
+Kalender kann Evolution bei Bedarf direkt abonnieren.</p>
+<p>Evolution gleicht die Kalender alle 15 Minuten mit dem Server ab, sodass Änderungen aus dem
+GroupWise-Client von selbst erscheinen. Das Intervall können Sie in den Eigenschaften eines Kalenders
+ändern.</p>
+
+<h2 id="kal-termine">5.2&nbsp;&nbsp;Termine und Serien</h2>
+<ul>
+	<li>Termine mit Ort, Beschreibung, Status (belegt, vorläufig, frei, abwesend) und Erinnerung werden in
+		beide Richtungen übertragen. Zeiten stehen in Ihrer Zeitzone.</li>
+	<li><b>Ganztägige Termine</b> reichen wie in GroupWise über ganze Tage.</li>
+	<li><b>Erinnerungen</b>: GroupWise kennt eine Erinnerung je Termin, vor Beginn. Evolution zeigt sie für
+		den Hauptkalender und Ihre Unterkalender an.</li>
+	<li><b>Serien</b>: GroupWise speichert keine Wiederholungsregel, sondern legt jeden Termin einer Serie
+		einzeln an. Evolution zeigt sie daher als einzelne Termine; Änderungen und Löschen betreffen den
+		jeweiligen Termin. Eine neue Serie (täglich, wöchentlich, monatlich, jährlich) legen Sie in Evolution
+		wie gewohnt mit einer Wiederholung an.</li>
+	<li>Ein neuer Termin in einem Unterkalender wird direkt in diesem Unterkalender angelegt, bei Serien
+		jeder einzelne Termin.</li>
+</ul>
+
+<h2 id="kal-besprechungen">5.3&nbsp;&nbsp;Besprechungen und Einladungen</h2>
+<p>Besprechungen verschickt und beantwortet GroupWise selbst. Evolution sendet für diese Kalender keine
+eigenen Einladungs-E-Mails.</p>
+<ul>
+	<li><b>Einladen</b>: Legen Sie einen Termin mit Teilnehmern an und senden Sie ihn. Die Teilnehmer
+		erhalten eine GroupWise-Einladung; ihre Antworten erscheinen am Termin. Wie im GroupWise-Client
+		stehen Sie selbst – genauer: der Inhaber des gewählten Kalenders – bei einer neuen Besprechung
+		bereits als Teilnehmer in der Liste, mit dem Status „Angenommen“. Wählen Sie oben einen anderen
+		GroupWise-Kalender, tauscht Evolution den Eintrag aus. Lassen Sie den Eintrag stehen: An Ihrer
+		eigenen Kopie der Besprechung hängen Ihre Erinnerung, Ihre Kategorien und Ihre Reisezeit
+		(<a href="#kal-reisezeit">5.7</a>). Ohne ihn hat die Besprechung keine Reisezeit – und wie im
+		GroupWise-Client erscheint sie dann auch nicht in Ihrem Kalender, sondern nur in den
+		Ausgangsnachrichten. Eine Annahmeregel für eigene Termine (z.&nbsp;B. „eigenen Termin akzeptieren“)
+		greift wie beim GroupWise-Client.</li>
+	<li><b>Ändern</b>: Eine geänderte Besprechung wird erneut an die Teilnehmer gesendet. Ihre persönlichen Angaben – Erinnerung und ein für sich
+		selbst geänderter Betreff – betreffen nur Ihre eigene Kopie und lösen keinen neuen Versand aus.</li>
+	<li><b>Löschen und Zurückziehen</b>: Löschen Sie eine Besprechung, die Sie selbst angesetzt haben, fragt
+		Evolution wie der GroupWise-Client nach. Im Feld <span class="menu">Löschungsgrund</span> können Sie
+		einen Kommentar zum Zurückziehen eingeben.
+		<span class="menu">Löschen und benachrichtigen</span> zieht die Besprechung auch aus den Postfächern
+		der Teilnehmer im GroupWise-System zurück; wer sie schon geöffnet oder angenommen hatte, erhält von
+		GroupWise eine Mitteilung mit Ihrem Kommentar. <span class="menu">Ohne Benachrichtigung löschen</span>
+		entfernt sie nur bei Ihnen; bei den Teilnehmern bleibt sie stehen. Bei Besprechungen, die schon
+		vorbei sind, bietet Evolution die Benachrichtigung nicht an.</li>
+	<li><b>Antworten</b>: Einladungen beantworten Sie in der Nachrichtenansicht (Annehmen, Vorläufig,
+		Ablehnen) oder im Kalender über das Kontextmenü des Termins (<span class="menu">UAwg senden</span>). Die Antwort geht über GroupWise an den
+		Organisator. Unbeantwortete Einladungen erscheinen im Kalender fett,
+		vorläufig angenommene kursiv, abgelehnte durchgestrichen.</li>
+	<li><b>Teilnehmer in der Kurzinfo</b>: Fahren Sie mit der Maus über eine Besprechung, listet die
+		Kurzinfo unter „Kommentare“ die Teilnehmer mit ihrer Antwort (angenommen, abgelehnt, vorläufig,
+		noch keine Antwort). Bei mehr als acht Teilnehmern stehen dort nur die Benutzer, für die Sie als
+		Proxy arbeiten; „… (+5)“ am Ende sagt, wie viele weitere Teilnehmer es gibt.</li>
+	<li><b>Ressourcen</b>: Räume und andere GroupWise-Ressourcen laden Sie wie Teilnehmer ein, auch über
+		den Abschnitt „Ressourcen“ im Dialog hinter der Schaltfläche <span class="menu">Teilnehmer …</span>; GroupWise erhält sie
+		wie vom GroupWise-Client als Teilnehmer (nicht als Blindkopie), mit ihrem Namen. Laden Sie eine
+		Ressource vom Typ Ort ein (einen Raum) und hat die Besprechung noch keinen Ort, trägt Evolution
+		wie der GroupWise-Client den Namen der Ressource als Ort ein – schon beim Schließen des
+		Teilnehmer-Dialogs. Andere Ressourcen (z.&nbsp;B. ein Beamer) ändern den Ort nicht.</li>
+	<li><b>Frei/Belegt</b>: Die Verfügbarkeit interner Teilnehmer fragt Evolution bei GroupWise ab
+		(Registerkarte „Planung“ im Termin-Editor).</li>
+	<li><b>Überschneidungen</b>: Speichern Sie einen neuen Termin oder einen mit geänderter Zeit, prüft
+		Evolution wie der GroupWise-Client, ob er – samt seiner Vorbereitungs- und Reisezeit – belegte Zeit
+		in Ihren Kalendern (Hauptkalender und Unterkalender) überschneidet, auch die Reisezeit anderer
+		Termine. Dann fragt es mit einer Liste der betroffenen Termine nach; mit
+		<span class="menu">Trotzdem speichern</span> speichern Sie, mit <span class="menu">Abbrechen</span>
+		kehren Sie in den Editor zurück. Termine mit „Frei“, abgelehnte und ganztägige Termine zählen nicht.</li>
+</ul>
+
+<h2 id="kal-verschieben">5.4&nbsp;&nbsp;Termine zwischen Kalendern verschieben</h2>
+<p>Einen Termin verschieben Sie zwischen dem Hauptkalender und Ihren Unterkalendern auf zwei Wegen:</p>
+<ul>
+	<li>im Kontextmenü des Termins mit <span class="menu">In Kalender verschieben …</span>, oder</li>
+	<li>im Termin-Editor durch Auswahl eines anderen Kalenders oben und Speichern.</li>
+</ul>
+<p>Der Termin bleibt dabei derselbe GroupWise-Termin; er wird auf dem Server verschoben, nicht neu
+angelegt. Eine Besprechung wird dabei weder zurückgezogen noch erneut versendet. Kopieren
+(<span class="menu">In Kalender kopieren …</span>) legt dagegen einen neuen, unabhängigen Termin an.</p>
+<div class="note"><b>Hinweis:</b> Das Ziehen eines Termins auf einen Kalender in der Seitenleiste
+funktioniert in Evolution nicht zuverlässig – unabhängig von GroupWise, auch bei lokalen Kalendern.
+Verwenden Sie das Kontextmenü oder den Editor.</div>
+
+<h2 id="kal-kategorien">5.5&nbsp;&nbsp;Kategorien</h2>
+<p>Die GroupWise-Kategorien eines Termins erscheinen in Evolution als Kategorien des Termins, mit den
+gleichen Namen wie die Beschriftungen bei E-Mail (die vordefinierten also als Wichtig, Persönlich, Zu
+erledigen, Später). Im Termin-Editor blenden Sie das Kategorienfeld mit
+<span class="menu">Ansicht → Kategorien</span> ein. Eine Kategorie, die GroupWise noch nicht kennt, wird
+dort angelegt. Bei Besprechungen gehören Kategorien zu Ihrer eigenen Kopie; sie lösen keinen neuen
+Versand aus.</p>
+<p>Anders als im GroupWise-Client färben Kategorien Termine in Evolution nicht ein – die Farbe kommt
+immer vom Kalender.</p>
+
+<h2 id="kal-eigenschaften">5.6&nbsp;&nbsp;Farbe und Eigenschaften</h2>
+<p>Über <span class="menu">Eigenschaften</span> im Kontextmenü eines Kalenders ändern Sie Farbe und
+angezeigten Namen sowie das Abgleichintervall. Die Farbe aus GroupWise wird nur beim ersten Anlegen
+übernommen; Ihre Änderungen in Evolution bleiben erhalten. Die Reihenfolge der Kalender (Hauptkalender,
+Unterkalender, Proxy-Kalender, freigegebene Kalender) legt das Modul beim ersten Anlegen fest. Neue
+GroupWise-Kalender können hier nicht angelegt werden – sie erscheinen automatisch, sobald sie in
+GroupWise existieren.</p>
+
+<h2 id="kal-reisezeit">5.7&nbsp;&nbsp;Vorbereitungs- und Reisezeit</h2>
+<p>Wie im GroupWise-Client kann ein Termin eine Vorbereitungs- bzw. Reisezeit davor und danach haben. GroupWise
+belegt diese Zeiten mit eigenen Terminen „Before: <i>Betreff</i>“ und „After: <i>Betreff</i>“, und so zeigt sie
+auch Evolution – als belegte Zeit direkt vor und nach dem Termin.</p>
+<p><b>Festlegen:</b> Im Termin-Editor eines GroupWise-Kalenders gibt es die Registerkarte
+<span class="menu">Reisezeit</span> mit dem roten Auto – dem Symbol, mit dem der GroupWise-Client die
+Reisezeit aufruft. Dort geben Sie Stunden und Minuten ein, getrennt für <span class="menu">Vor dem Termin</span>
+und <span class="menu">Nach dem Termin</span>; die Minuten springen mit den Pfeilen in Schritten von 5.
+Ist <span class="menu">Reisezeiten vor/nach Termin sind gleich</span> angekreuzt, übernimmt die Zeit danach
+die Zeit davor. Beim Speichern legt GroupWise die Termine „Before:“ und „After:“ an oder passt sie an.
+Setzen Sie eine Zeit auf 0, verschwindet der zugehörige Termin wieder – wie im GroupWise-Client.
+Bei einer neuen Besprechung setzt Evolution die Reisezeit an Ihrer eigenen Kopie, sobald diese beim
+nächsten Abgleich – gleich nach dem Senden – vorliegt; die Termine „Before:“ und „After:“ erscheinen
+daher einen Moment später.</p>
+<ul>
+	<li>Die Reisezeit gehört <b>nur Ihnen</b>: Laden Sie zu einer Besprechung ein, erhalten die Teilnehmer
+		sie nicht. Umgekehrt können Sie auch bei einer erhaltenen Einladung Ihre eigene Reisezeit eintragen.</li>
+	<li>Verschieben, ändern oder löschen Sie den <b>Termin selbst</b>, zieht GroupWise die Vorbereitungs- und
+		Reisezeit mit: sie wandert mit, heißt wie der Termin und verschwindet mit ihm. Das gilt auch für
+		<span class="menu">In Kalender verschieben …</span>; der bisherige Kalender gibt die Termine
+		„Before:“ und „After:“ dabei gleich mit ab.</li>
+	<li>Verschieben Sie einen der Termine „Before:“ oder „After:“, verschiebt Evolution stattdessen den ganzen
+		Termin um dieselbe Zeit. Ziehen Sie ihn länger oder kürzer, wird das die neue Vorbereitungs- bzw.
+		Reisezeit.</li>
+	<li>Löschen lassen sich die Termine „Before:“ und „After:“ nicht einzeln – Evolution meldet das. Die
+		Reisezeit entfernen Sie auf der Registerkarte <span class="menu">Reisezeit</span> des Termins selbst.
+		Bei den Terminen „Before:“ und „After:“ gibt es diese Registerkarte nicht.</li>
+</ul>
+
+<!-- ============================================================ -->
+<h1 id="aufgaben">6&nbsp;&nbsp;Aufgaben und Notizen</h1>
+<p>Aufgaben und Notizen des GroupWise-Kalenders stehen in Evolution in der Aufgabenliste
+<b>Aufgaben</b> und der Notizliste <b>Notizen</b> des Kontos.</p>
+<ul>
+	<li><b>Aufgaben</b>: Betreff, Beschreibung, Fälligkeitsdatum, Priorität und Erledigt-Status werden in
+		beide Richtungen übertragen. GroupWise kennt für Aufgaben nur Tage, keine Uhrzeiten, und keine
+		Erinnerungen. In GroupWise heißen Aufgaben „Jobs“.</li>
+	<li><b>Überfällige Aufgaben</b>: GroupWise schiebt den Beginn einer überfälligen, noch offenen Aufgabe
+		jeden Tag auf den aktuellen Tag weiter, damit sie im GroupWise-Client „heute“ erscheint; Evolution
+		zeigt sie genauso. Bei einer erledigten Aufgabe zeigt Evolution als Beginn den Tag, an dem sie
+		ursprünglich angelegt wurde – sonst läge ihr Beginn oft hinter der Fälligkeit.</li>
+	<li><b>Erledigte Aufgaben ausblenden</b>: Evolution zeigt erledigte Aufgaben durchgestrichen weiter an,
+		auch sehr alte. Unter <span class="menu">Bearbeiten → Einstellungen → Kalender und Aufgaben →
+		Anzeigen</span>, Abschnitt „Aufgabenliste“, blendet <span class="menu">Erledigte Aufgaben verbergen
+		nach … Tagen</span> sie aus (zum Beispiel nach 0 Tagen: sofort). Sie bleiben in GroupWise erhalten und
+		lassen sich dort wieder öffnen.</li>
+	<li><b>Notizen</b> (GroupWise-Erinnerungsnotizen) werden mit Datum und Text übertragen. Notizen in
+		Unterkalendern erscheinen ebenfalls in der Notizliste des Kontos.</li>
+</ul>
+
+<!-- ============================================================ -->
+<h1 id="adressbuecher">7&nbsp;&nbsp;Adressbücher</h1>
+<p>In der Kontaktansicht stehen unter dem Namen des Kontos:</p>
+<ul>
+	<li><b>GroupWise-Adressbuch</b> – das Systemadressbuch Ihres GroupWise-Systems, nur lesbar.</li>
+	<li><b>Häufige Kontakte</b> und Ihre <b>persönlichen Adressbücher</b> – lesen und schreiben: Kontakte
+		anlegen, ändern und löschen wird zu GroupWise übertragen.</li>
+</ul>
+<p>Die Adressbücher werden lokal vorgehalten, damit die <b>Autovervollständigung</b> beim Schreiben
+schnell ist und offline funktioniert. Sie ist für die GroupWise-Adressbücher eingeschaltet; in den
+Eigenschaften eines Adressbuchs können Sie das ändern.</p>
+
+<!-- ============================================================ -->
+<h1 id="grenzen">8&nbsp;&nbsp;Grenzen und Hinweise</h1>
+<table>
+	<tr><th style="width:35%">Thema</th><th>Stand</th></tr>
+	<tr><td>Kalender anderer Benutzer</td><td>Proxy-Kalender unter dem eigenen Konto und freigegebene
+		Kalender sind nur lesbar; die Kalender eines Proxy-Kontos sind nach den gewährten Rechten
+		beschreibbar.</td></tr>
+	<tr><td>Freigegebene Mailordner und Adressbücher</td><td>werden noch nicht angezeigt.</td></tr>
+	<tr><td>Proxy-Konten</td><td>Neue Nachrichten werden bei jedem Abgleich über die ganze Ordnerliste ermittelt, da der
+		POA in Proxy-Sitzungen keine Änderungsabfrage beantwortet.</td></tr>
+	<tr><td>Signierte oder verschlüsselte Nachrichten</td><td>können nicht über GroupWise gesendet werden;
+		empfangene werden angezeigt.</td></tr>
+	<tr><td>Suchergebnisordner</td><td>zeigen über SOAP nur einen Teil der Treffer (siehe 4.6).</td></tr>
+	<tr><td>Serientermine</td><td>erscheinen als einzelne Termine, da GroupWise keine Regel speichert.</td></tr>
+	<tr><td>Abonnierte Internet-Kalender</td><td>werden ausgelassen.</td></tr>
+	<tr><td>Ziehen auf die Kalenderliste</td><td>in Evolution nicht zuverlässig; Kontextmenü oder Editor
+		verwenden.</td></tr>
+	<tr><td>Wiederherstellen im Papierkorb</td><td>erst ab Evolution 3.56.</td></tr>
+</table>
+<p>Freigaben – Ordner oder Kalender freigeben und Freigaben anderer annehmen – sind noch nicht umgesetzt.</p>
+
+<!-- ============================================================ -->
+<h1 id="fehlersuche">9&nbsp;&nbsp;Fehlersuche</h1>
+
+<h2>Verbindung und Anmeldung</h2>
+<ul>
+	<li><b>Zertifikatsfehler</b>: Bestätigen Sie die Rückfrage von Evolution mit
+		<span class="menu">Dauerhaft akzeptieren</span> (Kapitel 3, „Zertifikat des POA“). Meldet Evolution
+		die Verbindung trotzdem als unsicher, passt der Name im Zertifikat nicht zur Serveradresse des Kontos;
+		das muss die GroupWise-Administration beheben. Nach dem Hinterlegen einer CA starten Sie Evolution
+		und die Hintergrunddienste neu (<code>evolution --force-shutdown</code>).</li>
+	<li><b>Falsches Passwort</b>: Evolution fragt erneut. Ein im Schlüsselbund gespeichertes Passwort können
+		Sie in den Kontoeinstellungen ändern.</li>
+	<li><b>Server auf einem anderen Post Office</b>: Der POA leitet die Anmeldung von selbst an den richtigen
+		POA weiter.</li>
+</ul>
+
+<h2>Diagnose-Ausgaben</h2>
+<p>Starten Sie Evolution aus einem Terminal mit Diagnose-Ausgaben, um genauer zu sehen, was passiert:</p>
+<pre>G_MESSAGES_DEBUG=evolution-groupwise evolution 2&gt;&amp;1 | tee /tmp/evolution.log</pre>
+<p>Die Kalender- und Adressbuchdienste laufen im Hintergrund; ihre Ausgaben stehen im Systemjournal:</p>
+<pre>systemctl --user set-environment G_MESSAGES_DEBUG=evolution-groupwise
+evolution --force-shutdown
+journalctl --user -f | grep evolution-calen</pre>
+<div class="note"><b>Datenschutz:</b> Die Diagnose-Ausgaben können Betreffzeilen, Adressen und
+Kennungen enthalten. Prüfen Sie sie, bevor Sie sie weitergeben.</div>
+
+<h2>Werkzeug gw-cli</h2>
+<p>Das Kommandozeilenwerkzeug <code>gw-cli</code> (im Paket unter
+<span class="path">/usr/lib64/evolution-groupwise/</span> bzw. <span class="path">/usr/lib/…</span>)
+spricht direkt mit dem POA und hilft bei der Fehlersuche:</p>
+<pre>export GW_HOST=mail.firma.de GW_USER=benutzer     # Passwort wird abgefragt
+gw-cli login          # Anmeldung und Benutzerdaten
+gw-cli folders        # Ordnerliste, mit der Rolle der Kalender
+gw-cli items ORDNER-ID 20</pre>
+</body>
+</html>

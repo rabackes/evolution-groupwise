@@ -1,0 +1,112 @@
+evolution-groupwise (0.8.2) noble; urgency=medium
+
+  * Deleting an own meeting asks, as the GroupWise client does, whether
+    it is retracted from the attendees' mailboxes too, with a retraction
+    comment.
+
+ -- Rainer Backes <rbackes@bond.de>  Fri, 09 Oct 2026 11:20:00 +0200
+
+evolution-groupwise (0.8.1) noble; urgency=medium
+
+  * Rule editor: existing conditions show only the fields of their kind.
+  * Manual: screenshots of the GroupWise Settings, trusting the POA
+    certificate as the normal way, the CA for administrators.
+
+ -- Rainer Backes <rbackes@bond.de>  Wed, 30 Sep 2026 19:24:00 +0200
+
+evolution-groupwise (0.8.0) noble; urgency=medium
+
+  * Sent Items: Delivery Status… shows what happened at each recipient
+    (delivered, opened, deleted, accepted …); Retract… takes messages
+    back from the recipients; Resend… opens a message to send it anew
+    and asks whether the original is retracted.
+  * The follow-up flag of a mail is the GroupWise Tasklist, both ways,
+    with due date and completion.
+  * Tasks: a completed task starts on the day it was given.
+  * Junk Mail settings: the context menu of a list moves entries onto
+    the other lists.
+
+ -- Rainer Backes <rbackes@bond.de>  Wed, 30 Sep 2026 16:48:00 +0200
+
+evolution-groupwise (0.7.0) noble; urgency=medium
+
+  * Appointment editor: tab Travel Time with the red car of the GroupWise
+    client — preparation and travel time before and after an appointment;
+    set, changed and taken away as in the GroupWise client, the user's own
+    (not sent to attendees). Moving an appointment takes it along.
+  * New meetings have the owner of the calendar as an accepted attendee,
+    as in the GroupWise client; sent meetings show with their own copy.
+  * Saving an appointment warns about busy time it overlaps in the own
+    calendars, travel times included.
+  * Meetings the user takes part in show once, not again in proxy
+    calendars; the tooltip names the owner of proxy appointments and the
+    attendees' answers.
+  * Resources are invited like attendees, with their name; a place gives
+    a meeting without location its name as location.
+
+ -- Rainer Backes <rbackes@bond.de>  Wed, 30 Sep 2026 14:05:00 +0200
+
+evolution-groupwise (0.6.0) noble; urgency=medium
+
+  * GroupWise Settings: tab Rules — the rules of the mailbox with an editor
+    of the GroupWise client's scope (events, item types, conditions on the
+    client's fields, actions); run a rule now.
+  * Account options: Evolution runs the Startup/Exit and Open/Close Folder
+    rules, which the POA leaves to the client (off by default).
+
+ -- Rainer Backes <rbackes@bond.de>  Tue, 29 Sep 2026 23:45:00 +0200
+
+evolution-groupwise (0.5.0) noble; urgency=medium
+
+  * Proxy accounts as accounts of their own, with the other user's
+    calendars (unselected at first, writable by the granted rights), task
+    and memo lists and personal address books.
+  * GroupWise Settings: tab Proxy Access (who may open the own mailbox,
+    with the rights of the GroupWise client) and tab Signatures.
+  * Signatures: the GroupWise signatures in Evolution, edits go back to
+    GroupWise; the GroupWise default is the account's signature.
+  * Folder list: system folders first in the GroupWise order; shared
+    folders whose parent is gone are hidden.
+
+ -- Rainer Backes <rbackes@bond.de>  Tue, 29 Sep 2026 16:30:00 +0200
+
+evolution-groupwise (0.4.0) noble; urgency=medium
+
+  * GroupWise Settings window (account context menu) with the tabs
+    Out of Office, Junk Mail and Proxy Access; replaces the Junk Mail page
+    of the account editor.
+  * Junk mail submenu: trust, junk or block the sender or its domain.
+  * "Add Sender to Address Book" in the message context menu.
+  * Proxy accounts: other users' mailboxes as accounts of their own (grey),
+    reading and sending in their name with the granted rights.
+  * HTML bodies go out as UTF-8 (umlauts in the GroupWise client).
+  * System folders under their localized names.
+
+ -- Rainer Backes <rbackes@bond.de>  Tue, 29 Sep 2026 14:00:00 +0200
+
+evolution-groupwise (0.3.0) noble; urgency=medium
+
+  * Junk: the Junk Mail folder of GroupWise is Evolution's junk folder;
+    marking junk / not junk teaches GroupWise's junk and trust lists.
+  * Account editor page "Junk Mail" with the junk mail settings and lists.
+
+ -- Rainer Backes <rbackes@bond.de>  Mon, 28 Sep 2026 18:30:00 +0200
+
+evolution-groupwise (0.2.0) noble; urgency=medium
+
+  * Forward as attachment sends the GroupWise item itself.
+  * Subjects changed in GroupWise; SOAP API version 1.15.
+  * Trash: Restore, emptying drops still-linked messages.
+  * Subcalendars, proxy and shared calendars as calendars of their own;
+    moving appointments between them; properties dialog; calendar order.
+  * GroupWise categories as labels (mail) and categories (calendar).
+  * New series get the right number of appointments.
+
+ -- Rainer Backes <rbackes@bond.de>  Mon, 28 Sep 2026 17:30:00 +0200
+
+evolution-groupwise (0.1.0) noble; urgency=medium
+
+  * First package: mail, contacts, calendar, tasks and notes; account
+    assistant; German translation.
+
+ -- Rainer Backes <rbackes@bond.de>  Sun, 27 Sep 2026 18:28:53 +0200

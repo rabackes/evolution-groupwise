@@ -1,0 +1,30 @@
+Source: evolution-groupwise
+Section: mail
+Priority: optional
+Maintainer: Rainer Backes <rbackes@bond.de>
+Homepage: https://github.com/rabackes/evolution-groupwise
+Build-Depends: debhelper-compat (= 13),
+               cmake,
+               pkgconf,
+               gettext,
+               python3,
+               evolution-data-server-dev (>= 3.52),
+               libebook1.2-dev (>= 3.52),
+               evolution-dev (>= 3.52),
+               libsoup-3.0-dev,
+               libxml2-dev,
+               libical-dev
+Standards-Version: 4.6.2
+Rules-Requires-Root: no
+
+Package: evolution-groupwise
+Architecture: any
+Depends: ${shlibs:Depends}, ${misc:Depends}, evolution (>= 3.52), evolution-data-server (>= 3.52)
+Description: GroupWise mailboxes in Evolution
+ Access to GroupWise mailboxes from Evolution through the SOAP interface of
+ the GroupWise Post Office Agent: mail, address books, calendar, tasks and
+ notes, with invitations answered and sent by GroupWise itself.
+ .
+ Contains the Camel provider, the address book and calendar backends of
+ evolution-data-server, the collection backend of the source registry, the
+ account assistant page for Evolution and the command line tool gw-cli.
