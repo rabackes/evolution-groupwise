@@ -264,6 +264,19 @@ openssl x509 -in groupwise-ca.pem -noout -subject -fingerprint -sha256</pre>
 	<tr><td>Regeln für das Öffnen und Schließen von Ordnern ausführen</td><td>Ebenso für die Ereignisse
 		<i>Ordner öffnen</i> und <i>Ordner schließen</i>.</td></tr>
 </table>
+<div class="note"><b>Mehrere Rechner am selben Postfach:</b> Für die Abfrage der Änderungen legt Evolution im
+Postfach einen Merkzettel an, der zu genau einem Rechner gehört; sein Name enthält eine Kennung des Rechners
+(aus der Maschinen-ID des Systems) und Ihren Anmeldenamen. Greifen Sie von zwei Rechnern auf dasselbe
+Postfach zu, hat jeder seinen eigenen – das funktioniert. Problematisch sind <b>geklonte Rechner</b>
+(kopierte virtuelle Maschinen, ausgerollte Images): Sie haben dieselbe Maschinen-ID und nehmen sich
+gegenseitig die Änderungen weg, sodass sie bei jedem nur zum Teil ankommen; auch die Sofort-Meldung geht dann
+nur an einen von beiden. Geben Sie einem geklonten Rechner eine neue Maschinen-ID. Schalten Sie dazu
+vorher die Option in Evolution aus (dann entfernt Evolution den alten Merkzettel aus dem Postfach), setzen Sie
+als Administrator die Maschinen-ID neu, starten Sie den Rechner neu und schalten Sie die Option wieder ein:
+<pre>sudo rm -f /etc/machine-id /var/lib/dbus/machine-id
+sudo systemd-machine-id-setup</pre>
+Die Maschinen-ID verwenden auch andere Teile des Systems; setzen Sie sie am besten gleich nach dem Klonen
+neu, noch bevor Sie Evolution einrichten.</div>
 
 <h2 id="gw-einstellungen">GroupWise-Einstellungen</h2>
 <p>Einstellungen, die der GroupWise-Server selbst für Ihr Postfach hält, bearbeiten Sie im Fenster
@@ -859,7 +872,10 @@ Eigenschaften eines Adressbuchs können Sie das ändern.</p>
 		beschreibbar.</td></tr>
 	<tr><td>Freigegebene Mailordner und Adressbücher</td><td>werden noch nicht angezeigt.</td></tr>
 	<tr><td>Proxy-Konten</td><td>Neue Nachrichten werden bei jedem Abgleich über die ganze Ordnerliste ermittelt, da der
-		POA in Proxy-Sitzungen keine Änderungsabfrage beantwortet.</td></tr>
+		POA in Proxy-Sitzungen keine Änderungsabfrage beantwortet. Mit der Kontooption „Den Server alle …
+		Sekunden nach Änderungen im Postfach fragen“ erscheinen sie trotzdem sofort.</td></tr>
+	<tr><td>Geklonte Rechner</td><td>Zwei Rechner mit derselben Maschinen-ID stören sich bei der Abfrage der
+		Änderungen am selben Postfach gegenseitig (siehe Kontooptionen in Kapitel 3).</td></tr>
 	<tr><td>Signierte oder verschlüsselte Nachrichten</td><td>können nicht über GroupWise gesendet werden;
 		empfangene werden angezeigt.</td></tr>
 	<tr><td>Suchergebnisordner</td><td>zeigen über SOAP nur einen Teil der Treffer (siehe 4.6).</td></tr>

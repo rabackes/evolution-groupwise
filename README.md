@@ -148,6 +148,11 @@ in proxy sessions, which have no getQuickMessages. Other applications keep confi
 the interval over from the main account (`e-groupwise-proxy-options.c`: when the main account changes,
 when a proxy account is made, and at start).
 
+The key carries a hash of `/etc/machine-id`: two machines on one mailbox each have their own records, but
+*cloned* machines share the ID and take each other's records (and only one is told on the port). A clone
+needs a new machine ID (`systemd-machine-id-setup` after removing `/etc/machine-id`); the manual says how.
+A key whose machine is gone stays in the mailbox as a configuration; its records expire after a day.
+
 The calendar backend does the same in its process (the calendar factory), with a key of its own
 (`Evolution-calendar_…`, so that neither side takes the other's records) and the item types Appointment,
 Task and Note: one question per mailbox for all its calendars and lists, which are refreshed

@@ -156,6 +156,12 @@ angefasst wird nur der eigene Schlüssel. Die Proxy-Konten derselben Anmeldung �
 vom Hauptkonto (`e-groupwise-proxy-options.c`: wenn sich das Hauptkonto ändert, wenn ein Proxy-Konto angelegt
 wird, und beim Start).
 
+Der Schlüssel enthält einen Hash von `/etc/machine-id`: Zwei Rechner an einem Postfach haben je eigene
+Datensätze, *geklonte* Rechner aber dieselbe ID und nehmen sich die Datensätze gegenseitig weg (und nur einer
+bekommt die Meldung am Port). Ein Klon braucht eine neue Maschinen-ID (`systemd-machine-id-setup` nach dem
+Entfernen von `/etc/machine-id`); das Handbuch beschreibt es. Ein Schlüssel, dessen Rechner es nicht mehr
+gibt, bleibt als Konfiguration im Postfach; seine Datensätze verfallen nach einem Tag.
+
 Das Kalender-Backend macht dasselbe in seinem Prozess (der Calendar-Factory), mit einem eigenen Schlüssel
 (`Evolution-calendar_…`, damit sich beide Seiten die Datensätze nicht wegnehmen) und den Objekttypen
 Appointment, Task und Note: eine Abfrage je Postfach für alle seine Kalender und Listen, die abgeglichen

@@ -114,6 +114,15 @@ Unter `Bearbeiten → Einstellungen → E-Mail-Konten → Bearbeiten` finden Sie
 | Regeln für Starten und Beenden beim Start und Ende von Evolution ausführen | Siehe Abschnitt „Regeln“: Evolution lässt GroupWise die Regeln mit dem Ereignis *Starten* bzw. *Beenden* ausführen. Aus, solange Sie es nicht einschalten. |
 | Regeln für das Öffnen und Schließen von Ordnern ausführen | Ebenso für die Ereignisse *Ordner öffnen* und *Ordner schließen*. |
 
+> **Mehrere Rechner am selben Postfach:** Für die Abfrage der Änderungen legt Evolution im Postfach einen Merkzettel an, der zu genau einem Rechner gehört; sein Name enthält eine Kennung des Rechners (aus der Maschinen-ID des Systems) und Ihren Anmeldenamen. Greifen Sie von zwei Rechnern auf dasselbe Postfach zu, hat jeder seinen eigenen – das funktioniert. Problematisch sind **geklonte Rechner** (kopierte virtuelle Maschinen, ausgerollte Images): Sie haben dieselbe Maschinen-ID und nehmen sich gegenseitig die Änderungen weg, sodass sie bei jedem nur zum Teil ankommen; auch die Sofort-Meldung geht dann nur an einen von beiden. Geben Sie einem geklonten Rechner eine neue Maschinen-ID. Schalten Sie dazu vorher die Option in Evolution aus (dann entfernt Evolution den alten Merkzettel aus dem Postfach), setzen Sie als Administrator die Maschinen-ID neu, starten Sie den Rechner neu und schalten Sie die Option wieder ein:
+
+```
+sudo rm -f /etc/machine-id /var/lib/dbus/machine-id
+sudo systemd-machine-id-setup
+```
+
+> Die Maschinen-ID verwenden auch andere Teile des Systems; setzen Sie sie am besten gleich nach dem Klonen neu, noch bevor Sie Evolution einrichten.
+
 ## GroupWise-Einstellungen
 
 Einstellungen, die der GroupWise-Server selbst für Ihr Postfach hält, bearbeiten Sie im Fenster **GroupWise-Einstellungen**: Klicken Sie in der Ordnerliste mit der rechten Maustaste auf den Namen des GroupWise-Kontos und wählen Sie `GroupWise-Einstellungen …`. Das Fenster liest die Einstellungen beim Öffnen vom Server und schreibt Ihre Änderungen mit `OK` zurück; sie gelten dann für alle Programme, auch für den GroupWise-Client und GroupWise Web. Es hat die Registerkarten **Abwesenheit**, **Regeln** (siehe unten), **Junkmail** (siehe Abschnitt 4.5), **Signaturen** (siehe Abschnitt 4.2), **Proxy-Konten** (siehe Abschnitt 4.8) und **Proxy-Zugriff** (siehe unten). Im GroupWise-Client finden Sie dieselben Einstellungen im Menü *Werkzeuge*.
@@ -489,7 +498,8 @@ Die Adressbücher werden lokal vorgehalten, damit die **Autovervollständigung**
 |---|---|
 | Kalender anderer Benutzer | Proxy-Kalender unter dem eigenen Konto und freigegebene Kalender sind nur lesbar; die Kalender eines Proxy-Kontos sind nach den gewährten Rechten beschreibbar. |
 | Freigegebene Mailordner und Adressbücher | werden noch nicht angezeigt. |
-| Proxy-Konten | Neue Nachrichten werden bei jedem Abgleich über die ganze Ordnerliste ermittelt, da der POA in Proxy-Sitzungen keine Änderungsabfrage beantwortet. |
+| Proxy-Konten | Neue Nachrichten werden bei jedem Abgleich über die ganze Ordnerliste ermittelt, da der POA in Proxy-Sitzungen keine Änderungsabfrage beantwortet. Mit der Kontooption „Den Server alle … Sekunden nach Änderungen im Postfach fragen“ erscheinen sie trotzdem sofort. |
+| Geklonte Rechner | Zwei Rechner mit derselben Maschinen-ID stören sich bei der Abfrage der Änderungen am selben Postfach gegenseitig (siehe Kontooptionen in Kapitel 3). |
 | Signierte oder verschlüsselte Nachrichten | können nicht über GroupWise gesendet werden; empfangene werden angezeigt. |
 | Suchergebnisordner | zeigen über SOAP nur einen Teil der Treffer (siehe 4.6). |
 | Serientermine | erscheinen als einzelne Termine, da GroupWise keine Regel speichert. |
