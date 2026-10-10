@@ -81,13 +81,17 @@ copy_options (ESource *main_source,
 	CamelGroupwiseSettings *from = get_settings (main_source), *to = get_settings (proxy_source);
 
 	if (camel_groupwise_settings_get_use_events_interval (from) == camel_groupwise_settings_get_use_events_interval (to) &&
-	    camel_groupwise_settings_get_events_interval (from) == camel_groupwise_settings_get_events_interval (to))
+	    camel_groupwise_settings_get_events_interval (from) == camel_groupwise_settings_get_events_interval (to) &&
+	    camel_groupwise_settings_get_use_events_port (from) == camel_groupwise_settings_get_use_events_port (to) &&
+	    camel_groupwise_settings_get_events_port (from) == camel_groupwise_settings_get_events_port (to))
 		return;
 
 	g_debug ("proxy options: %s takes the events options of %s", e_source_get_display_name (proxy_source),
 		e_source_get_display_name (main_source));
 	camel_groupwise_settings_set_use_events_interval (to, camel_groupwise_settings_get_use_events_interval (from));
 	camel_groupwise_settings_set_events_interval (to, camel_groupwise_settings_get_events_interval (from));
+	camel_groupwise_settings_set_use_events_port (to, camel_groupwise_settings_get_use_events_port (from));
+	camel_groupwise_settings_set_events_port (to, camel_groupwise_settings_get_events_port (from));
 	if (e_source_get_writable (proxy_source))
 		e_source_write (proxy_source, NULL, NULL, NULL);
 }

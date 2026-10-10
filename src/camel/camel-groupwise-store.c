@@ -44,6 +44,10 @@ struct _CamelGroupwiseStore {
 	gchar *events_key;
 	gboolean events_configured;	/* the POA records for the key (this session) */
 	gboolean events_cleared;	/* the key was taken away while switched off */
+	guint events_port;		/* listening there for the POA; 0: not */
+	gchar *events_told;		/* "address:port" the configuration tells, or "" */
+	gboolean events_armed;		/* the POA was to tell the next record */
+	guint events_missed;		/* records found that it did not tell, in a row */
 };
 
 enum {
@@ -1082,6 +1086,201 @@ events_refresh_folders (CamelGroupwiseStore *store,
 	g_hash_table_destroy (by_id);
 }
 
+/* With a port (account option), the POA also says at once that there is a
+ * new record: it connects to the port of this machine and sends one line,
+ * <notify><userid/><key/></notify>, once — until it is asked for the events
+ * again. The line only starts the question that would come anyway; who
+ * else connects there achieves no more than that. One listener for all
+ * accounts of the process that use the port. */
+typedef struct {
+	GSocketService *service;
+	GPtrArray *stores;	/* GWeakRef */
+} EventsListener;
+
+static GMutex listeners_lock;
+static GHashTable *listeners;	/* port -> EventsListener */
+
+static void	events_ask_full		(CamelGroupwiseStore *store,
+					 gboolean wanted,
+					 guint port,
+					 gboolean told);
+
+static void
+events_weak_ref_free (gpointer data)
+{
+	g_weak_ref_clear (data);
+	g_free (data);
+}
+
+static void
+events_notified_cb (GObject *source_object,
+		    GAsyncResult *result,
+		    gpointer user_data)
+{
+	GSocketConnection *connection = user_data;
+	gchar *buffer = g_object_get_data (G_OBJECT (connection), "groupwise-buffer");
+	guint port = GPOINTER_TO_UINT (g_object_get_data (G_OBJECT (connection), "groupwise-port"));
+	gssize len = g_input_stream_read_finish (G_INPUT_STREAM (source_object), result, NULL);
+
+	if (len > 0 && buffer) {
+		GPtrArray *stores = g_ptr_array_new_with_free_func (g_object_unref);
+		EventsListener *listener;
+		guint ii;
+
+		buffer[len] = '\0';
+		g_mutex_lock (&listeners_lock);
+		listener = strstr (buffer, "<notify") && listeners ? g_hash_table_lookup (listeners, GUINT_TO_POINTER (port)) : NULL;
+		for (ii = 0; listener && ii < listener->stores->len; ii++) {
+			CamelGroupwiseStore *store = g_weak_ref_get (listener->stores->pdata[ii]);
+
+			/* The key is the same for the accounts of a login */
+			if (store && (!store->events_key || strstr (buffer, store->events_key)))
+				g_ptr_array_add (stores, store);
+			else
+				g_clear_object (&store);
+		}
+		g_mutex_unlock (&listeners_lock);
+
+		g_debug ("events: told on port %u, %u accounts", port, stores->len);
+		for (ii = 0; ii < stores->len; ii++) {
+			CamelGroupwiseStore *store = stores->pdata[ii];
+
+			/* Not more often than every other second, whoever tells */
+			if (g_get_monotonic_time () - store->events_asked >= 2 * G_USEC_PER_SEC)
+				events_ask_full (store, TRUE, port, TRUE);
+		}
+		g_ptr_array_unref (stores);
+	}
+
+	g_io_stream_close (G_IO_STREAM (connection), NULL, NULL);
+	g_object_unref (connection);
+}
+
+static gboolean
+events_incoming_cb (GSocketService *service,
+		    GSocketConnection *connection,
+		    GObject *source_object,
+		    gpointer user_data)
+{
+	gchar *buffer = g_malloc0 (1025);
+
+	g_socket_set_timeout (g_socket_connection_get_socket (connection), 5);
+	g_object_set_data_full (G_OBJECT (connection), "groupwise-buffer", buffer, g_free);
+	g_object_set_data (G_OBJECT (connection), "groupwise-port", user_data);
+	g_input_stream_read_async (g_io_stream_get_input_stream (G_IO_STREAM (connection)), buffer, 1024,
+		G_PRIORITY_DEFAULT, NULL, events_notified_cb, g_object_ref (connection));
+
+	return TRUE;
+}
+
+/* Listens on @port for the store (0: not any more); called in the main
+ * loop. Returns the port it listens on now. */
+static guint
+events_listen (CamelGroupwiseStore *store,
+	       guint port)
+{
+	EventsListener *listener;
+	guint ii;
+
+	if (store->events_port == port)
+		return port;
+
+	g_mutex_lock (&listeners_lock);
+	if (!listeners)
+		listeners = g_hash_table_new (g_direct_hash, g_direct_equal);
+
+	/* Away from the port it had; a port nobody listens on is closed */
+	listener = store->events_port ? g_hash_table_lookup (listeners, GUINT_TO_POINTER (store->events_port)) : NULL;
+	for (ii = 0; listener && ii < listener->stores->len;) {
+		gpointer other = g_weak_ref_get (listener->stores->pdata[ii]);
+
+		if (!other || other == (gpointer) store)
+			g_ptr_array_remove_index_fast (listener->stores, ii);
+		else
+			ii++;
+		g_clear_object (&other);
+	}
+	if (listener && !listener->stores->len) {
+		g_debug ("events: port %u closed", store->events_port);
+		g_socket_service_stop (listener->service);
+		g_socket_listener_close (G_SOCKET_LISTENER (listener->service));
+		g_object_unref (listener->service);
+		g_ptr_array_unref (listener->stores);
+		g_hash_table_remove (listeners, GUINT_TO_POINTER (store->events_port));
+		g_free (listener);
+	}
+	store->events_port = 0;
+
+	if (port) {
+		listener = g_hash_table_lookup (listeners, GUINT_TO_POINTER (port));
+		if (!listener) {
+			GSocketService *service = g_socket_service_new ();
+			GError *error = NULL;
+
+			if (g_socket_listener_add_inet_port (G_SOCKET_LISTENER (service), (guint16) port, NULL, &error)) {
+				listener = g_new0 (EventsListener, 1);
+				listener->service = service;
+				listener->stores = g_ptr_array_new_with_free_func (events_weak_ref_free);
+				g_signal_connect (service, "incoming", G_CALLBACK (events_incoming_cb), GUINT_TO_POINTER (port));
+				g_socket_service_start (service);
+				g_hash_table_insert (listeners, GUINT_TO_POINTER (port), listener);
+				g_debug ("events: listening on port %u", port);
+			} else {
+				g_debug ("events: port %u: %s", port, error ? error->message : "?");
+				g_clear_error (&error);
+				g_object_unref (service);
+			}
+		}
+		if (listener) {
+			GWeakRef *ref = g_new0 (GWeakRef, 1);
+
+			g_weak_ref_init (ref, store);
+			g_ptr_array_add (listener->stores, ref);
+			store->events_port = port;
+		}
+	}
+	g_mutex_unlock (&listeners_lock);
+
+	return store->events_port;
+}
+
+/* The address of this machine as the POA sees it: the one a connection to
+ * the POA goes out from (nothing is sent for it) */
+static gchar *
+events_dup_local_address (CamelGroupwiseStore *store)
+{
+	CamelSettings *settings = camel_service_ref_settings (CAMEL_SERVICE (store));
+	gchar *host = camel_network_settings_dup_host (CAMEL_NETWORK_SETTINGS (settings));
+	guint16 port = camel_network_settings_get_port (CAMEL_NETWORK_SETTINGS (settings));
+	GList *addresses = host && *host ? g_resolver_lookup_by_name (g_resolver_get_default (), host, NULL, NULL) : NULL;
+	gchar *text = NULL;
+
+	if (addresses) {
+		GSocket *socket = g_socket_new (g_inet_address_get_family (addresses->data), G_SOCKET_TYPE_DATAGRAM,
+			G_SOCKET_PROTOCOL_UDP, NULL);
+		GSocketAddress *remote = g_inet_socket_address_new (addresses->data, port ? port : 7191), *local = NULL;
+
+		if (socket && g_socket_connect (socket, remote, NULL, NULL))
+			local = g_socket_get_local_address (socket, NULL);
+		if (local)
+			text = g_inet_address_to_string (g_inet_socket_address_get_address (G_INET_SOCKET_ADDRESS (local)));
+		g_clear_object (&local);
+		g_object_unref (remote);
+		g_clear_object (&socket);
+	}
+	g_list_free_full (addresses, g_object_unref);
+	g_free (host);
+	g_object_unref (settings);
+
+	return text;
+}
+
+typedef struct {
+	gboolean wanted;
+	guint port;	/* the POA tells there; 0: only asked */
+	gboolean told;	/* asked because the POA told */
+} EventsAsk;
+
 static void
 events_thread (GTask *task,
 	       gpointer source_object,
@@ -1090,14 +1289,14 @@ events_thread (GTask *task,
 {
 	static const gchar *types[] = { E_GW_EVENTS_MAIL, NULL };
 	CamelGroupwiseStore *store = source_object;
-	gboolean wanted = GPOINTER_TO_INT (task_data);
+	EventsAsk *ask = task_data;
 	EGwConnection *cnc = camel_groupwise_store_ref_connection (store);
 	GError *error = NULL;
 
 	if (cnc && !store->events_key)
 		store->events_key = events_dup_key (store);
 
-	if (cnc && !wanted) {
+	if (cnc && !ask->wanted) {
 		/* Switched off: nothing of it stays in the mailbox */
 		if (!e_gw_connection_remove_events_sync (cnc, store->events_key, cancellable, &error))
 			g_debug ("events: no configuration %s to remove: %s", store->events_key, error ? error->message : "?");
@@ -1105,28 +1304,49 @@ events_thread (GTask *task,
 		store->events_configured = FALSE;
 		store->events_cleared = TRUE;
 	} else if (cnc) {
+		gchar *address = ask->port ? events_dup_local_address (store) : NULL;
+		guint port = address ? ask->port : 0;
+		gchar *told = address ? g_strdup_printf ("%s:%u", address, port) : g_strdup ("");
 		GPtrArray *events = NULL;
+
+		/* Another address or port (or none any more): set up for it */
+		if (store->events_configured && g_strcmp0 (told, store->events_told) != 0)
+			store->events_configured = FALSE;
 
 		if (!store->events_configured) {
 			/* Kept from session to session: set up anew, the POA takes
 			 * minutes until it records what the GroupWise clients do */
-			if (e_gw_connection_has_events_sync (cnc, store->events_key, types, cancellable)) {
+			if (e_gw_connection_has_events_sync (cnc, store->events_key, types, address, port, cancellable)) {
 				store->events_configured = TRUE;
-				g_debug ("events: configuration %s is there", store->events_key);
+				g_debug ("events: configuration %s is there%s%s", store->events_key, *told ? ", tells " : "", told);
 			} else {
 				store->events_configured = e_gw_connection_configure_events_sync (cnc, store->events_key, types,
-					EVENTS_PERSISTENCE_DAYS, NULL, 0, cancellable, &error);
-				g_debug ("events: configuration %s: %s", store->events_key,
+					EVENTS_PERSISTENCE_DAYS, address, port, cancellable, &error);
+				g_debug ("events: configuration %s%s%s: %s", store->events_key, *told ? ", tells " : "", told,
 					store->events_configured ? "set up" : error ? error->message : "?");
 				g_clear_error (&error);
 			}
 			store->events_cleared = FALSE;
+			g_free (store->events_told);
+			store->events_told = g_strdup (told);
 		}
+		/* Asking with "notify" lets the POA tell the next time */
 		if (store->events_configured)
-			events = e_gw_connection_get_events_sync (cnc, store->events_key, TRUE, FALSE, cancellable, &error);
+			events = e_gw_connection_get_events_sync (cnc, store->events_key, TRUE, port != 0, cancellable, &error);
 		if (events) {
+			/* Records the POA was to tell and did not, twice in a row:
+			 * it does not reach the port (a firewall, most likely).
+			 * Evolution's side asks the user about it. */
+			if (ask->told)
+				store->events_missed = 0;
+			else if (events->len && store->events_armed && port)
+				store->events_missed++;
+			g_object_set_data (G_OBJECT (store), CAMEL_GROUPWISE_STORE_PORT_UNREACHABLE,
+				GUINT_TO_POINTER (port && store->events_missed >= 2 ? port : 0));
+			store->events_armed = port != 0;
+
 			if (events->len) {
-				g_debug ("events: %u", events->len);
+				g_debug ("events: %u%s", events->len, ask->told ? " (told)" : "");
 				events_refresh_folders (store, events, cancellable);
 			}
 			g_ptr_array_unref (events);
@@ -1136,11 +1356,44 @@ events_thread (GTask *task,
 			store->events_configured = FALSE;
 		}
 		g_clear_error (&error);
+		g_free (address);
+		g_free (told);
 	}
 
 	g_clear_object (&cnc);
 	g_atomic_int_set (&store->events_busy, 0);
 	g_task_return_boolean (task, TRUE);
+}
+
+/* Asks now, unless a question is on its way */
+static void
+events_ask_full (CamelGroupwiseStore *store,
+		 gboolean wanted,
+		 guint port,
+		 gboolean told)
+{
+	if (camel_service_get_connection_status (CAMEL_SERVICE (store)) == CAMEL_SERVICE_CONNECTED &&
+	    camel_offline_store_get_online (CAMEL_OFFLINE_STORE (store)) &&
+	    g_atomic_int_compare_and_exchange (&store->events_busy, 0, 1)) {
+		GTask *task = g_task_new (store, NULL, NULL, NULL);
+		EventsAsk *ask = g_new0 (EventsAsk, 1);
+
+		ask->wanted = wanted;
+		ask->port = port;
+		ask->told = told;
+		store->events_asked = g_get_monotonic_time ();
+		g_task_set_task_data (task, ask, g_free);
+		g_task_run_in_thread (task, events_thread);
+		g_object_unref (task);
+	}
+}
+
+static void
+events_ask (CamelGroupwiseStore *store,
+	    gboolean wanted,
+	    guint port)
+{
+	events_ask_full (store, wanted, port, FALSE);
 }
 
 static gboolean
@@ -1149,7 +1402,7 @@ events_tick_cb (gpointer user_data)
 	CamelGroupwiseStore *store = g_weak_ref_get (user_data);
 	CamelSettings *settings;
 	gboolean wanted;
-	guint interval;
+	guint interval, port;
 
 	if (!store)
 		return G_SOURCE_REMOVE;
@@ -1157,6 +1410,8 @@ events_tick_cb (gpointer user_data)
 	settings = camel_service_ref_settings (CAMEL_SERVICE (store));
 	wanted = camel_groupwise_settings_get_use_events_interval (CAMEL_GROUPWISE_SETTINGS (settings));
 	interval = camel_groupwise_settings_get_events_interval (CAMEL_GROUPWISE_SETTINGS (settings));
+	port = wanted && camel_groupwise_settings_get_use_events_port (CAMEL_GROUPWISE_SETTINGS (settings)) ?
+		camel_groupwise_settings_get_events_port (CAMEL_GROUPWISE_SETTINGS (settings)) : 0;
 	/* A read-only account changes nothing on the server, not this either */
 	if (camel_groupwise_settings_get_read_only (CAMEL_GROUPWISE_SETTINGS (settings))) {
 		g_object_unref (settings);
@@ -1165,29 +1420,23 @@ events_tick_cb (gpointer user_data)
 	}
 	g_object_unref (settings);
 
-	if (camel_service_get_connection_status (CAMEL_SERVICE (store)) == CAMEL_SERVICE_CONNECTED &&
-	    camel_offline_store_get_online (CAMEL_OFFLINE_STORE (store)) &&
-	    (wanted ? g_get_monotonic_time () - store->events_asked >= (gint64) interval * G_USEC_PER_SEC - G_USEC_PER_SEC :
-		!store->events_cleared) &&
-	    g_atomic_int_compare_and_exchange (&store->events_busy, 0, 1)) {
-		GTask *task = g_task_new (store, NULL, NULL, NULL);
+	/* The port as the option says now; taken by someone else, only asked */
+	port = events_listen (store, port);
 
-		store->events_asked = g_get_monotonic_time ();
-		g_task_set_task_data (task, GINT_TO_POINTER (wanted), NULL);
-		g_task_run_in_thread (task, events_thread);
-		g_object_unref (task);
+	if (wanted) {
+		gboolean tells = store->events_told && *store->events_told;
+
+		/* When it is time, and at once when the port was switched on or off */
+		if (g_get_monotonic_time () - store->events_asked >= (gint64) interval * G_USEC_PER_SEC - G_USEC_PER_SEC ||
+		    (store->events_configured && tells != (port != 0)))
+			events_ask (store, TRUE, port);
+	} else if (!store->events_cleared) {
+		events_ask (store, FALSE, 0);
 	}
 
 	g_object_unref (store);
 
 	return G_SOURCE_CONTINUE;
-}
-
-static void
-events_weak_ref_free (gpointer data)
-{
-	g_weak_ref_clear (data);
-	g_free (data);
 }
 
 static void
@@ -1198,6 +1447,7 @@ groupwise_store_finalize (GObject *object)
 	if (store->events_timer)
 		g_source_remove (store->events_timer);
 	g_free (store->events_key);
+	g_free (store->events_told);
 
 	g_clear_object (&store->cnc);
 	camel_groupwise_store_summary_free (store->summary);

@@ -72,6 +72,21 @@ void		camel_groupwise_settings_set_events_interval
 						(CamelGroupwiseSettings *settings,
 						 guint events_interval);
 
+/* With the events asked for: the POA also tells at once that there are new
+ * ones, connecting to this TCP port of the machine (the firewall must let
+ * it in; behind NAT it does not arrive). Off by default. */
+#define CAMEL_GROUPWISE_EVENTS_PORT_DEFAULT 5221
+gboolean	camel_groupwise_settings_get_use_events_port
+						(CamelGroupwiseSettings *settings);
+void		camel_groupwise_settings_set_use_events_port
+						(CamelGroupwiseSettings *settings,
+						 gboolean use_events_port);
+guint		camel_groupwise_settings_get_events_port
+						(CamelGroupwiseSettings *settings);
+void		camel_groupwise_settings_set_events_port
+						(CamelGroupwiseSettings *settings,
+						 guint events_port);
+
 /* A proxy account: the e-mail address of the user whose mailbox it shows,
  * logged in as the account's user; NULL for the user's own mailbox */
 gchar *		camel_groupwise_settings_dup_proxy

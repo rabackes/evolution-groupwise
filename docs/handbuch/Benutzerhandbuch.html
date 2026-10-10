@@ -232,6 +232,18 @@ openssl x509 -in groupwise-ca.pem -noout -subject -fingerprint -sha256</pre>
 		wieder aus, entfernt Evolution die Notizen aus dem Postfach. Ihre Proxy-Konten (Abschnitt 4.8)
 		übernehmen diese Einstellung von Ihrem eigenen Konto, auch den Abstand: Sie stellen sie nur dort
 		ein.</td></tr>
+	<tr><td>Der Server meldet Änderungen sofort, an Port … dieses Rechners</td><td>Zusätzlich zur Abfrage
+		oben: GroupWise meldet sich von selbst bei Evolution, sobald im Postfach etwas geschieht; neue
+		Nachrichten erscheinen dann nach ein bis zwei Sekunden. Dazu baut der GroupWise-Server (POA) eine
+		Verbindung <i>zu Ihrem Rechner</i> auf, an den angegebenen TCP-Port (Vorgabe 5221). Das
+		funktioniert nur, wenn der Server Ihren Rechner erreicht – im Firmennetz, nicht hinter einem
+		Heimrouter –, und wenn die Firewall Ihres Rechners den Port hereinlässt. Stellt Evolution fest,
+		dass die Meldungen nicht ankommen, fragt es, ob es den Port in der Firewall öffnen soll
+		(<span class="menu">Port öffnen</span>, <span class="menu">Nicht jetzt</span>,
+		<span class="menu">Nicht mehr fragen</span>); das System fragt dafür nach dem
+		Administrator-Passwort. Ohne ankommende Meldungen gilt einfach der Abstand der Abfrage oben. Nur
+		zusammen mit der Abfrage wählbar; aus, solange Sie es nicht einschalten. Auch diese Einstellung
+		übernehmen Ihre Proxy-Konten.</td></tr>
 	<tr><td>Filter und Junk-Prüfung auf neue Nachrichten in der Mailbox anwenden</td><td>Evolutions eigene
 		Filterregeln und die Junk-Erkennung laufen über neu eingegangene Nachrichten. Dafür lädt Evolution
 		jede neue Nachricht vollständig; deshalb ist die Option ausgeschaltet, solange Sie sie nicht

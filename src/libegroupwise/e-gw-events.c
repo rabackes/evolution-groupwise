@@ -86,6 +86,8 @@ gboolean
 e_gw_connection_has_events_sync (EGwConnection *cnc,
 				 const gchar *key,
 				 const gchar * const *events,
+				 const gchar *address,
+				 guint port,
 				 GCancellable *cancellable)
 {
 	EGwResponse *response;
@@ -124,6 +126,16 @@ e_gw_connection_has_events_sync (EGwConnection *cnc,
 			for (ii = 0; events[ii] && has; ii++)
 				has = g_hash_table_contains (types, events[ii]);
 			g_hash_table_destroy (types);
+			/* ... and tells there, or nowhere */
+			if (has) {
+				gchar *config_address = e_gw_xml_dup_text (config, "ipAddress");
+				guint config_port = (guint) e_gw_xml_get_int (config, "port", 0);
+				gboolean wanted = address && *address && port;
+				gboolean tells = config_address && *config_address && config_port;
+
+				has = wanted ? tells && g_strcmp0 (config_address, address) == 0 && config_port == port : !tells;
+				g_free (config_address);
+			}
 		}
 		g_free (config_key);
 		g_free (enabled);

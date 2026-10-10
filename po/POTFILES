@@ -16,8 +16,10 @@ src/eds/e-gw-backend-utils.c
 src/eds/e-gw-signature-mime.c
 src/eds/e-source-groupwise-folder.c
 src/evolution/e-groupwise-access-tab.c
+src/evolution/e-groupwise-events-port.c
 src/evolution/e-groupwise-junk-tab.c
 src/evolution/e-groupwise-mail-ui.c
+src/evolution/e-groupwise-proxy-options.c
 src/evolution/e-groupwise-proxy-tab.c
 src/evolution/e-groupwise-rule-editor.c
 src/evolution/e-groupwise-rule-runner.c

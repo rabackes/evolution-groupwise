@@ -52,6 +52,10 @@ CamelGroupwiseLabels *
 gboolean	camel_groupwise_store_get_read_only
 						(CamelGroupwiseStore *store);
 
+/* Data of the store object: the port (as a pointer) the POA was to tell
+ * the events of the mailbox at and, as it seems, does not reach; 0 else */
+#define CAMEL_GROUPWISE_STORE_PORT_UNREACHABLE "groupwise-events-port-unreachable"
+
 G_END_DECLS
 
 #endif /* CAMEL_GROUPWISE_STORE_H */

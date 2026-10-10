@@ -228,6 +228,9 @@ main (int argc,
 	 * leaves no configuration in the mailbox */
 	if (g_getenv ("GW_EVENTS"))
 		g_object_set (settings, "use-events-interval", TRUE, "events-interval", 15, NULL);
+	/* GW_EVENTS_PORT=PORT: the POA tells there (the port must be open) */
+	if (g_getenv ("GW_EVENTS") && g_getenv ("GW_EVENTS_PORT"))
+		g_object_set (settings, "use-events-port", TRUE, "events-port", (guint) atoi (g_getenv ("GW_EVENTS_PORT")), NULL);
 	g_object_unref (settings);
 	camel_service_set_password (store, g_getenv ("GW_PASSWORD"));
 
