@@ -13,7 +13,7 @@ Benutzerhandbuch
 
 GroupWise-Postfächer in Evolution: E-Mail, Adressbücher, Kalender, Aufgaben und Notizen über die SOAP-Schnittstelle des GroupWise Post Office Agent.
 
-Version 0.9.1 · Oktober 2026 bond Software Entwicklung GmbH Lizenz: GNU Lesser General Public License 2.1 oder neuer
+Version 0.9.2 · Oktober 2026 bond Software Entwicklung GmbH Lizenz: GNU Lesser General Public License 2.1 oder neuer
 
 # 1 Überblick
 
@@ -72,14 +72,14 @@ In diesem Handbuch stehen die Bezeichnungen von Evolution; wo es der Klarheit di
 Für openSUSE und Fedora gibt es RPM-Pakete, für Debian und Ubuntu ein .deb-Paket. Installieren Sie das Paket mit der Paketverwaltung Ihres Systems, zum Beispiel unter openSUSE:
 
 ```
-sudo zypper install ./evolution-groupwise-0.9.1-0.x86_64.rpm \
-                    ./evolution-groupwise-lang-0.9.1-0.noarch.rpm
+sudo zypper install ./evolution-groupwise-0.9.2-0.x86_64.rpm \
+                    ./evolution-groupwise-lang-0.9.2-0.noarch.rpm
 ```
 
 oder unter Debian/Ubuntu:
 
 ```
-sudo apt install ./evolution-groupwise_0.9.1_amd64.deb
+sudo apt install ./evolution-groupwise_0.9.2_amd64.deb
 ```
 
 Das Paket `evolution-groupwise-lang` enthält die deutsche Übersetzung (zurzeit; weitere Sprachen folgen). Starten Sie danach Evolution und die Hintergrunddienste neu, am einfachsten durch Ab- und Anmelden oder mit:

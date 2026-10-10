@@ -10,7 +10,7 @@
 #
 
 Name:           evolution-groupwise
-Version:        0.9.1
+Version:        0.9.2
 Release:        0
 Summary:        GroupWise mailboxes in Evolution
 License:        LGPL-2.1-or-later
@@ -100,6 +100,22 @@ line tool.
 %endif
 
 %changelog
+* Sat Oct 10 2026 Rainer Backes <rbackes@bond.de> - 0.9.2-0
+- Calendar: deleting an own meeting "only for me" takes it out of the own
+  calendar and leaves it to the attendees; it stays in the Sent Items with the
+  answers and can still be retracted. The button of Evolution's question says
+  so for GroupWise calendars.
+- The dialog to pick recipients and attendees gets the entry "Automatic", which
+  searches all address books marked for autocompletion at once.
+- New meetings, tasks and memos made outside their view go to the main account
+  instead of a proxy account whose calendar happens to be selected; the main
+  account's calendar and lists become Evolution's defaults where those were
+  still "On This Computer". The organizer shows with the name.
+- Phone messages show caller, company, number and what the caller wants above
+  the text. New all-day appointments are free, as in the GroupWise client.
+- The lookup of a place among the attendees no longer blocks Evolution. Manual:
+  the names of the items in GroupWise and Evolution.
+
 * Sat Oct 10 2026 Rainer Backes <rbackes@bond.de> - 0.9.1-0
 - Calendars, task and memo lists follow the events of the mailbox: what is
   made, changed, deleted, accepted or completed in another client shows within
