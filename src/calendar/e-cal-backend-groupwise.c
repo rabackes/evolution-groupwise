@@ -310,6 +310,36 @@ dup_user_email (ECalBackendGroupwise *cbgw)
 	return email;
 }
 
+/* The user's address as Evolution is told it, in the spelling of the mail
+ * identity that has it: Evolution looks the organizer of a new meeting up
+ * among the identities by the letter ("RBackes@…" of the POA is not
+ * "rbackes@…" of the account, and the bare address would be shown) */
+static gchar *
+dup_identity_email (ECalBackendGroupwise *cbgw)
+{
+	ESourceRegistry *registry = e_cal_backend_get_registry (E_CAL_BACKEND (cbgw));
+	gchar *email = dup_user_email (cbgw);
+	GList *identities, *link;
+
+	if (!email || !registry)
+		return email;
+
+	identities = e_source_registry_list_enabled (registry, E_SOURCE_EXTENSION_MAIL_IDENTITY);
+	for (link = identities; link; link = g_list_next (link)) {
+		gchar *address = e_source_mail_identity_dup_address (e_source_get_extension (link->data, E_SOURCE_EXTENSION_MAIL_IDENTITY));
+
+		if (address && g_ascii_strcasecmp (address, email) == 0) {
+			g_free (email);
+			email = address;
+			break;
+		}
+		g_free (address);
+	}
+	g_list_free_full (identities, g_object_unref);
+
+	return email;
+}
+
 /* The user's zone: all-day events and the days of tasks are local */
 static ICalTimezone *
 user_zone (void)
@@ -535,8 +565,13 @@ ecb_groupwise_connect_sync (ECalMetaBackend *meta_backend,
 				e_cache_set_key (E_CACHE (cache), CACHE_KEY_USER_EMAIL, cbgw->user_email, NULL);
 				g_object_unref (cache);
 			}
-			e_cal_backend_notify_property_changed (E_CAL_BACKEND (cbgw), E_CAL_BACKEND_PROPERTY_CAL_EMAIL_ADDRESS,
-				cbgw->user_email);
+			{
+				gchar *identity_email = dup_identity_email (cbgw);
+
+				e_cal_backend_notify_property_changed (E_CAL_BACKEND (cbgw), E_CAL_BACKEND_PROPERTY_CAL_EMAIL_ADDRESS,
+					identity_email);
+				g_free (identity_email);
+			}
 		}
 	} else {
 		g_rec_mutex_unlock (&cbgw->lock);
@@ -2986,7 +3021,7 @@ ecb_groupwise_get_backend_property (ECalBackend *cal_backend,
 			NULL);
 	} else if (g_str_equal (prop_name, E_CAL_BACKEND_PROPERTY_CAL_EMAIL_ADDRESS) ||
 		   g_str_equal (prop_name, E_CAL_BACKEND_PROPERTY_ALARM_EMAIL_ADDRESS)) {
-		return dup_user_email (cbgw);
+		return dup_identity_email (cbgw);
 	}
 
 	return E_CAL_BACKEND_CLASS (e_cal_backend_groupwise_parent_class)->impl_get_backend_property (cal_backend, prop_name);
