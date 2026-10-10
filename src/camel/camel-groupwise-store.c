@@ -49,6 +49,7 @@ struct _CamelGroupwiseStore {
 	gboolean events_armed;		/* the POA was to tell the next record */
 	guint events_missed;		/* records found that it did not tell, in a row */
 	gint64 events_set_up;		/* monotonic time the configuration was changed; 0: found as it is */
+	guint events_later;		/* timer: told while busy, asked right after */
 };
 
 enum {
@@ -1114,6 +1115,28 @@ events_weak_ref_free (gpointer data)
 	g_free (data);
 }
 
+/* What the POA told while a question was on its way or just over */
+static gboolean
+events_later_cb (gpointer user_data)
+{
+	CamelGroupwiseStore *store = g_weak_ref_get (user_data);
+
+	if (!store)
+		return G_SOURCE_REMOVE;
+
+	if (g_atomic_int_get (&store->events_busy)) {
+		g_object_unref (store);
+		return G_SOURCE_CONTINUE;
+	}
+
+	store->events_later = 0;
+	if (store->events_port)
+		events_ask_full (store, TRUE, store->events_port, TRUE);
+	g_object_unref (store);
+
+	return G_SOURCE_REMOVE;
+}
+
 static void
 events_notified_cb (GObject *source_object,
 		    GAsyncResult *result,
@@ -1147,9 +1170,19 @@ events_notified_cb (GObject *source_object,
 		for (ii = 0; ii < stores->len; ii++) {
 			CamelGroupwiseStore *store = stores->pdata[ii];
 
-			/* Not more often than every other second, whoever tells */
-			if (g_get_monotonic_time () - store->events_asked >= 2 * G_USEC_PER_SEC)
+			/* Not more often than every other second, whoever tells;
+			 * what is told in between is asked for right after (the
+			 * POA does not tell it again) */
+			if (g_get_monotonic_time () - store->events_asked >= 2 * G_USEC_PER_SEC &&
+			    !g_atomic_int_get (&store->events_busy)) {
 				events_ask_full (store, TRUE, port, TRUE);
+			} else if (!store->events_later) {
+				GWeakRef *ref = g_new0 (GWeakRef, 1);
+
+				g_weak_ref_init (ref, store);
+				store->events_later = g_timeout_add_seconds_full (G_PRIORITY_DEFAULT, 2, events_later_cb, ref,
+					events_weak_ref_free);
+			}
 		}
 		g_ptr_array_unref (stores);
 	}
@@ -1454,6 +1487,8 @@ groupwise_store_finalize (GObject *object)
 
 	if (store->events_timer)
 		g_source_remove (store->events_timer);
+	if (store->events_later)
+		g_source_remove (store->events_later);
 	g_free (store->events_key);
 	g_free (store->events_told);
 
