@@ -33,6 +33,28 @@ Mit einer einzigen Anmeldung stehen zur Verfügung:
 
 - **Kategorien** von GroupWise als Beschriftungen (E-Mail) und Kategorien (Kalender).
 
+## Begriffe: GroupWise und Evolution
+
+Evolution und der GroupWise-Client nennen dieselben Dinge teils verschieden – und das Wort „Termin“ bedeutet in beiden etwas anderes. Die Tabelle stellt die Bezeichnungen gegenüber; in Klammern die englischen, wie sie in englisch eingestellten Programmen stehen.
+
+| Evolution | GroupWise-Client | Was es ist |
+|---|---|---|
+| Termin (Appointment) | Persönlicher Termin (Posted Appointment) | Eintrag nur im eigenen Kalender, ohne Teilnehmer |
+| Besprechung (Meeting) | Termin (Appointment) | Termin mit Teilnehmern, der als Einladung gesendet wird |
+| Ganztagstermin (All Day Appointment) | Ganztägiges Ereignis (All Day Event) | Termin ohne Uhrzeit, über ganze Tage |
+| Aufgabe (Task) | Persönlicher Job (Posted Task) | Aufgabe nur für sich selbst |
+| Zugewiesene Aufgabe (Assigned Task) | Job (Task) | Aufgabe, die an andere gesendet wird |
+| Notiz (Memo) | Persönliche Notiz (Posted Reminder Note) | Notiz an einem Tag, nur für sich selbst |
+| Gemeinsame Notiz (Shared Memo) | Notiz (Reminder Note) | Notiz, die an andere gesendet wird |
+| E-Mail-Nachricht (Mail Message) | Mail (Mail) | Nachricht |
+| Aufgaben (Tasks), die Ansicht | Jobliste (Tasklist) | Liste der offenen Aufgaben; die GroupWise-Jobliste enthält zusätzlich Nachrichten, die Sie zur Nachverfolgung markiert haben |
+| Organisator (Organizer) | Absender (From) | Wer eine Besprechung ansetzt |
+| Teilnehmer (Attendees) | Empfänger: An, CC, BK (To, CC, BC) | Wer eingeladen ist; Evolution unterscheidet stattdessen erforderliche und optionale Teilnehmer |
+| Beschriftung (Label) bei E-Mail, Kategorie (Category) im Kalender | Kategorie (Category) | Farbige Kennzeichnung |
+| Suchordner (Search Folder) | Suchergebnisordner (Find Results Folder) | Ordner, der das Ergebnis einer gespeicherten Suche zeigt |
+
+In diesem Handbuch stehen die Bezeichnungen von Evolution; wo es der Klarheit dient, ist die von GroupWise dazu genannt.
+
 ## Voraussetzungen
 
 | Komponente | Anforderung |
