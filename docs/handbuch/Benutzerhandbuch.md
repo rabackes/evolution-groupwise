@@ -41,15 +41,17 @@ Evolution und der GroupWise-Client nennen dieselben Dinge teils verschieden – 
 |---|---|---|
 | Termin (Appointment) | Persönlicher Termin (Posted Appointment) | Eintrag nur im eigenen Kalender, ohne Teilnehmer |
 | Besprechung (Meeting) | Termin (Appointment) | Termin mit Teilnehmern, der als Einladung gesendet wird |
-| Ganztagstermin (All Day Appointment) | Ganztägiges Ereignis (All Day Event) | Termin ohne Uhrzeit, über ganze Tage |
+| Ganztagstermin (All Day Appointment); im Editor die Option `Ganztägiger Termin` | Option `Ganztägiges Ereignis` (All Day Event) beim Anlegen eines Termins, persönlich oder mit Teilnehmern | Termin ohne Uhrzeit, über ganze Tage. GroupWise zeigt ein ganztägiges Ereignis als „frei“, sodass an dem Tag weitere Termine ohne Konflikt möglich sind (die Messe über drei Tage und die Termine auf der Messe). In Evolution gilt auch ein Ganztagstermin zunächst als beschäftigt; schalten Sie dafür im Editor `Optionen → Zeit als beschäftigt anzeigen` aus – das kommt in GroupWise als „frei“ an, und umgekehrt. |
 | Aufgabe (Task) | Persönlicher Job (Posted Task) | Aufgabe nur für sich selbst |
 | Zugewiesene Aufgabe (Assigned Task) | Job (Task) | Aufgabe, die an andere gesendet wird |
 | Notiz (Memo) | Persönliche Notiz (Posted Reminder Note) | Notiz an einem Tag, nur für sich selbst |
-| Gemeinsame Notiz (Shared Memo) | Notiz (Reminder Note) | Notiz, die an andere gesendet wird |
-| E-Mail-Nachricht (Mail Message) | Mail (Mail) | Nachricht |
+| Gemeinsame Notiz (Shared Memo) | Notiz (Reminder Note) | Notiz an einem Tag, die an andere gesendet wird |
+| – | Haftnotiz | Persönliche Notiz ohne Datum; in Evolution gibt es dafür keine Entsprechung |
+| E-Mail-Nachricht (Mail Message) | Mail | Nachricht |
+| – | Telefonnachricht (Phone Message) | Nachricht mit zusätzlichen Feldern für Anrufer, Firma und Telefonnummer; Evolution kann solche Nachrichten nicht anlegen |
 | Aufgaben (Tasks), die Ansicht | Jobliste (Tasklist) | Liste der offenen Aufgaben; die GroupWise-Jobliste enthält zusätzlich Nachrichten, die Sie zur Nachverfolgung markiert haben |
 | Organisator (Organizer) | Absender (From) | Wer eine Besprechung ansetzt |
-| Teilnehmer (Attendees) | Empfänger: An, CC, BK (To, CC, BC) | Wer eingeladen ist; Evolution unterscheidet stattdessen erforderliche und optionale Teilnehmer |
+| Teilnehmer (Attendees) | Empfänger: An, Kopie (CC), Blindkopie (BC) | Wer eingeladen ist; Evolution unterscheidet stattdessen erforderliche und optionale Teilnehmer |
 | Beschriftung (Label) bei E-Mail, Kategorie (Category) im Kalender | Kategorie (Category) | Farbige Kennzeichnung |
 | Suchordner (Search Folder) | Suchergebnisordner (Find Results Folder) | Ordner, der das Ergebnis einer gespeicherten Suche zeigt |
 
