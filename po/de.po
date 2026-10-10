@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: evolution-groupwise\n"
 "Report-Msgid-Bugs-To: rbackes@bond.de\n"
-"POT-Creation-Date: 2026-10-10 19:58+0200\n"
+"POT-Creation-Date: 2026-10-10 21:39+0200\n"
 "PO-Revision-Date: 2026-09-27 18:27+0200\n"
 "Last-Translator: Automatically generated\n"
 "Language-Team: none\n"
@@ -53,31 +53,31 @@ msgstr "Ein Kontakt braucht einen Namen"
 msgid "Not a contact"
 msgstr "Kein Kontakt"
 
-#: src/calendar/e-cal-backend-groupwise.c:435
+#: src/calendar/e-cal-backend-groupwise.c:465
 msgid "The calendar is not set up for GroupWise"
 msgstr "Der Kalender ist nicht für GroupWise eingerichtet"
 
-#: src/calendar/e-cal-backend-groupwise.c:1218
+#: src/calendar/e-cal-backend-groupwise.c:1253
 msgid "accepted"
 msgstr "angenommen"
 
-#: src/calendar/e-cal-backend-groupwise.c:1221
+#: src/calendar/e-cal-backend-groupwise.c:1256
 msgid "declined"
 msgstr "abgelehnt"
 
-#: src/calendar/e-cal-backend-groupwise.c:1224
+#: src/calendar/e-cal-backend-groupwise.c:1259
 msgid "tentative"
 msgstr "vorläufig"
 
-#: src/calendar/e-cal-backend-groupwise.c:1227
+#: src/calendar/e-cal-backend-groupwise.c:1262
 msgid "delegated"
 msgstr "delegiert"
 
-#: src/calendar/e-cal-backend-groupwise.c:1230
+#: src/calendar/e-cal-backend-groupwise.c:1265
 msgid "no answer yet"
 msgstr "noch keine Antwort"
 
-#: src/calendar/e-cal-backend-groupwise.c:2560
+#: src/calendar/e-cal-backend-groupwise.c:2595
 #, c-format
 msgid ""
 "“%s” is the preparation or travel time of an appointment. Move or delete the "
@@ -88,7 +88,7 @@ msgstr ""
 "löschen Sie den Termin selbst; die Reisezeit ändern oder entfernen Sie auf "
 "der Seite „Reisezeit“ des Termins."
 
-#: src/calendar/e-cal-backend-groupwise.c:2848
+#: src/calendar/e-cal-backend-groupwise.c:2883
 #, c-format
 msgid ""
 "“%s” is a meeting you organized in this calendar. Answer the invitation in "
@@ -153,21 +153,69 @@ msgstr ""
 msgid "The server returned no ID for the draft"
 msgstr "Der Server hat keine ID für den Entwurf geliefert"
 
-#: src/camel/camel-groupwise-folder.c:2304
+#: src/camel/camel-groupwise-folder.c:2273
+msgid "Telephoned"
+msgstr "Hat angerufen"
+
+#: src/camel/camel-groupwise-folder.c:2274
+msgid "Please call"
+msgstr "Bitte zurückrufen"
+
+#: src/camel/camel-groupwise-folder.c:2275
+msgid "Will call again"
+msgstr "Ruft wieder an"
+
+#: src/camel/camel-groupwise-folder.c:2276
+msgid "Returned your call"
+msgstr "Hat zurückgerufen"
+
+#: src/camel/camel-groupwise-folder.c:2277
+msgid "Wants to see you"
+msgstr "Möchte Sie sprechen"
+
+#: src/camel/camel-groupwise-folder.c:2278
+msgid "Came to see you"
+msgstr "War hier"
+
+#: src/camel/camel-groupwise-folder.c:2279
+msgid "Urgent"
+msgstr "Dringend"
+
+#: src/camel/camel-groupwise-folder.c:2284
+msgid "Caller:"
+msgstr "Anrufer:"
+
+#: src/camel/camel-groupwise-folder.c:2285
+msgid "Company:"
+msgstr "Firma:"
+
+#: src/camel/camel-groupwise-folder.c:2286
+msgid "Phone:"
+msgstr "Telefon:"
+
+#: src/camel/camel-groupwise-folder.c:2306
+msgid "While you were out"
+msgstr "Während Sie weg waren"
+
+#: src/camel/camel-groupwise-folder.c:2306
+msgid "Phone Message"
+msgstr "Telefonische Nachricht"
+
+#: src/camel/camel-groupwise-folder.c:2430
 #, c-format
 msgid "Cannot get the message %s"
 msgstr "Die Nachricht %s kann nicht abgerufen werden"
 
-#: src/camel/camel-groupwise-folder.c:2350
+#: src/camel/camel-groupwise-folder.c:2476
 msgid "This message is not available in offline mode."
 msgstr "Diese Nachricht ist offline nicht verfügbar."
 
-#: src/camel/camel-groupwise-folder.c:2360
+#: src/camel/camel-groupwise-folder.c:2486
 #, c-format
 msgid "Cannot read the message %s"
 msgstr "Die Nachricht %s kann nicht gelesen werden"
 
-#: src/camel/camel-groupwise-folder.c:2588
+#: src/camel/camel-groupwise-folder.c:2714
 #, c-format
 msgid "Cannot create folder cache %s: %s"
 msgstr "Der Ordner-Cache %s kann nicht angelegt werden: %s"
@@ -399,14 +447,14 @@ msgstr "Proxy-Zugriff gewähren"
 
 #: src/evolution/e-groupwise-access-tab.c:157
 #: src/evolution/e-groupwise-junk-tab.c:70
-#: src/evolution/e-groupwise-mail-ui.c:418
+#: src/evolution/e-groupwise-mail-ui.c:419
 #: src/evolution/e-groupwise-rule-editor.c:1336
 #: src/evolution/e-groupwise-rules-tab.c:351
 #: src/evolution/e-groupwise-sent-items.c:457
 #: src/evolution/e-groupwise-sent-items.c:508
 #: src/evolution/e-groupwise-settings-window.c:375
 #: src/evolution/e-groupwise-signatures-tab.c:228
-#: src/evolution/e-groupwise-travel-page.c:769
+#: src/evolution/e-groupwise-travel-page.c:773
 msgid "_Cancel"
 msgstr "_Abbrechen"
 
@@ -655,78 +703,78 @@ msgstr ""
 msgid "Trust List"
 msgstr "Vertrauensliste"
 
-#: src/evolution/e-groupwise-mail-ui.c:152
+#: src/evolution/e-groupwise-mail-ui.c:153
 msgid "restoring messages"
 msgstr "Nachrichten wiederherstellen"
 
-#: src/evolution/e-groupwise-mail-ui.c:363
+#: src/evolution/e-groupwise-mail-ui.c:364
 msgid "updating the junk mail lists"
 msgstr "Junk-Mail-Listen aktualisieren"
 
-#: src/evolution/e-groupwise-mail-ui.c:390
+#: src/evolution/e-groupwise-mail-ui.c:391
 msgid "Junk the Sender"
 msgstr "Sender als Junk einstufen"
 
-#: src/evolution/e-groupwise-mail-ui.c:390
+#: src/evolution/e-groupwise-mail-ui.c:391
 msgid ""
 "Future mail goes into the Junk Mail folder; this message goes there now."
 msgstr ""
 "Künftige Mail kommt in den Ordner Junk Mail; diese Nachricht kommt jetzt "
 "dorthin."
 
-#: src/evolution/e-groupwise-mail-ui.c:390
+#: src/evolution/e-groupwise-mail-ui.c:391
 msgid "_Junk"
 msgstr "Als _Junk einstufen"
 
-#: src/evolution/e-groupwise-mail-ui.c:391
+#: src/evolution/e-groupwise-mail-ui.c:392
 msgid "Block the Sender"
 msgstr "Sender blockieren"
 
-#: src/evolution/e-groupwise-mail-ui.c:391
+#: src/evolution/e-groupwise-mail-ui.c:392
 msgid ""
 "Future mail is not delivered; this message goes into the Junk Mail folder."
 msgstr ""
 "Künftige Mail wird nicht zugestellt; diese Nachricht kommt in den Ordner "
 "Junk Mail."
 
-#: src/evolution/e-groupwise-mail-ui.c:391
+#: src/evolution/e-groupwise-mail-ui.c:392
 msgid "_Block"
 msgstr "_Blockieren"
 
-#: src/evolution/e-groupwise-mail-ui.c:392
+#: src/evolution/e-groupwise-mail-ui.c:393
 msgid "Trust the Sender"
 msgstr "Sender als verbürgt einstufen"
 
-#: src/evolution/e-groupwise-mail-ui.c:392
+#: src/evolution/e-groupwise-mail-ui.c:393
 msgid ""
 "Mail from the sender is never junk; this message goes back into the Mailbox."
 msgstr ""
 "Mail vom Sender ist nie Junk; diese Nachricht kommt zurück in die Mailbox."
 
-#: src/evolution/e-groupwise-mail-ui.c:392
+#: src/evolution/e-groupwise-mail-ui.c:393
 msgid "_Trust"
 msgstr "Als _verbürgt einstufen"
 
-#: src/evolution/e-groupwise-mail-ui.c:432
+#: src/evolution/e-groupwise-mail-ui.c:433
 #, c-format
 msgid "Only the _address %s"
 msgstr "Nur die _Adresse %s"
 
-#: src/evolution/e-groupwise-mail-ui.c:434
+#: src/evolution/e-groupwise-mail-ui.c:435
 #, c-format
 msgid "Only the _addresses of the %u senders"
 msgstr "Nur die _Adressen der %u Sender"
 
-#: src/evolution/e-groupwise-mail-ui.c:438
+#: src/evolution/e-groupwise-mail-ui.c:439
 #, c-format
 msgid "The whole _domain %s (with its subdomains)"
 msgstr "Die ganze _Domain %s (mit ihren Subdomains)"
 
-#: src/evolution/e-groupwise-mail-ui.c:440
+#: src/evolution/e-groupwise-mail-ui.c:441
 msgid "Their whole _domains (with their subdomains)"
 msgstr "Ihre ganzen _Domains (mit ihren Subdomains)"
 
-#: src/evolution/e-groupwise-mail-ui.c:446
+#: src/evolution/e-groupwise-mail-ui.c:447
 msgid ""
 "This applies to Internet mail only; the lists are in the GroupWise Settings "
 "of the account."
@@ -734,21 +782,21 @@ msgstr ""
 "Das gilt nur für Internet-Mail; die Listen stehen in den GroupWise-"
 "Einstellungen des Kontos."
 
-#: src/evolution/e-groupwise-mail-ui.c:994
+#: src/evolution/e-groupwise-mail-ui.c:997
 msgid "_Restore"
 msgstr "_Wiederherstellen"
 
-#: src/evolution/e-groupwise-mail-ui.c:996
+#: src/evolution/e-groupwise-mail-ui.c:999
 msgid "Put the selected messages back into the folders they were deleted from"
 msgstr ""
 "Die ausgewählten Nachrichten in die Ordner zurücklegen, aus denen sie "
 "gelöscht wurden"
 
-#: src/evolution/e-groupwise-mail-ui.c:1036
+#: src/evolution/e-groupwise-mail-ui.c:1039
 msgid "GroupWise _Settings…"
 msgstr "GroupWise-_Einstellungen …"
 
-#: src/evolution/e-groupwise-mail-ui.c:1038
+#: src/evolution/e-groupwise-mail-ui.c:1041
 msgid ""
 "Settings the GroupWise server keeps for the account: junk mail handling and "
 "more"
@@ -756,59 +804,59 @@ msgstr ""
 "Einstellungen, die der GroupWise-Server für das Konto hält: Junk-Mail-"
 "Verwaltung und mehr"
 
-#: src/evolution/e-groupwise-mail-ui.c:1040
+#: src/evolution/e-groupwise-mail-ui.c:1043
 msgid "GroupWise _Junk Mail"
 msgstr "GroupWise-_Junkmail"
 
-#: src/evolution/e-groupwise-mail-ui.c:1043
+#: src/evolution/e-groupwise-mail-ui.c:1046
 msgid "Junk Mail _Settings…"
 msgstr "Junkmail-_Einstellungen …"
 
-#: src/evolution/e-groupwise-mail-ui.c:1045
+#: src/evolution/e-groupwise-mail-ui.c:1048
 msgid "The junk mail handling of GroupWise: settings and lists"
 msgstr "Die Junkmail-Verwaltung von GroupWise: Einstellungen und Listen"
 
-#: src/evolution/e-groupwise-mail-ui.c:1049
+#: src/evolution/e-groupwise-mail-ui.c:1052
 msgid "_Junk the Sender…"
 msgstr "Sender als _Junk einstufen …"
 
-#: src/evolution/e-groupwise-mail-ui.c:1051
+#: src/evolution/e-groupwise-mail-ui.c:1054
 msgid "Put the sender or the sender's domain onto the junk list of GroupWise"
 msgstr "Den Sender oder seine Domain auf die Junk-Liste von GroupWise setzen"
 
-#: src/evolution/e-groupwise-mail-ui.c:1055
+#: src/evolution/e-groupwise-mail-ui.c:1058
 msgid "_Block the Sender…"
 msgstr "Sender _blockieren …"
 
-#: src/evolution/e-groupwise-mail-ui.c:1057
+#: src/evolution/e-groupwise-mail-ui.c:1060
 msgid "Put the sender or the sender's domain onto the block list of GroupWise"
 msgstr "Den Sender oder seine Domain auf die Blockliste von GroupWise setzen"
 
-#: src/evolution/e-groupwise-mail-ui.c:1061
+#: src/evolution/e-groupwise-mail-ui.c:1064
 msgid "_Trust the Sender…"
 msgstr "Sender als _verbürgt einstufen …"
 
-#: src/evolution/e-groupwise-mail-ui.c:1063
+#: src/evolution/e-groupwise-mail-ui.c:1066
 msgid "Put the sender or the sender's domain onto the trust list of GroupWise"
 msgstr ""
 "Den Sender oder seine Domain auf die Vertrauensliste von GroupWise setzen"
 
-#: src/evolution/e-groupwise-mail-ui.c:1067
+#: src/evolution/e-groupwise-mail-ui.c:1070
 msgid "Delivery _Status…"
 msgstr "_Zustellstatus …"
 
-#: src/evolution/e-groupwise-mail-ui.c:1069
+#: src/evolution/e-groupwise-mail-ui.c:1072
 msgid ""
 "What happened to the message at each recipient: delivered, opened, deleted …"
 msgstr ""
 "Was mit der Nachricht bei jedem Empfänger geschah: zugestellt, geöffnet, "
 "gelöscht …"
 
-#: src/evolution/e-groupwise-mail-ui.c:1073
+#: src/evolution/e-groupwise-mail-ui.c:1076
 msgid "Resen_d…"
 msgstr "_Neu senden …"
 
-#: src/evolution/e-groupwise-mail-ui.c:1075
+#: src/evolution/e-groupwise-mail-ui.c:1078
 msgid ""
 "Open the message to change it and send it anew; sending asks whether the "
 "original is retracted"
@@ -816,11 +864,11 @@ msgstr ""
 "Die Nachricht öffnen, um sie zu ändern und neu zu senden; beim Senden wird "
 "gefragt, ob das Original zurückgezogen wird"
 
-#: src/evolution/e-groupwise-mail-ui.c:1079
+#: src/evolution/e-groupwise-mail-ui.c:1082
 msgid "Re_tract…"
 msgstr "_Zurückziehen …"
 
-#: src/evolution/e-groupwise-mail-ui.c:1081
+#: src/evolution/e-groupwise-mail-ui.c:1084
 msgid "Take the selected messages back from the recipients' mailboxes"
 msgstr ""
 "Die ausgewählten Nachrichten aus den Postfächern der Empfänger zurückholen"
@@ -1863,15 +1911,15 @@ msgstr "Als _Standard"
 msgid "Signatures"
 msgstr "Signaturen"
 
-#: src/evolution/e-groupwise-travel-page.c:322
+#: src/evolution/e-groupwise-travel-page.c:326
 msgid "hours"
 msgstr "Stunden"
 
-#: src/evolution/e-groupwise-travel-page.c:324
+#: src/evolution/e-groupwise-travel-page.c:328
 msgid "minutes"
 msgstr "Minuten"
 
-#: src/evolution/e-groupwise-travel-page.c:341
+#: src/evolution/e-groupwise-travel-page.c:345
 msgid ""
 "Time blocked in your calendar before and after the appointment, for example "
 "to prepare or to get there. It is only yours: attendees of a meeting do not "
@@ -1881,31 +1929,31 @@ msgstr ""
 "zur Vorbereitung oder für die Anreise. Sie gilt nur für Sie: Teilnehmer "
 "einer Besprechung erhalten sie nicht."
 
-#: src/evolution/e-groupwise-travel-page.c:357
+#: src/evolution/e-groupwise-travel-page.c:361
 msgid "_Before the appointment:"
 msgstr "_Vor dem Termin:"
 
-#: src/evolution/e-groupwise-travel-page.c:358
+#: src/evolution/e-groupwise-travel-page.c:362
 msgid "_After the appointment:"
 msgstr "_Nach dem Termin:"
 
-#: src/evolution/e-groupwise-travel-page.c:360
+#: src/evolution/e-groupwise-travel-page.c:364
 msgid "Travel times before/after the appointment are the _same"
 msgstr "Reisezeiten vor/nach Termin sind _gleich"
 
-#: src/evolution/e-groupwise-travel-page.c:765
+#: src/evolution/e-groupwise-travel-page.c:769
 msgid "The appointment overlaps with busy time in your calendar"
 msgstr "Der Termin überschneidet sich mit belegter Zeit in Ihrem Kalender"
 
-#: src/evolution/e-groupwise-travel-page.c:768
+#: src/evolution/e-groupwise-travel-page.c:772
 msgid "The preparation and travel time of the appointment counts, too."
 msgstr "Die Vorbereitungs- und Reisezeit des Termins zählt dabei mit."
 
-#: src/evolution/e-groupwise-travel-page.c:770
+#: src/evolution/e-groupwise-travel-page.c:774
 msgid "_Save Anyway"
 msgstr "_Trotzdem speichern"
 
-#: src/evolution/e-groupwise-travel-page.c:933
+#: src/evolution/e-groupwise-travel-page.c:1065
 msgid "_Travel Time"
 msgstr "_Reisezeit"
 
@@ -2020,23 +2068,23 @@ msgstr "Externe Benutzer"
 msgid "Out of Office"
 msgstr "Abwesenheit"
 
-#: src/evolution/module-groupwise-configuration.c:118
+#: src/evolution/module-groupwise-configuration.c:119
 msgid "Configuration"
 msgstr "Konfiguration"
 
-#: src/evolution/module-groupwise-configuration.c:135
+#: src/evolution/module-groupwise-configuration.c:136
 msgid "_Server (POA):"
 msgstr "_Server (POA):"
 
-#: src/evolution/module-groupwise-configuration.c:141
+#: src/evolution/module-groupwise-configuration.c:142
 msgid "SOAP _port:"
 msgstr "SOAP-_Port:"
 
-#: src/evolution/module-groupwise-configuration.c:147
+#: src/evolution/module-groupwise-configuration.c:148
 msgid "User_name:"
 msgstr "_Benutzername:"
 
-#: src/evolution/module-groupwise-configuration.c:151
+#: src/evolution/module-groupwise-configuration.c:152
 msgid ""
 "The connection is encrypted (TLS) when the post office offers it. A "
 "certificate of an internal certificate authority is trusted once it is "
@@ -2048,11 +2096,11 @@ msgstr ""
 "bestätigt ist, oder dauerhaft, wenn die Zertifizierungsstelle in ~/.config/"
 "evolution-groupwise/ca/ liegt."
 
-#: src/evolution/module-groupwise-configuration.c:221
+#: src/evolution/module-groupwise-configuration.c:222
 msgid "Server cannot be empty"
 msgstr "Der Server darf nicht leer sein"
 
-#: src/evolution/module-groupwise-configuration.c:223
+#: src/evolution/module-groupwise-configuration.c:224
 msgid "User name cannot be empty"
 msgstr "Der Benutzername darf nicht leer sein"
 

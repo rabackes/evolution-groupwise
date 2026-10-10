@@ -105,6 +105,10 @@ typedef struct {
 	/* Attendees looked up as a place already (casefolded addresses) */
 	GHashTable *checked;
 	guint places_idle_id;
+	guint free_idle_id;
+	gboolean made_free;		/* the all-day appointment was made "free" here */
+	gboolean busy_chosen;		/* the user set busy or free themselves */
+	gboolean setting_busy;
 	/* Attendees the editor was opened with: no new location for them */
 	gboolean as_opened;
 } EGroupwiseTravelEditor;
@@ -998,6 +1002,59 @@ travel_editor_attendees_changed_cb (EGroupwiseTravelEditor *editor)
 		editor->places_idle_id = g_idle_add (travel_editor_check_places_cb, editor);
 }
 
+/* An all-day event is "free" in the GroupWise client unless the user says
+ * otherwise: the days of a trade fair do not collide with the appointments
+ * at the fair. Evolution makes every appointment busy. A new all-day
+ * appointment for a GroupWise calendar starts free here, too ("Show Time
+ * as Busy" off), until the user chooses themselves; made an appointment
+ * with times again, it is busy again. */
+static gboolean
+travel_editor_all_day_free_cb (gpointer user_data)
+{
+	EGroupwiseTravelEditor *editor = user_data;
+	ECompEditor *comp_editor = E_COMP_EDITOR (e_extension_get_extensible (E_EXTENSION (editor)));
+	EUIAction *all_day = e_comp_editor_get_action (comp_editor, "all-day-event");
+	EUIAction *busy = e_comp_editor_get_action (comp_editor, "show-time-busy");
+	gboolean want_free;
+
+	editor->free_idle_id = 0;
+	if (!all_day || !busy || editor->busy_chosen ||
+	    !(e_comp_editor_get_flags (comp_editor) & E_COMP_EDITOR_FLAG_IS_NEW) ||
+	    !gtk_widget_get_realized (GTK_WIDGET (comp_editor)) || !target_is_groupwise (comp_editor))
+		return G_SOURCE_REMOVE;
+
+	want_free = e_ui_action_get_active (all_day);
+	if (want_free == editor->made_free && want_free != e_ui_action_get_active (busy))
+		return G_SOURCE_REMOVE;
+	if (want_free || editor->made_free) {
+		editor->setting_busy = TRUE;
+		e_ui_action_set_active (busy, !want_free);
+		editor->setting_busy = FALSE;
+		editor->made_free = want_free;
+	}
+
+	return G_SOURCE_REMOVE;
+}
+
+static void
+travel_editor_all_day_changed_cb (EGroupwiseTravelEditor *editor)
+{
+	if (!editor->free_idle_id)
+		editor->free_idle_id = g_idle_add (travel_editor_all_day_free_cb, editor);
+}
+
+/* "Show Time as Busy" changed otherwise than from here, with the window
+ * there and not while Evolution fills it in: the user's choice */
+static void
+travel_editor_busy_changed_cb (EGroupwiseTravelEditor *editor)
+{
+	ECompEditor *comp_editor = E_COMP_EDITOR (e_extension_get_extensible (E_EXTENSION (editor)));
+
+	if (!editor->setting_busy && gtk_widget_get_realized (GTK_WIDGET (comp_editor)) &&
+	    !e_comp_editor_get_updating (comp_editor))
+		editor->busy_chosen = TRUE;
+}
+
 static void
 travel_editor_constructed (GObject *object)
 {
@@ -1064,6 +1121,18 @@ travel_editor_constructed (GObject *object)
 		G_CALLBACK (travel_editor_ensure_self), object, G_CONNECT_SWAPPED);
 	g_signal_connect_object (comp_editor, "fill-component",
 		G_CALLBACK (travel_editor_fill_component_cb), object, 0);
+
+	/* A new all-day appointment is free, as in the GroupWise client */
+	if (e_comp_editor_get_action (comp_editor, "all-day-event") && e_comp_editor_get_action (comp_editor, "show-time-busy")) {
+		g_signal_connect_object (e_comp_editor_get_action (comp_editor, "all-day-event"), "notify::active",
+			G_CALLBACK (travel_editor_all_day_changed_cb), object, G_CONNECT_SWAPPED);
+		g_signal_connect_object (e_comp_editor_get_action (comp_editor, "show-time-busy"), "notify::active",
+			G_CALLBACK (travel_editor_busy_changed_cb), object, G_CONNECT_SWAPPED);
+		g_signal_connect_object (comp_editor, "notify::target-client",
+			G_CALLBACK (travel_editor_all_day_changed_cb), object, G_CONNECT_SWAPPED | G_CONNECT_AFTER);
+		g_signal_connect_object (comp_editor, "realize",
+			G_CALLBACK (travel_editor_all_day_changed_cb), object, G_CONNECT_SWAPPED | G_CONNECT_AFTER);
+	}
 }
 
 static void
@@ -1074,6 +1143,10 @@ travel_editor_dispose (GObject *object)
 	if (editor->places_idle_id) {
 		g_source_remove (editor->places_idle_id);
 		editor->places_idle_id = 0;
+	}
+	if (editor->free_idle_id) {
+		g_source_remove (editor->free_idle_id);
+		editor->free_idle_id = 0;
 	}
 
 	G_OBJECT_CLASS (e_groupwise_travel_editor_parent_class)->dispose (object);

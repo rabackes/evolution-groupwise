@@ -2223,15 +2223,20 @@ download_to_cache (CamelGroupwiseFolder *gw_folder,
 static gchar *
 find_original_mime (EGwConnection *cnc,
 		    const gchar *message_uid,
+		    gboolean *out_phone_message,
 		    GCancellable *cancellable)
 {
 	EGwResponse *response;
 	xmlNode *node;
-	gchar *id = NULL;
+	gchar *id = NULL, *type;
 
 	response = e_gw_connection_get_item_sync (cnc, message_uid, "attachments peek", cancellable, NULL);
 	if (!response)
 		return NULL;
+
+	type = e_gw_xml_dup_attr (e_gw_xml_find (e_gw_response_get_node (response), "item"), "type");
+	*out_phone_message = type && g_str_has_suffix (type, "PhoneMessage");
+	g_free (type);
 
 	node = e_gw_xml_find (e_gw_response_get_node (response), "item/attachments");
 	for (node = e_gw_xml_first_child (node, "attachment"); node && !id; node = e_gw_xml_next_sibling (node, "attachment")) {
@@ -2251,6 +2256,124 @@ find_original_mime (EGwConnection *cnc,
 	return id;
 }
 
+/* A phone message ("Phone Message", "While You Were Out") is a mail with
+ * some fields of its own: who called, the company, the number, and what
+ * the caller wants. The message as RFC 822 does not have them; they are
+ * put in front of it as a text of their own, which Evolution shows above
+ * the message. */
+static void
+add_phone_fields (CamelFolder *folder,
+		  EGwConnection *cnc,
+		  const gchar *message_uid,
+		  GCancellable *cancellable)
+{
+	static const struct {
+		const gchar *name, *text;
+	} flags[] = {
+		{ "called", N_("Telephoned") },
+		{ "pleaseCall", N_("Please call") },
+		{ "willCall", N_("Will call again") },
+		{ "returnedYourCall", N_("Returned your call") },
+		{ "wantsToSeeYou", N_("Wants to see you") },
+		{ "cameToSeeYou", N_("Came to see you") },
+		{ "urgent", N_("Urgent") }
+	};
+	static const struct {
+		const gchar *name, *label;
+	} fields[] = {
+		{ "caller", N_("Caller:") },
+		{ "company", N_("Company:") },
+		{ "phone", N_("Phone:") }
+	};
+	CamelGroupwiseFolder *gw_folder = CAMEL_GROUPWISE_FOLDER (folder);
+	CamelMimeMessage *message;
+	CamelMultipart *multipart;
+	CamelMimePart *part;
+	CamelDataWrapper *content;
+	EGwResponse *response;
+	GIOStream *stream;
+	GString *text, *wants;
+	xmlNode *item, *node;
+	gchar *view_name;
+	guint ii;
+
+	response = e_gw_connection_get_item_sync (cnc, message_uid, "default peek", cancellable, NULL);
+	if (!response)
+		return;
+	item = e_gw_xml_find (e_gw_response_get_node (response), "item");
+
+	view_name = e_gw_xml_dup_text (item, "viewName");
+	text = g_string_new (g_strcmp0 (view_name, "While You Were Out") == 0 ? _("While you were out") : _("Phone Message"));
+	g_string_append_c (text, '\n');
+	g_free (view_name);
+	for (ii = 0; ii < G_N_ELEMENTS (fields); ii++) {
+		gchar *value = e_gw_xml_dup_text (item, fields[ii].name);
+
+		if (value && *value)
+			g_string_append_printf (text, "%s %s\n", _(fields[ii].label), value);
+		g_free (value);
+	}
+	wants = g_string_new (NULL);
+	for (node = e_gw_xml_first_child (e_gw_xml_find (item, "flags"), NULL); node; node = e_gw_xml_next_sibling (node, NULL)) {
+		const gchar *name = (const gchar *) node->name, *shown = name;
+		gchar *value = e_gw_xml_dup_text (node, NULL);
+
+		for (ii = 0; ii < G_N_ELEMENTS (flags); ii++) {
+			if (g_strcmp0 (name, flags[ii].name) == 0)
+				shown = _(flags[ii].text);
+		}
+		if (g_strcmp0 (value, "1") == 0 || g_strcmp0 (value, "true") == 0)
+			g_string_append_printf (wants, "%s%s", wants->len ? " · " : "", shown);
+		g_free (value);
+	}
+	if (wants->len)
+		g_string_append_printf (text, "%s\n", wants->str);
+	g_string_free (wants, TRUE);
+	e_gw_response_free (response);
+
+	message = groupwise_folder_get_message_cached (folder, message_uid, cancellable);
+	content = message ? camel_medium_get_content (CAMEL_MEDIUM (message)) : NULL;
+	if (!content) {
+		g_clear_object (&message);
+		g_string_free (text, TRUE);
+		return;
+	}
+
+	/* multipart/mixed: the fields, then the message as it was */
+	multipart = camel_multipart_new ();
+	camel_data_wrapper_set_mime_type (CAMEL_DATA_WRAPPER (multipart), "multipart/mixed");
+	camel_multipart_set_boundary (multipart, NULL);
+
+	part = camel_mime_part_new ();
+	camel_mime_part_set_content (part, text->str, text->len, "text/plain; charset=utf-8");
+	camel_mime_part_set_encoding (part, CAMEL_TRANSFER_ENCODING_8BIT);
+	camel_multipart_add_part (multipart, part);
+	g_object_unref (part);
+
+	part = camel_mime_part_new ();
+	if (!CAMEL_IS_MULTIPART (content))
+		camel_mime_part_set_encoding (part, camel_mime_part_get_encoding (CAMEL_MIME_PART (message)));
+	camel_medium_set_content (CAMEL_MEDIUM (part), content);
+	camel_multipart_add_part (multipart, part);
+	g_object_unref (part);
+
+	camel_medium_set_content (CAMEL_MEDIUM (message), CAMEL_DATA_WRAPPER (multipart));
+	g_object_unref (multipart);
+	camel_medium_remove_header (CAMEL_MEDIUM (message), CAMEL_GROUPWISE_ITEM_ID_HEADER);
+
+	camel_data_cache_remove (gw_folder->cache, CACHE_PATH, message_uid, NULL);
+	stream = camel_data_cache_add (gw_folder->cache, CACHE_PATH, message_uid, NULL);
+	if (stream) {
+		if (camel_data_wrapper_write_to_output_stream_sync (CAMEL_DATA_WRAPPER (message),
+			g_io_stream_get_output_stream (stream), cancellable, NULL) < 0)
+			camel_data_cache_remove (gw_folder->cache, CACHE_PATH, message_uid, NULL);
+		g_object_unref (stream);
+	}
+
+	g_object_unref (message);
+	g_string_free (text, TRUE);
+}
+
 /* Brings the message into the cache. For mail from the Internet the POA
  * keeps the original as the hidden attachment "Mime.822": exact headers,
  * Message-ID and signatures, which mime=1 would rebuild or lose. Like the
@@ -2267,13 +2390,13 @@ groupwise_folder_download (CamelFolder *folder,
 	EGwConnection *cnc;
 	GError *local_error = NULL;
 	gchar *original;
-	gboolean success = FALSE;
+	gboolean success = FALSE, phone_message = FALSE;
 
 	cnc = folder_ref_connection_sync (folder, cancellable, error);
 	if (!cnc)
 		return FALSE;
 
-	original = find_original_mime (cnc, message_uid, cancellable);
+	original = find_original_mime (cnc, message_uid, &phone_message, cancellable);
 	if (original) {
 		success = download_to_cache (gw_folder, cnc, message_uid, original, FALSE, cancellable, &local_error);
 
@@ -2295,6 +2418,9 @@ groupwise_folder_download (CamelFolder *folder,
 		g_clear_error (&local_error);
 		success = download_to_cache (gw_folder, cnc, message_uid, message_uid, TRUE, cancellable, &local_error);
 	}
+
+	if (success && phone_message)
+		add_phone_fields (folder, cnc, message_uid, cancellable);
 
 	g_object_unref (cnc);
 

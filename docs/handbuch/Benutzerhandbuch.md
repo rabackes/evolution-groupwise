@@ -35,20 +35,20 @@ Mit einer einzigen Anmeldung stehen zur Verfügung:
 
 ## Begriffe: GroupWise und Evolution
 
-Evolution und der GroupWise-Client nennen dieselben Dinge teils verschieden – und das Wort „Termin“ bedeutet in beiden etwas anderes. Die Tabelle stellt die Bezeichnungen gegenüber; in Klammern die englischen, wie sie in englisch eingestellten Programmen stehen.
+Evolution und der GroupWise-Client nennen dieselben Dinge teils verschieden – und das Wort „Termin“ bedeutet im Deutschen in beiden etwas anderes (im Englischen heißt die Besprechung in beiden „Meeting“). Die Tabelle stellt die Bezeichnungen gegenüber; in Klammern die englischen, wie sie in englisch eingestellten Programmen stehen.
 
 | Evolution | GroupWise-Client | Was es ist |
 |---|---|---|
-| Termin (Appointment) | Persönlicher Termin (Posted Appointment) | Eintrag nur im eigenen Kalender, ohne Teilnehmer |
-| Besprechung (Meeting) | Termin (Appointment) | Termin mit Teilnehmern, der als Einladung gesendet wird |
-| Ganztagstermin (All Day Appointment); im Editor die Option `Ganztägiger Termin` | Option `Ganztägiges Ereignis` (All Day Event) beim Anlegen eines Termins, persönlich oder mit Teilnehmern | Termin ohne Uhrzeit, über ganze Tage. GroupWise zeigt ein ganztägiges Ereignis als „frei“, sodass an dem Tag weitere Termine ohne Konflikt möglich sind (die Messe über drei Tage und die Termine auf der Messe). In Evolution gilt auch ein Ganztagstermin zunächst als beschäftigt; schalten Sie dafür im Editor `Optionen → Zeit als beschäftigt anzeigen` aus – das kommt in GroupWise als „frei“ an, und umgekehrt. |
-| Aufgabe (Task) | Persönlicher Job (Posted Task) | Aufgabe nur für sich selbst |
+| Termin (Appointment) | Persönlicher Termin (Personal Appointment) | Eintrag nur im eigenen Kalender, ohne Teilnehmer |
+| Besprechung (Meeting) | Termin (Meeting) | Termin mit Teilnehmern, der als Einladung gesendet wird |
+| Ganztagstermin (All Day Appointment); im Editor die Option `Ganztägiger Termin` | Option `Ganztägiges Ereignis` (All Day Event) beim Anlegen eines Termins, persönlich oder mit Teilnehmern | Termin ohne Uhrzeit, über ganze Tage. GroupWise zeigt ein ganztägiges Ereignis als „frei“, sodass an dem Tag weitere Termine ohne Konflikt möglich sind (die Messe über drei Tage und die Termine auf der Messe). Evolution macht sonst jeden Termin „beschäftigt“; in einem GroupWise-Kalender ist ein neuer Ganztagstermin wie im GroupWise-Client von vornherein frei. Mit `Optionen → Zeit als beschäftigt anzeigen` im Editor ändern Sie das; es kommt in GroupWise als „frei“ oder „beschäftigt“ an, und umgekehrt. |
+| Aufgabe (Task) | Persönlicher Job (Personal Task) | Aufgabe nur für sich selbst |
 | Zugewiesene Aufgabe (Assigned Task) | Job (Task) | Aufgabe, die an andere gesendet wird |
 | Notiz (Memo) | Persönliche Notiz (Personal Reminder) | Notiz an einem Tag, nur für sich selbst |
 | Gemeinsame Notiz (Shared Memo) | Notiz (Reminder) | Notiz an einem Tag, die an andere gesendet wird |
 | – | Haftnotiz (Sticky Note) | Persönliche Notiz ohne Datum; in Evolution gibt es dafür keine Entsprechung |
 | E-Mail-Nachricht (Mail Message) | Mail | Nachricht |
-| – | Telefonische Nachricht (Phone Message), „Während Sie weg waren“ (While You Were Out) und die persönliche telefonische Nachricht | Nachricht mit zusätzlichen Feldern für Anrufer, Firma, Telefonnummer und Ankreuzfeldern (hat angerufen, bitte zurückrufen, dringend …). Evolution zeigt eine empfangene als gewöhnliche Nachricht, ohne diese Felder, und kann keine anlegen. |
+| – | Telefonische Nachricht (Phone Message), „Während Sie weg waren“ (While You Were Out) und die persönliche telefonische Nachricht | Nachricht mit zusätzlichen Feldern für Anrufer, Firma, Telefonnummer und Ankreuzfeldern (hat angerufen, bitte zurückrufen, dringend …). Evolution zeigt eine empfangene als Nachricht; die Felder stehen als eigener Absatz über dem Nachrichtentext. Anlegen kann Evolution keine. |
 | Aufgaben (Tasks), die Ansicht | Jobliste (Tasklist) | Liste der offenen Aufgaben; die GroupWise-Jobliste enthält zusätzlich Nachrichten, die Sie zur Nachverfolgung markiert haben |
 | Organisator (Organizer) | Absender (From) | Wer eine Besprechung ansetzt |
 | Teilnehmer (Attendees) | Empfänger: An, Kopie (CC), Blindkopie (BC) | Wer eingeladen ist; Evolution unterscheidet stattdessen erforderliche und optionale Teilnehmer |
