@@ -45,6 +45,19 @@ static const gchar *extensions[] = {
 };
 
 static void
+refreshed_cb (GObject *source_object,
+	      GAsyncResult *result,
+	      gpointer user_data)
+{
+	GError *error = NULL;
+
+	if (!e_client_refresh_finish (E_CLIENT (source_object), result, &error))
+		g_debug ("events: refresh of %s: %s",
+			e_source_get_display_name (e_client_get_source (E_CLIENT (source_object))), error ? error->message : "?");
+	g_clear_error (&error);
+}
+
+static void
 refresh_mailbox (EShell *shell,
 		 CamelService *store)
 {
@@ -84,7 +97,7 @@ refresh_mailbox (EShell *shell,
 			/* Only what is open (the others refresh when opened) */
 			client = wanted ? e_client_cache_ref_cached_client (client_cache, source, extensions[ii]) : NULL;
 			if (client) {
-				e_client_refresh (client, NULL, NULL, NULL);
+				e_client_refresh (client, NULL, refreshed_cb, NULL);
 				refreshed++;
 				g_object_unref (client);
 			}
