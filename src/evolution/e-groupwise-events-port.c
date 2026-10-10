@@ -100,7 +100,6 @@ show_message (GtkWindow *parent,
 typedef struct {
 	GtkWindow *parent;	/* weak */
 	guint port;
-	gboolean permanent_done;
 } OpenData;
 
 static void
@@ -122,12 +121,6 @@ open_port_done_cb (GObject *source_object,
 	GError *error = NULL;
 
 	if (g_subprocess_wait_check_finish (G_SUBPROCESS (source_object), result, &error)) {
-		if (!data->permanent_done) {
-			/* ... and for the running firewall */
-			data->permanent_done = TRUE;
-			open_port_step (data);
-			return;
-		}
 		g_debug ("events port: %u opened in the firewall", data->port);
 	} else {
 		gchar *primary = g_strdup_printf (_("TCP port %u could not be opened in the firewall"), data->port);
@@ -142,16 +135,22 @@ open_port_done_cb (GObject *source_object,
 static void
 open_port_step (OpenData *data)
 {
-	gchar *rule = g_strdup_printf ("--add-port=%u/tcp", data->port);
+	/* For good and for the running firewall, as the administrator in one
+	 * go: one question for the password (firewall-cmd by itself asks for
+	 * each of its calls) */
+	gchar *script = g_strdup_printf ("firewall-cmd --permanent --add-port=%u/tcp && firewall-cmd --add-port=%u/tcp",
+		data->port, data->port);
+	gchar *pkexec = g_find_program_in_path ("pkexec");
 	GSubprocess *process;
 	GError *error = NULL;
 
-	process = data->permanent_done ?
+	process = pkexec ?
 		g_subprocess_new (G_SUBPROCESS_FLAGS_STDOUT_SILENCE | G_SUBPROCESS_FLAGS_STDERR_SILENCE, &error,
-			"firewall-cmd", rule, NULL) :
+			pkexec, "/bin/sh", "-c", script, NULL) :
 		g_subprocess_new (G_SUBPROCESS_FLAGS_STDOUT_SILENCE | G_SUBPROCESS_FLAGS_STDERR_SILENCE, &error,
-			"firewall-cmd", "--permanent", rule, NULL);
-	g_free (rule);
+			"/bin/sh", "-c", script, NULL);
+	g_free (pkexec);
+	g_free (script);
 	if (process) {
 		g_subprocess_wait_check_async (process, NULL, open_port_done_cb, data);
 		g_object_unref (process);

@@ -48,6 +48,7 @@ struct _CamelGroupwiseStore {
 	gchar *events_told;		/* "address:port" the configuration tells, or "" */
 	gboolean events_armed;		/* the POA was to tell the next record */
 	guint events_missed;		/* records found that it did not tell, in a row */
+	gint64 events_set_up;		/* monotonic time the configuration was changed; 0: found as it is */
 };
 
 enum {
@@ -957,6 +958,7 @@ groupwise_store_get_default_port (CamelNetworkService *service,
 
 #define EVENTS_TICK_SECONDS CAMEL_GROUPWISE_EVENTS_INTERVAL_MIN
 #define EVENTS_PERSISTENCE_DAYS 1
+#define EVENTS_SETTLE_SECONDS (15 * 60)	/* a changed configuration works for all events by then */
 
 /* One key per installation and login: the configuration lies in the mailbox
  * (of the other user for a proxy account), next to those of others */
@@ -1322,6 +1324,7 @@ events_thread (GTask *task,
 			} else {
 				store->events_configured = e_gw_connection_configure_events_sync (cnc, store->events_key, types,
 					EVENTS_PERSISTENCE_DAYS, address, port, cancellable, &error);
+				store->events_set_up = g_get_monotonic_time ();
 				g_debug ("events: configuration %s%s%s: %s", store->events_key, *told ? ", tells " : "", told,
 					store->events_configured ? "set up" : error ? error->message : "?");
 				g_clear_error (&error);
@@ -1337,9 +1340,14 @@ events_thread (GTask *task,
 			/* Records the POA was to tell and did not, twice in a row:
 			 * it does not reach the port (a firewall, most likely).
 			 * Evolution's side asks the user about it. */
+			/* (Not in the first minutes after the configuration changed:
+			 * the POA takes that long until it tells what is delivered
+			 * and what the GroupWise clients do.) */
 			if (ask->told)
 				store->events_missed = 0;
-			else if (events->len && store->events_armed && port)
+			else if (events->len && store->events_armed && port &&
+				 (!store->events_set_up ||
+				  g_get_monotonic_time () - store->events_set_up > EVENTS_SETTLE_SECONDS * G_USEC_PER_SEC))
 				store->events_missed++;
 			g_object_set_data (G_OBJECT (store), CAMEL_GROUPWISE_STORE_PORT_UNREACHABLE,
 				GUINT_TO_POINTER (port && store->events_missed >= 2 ? port : 0));
