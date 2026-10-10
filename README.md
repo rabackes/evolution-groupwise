@@ -144,7 +144,9 @@ records are kept one day; switching the option off removes configuration and rec
 event types go as `<events><event>…</event></events>` (a plain list is accepted and records nothing); a
 record names the item without type and container; read/unread and purge records name no folder; it works
 in proxy sessions, which have no getQuickMessages. Other applications keep configurations there too
-(GroupWise Mobility): only the own key is touched. The POA can also connect back to the client for each
+(GroupWise Mobility): only the own key is touched. The proxy accounts of the same login take the option and
+the interval over from the main account (`e-groupwise-proxy-options.c`: when the main account changes,
+when a proxy account is made, and at start). The POA can also connect back to the client for each
 first new record (not used yet).
 
 ### Junk mail

@@ -152,7 +152,9 @@ Datensätze. Am POA ermittelt: Die Ereignistypen gehen als `<events><event>…</
 Liste wird angenommen und zeichnet nichts auf); ein Datensatz nennt das Objekt ohne Typ und Container;
 gelesen/ungelesen und getilgt nennen keinen Ordner; es funktioniert in Proxy-Sitzungen, die kein
 getQuickMessages haben. Andere Anwendungen halten dort ebenfalls Konfigurationen (GroupWise Mobility):
-angefasst wird nur der eigene Schlüssel. Der POA kann sich für jeden ersten neuen Datensatz auch beim Client
+angefasst wird nur der eigene Schlüssel. Die Proxy-Konten derselben Anmeldung übernehmen Option und Abstand
+vom Hauptkonto (`e-groupwise-proxy-options.c`: wenn sich das Hauptkonto ändert, wenn ein Proxy-Konto angelegt
+wird, und beim Start). Der POA kann sich für jeden ersten neuen Datensatz auch beim Client
 melden (noch nicht genutzt).
 
 ### Junk-Mail
