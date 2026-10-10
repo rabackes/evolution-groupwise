@@ -38,6 +38,7 @@
 #include <shell/e-shell-view.h>
 
 #include "e-gw-junk.h"
+#include "e-groupwise-calendar-events.h"
 #include "e-groupwise-events-port.h"
 #include "e-groupwise-proxy-options.h"
 #include "e-groupwise-sent-items.h"
@@ -1085,6 +1086,8 @@ e_groupwise_mail_ui_constructed (GObject *object)
 	e_groupwise_proxy_options_start (shell_view_get_registry (shell_view));
 	/* The port the server tells the events of the mailbox at: the firewall */
 	e_groupwise_events_port_start (shell_view);
+	/* What the events say about calendars and lists: refresh those */
+	e_groupwise_calendar_events_start (shell_view);
 	/* The rules of the client's events, for accounts that want it */
 	e_groupwise_rule_runner_start (shell_view_get_registry (shell_view));
 }

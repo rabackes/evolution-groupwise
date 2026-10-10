@@ -53,7 +53,6 @@ gboolean
 e_gw_connection_configure_events_sync (EGwConnection *cnc,
 				       const gchar *key,
 				       const gchar * const *events,
-				       const gchar *item_types,
 				       guint persistence_days,
 				       const gchar *address,
 				       guint port,
@@ -78,10 +77,7 @@ e_gw_connection_configure_events_sync (EGwConnection *cnc,
 	g_string_append (inner, "<definition><events>");
 	for (ii = 0; events[ii]; ii++)
 		e_gw_xml_add_leaf (inner, "event", events[ii]);
-	g_string_append (inner, "</events>");
-	if (item_types && *item_types)
-		e_gw_xml_add_leaf (inner, "type", item_types);
-	g_string_append (inner, "</definition></events>");
+	g_string_append (inner, "</events></definition></events>");
 
 	return call (cnc, "configureEvents", inner, cancellable, error);
 }

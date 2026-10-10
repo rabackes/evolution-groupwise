@@ -54,6 +54,9 @@ gboolean	camel_groupwise_store_get_read_only
 
 /* Data of the store object: the port (as a pointer) the POA was to tell
  * the events of the mailbox at and, as it seems, does not reach; 0 else */
+/* Object datum of a store: a number that grows whenever the events of the
+ * mailbox concern its calendars and lists (which another process keeps) */
+#define CAMEL_GROUPWISE_STORE_CALENDAR_EVENTS "groupwise-events-calendar"
 #define CAMEL_GROUPWISE_STORE_PORT_UNREACHABLE "groupwise-events-port-unreachable"
 
 G_END_DECLS

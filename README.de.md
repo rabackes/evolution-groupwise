@@ -162,12 +162,14 @@ bekommt die Meldung am Port). Ein Klon braucht eine neue Maschinen-ID (`systemd-
 Entfernen von `/etc/machine-id`); das Handbuch beschreibt es. Ein Schlüssel, dessen Rechner es nicht mehr
 gibt, bleibt als Konfiguration im Postfach; seine Datensätze verfallen nach einem Tag.
 
-Das Kalender-Backend macht dasselbe in seinem Prozess (der Calendar-Factory), mit einem eigenen Schlüssel
-(`Evolution-calendar_…`, damit sich beide Seiten die Datensätze nicht wegnehmen) und den Objekttypen
-Appointment, Task und Note: eine Abfrage je Postfach für alle seine Kalender und Listen, die abgeglichen
-werden (`e_cal_meta_backend_schedule_refresh`), wenn ein Datensatz sie nennt – alle Kalender und Listen des
-Postfachs, außer es sind nur Unterkalender genannt. Es verwendet den Abstand der Kontooption; der Port
-bleibt beim Mail-Teil (nur ein Prozess kann darauf lauschen).
+Kalender, Aufgaben- und Notizlisten folgen denselben Ereignissen. Ihr Backend läuft in einem anderen Prozess
+(der Calendar-Factory); der Mail-Store zählt deshalb nur, was sie betrifft – ein Datensatz, der einen Ordner
+außerhalb des Mail-Baums nennt (den Kalender, einen Unterkalender), oder eine Annahme, Ablehnung oder
+Erledigung – in einem Objektdatum (`groupwise-events-calendar`); das Evolution-Modul
+(`e-groupwise-calendar-events.c`) beobachtet es und gleicht die geöffneten Kalender und Listen dieses
+Postfachs ab (`e_client_refresh`): die des Kontos und die Proxy-Kalender desselben Benutzers in anderen
+Konten. (Zuerst versucht wurde eine eigene Konfiguration des Backends, beschränkt auf die Objekttypen
+Appointment, Task und Note: Der POA zeichnete dafür nichts von dem auf, was der GroupWise-Client tat.)
 
 Zweite Option *Der Server meldet Änderungen sofort, an Port … dieses Rechners* (Vorgabe aus, 5221): Die
 Konfiguration nennt dann die Adresse, von der dieser Rechner den POA erreicht, und den Port; der POA baut

@@ -153,12 +153,14 @@ The key carries a hash of `/etc/machine-id`: two machines on one mailbox each ha
 needs a new machine ID (`systemd-machine-id-setup` after removing `/etc/machine-id`); the manual says how.
 A key whose machine is gone stays in the mailbox as a configuration; its records expire after a day.
 
-The calendar backend does the same in its process (the calendar factory), with a key of its own
-(`Evolution-calendar_…`, so that neither side takes the other's records) and the item types Appointment,
-Task and Note: one question per mailbox for all its calendars and lists, which are refreshed
-(`e_cal_meta_backend_schedule_refresh`) when a record names them — every calendar and list of the mailbox
-unless only subcalendars are named. It uses the interval of the account option; the port stays with the
-mail side (one process can listen on it).
+Calendars, task and memo lists follow the same events. Their backend runs in another process (the calendar
+factory), so the mail store only counts what concerns them — a record that names a folder outside the mail
+tree (the Calendar, a subcalendar), or an accept, decline or completion — in an object datum
+(`groupwise-events-calendar`); the Evolution module (`e-groupwise-calendar-events.c`) watches it and
+refreshes the opened calendars and lists of that mailbox (`e_client_refresh`), those of the account and
+the proxy calendars of the same user in other accounts. (A configuration of the backend's own, limited to
+the item types Appointment, Task and Note, was tried first: the POA recorded nothing for it of what the
+GroupWise client did.)
 
 Second option *Let the server tell at once, on port … of this computer* (off by default, 5221): the
 configuration then names the address this machine reaches the POA from and the port; the POA connects

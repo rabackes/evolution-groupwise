@@ -50,6 +50,7 @@ struct _CamelGroupwiseStore {
 	guint events_missed;		/* records found that it did not tell, in a row */
 	gint64 events_set_up;		/* monotonic time the configuration was changed; 0: found as it is */
 	guint events_later;		/* timer: told while busy, asked right after */
+	guint events_calendar;		/* how often the events concerned calendars and lists */
 };
 
 enum {
@@ -999,7 +1000,8 @@ events_refresh_folders (CamelGroupwiseStore *store,
 	GHashTable *by_id = g_hash_table_new (g_str_hash, g_str_equal);	/* folder ID -> open CamelFolder */
 	GHashTable *refresh = g_hash_table_new_full (g_str_hash, g_str_equal, g_free, NULL);	/* full names */
 	GPtrArray *opened = camel_store_dup_opened_folders (CAMEL_STORE (store));
-	gboolean any_added = FALSE, any_trash = FALSE;
+	gboolean any_added = FALSE, any_trash = FALSE, calendar = FALSE;
+	gboolean know_folders = !camel_groupwise_store_summary_is_empty (summary);
 	GHashTableIter iter;
 	gpointer key;
 	guint ii, jj;
@@ -1015,6 +1017,25 @@ events_refresh_folders (CamelGroupwiseStore *store,
 		gboolean purged = g_str_equal (event->type, "ItemPurge");
 		gboolean is_new = g_str_equal (event->type, "FolderItemAdd");
 		gboolean added = is_new || g_str_equal (event->type, "FolderItemMove") || g_str_equal (event->type, "ItemUndelete");
+
+		/* Not the mail's: answers to appointments and tasks, and what
+		 * happens in a folder the mail tree does not have (the
+		 * Calendar, a subcalendar) */
+		if (g_str_equal (event->type, "ItemAccept") || g_str_equal (event->type, "ItemDecline") ||
+		    g_str_equal (event->type, "ItemComplete") || g_str_equal (event->type, "ItemUncomplete")) {
+			calendar = TRUE;
+			continue;
+		}
+		if (know_folders && !calendar) {
+			const gchar *ids[] = { event->container, event->from };
+
+			for (jj = 0; jj < G_N_ELEMENTS (ids) && !calendar; jj++) {
+				gchar *full_name = ids[jj] ? camel_groupwise_store_summary_dup_full_name (summary, ids[jj]) : NULL;
+
+				calendar = ids[jj] && !full_name;
+				g_free (full_name);
+			}
+		}
 
 		any_added = any_added || added;
 		any_trash = any_trash || purged || g_str_equal (event->type, "ItemDelete") || g_str_equal (event->type, "ItemUndelete");
@@ -1082,6 +1103,13 @@ events_refresh_folders (CamelGroupwiseStore *store,
 	g_hash_table_iter_init (&iter, refresh);
 	while (g_hash_table_iter_next (&iter, &key, NULL))
 		g_debug ("events: %s", (const gchar *) key);
+	/* Calendars and lists are another process's: who watches the number
+	 * (the Evolution module) has them refreshed */
+	if (calendar) {
+		g_object_set_data (G_OBJECT (store), CAMEL_GROUPWISE_STORE_CALENDAR_EVENTS,
+			GUINT_TO_POINTER (++store->events_calendar));
+		g_debug ("events: calendars and lists");
+	}
 
 	if (opened)
 		g_ptr_array_unref (opened);
@@ -1356,7 +1384,7 @@ events_thread (GTask *task,
 				g_debug ("events: configuration %s is there%s%s", store->events_key, *told ? ", tells " : "", told);
 			} else {
 				store->events_configured = e_gw_connection_configure_events_sync (cnc, store->events_key, types,
-					NULL, EVENTS_PERSISTENCE_DAYS, address, port, cancellable, &error);
+					EVENTS_PERSISTENCE_DAYS, address, port, cancellable, &error);
 				store->events_set_up = g_get_monotonic_time ();
 				g_debug ("events: configuration %s%s%s: %s", store->events_key, *told ? ", tells " : "", told,
 					store->events_configured ? "set up" : error ? error->message : "?");

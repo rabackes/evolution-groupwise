@@ -648,7 +648,7 @@ test_events (void)
 	g_clear_error (&error);
 
 	g_assert_false (e_gw_connection_has_events_sync (cnc, "test-key", types, NULL, 0, NULL));
-	g_assert_true (e_gw_connection_configure_events_sync (cnc, "test-key", types, NULL, 1, NULL, 0, NULL, &error));
+	g_assert_true (e_gw_connection_configure_events_sync (cnc, "test-key", types, 1, NULL, 0, NULL, &error));
 	g_assert_no_error (error);
 	g_assert_true (e_gw_connection_has_events_sync (cnc, "test-key", types, NULL, 0, NULL));
 	g_assert_false (e_gw_connection_has_events_sync (cnc, "other-key", types, NULL, 0, NULL));
@@ -659,7 +659,7 @@ test_events (void)
 	}
 	/* Told at an address: another configuration than a silent one */
 	g_assert_false (e_gw_connection_has_events_sync (cnc, "test-key", types, "192.0.2.1", 5221, NULL));
-	g_assert_true (e_gw_connection_configure_events_sync (cnc, "test-key", types, NULL, 1, "192.0.2.1", 5221, NULL, &error));
+	g_assert_true (e_gw_connection_configure_events_sync (cnc, "test-key", types, 1, "192.0.2.1", 5221, NULL, &error));
 	g_assert_no_error (error);
 	g_assert_true (e_gw_connection_has_events_sync (cnc, "test-key", types, "192.0.2.1", 5221, NULL));
 	g_assert_false (e_gw_connection_has_events_sync (cnc, "test-key", types, "192.0.2.1", 5222, NULL));
