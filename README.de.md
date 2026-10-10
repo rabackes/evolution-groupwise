@@ -154,8 +154,19 @@ gelesen/ungelesen und getilgt nennen keinen Ordner; es funktioniert in Proxy-Sit
 getQuickMessages haben. Andere Anwendungen halten dort ebenfalls Konfigurationen (GroupWise Mobility):
 angefasst wird nur der eigene Schlüssel. Die Proxy-Konten derselben Anmeldung übernehmen Option und Abstand
 vom Hauptkonto (`e-groupwise-proxy-options.c`: wenn sich das Hauptkonto ändert, wenn ein Proxy-Konto angelegt
-wird, und beim Start). Der POA kann sich für jeden ersten neuen Datensatz auch beim Client
-melden (noch nicht genutzt).
+wird, und beim Start).
+
+Zweite Option *Der Server meldet Änderungen sofort, an Port … dieses Rechners* (Vorgabe aus, 5221): Die
+Konfiguration nennt dann die Adresse, von der dieser Rechner den POA erreicht, und den Port; der POA baut
+dorthin eine Verbindung auf und schickt für den ersten neuen Datensatz einmal
+`<notify xmlns='urn:novell:schemas:ns:events'><userid/><key/></notify>`, bis `getEvents` wieder mit `notify`
+aufgerufen wird (mit Port immer). Ein Lauscher je Port und Prozess für alle Konten (`GSocketService`); eine
+Zeile mit dem Schlüssel des Stores löst die Abfrage sofort aus (höchstens alle zwei Sekunden). Der POA muss
+den Rechner erreichen: mit Firewall oder NAT dazwischen kommt nichts an – der Store bemerkt Datensätze, die
+ihm hätten gemeldet werden sollen (zweimal hintereinander), und setzt an sich
+`groupwise-events-port-unreachable`; `e-groupwise-events-port.c` fragt dann den Benutzer und öffnet den Port
+mit `firewall-cmd --permanent --add-port` und `--add-port` (polkit fragt nach dem Passwort). Gemessen:
+gemeldet etwa 0,6 s nach der Zustellung, die Nachricht nach 2 s im Ordner.
 
 ### Junk-Mail
 
