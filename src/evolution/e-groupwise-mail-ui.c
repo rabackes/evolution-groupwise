@@ -948,6 +948,25 @@ setup_folder_tree (void)
 		GTK_TREE_SORTABLE_DEFAULT_SORT_COLUMN_ID, GTK_SORT_ASCENDING);
 }
 
+/* What runs beside the views, once per session */
+static void
+start_services (EShellView *shell_view)
+{
+	EShell *shell = e_shell_backend_get_shell (e_shell_view_get_shell_backend (shell_view));
+	ESourceRegistry *registry = e_shell_get_registry (shell);
+
+	/* Signatures edited in Evolution go to GroupWise */
+	e_groupwise_signature_sync_start (registry);
+	/* The proxy accounts work with the server as the main account does */
+	e_groupwise_proxy_options_start (registry);
+	/* The port the server tells the events of the mailbox at: the firewall */
+	e_groupwise_events_port_start (shell);
+	/* What the events say about calendars and lists: refresh those */
+	e_groupwise_calendar_events_start (shell);
+	/* The rules of the client's events, for accounts that want it */
+	e_groupwise_rule_runner_start (registry);
+}
+
 static void
 e_groupwise_mail_ui_constructed (GObject *object)
 {
@@ -1067,6 +1086,10 @@ e_groupwise_mail_ui_constructed (GObject *object)
 
 	shell_view = E_SHELL_VIEW (e_extension_get_extensible (E_EXTENSION (object)));
 	shell_view_class = E_SHELL_VIEW_GET_CLASS (shell_view);
+	/* With whichever view Evolution starts (the mail view may come much
+	 * later, or never) */
+	start_services (shell_view);
+
 	if (!shell_view_class || g_strcmp0 (shell_view_class->ui_manager_id, "org.gnome.evolution.mail") != 0)
 		return;
 
@@ -1080,16 +1103,6 @@ e_groupwise_mail_ui_constructed (GObject *object)
 
 	g_signal_connect (shell_view, "update-actions", G_CALLBACK (update_actions_cb), NULL);
 	setup_folder_tree ();
-	/* Signatures edited in Evolution go to GroupWise */
-	e_groupwise_signature_sync_start (shell_view_get_registry (shell_view));
-	/* The proxy accounts work with the server as the main account does */
-	e_groupwise_proxy_options_start (shell_view_get_registry (shell_view));
-	/* The port the server tells the events of the mailbox at: the firewall */
-	e_groupwise_events_port_start (shell_view);
-	/* What the events say about calendars and lists: refresh those */
-	e_groupwise_calendar_events_start (shell_view);
-	/* The rules of the client's events, for accounts that want it */
-	e_groupwise_rule_runner_start (shell_view_get_registry (shell_view));
 }
 
 static void

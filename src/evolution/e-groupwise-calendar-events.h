@@ -19,13 +19,13 @@
 #ifndef E_GROUPWISE_CALENDAR_EVENTS_H
 #define E_GROUPWISE_CALENDAR_EVENTS_H
 
-#include <shell/e-shell-view.h>
+#include <shell/e-shell.h>
 
 G_BEGIN_DECLS
 
-/* Watches the GroupWise mail stores of the mail view for events of the
+/* Watches the GroupWise mail stores for events of the
  * mailbox that concern its calendars and lists, and refreshes those */
-void		e_groupwise_calendar_events_start	(EShellView *shell_view);
+void		e_groupwise_calendar_events_start	(EShell *shell);
 
 G_END_DECLS
 

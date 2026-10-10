@@ -105,14 +105,21 @@ refresh_mailbox (EShell *shell,
 static gboolean
 check_cb (gpointer user_data)
 {
-	EShellView *shell_view = g_weak_ref_get (user_data);
+	EShell *shell = g_weak_ref_get (user_data);
+	EShellBackend *mail_backend;
 	CamelSession *session;
 	GList *services, *link;
 
-	if (!shell_view)
+	if (!shell)
 		return G_SOURCE_REMOVE;
 
-	session = CAMEL_SESSION (e_mail_backend_get_session (E_MAIL_BACKEND (e_shell_view_get_shell_backend (shell_view))));
+	/* The mail backend has the accounts, whichever view is shown */
+	mail_backend = e_shell_get_backend_by_name (shell, "mail");
+	if (!mail_backend || !E_IS_MAIL_BACKEND (mail_backend)) {
+		g_object_unref (shell);
+		return G_SOURCE_CONTINUE;
+	}
+	session = CAMEL_SESSION (e_mail_backend_get_session (E_MAIL_BACKEND (mail_backend)));
 	services = camel_session_list_services (session);
 	for (link = services; link; link = g_list_next (link)) {
 		CamelProvider *provider = CAMEL_IS_STORE (link->data) ? camel_service_get_provider (link->data) : NULL;
@@ -125,11 +132,11 @@ check_cb (gpointer user_data)
 		number = GPOINTER_TO_UINT (g_object_get_data (link->data, STORE_CALENDAR_EVENTS));
 		if (number != GPOINTER_TO_UINT (g_hash_table_lookup (seen, uid))) {
 			g_hash_table_insert (seen, g_strdup (uid), GUINT_TO_POINTER (number));
-			refresh_mailbox (e_shell_backend_get_shell (e_shell_view_get_shell_backend (shell_view)), link->data);
+			refresh_mailbox (shell, link->data);
 		}
 	}
 	g_list_free_full (services, g_object_unref);
-	g_object_unref (shell_view);
+	g_object_unref (shell);
 
 	return G_SOURCE_CONTINUE;
 }
@@ -142,17 +149,17 @@ weak_ref_free (gpointer data)
 }
 
 void
-e_groupwise_calendar_events_start (EShellView *shell_view)
+e_groupwise_calendar_events_start (EShell *shell)
 {
 	GWeakRef *ref;
 
-	g_return_if_fail (E_IS_SHELL_VIEW (shell_view));
+	g_return_if_fail (E_IS_SHELL (shell));
 
 	if (seen)
 		return;
 	seen = g_hash_table_new_full (g_str_hash, g_str_equal, g_free, NULL);
 
 	ref = g_new0 (GWeakRef, 1);
-	g_weak_ref_init (ref, shell_view);
+	g_weak_ref_init (ref, shell);
 	g_timeout_add_seconds_full (G_PRIORITY_DEFAULT_IDLE, CHECK_SECONDS, check_cb, ref, weak_ref_free);
 }

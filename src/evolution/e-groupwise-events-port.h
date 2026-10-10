@@ -19,13 +19,13 @@
 #ifndef E_GROUPWISE_EVENTS_PORT_H
 #define E_GROUPWISE_EVENTS_PORT_H
 
-#include <shell/e-shell-view.h>
+#include <shell/e-shell.h>
 
 G_BEGIN_DECLS
 
-/* Watches the GroupWise mail stores of the mail view for a port the server
+/* Watches the GroupWise mail stores for a port the server
  * does not reach, and asks the user about the firewall then */
-void		e_groupwise_events_port_start	(EShellView *shell_view);
+void		e_groupwise_events_port_start	(EShell *shell);
 
 G_END_DECLS
 
