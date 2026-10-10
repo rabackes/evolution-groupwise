@@ -10,7 +10,7 @@ set_target_properties(module-groupwise-configuration PROPERTIES PREFIX "")
 # The mail view actions use the EUIManager of Evolution 3.56 (before: GtkUIManager)
 if(EVOLUTION_SHELL_VERSION VERSION_GREATER_EQUAL 3.55.1)
 	target_sources(module-groupwise-configuration PRIVATE e-groupwise-mail-ui.c e-groupwise-settings-window.c
-		e-groupwise-access-tab.c e-groupwise-calendar-events.c e-groupwise-delete-dialog.c e-groupwise-junk-tab.c e-groupwise-name-selector.c e-groupwise-events-port.c e-groupwise-proxy-options.c e-groupwise-proxy-tab.c e-groupwise-rule-editor.c e-groupwise-rule-runner.c e-groupwise-rules-tab.c e-groupwise-sent-items.c e-groupwise-signature-sync.c e-groupwise-signatures-tab.c e-groupwise-travel-page.c e-groupwise-vacation-tab.c e-groupwise-ui-utils.c)
+		e-groupwise-access-tab.c e-groupwise-calendar-events.c e-groupwise-defaults.c e-groupwise-delete-dialog.c e-groupwise-junk-tab.c e-groupwise-name-selector.c e-groupwise-events-port.c e-groupwise-proxy-options.c e-groupwise-proxy-tab.c e-groupwise-rule-editor.c e-groupwise-rule-runner.c e-groupwise-rules-tab.c e-groupwise-sent-items.c e-groupwise-signature-sync.c e-groupwise-signatures-tab.c e-groupwise-travel-page.c e-groupwise-vacation-tab.c e-groupwise-ui-utils.c)
 	target_compile_definitions(module-groupwise-configuration PRIVATE GW_HAVE_MAIL_UI)
 else()
 	message(STATUS "Evolution ${EVOLUTION_SHELL_VERSION}: no GroupWise actions in the mail view (need 3.56)")
