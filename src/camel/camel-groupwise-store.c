@@ -1356,7 +1356,7 @@ events_thread (GTask *task,
 				g_debug ("events: configuration %s is there%s%s", store->events_key, *told ? ", tells " : "", told);
 			} else {
 				store->events_configured = e_gw_connection_configure_events_sync (cnc, store->events_key, types,
-					EVENTS_PERSISTENCE_DAYS, address, port, cancellable, &error);
+					NULL, EVENTS_PERSISTENCE_DAYS, address, port, cancellable, &error);
 				store->events_set_up = g_get_monotonic_time ();
 				g_debug ("events: configuration %s%s%s: %s", store->events_key, *told ? ", tells " : "", told,
 					store->events_configured ? "set up" : error ? error->message : "?");

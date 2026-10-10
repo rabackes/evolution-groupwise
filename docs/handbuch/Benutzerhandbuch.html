@@ -228,7 +228,10 @@ openssl x509 -in groupwise-ca.pem -noout -subject -fingerprint -sha256</pre>
 		und gleicht nur die betroffenen Ordner ab. Neue Nachrichten und alles, was Sie im GroupWise-Client
 		oder am Mobilgerät tun, erscheinen dann innerhalb dieses Abstands statt erst beim nächsten Abruf
 		des ganzen Kontos; die Abfrage selbst ist klein. Besonders bei Proxy-Konten spart das Zeit. Der
-		gewohnte Abruf bleibt zusätzlich bestehen. Aus, solange Sie es nicht einschalten; schalten Sie es
+		gewohnte Abruf bleibt zusätzlich bestehen. Die Option gilt auch für <b>Kalender, Aufgaben und
+		Notizen</b> des Kontos: Termine, die Sie im GroupWise-Client oder am Mobilgerät anlegen, ändern
+		oder löschen, und eingehende Einladungen erscheinen innerhalb des Abstands statt erst beim
+		nächsten Abgleich der Kalender (alle 15 Minuten). Aus, solange Sie es nicht einschalten; schalten Sie es
 		wieder aus, entfernt Evolution die Notizen aus dem Postfach. Ihre Proxy-Konten (Abschnitt 4.8)
 		übernehmen diese Einstellung von Ihrem eigenen Konto, auch den Abstand: Sie stellen sie nur dort
 		ein.</td></tr>
@@ -686,7 +689,9 @@ Proxy-Konto eingerichtet haben: deren Kalender stehen dann nur beim Proxy-Konto.
 Erinnerungen. Abonnierte Internet-Kalender, die GroupWise selbst abruft, werden nicht angezeigt – solche
 Kalender kann Evolution bei Bedarf direkt abonnieren.</p>
 <p>Evolution gleicht die Kalender alle 15 Minuten mit dem Server ab, sodass Änderungen aus dem
-GroupWise-Client von selbst erscheinen. Das Intervall können Sie in den Eigenschaften eines Kalenders
+GroupWise-Client von selbst erscheinen. Schneller geht es mit der Kontooption „Den Server alle … Sekunden
+nach Änderungen im Postfach fragen“ (Kapitel 3, Kontooptionen): Dann erscheinen sie innerhalb des dort
+eingestellten Abstands. Das Intervall können Sie in den Eigenschaften eines Kalenders
 ändern.</p>
 
 <h2 id="kal-termine">5.2&nbsp;&nbsp;Termine und Serien</h2>

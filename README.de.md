@@ -156,6 +156,13 @@ angefasst wird nur der eigene Schlüssel. Die Proxy-Konten derselben Anmeldung �
 vom Hauptkonto (`e-groupwise-proxy-options.c`: wenn sich das Hauptkonto ändert, wenn ein Proxy-Konto angelegt
 wird, und beim Start).
 
+Das Kalender-Backend macht dasselbe in seinem Prozess (der Calendar-Factory), mit einem eigenen Schlüssel
+(`Evolution-calendar_…`, damit sich beide Seiten die Datensätze nicht wegnehmen) und den Objekttypen
+Appointment, Task und Note: eine Abfrage je Postfach für alle seine Kalender und Listen, die abgeglichen
+werden (`e_cal_meta_backend_schedule_refresh`), wenn ein Datensatz sie nennt – alle Kalender und Listen des
+Postfachs, außer es sind nur Unterkalender genannt. Es verwendet den Abstand der Kontooption; der Port
+bleibt beim Mail-Teil (nur ein Prozess kann darauf lauschen).
+
 Zweite Option *Der Server meldet Änderungen sofort, an Port … dieses Rechners* (Vorgabe aus, 5221): Die
 Konfiguration nennt dann die Adresse, von der dieser Rechner den POA erreicht, und den Port; der POA baut
 dorthin eine Verbindung auf und schickt für den ersten neuen Datensatz einmal

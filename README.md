@@ -148,6 +148,13 @@ in proxy sessions, which have no getQuickMessages. Other applications keep confi
 the interval over from the main account (`e-groupwise-proxy-options.c`: when the main account changes,
 when a proxy account is made, and at start).
 
+The calendar backend does the same in its process (the calendar factory), with a key of its own
+(`Evolution-calendar_…`, so that neither side takes the other's records) and the item types Appointment,
+Task and Note: one question per mailbox for all its calendars and lists, which are refreshed
+(`e_cal_meta_backend_schedule_refresh`) when a record names them — every calendar and list of the mailbox
+unless only subcalendars are named. It uses the interval of the account option; the port stays with the
+mail side (one process can listen on it).
+
 Second option *Let the server tell at once, on port … of this computer* (off by default, 5221): the
 configuration then names the address this machine reaches the POA from and the port; the POA connects
 there and sends `<notify xmlns='urn:novell:schemas:ns:events'><userid/><key/></notify>` for the first new

@@ -54,6 +54,7 @@
 
 #include "e-gw-backend-utils.h"
 #include "e-gw-category.h"
+#include "e-gw-events.h"
 #include "e-gw-calendar.h"
 #include "e-gw-folder.h"
 #include "e-gw-xml.h"
@@ -102,6 +103,8 @@ struct _ECalBackendGroupwise {
 	/* The login of the account (user@host), shared by its proxy sessions */
 	gchar *account_key;
 	gboolean proxy_session;
+	CamelGroupwiseSettings *settings;	/* of the account: the events options */
+	gchar *events_mailbox;		/* its entry in the table of mailboxes asked for events */
 	gchar *user_name;	/* the owner of the mailbox (of a proxy session) */
 
 	/* Travel time of new meetings, for the own copy the next listing
@@ -116,6 +119,7 @@ static void	own_meetings_publish	(ECalBackendGroupwise *cbgw,
 					 GHashTable *uids);
 static gboolean	own_meetings_published	(ECalBackendGroupwise *cbgw);
 static void	own_meetings_forget	(ECalBackendGroupwise *cbgw);
+static void	cal_events_register	(ECalBackendGroupwise *cbgw);
 static void	account_proxy_add	(const gchar *account_key,
 					 const gchar *email);
 static gboolean	account_proxy_contains	(const gchar *account_key,
@@ -454,6 +458,9 @@ ecb_groupwise_connect_sync (ECalMetaBackend *meta_backend,
 		g_free (user);
 		g_free (host);
 	}
+	g_rec_mutex_lock (&cbgw->lock);
+	g_set_object (&cbgw->settings, settings);
+	g_rec_mutex_unlock (&cbgw->lock);
 	g_object_unref (settings);
 	g_free (proxy);
 
@@ -510,6 +517,10 @@ ecb_groupwise_connect_sync (ECalMetaBackend *meta_backend,
 		 * proxy account as far as the other user granted it */
 		e_cal_backend_set_writable (E_CAL_BACKEND (cbgw), (role == ROLE_MAIN || role == ROLE_OWN) &&
 			(!e_gw_connection_get_proxy (cnc) || proxy_may_write (cbgw, cnc)));
+		/* What happens in the mailbox, for accounts that ask for it (what
+		 * was shared to the user happens in the owner's mailbox) */
+		if (role != ROLE_SHARED)
+			cal_events_register (cbgw);
 		/* What the last session had: proxy calendars leave it out
 		 * from the start, not only after the first listing here */
 		if (!cbgw->proxy_session && (role == ROLE_MAIN || role == ROLE_OWN) &&
@@ -1246,6 +1257,267 @@ decorate_for_tooltip (ECalBackendGroupwise *cbgw,
 		g_free (answer);
 	}
 	g_clear_object (&last_shown);
+}
+
+/* ------------------------------------------------------------------ */
+/* Events: with the account option for it, the POA is asked every so many
+ * seconds what happened to the appointments, tasks and notes of a mailbox
+ * (as the mail side does for mail, with a key of its own), and the
+ * calendars it names are refreshed at once instead of at their next
+ * periodic refresh. One question per mailbox for all its calendars and
+ * lists; the calendars of all accounts share the process. */
+
+#define CAL_EVENTS_TICK_SECONDS CAMEL_GROUPWISE_EVENTS_INTERVAL_MIN
+#define CAL_EVENTS_PERSISTENCE_DAYS 1
+
+typedef struct {
+	gchar *mailbox;		/* account key | owner of the mailbox */
+	gchar *key;
+	GPtrArray *backends;	/* GWeakRef */
+	gint busy;		/* atomic */
+	gint64 asked;
+	gboolean configured;
+	gboolean cleared;
+} CalEvents;
+
+static GMutex cal_events_lock;
+static GHashTable *cal_events;	/* mailbox -> CalEvents */
+static guint cal_events_timer;
+
+static void
+cal_events_weak_ref_free (gpointer data)
+{
+	g_weak_ref_clear (data);
+	g_free (data);
+}
+
+/* The calendars and lists of the mailbox that are there; (transfer full) */
+static GPtrArray *
+cal_events_ref_backends (CalEvents *events)
+{
+	GPtrArray *backends = g_ptr_array_new_with_free_func (g_object_unref);
+	guint ii;
+
+	g_mutex_lock (&cal_events_lock);
+	for (ii = 0; ii < events->backends->len;) {
+		gpointer backend = g_weak_ref_get (events->backends->pdata[ii]);
+
+		if (backend) {
+			g_ptr_array_add (backends, backend);
+			ii++;
+		} else {
+			g_ptr_array_remove_index_fast (events->backends, ii);
+		}
+	}
+	g_mutex_unlock (&cal_events_lock);
+
+	return backends;
+}
+
+typedef struct {
+	CalEvents *events;
+	gboolean wanted;
+} CalEventsAsk;
+
+static void
+cal_events_thread (GTask *task,
+		   gpointer source_object,
+		   gpointer task_data,
+		   GCancellable *cancellable)
+{
+	static const gchar *types[] = { E_GW_EVENTS_CALENDAR, NULL };
+	ECalBackendGroupwise *cbgw = source_object;
+	CalEventsAsk *ask = task_data;
+	CalEvents *events = ask->events;
+	EGwConnection *cnc = ref_connection (cbgw, NULL);
+	GError *error = NULL;
+
+	if (cnc && !ask->wanted) {
+		/* Switched off: nothing of it stays in the mailbox */
+		if (!e_gw_connection_remove_events_sync (cnc, events->key, cancellable, &error))
+			g_debug ("events: no configuration %s to remove: %s", events->key, error ? error->message : "?");
+		g_clear_error (&error);
+		events->configured = FALSE;
+		events->cleared = TRUE;
+	} else if (cnc) {
+		GPtrArray *records = NULL;
+
+		if (!events->configured) {
+			/* Kept from session to session: set up anew, the POA takes
+			 * minutes until it records what the GroupWise clients do */
+			if (e_gw_connection_has_events_sync (cnc, events->key, types, NULL, 0, cancellable)) {
+				events->configured = TRUE;
+				g_debug ("events: configuration %s is there", events->key);
+			} else {
+				events->configured = e_gw_connection_configure_events_sync (cnc, events->key, types,
+					E_GW_EVENTS_CALENDAR_ITEMS, CAL_EVENTS_PERSISTENCE_DAYS, NULL, 0, cancellable, &error);
+				g_debug ("events: configuration %s: %s", events->key,
+					events->configured ? "set up" : error ? error->message : "?");
+				g_clear_error (&error);
+			}
+			events->cleared = FALSE;
+		}
+		if (events->configured)
+			records = e_gw_connection_get_events_sync (cnc, events->key, TRUE, FALSE, cancellable, &error);
+		if (records && records->len) {
+			GPtrArray *backends = cal_events_ref_backends (events);
+			GHashTable *folders = g_hash_table_new (g_str_hash, g_str_equal);
+			gboolean everywhere = FALSE;
+			guint ii;
+
+			/* A subcalendar named: that one and the Calendar, which
+			 * leaves out what the subcalendars have; else every
+			 * calendar and list of the mailbox (the POA names the
+			 * Calendar for all kinds of items, or no folder at all) */
+			for (ii = 0; ii < records->len; ii++) {
+				EGwEvent *record = records->pdata[ii];
+
+				if (record->container)
+					g_hash_table_add (folders, record->container);
+				if (record->from)
+					g_hash_table_add (folders, record->from);
+				everywhere = everywhere || (!record->container && !record->from);
+			}
+			for (ii = 0; ii < backends->len && !everywhere; ii++) {
+				ECalBackendGroupwise *other = backends->pdata[ii];
+
+				everywhere = other->role != ROLE_OWN && other->folder_id && g_hash_table_contains (folders, other->folder_id);
+			}
+			g_debug ("events: %u for %s%s", records->len, events->mailbox, everywhere ? "" : " (subcalendars)");
+			for (ii = 0; ii < backends->len; ii++) {
+				ECalBackendGroupwise *other = backends->pdata[ii];
+
+				if (everywhere || other->role == ROLE_MAIN ||
+				    (other->folder_id && g_hash_table_contains (folders, other->folder_id)))
+					e_cal_meta_backend_schedule_refresh (E_CAL_META_BACKEND (other));
+			}
+			g_hash_table_destroy (folders);
+			g_ptr_array_unref (backends);
+		} else if (!records && events->configured) {
+			/* Set up again the next time (the configuration may be gone) */
+			g_debug ("events: %s", error ? error->message : "?");
+			events->configured = FALSE;
+		}
+		g_clear_pointer (&records, g_ptr_array_unref);
+		g_clear_error (&error);
+	}
+
+	g_clear_object (&cnc);
+	g_atomic_int_set (&events->busy, 0);
+	g_task_return_boolean (task, TRUE);
+}
+
+static gboolean
+cal_events_tick_cb (gpointer user_data)
+{
+	GList *all, *link;
+
+	g_mutex_lock (&cal_events_lock);
+	all = cal_events ? g_hash_table_get_values (cal_events) : NULL;
+	g_mutex_unlock (&cal_events_lock);
+
+	for (link = all; link; link = g_list_next (link)) {
+		CalEvents *events = link->data;
+		GPtrArray *backends = cal_events_ref_backends (events);
+		ECalBackendGroupwise *cbgw = NULL;
+		CamelGroupwiseSettings *settings = NULL;
+		gboolean wanted;
+		guint ii, interval;
+
+		/* One that is connected does the asking */
+		for (ii = 0; ii < backends->len && !cbgw; ii++) {
+			ECalBackendGroupwise *other = backends->pdata[ii];
+
+			g_rec_mutex_lock (&other->lock);
+			if (other->cnc && other->settings) {
+				cbgw = other;
+				settings = g_object_ref (other->settings);
+			}
+			g_rec_mutex_unlock (&other->lock);
+		}
+		if (cbgw && !camel_groupwise_settings_get_read_only (settings)) {
+			wanted = camel_groupwise_settings_get_use_events_interval (settings);
+			interval = camel_groupwise_settings_get_events_interval (settings);
+			if ((wanted ? g_get_monotonic_time () - events->asked >= (gint64) interval * G_USEC_PER_SEC - G_USEC_PER_SEC :
+				      !events->cleared) &&
+			    g_atomic_int_compare_and_exchange (&events->busy, 0, 1)) {
+				GTask *task = g_task_new (cbgw, NULL, NULL, NULL);
+				CalEventsAsk *ask = g_new0 (CalEventsAsk, 1);
+
+				ask->events = events;
+				ask->wanted = wanted;
+				events->asked = g_get_monotonic_time ();
+				g_task_set_task_data (task, ask, g_free);
+				g_task_run_in_thread (task, cal_events_thread);
+				g_object_unref (task);
+			}
+		}
+		g_clear_object (&settings);
+		g_ptr_array_unref (backends);
+	}
+	g_list_free (all);
+
+	return G_SOURCE_CONTINUE;
+}
+
+/* A calendar or list connected: its mailbox is asked for events */
+static void
+cal_events_register (ECalBackendGroupwise *cbgw)
+{
+	CalEvents *events;
+	GWeakRef *ref;
+	gchar *email, *mailbox;
+	guint ii;
+
+	if (!cbgw->account_key || !cbgw->user_email)
+		return;
+
+	email = g_ascii_strdown (cbgw->user_email, -1);
+	mailbox = g_strconcat (cbgw->account_key, "|", email, NULL);
+	g_free (email);
+
+	g_mutex_lock (&cal_events_lock);
+	if (!cal_events)
+		cal_events = g_hash_table_new (g_str_hash, g_str_equal);
+	events = g_hash_table_lookup (cal_events, mailbox);
+	if (!events) {
+		gchar *machine = NULL, *digest;
+		const gchar *at = strchr (cbgw->account_key, '@');
+
+		/* A key of this installation and login, apart from the mail side's */
+		if (!g_file_get_contents ("/etc/machine-id", &machine, NULL, NULL) || !machine || !*machine) {
+			g_free (machine);
+			machine = g_strdup (g_get_host_name ());
+		}
+		digest = g_compute_checksum_for_string (G_CHECKSUM_SHA1, machine, -1);
+		events = g_new0 (CalEvents, 1);
+		events->mailbox = g_strdup (mailbox);
+		events->key = g_strdup_printf ("Evolution-calendar_%.8s_%.*s", digest,
+			(gint) (at ? at - cbgw->account_key : (gint) strlen (cbgw->account_key)), cbgw->account_key);
+		events->backends = g_ptr_array_new_with_free_func (cal_events_weak_ref_free);
+		g_hash_table_insert (cal_events, events->mailbox, events);
+		g_free (digest);
+		g_free (machine);
+	}
+	for (ii = 0; ii < events->backends->len; ii++) {
+		gpointer other = g_weak_ref_get (events->backends->pdata[ii]);
+		gboolean same = other == (gpointer) cbgw;
+
+		g_clear_object (&other);
+		if (same)
+			break;
+	}
+	if (ii == events->backends->len) {
+		ref = g_new0 (GWeakRef, 1);
+		g_weak_ref_init (ref, cbgw);
+		g_ptr_array_add (events->backends, ref);
+	}
+	if (!cal_events_timer)
+		cal_events_timer = g_timeout_add_seconds (CAL_EVENTS_TICK_SECONDS, cal_events_tick_cb, NULL);
+	g_mutex_unlock (&cal_events_lock);
+
+	g_free (cbgw->events_mailbox);
+	cbgw->events_mailbox = mailbox;
 }
 
 static gboolean
@@ -2988,6 +3260,8 @@ ecb_groupwise_finalize (GObject *object)
 	g_free (cbgw->user_email);
 	own_meetings_forget (cbgw);
 	g_free (cbgw->account_key);
+	g_free (cbgw->events_mailbox);
+	g_clear_object (&cbgw->settings);
 	g_free (cbgw->user_name);
 	g_hash_table_destroy (cbgw->pending_travel);
 	g_rec_mutex_clear (&cbgw->lock);

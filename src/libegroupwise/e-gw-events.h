@@ -46,7 +46,14 @@ typedef struct {
 
 void		e_gw_event_free			(EGwEvent *event);
 
+/* What the calendar side wants to know about, and of which items */
+#define E_GW_EVENTS_CALENDAR \
+	"FolderItemAdd", "FolderItemMove", "ItemDelete", "ItemUndelete", "ItemPurge", "ItemModify", \
+	"ItemAccept", "ItemDecline", "ItemComplete", "ItemUncomplete"
+#define E_GW_EVENTS_CALENDAR_ITEMS "Appointment Task Note"
+
 /* Sets the configuration @key up (again): the event types (NULL-terminated),
+ * of the items of @item_types only (space separated; NULL: of every item),
  * records kept @persistence_days (0–20). With @address the POA also
  * connects to @address:@port for each first new record (after a
  * e_gw_connection_get_events_sync() with @notify), else it only records. */
@@ -54,6 +61,7 @@ gboolean	e_gw_connection_configure_events_sync
 						(EGwConnection *cnc,
 						 const gchar *key,
 						 const gchar * const *events,
+						 const gchar *item_types,
 						 guint persistence_days,
 						 const gchar *address,
 						 guint port,
