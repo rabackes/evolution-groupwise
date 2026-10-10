@@ -135,8 +135,11 @@ Account option *Ask the server for changes of the mailbox every … seconds* (of
 15): GroupWise Web Services Events. The store keeps an event configuration under a key of the installation
 (`Evolution_<hash of the machine ID>_<login>`; in the other user's mailbox for a proxy account) for
 FolderItemAdd, FolderItemMove, ItemDelete, ItemUndelete, ItemPurge, ItemMarkRead, ItemMarkUnread and
-ItemModify, reads the records with `getEvents` and `remove`, and refreshes only the folders they name
-(`container`/`from`, or the open folder that has the item; the Sent Items and the Trash as views). The
+ItemModify, reads the records with `getEvents` and `remove`, and puts them into the open folders at once: read and
+unread are set, what left a folder (deleted, purged, moved away) is taken out of it — the cheap check of a
+folder (getQuickMessages) sees neither a deletion nor, it seems, a mail read in the GroupWise client. A
+folder that got an item or whose item changed is refreshed (new mail opens its folder; the Sent Items and
+the Trash as views). The
 records are kept one day; switching the option off removes configuration and records. Found on the POA:
 event types go as `<events><event>…</event></events>` (a plain list is accepted and records nothing); a
 record names the item without type and container; read/unread and purge records name no folder; it works

@@ -150,8 +150,10 @@ events_changed_cb (CamelFolder *folder,
 	GDateTime *now = g_date_time_new_now_local ();
 	gchar *when = g_date_time_format (now, "%H:%M:%S");
 
-	printf ("events: %s Mailbox changed: %u added, %u changed, %u removed\n", when,
-		changes->uid_added->len, changes->uid_changed->len, changes->uid_removed->len);
+	printf ("events: %s Mailbox changed: %u added, %u changed, %u removed; %u unread of %u\n", when,
+		changes->uid_added->len, changes->uid_changed->len, changes->uid_removed->len,
+		camel_folder_summary_get_unread_count (camel_folder_get_folder_summary (folder)),
+		camel_folder_summary_count (camel_folder_get_folder_summary (folder)));
 	fflush (stdout);
 	g_free (when);
 	g_date_time_unref (now);

@@ -142,9 +142,12 @@ Kontooption *Den Server alle … Sekunden nach Änderungen im Postfach fragen* (
 15): GroupWise Web Services Events. Der Store hält eine Event-Konfiguration unter einem Schlüssel der
 Installation (`Evolution_<Hash der Maschinen-ID>_<Anmeldung>`; bei einem Proxy-Konto im Postfach des anderen
 Benutzers) für FolderItemAdd, FolderItemMove, ItemDelete, ItemUndelete, ItemPurge, ItemMarkRead,
-ItemMarkUnread und ItemModify, liest die Datensätze mit `getEvents` und `remove` und gleicht nur die Ordner
-ab, die sie nennen (`container`/`from`, sonst der geöffnete Ordner mit dem Objekt; Ausgangsnachrichten und
-Papierkorb als Ansichten). Die Datensätze bleiben einen Tag; Ausschalten entfernt Konfiguration und
+ItemMarkUnread und ItemModify, liest die Datensätze mit `getEvents` und `remove` und trägt sie
+sofort in die geöffneten Ordner ein: gelesen und ungelesen werden gesetzt, was einen Ordner verlassen hat
+(gelöscht, getilgt, wegverschoben), wird herausgenommen – die schnelle Abfrage eines Ordners
+(getQuickMessages) sieht weder ein Löschen noch, wie es scheint, das Lesen im GroupWise-Client. Ein Ordner,
+der ein Objekt bekommen hat oder dessen Objekt sich geändert hat, wird abgeglichen (neue Mail öffnet ihren
+Ordner; Ausgangsnachrichten und Papierkorb als Ansichten). Die Datensätze bleiben einen Tag; Ausschalten entfernt Konfiguration und
 Datensätze. Am POA ermittelt: Die Ereignistypen gehen als `<events><event>…</event></events>` (eine einfache
 Liste wird angenommen und zeichnet nichts auf); ein Datensatz nennt das Objekt ohne Typ und Container;
 gelesen/ungelesen und getilgt nennen keinen Ordner; es funktioniert in Proxy-Sitzungen, die kein

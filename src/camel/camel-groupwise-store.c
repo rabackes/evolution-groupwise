@@ -978,101 +978,92 @@ events_dup_key (CamelGroupwiseStore *store)
 	return key;
 }
 
-/* The item of an event in a folder that is open: events of some kinds do
- * not name the folder */
-static gboolean
-folder_has_item (CamelFolder *folder,
-		 const gchar *item)
-{
-	CamelFolderSummary *summary = camel_folder_get_folder_summary (folder);
-	GPtrArray *uids = summary ? camel_folder_summary_get_array (summary) : NULL;
-	gsize len = strlen (item);
-	gboolean found = FALSE;
-	guint ii;
-
-	/* A UID is "<item>@<type>:<container>" */
-	for (ii = 0; uids && ii < uids->len && !found; ii++) {
-		const gchar *uid = uids->pdata[ii];
-
-		found = strncmp (uid, item, len) == 0 && uid[len] == '@';
-	}
-	if (uids)
-		camel_folder_summary_free_array (uids);
-
-	return found;
-}
-
+/* What the events say goes into the folders that are open, at once: read
+ * and unread, and what left a folder (deleted, purged, moved away) — the
+ * cheap check of a folder does not see those. A folder that got an item
+ * (new, moved in, undeleted) or whose item changed is refreshed; new mail
+ * opens its folder for it. */
 static void
 events_refresh_folders (CamelGroupwiseStore *store,
 			GPtrArray *events,
 			GCancellable *cancellable)
 {
 	CamelGroupwiseStoreSummary *summary = camel_groupwise_store_get_summary (store);
-	GHashTable *changed = g_hash_table_new_full (g_str_hash, g_str_equal, g_free, NULL);	/* folder ID -> must open */
-	GHashTable *by_name = g_hash_table_new_full (g_str_hash, g_str_equal, g_free, NULL);
+	GHashTable *by_id = g_hash_table_new (g_str_hash, g_str_equal);	/* folder ID -> open CamelFolder */
+	GHashTable *refresh = g_hash_table_new_full (g_str_hash, g_str_equal, g_free, NULL);	/* full names */
 	GPtrArray *opened = camel_store_dup_opened_folders (CAMEL_STORE (store));
 	gboolean any_added = FALSE, any_trash = FALSE;
 	GHashTableIter iter;
-	gpointer key, value;
+	gpointer key;
 	guint ii, jj;
+
+	for (jj = 0; opened && jj < opened->len; jj++) {
+		if (CAMEL_IS_GROUPWISE_FOLDER (opened->pdata[jj]))
+			g_hash_table_insert (by_id, (gpointer) camel_groupwise_folder_get_id (opened->pdata[jj]), opened->pdata[jj]);
+	}
 
 	for (ii = 0; ii < events->len; ii++) {
 		EGwEvent *event = events->pdata[ii];
-		gboolean added = g_str_equal (event->type, "FolderItemAdd") || g_str_equal (event->type, "FolderItemMove");
+		gboolean read = g_str_equal (event->type, "ItemMarkRead"), unread = g_str_equal (event->type, "ItemMarkUnread");
+		gboolean purged = g_str_equal (event->type, "ItemPurge");
+		gboolean added = g_str_equal (event->type, "FolderItemAdd") || g_str_equal (event->type, "FolderItemMove") ||
+			g_str_equal (event->type, "ItemUndelete");
 
 		any_added = any_added || added;
-		any_trash = any_trash || g_str_equal (event->type, "ItemDelete") || g_str_equal (event->type, "ItemUndelete") ||
-			g_str_equal (event->type, "ItemPurge");
-		/* New mail counts in a folder not looked at yet, too */
-		if (event->container && (added || !g_hash_table_contains (changed, event->container)))
-			g_hash_table_insert (changed, g_strdup (event->container),
-				GINT_TO_POINTER (added || GPOINTER_TO_INT (g_hash_table_lookup (changed, event->container))));
-		if (event->from && !g_hash_table_contains (changed, event->from))
-			g_hash_table_insert (changed, g_strdup (event->from), GINT_TO_POINTER (FALSE));
-		if (!event->container && !event->from) {
+		any_trash = any_trash || purged || g_str_equal (event->type, "ItemDelete") || g_str_equal (event->type, "ItemUndelete");
+
+		if (read || unread || purged) {
+			/* In whichever folders it is (the POA does not say) */
 			for (jj = 0; opened && jj < opened->len; jj++) {
-				if (folder_has_item (opened->pdata[jj], event->item))
-					g_hash_table_add (by_name, g_strdup (camel_folder_get_full_name (opened->pdata[jj])));
+				if (CAMEL_IS_GROUPWISE_FOLDER (opened->pdata[jj]))
+					camel_groupwise_folder_apply_event (opened->pdata[jj], event->item,
+						read ? CAMEL_GROUPWISE_EVENT_READ : unread ? CAMEL_GROUPWISE_EVENT_UNREAD :
+						CAMEL_GROUPWISE_EVENT_GONE);
 			}
+			continue;
+		}
+		/* Out of the folder it was in */
+		if (event->from && g_hash_table_contains (by_id, event->from))
+			camel_groupwise_folder_apply_event (g_hash_table_lookup (by_id, event->from), event->item,
+				CAMEL_GROUPWISE_EVENT_GONE);
+		if (event->container && (added || g_hash_table_contains (by_id, event->container))) {
+			gchar *full_name = camel_groupwise_store_summary_dup_full_name (summary, event->container);
+
+			/* New mail counts in a folder not looked at yet, too */
+			if (full_name && !g_hash_table_contains (by_id, event->container)) {
+				CamelFolder *folder = camel_store_get_folder_sync (CAMEL_STORE (store), full_name, 0, cancellable, NULL);
+
+				if (folder && CAMEL_IS_GROUPWISE_FOLDER (folder)) {
+					g_ptr_array_add (opened, folder);
+					g_hash_table_insert (by_id, (gpointer) camel_groupwise_folder_get_id (CAMEL_GROUPWISE_FOLDER (folder)), folder);
+				} else {
+					g_clear_object (&folder);
+				}
+			}
+			if (full_name)
+				g_hash_table_add (refresh, full_name);
 		}
 	}
 
-	g_hash_table_iter_init (&iter, changed);
-	while (g_hash_table_iter_next (&iter, &key, &value)) {
-		gchar *full_name = camel_groupwise_store_summary_dup_full_name (summary, key);
-
-		if (full_name && GPOINTER_TO_INT (value)) {
-			/* Opens it when it is not */
-			CamelFolder *folder = camel_store_get_folder_sync (CAMEL_STORE (store), full_name, 0, cancellable, NULL);
-
-			if (folder) {
-				g_ptr_array_add (opened, folder);
-				g_hash_table_add (by_name, g_strdup (full_name));
-			}
-		} else if (full_name) {
-			g_hash_table_add (by_name, g_strdup (full_name));
-		}
-		g_free (full_name);
-	}
 	/* Views of the POA: what was sent is "added to the Mailbox", what is
 	 * deleted shows in the Trash */
 	if (any_added) {
 		gchar *full_name = camel_groupwise_store_summary_dup_full_name_by_type (summary, E_GW_FOLDER_TYPE_SENT_ITEMS);
 
 		if (full_name)
-			g_hash_table_add (by_name, full_name);
+			g_hash_table_add (refresh, full_name);
 	}
 	if (any_trash) {
 		gchar *full_name = camel_groupwise_store_summary_dup_full_name_by_type (summary, E_GW_FOLDER_TYPE_TRASH);
 
 		if (full_name)
-			g_hash_table_add (by_name, full_name);
+			g_hash_table_add (refresh, full_name);
 	}
 
 	for (ii = 0; opened && ii < opened->len; ii++) {
 		CamelFolder *folder = opened->pdata[ii];
 
-		if (g_hash_table_remove (by_name, camel_folder_get_full_name (folder))) {
+		if (g_hash_table_contains (refresh, camel_folder_get_full_name (folder))) {
 			GError *error = NULL;
 
 			if (!camel_folder_refresh_info_sync (folder, cancellable, &error))
@@ -1080,11 +1071,14 @@ events_refresh_folders (CamelGroupwiseStore *store,
 			g_clear_error (&error);
 		}
 	}
+	g_hash_table_iter_init (&iter, refresh);
+	while (g_hash_table_iter_next (&iter, &key, NULL))
+		g_debug ("events: %s", (const gchar *) key);
 
 	if (opened)
 		g_ptr_array_unref (opened);
-	g_hash_table_destroy (by_name);
-	g_hash_table_destroy (changed);
+	g_hash_table_destroy (refresh);
+	g_hash_table_destroy (by_id);
 }
 
 static void

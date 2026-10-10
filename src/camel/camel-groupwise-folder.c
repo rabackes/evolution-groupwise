@@ -287,6 +287,69 @@ take_server_flags (CamelGroupwiseMessageInfo *info,
 	return TRUE;
 }
 
+gboolean
+camel_groupwise_folder_apply_event (CamelGroupwiseFolder *gw_folder,
+				    const gchar *item,
+				    CamelGroupwiseEvent event)
+{
+	CamelFolder *folder;
+	CamelFolderSummary *summary;
+	CamelFolderChangeInfo *changes;
+	GPtrArray *uids;
+	gchar *found = NULL;
+	gsize len;
+	guint ii;
+
+	g_return_val_if_fail (CAMEL_IS_GROUPWISE_FOLDER (gw_folder), FALSE);
+	g_return_val_if_fail (item != NULL, FALSE);
+
+	folder = CAMEL_FOLDER (gw_folder);
+	summary = camel_folder_get_folder_summary (folder);
+	len = strlen (item);
+
+	/* A UID is "<item>@<type>:<container>" */
+	uids = summary ? camel_folder_summary_get_array (summary) : NULL;
+	for (ii = 0; uids && ii < uids->len && !found; ii++) {
+		const gchar *uid = uids->pdata[ii];
+
+		if (strncmp (uid, item, len) == 0 && uid[len] == '@')
+			found = g_strdup (uid);
+	}
+	if (uids)
+		camel_folder_summary_free_array (uids);
+	if (!found)
+		return FALSE;
+
+	/* Not in the middle of a refresh of the folder */
+	g_mutex_lock (&gw_folder->refresh_lock);
+	changes = camel_folder_change_info_new ();
+	if (event == CAMEL_GROUPWISE_EVENT_GONE) {
+		camel_folder_summary_remove_uid (summary, found);
+		camel_folder_change_info_remove_uid (changes, found);
+		camel_data_cache_remove (gw_folder->cache, CACHE_PATH, found, NULL);
+	} else {
+		CamelMessageInfo *info = camel_folder_summary_get (summary, found);
+
+		if (info && CAMEL_IS_GROUPWISE_MESSAGE_INFO (info)) {
+			guint32 server = camel_groupwise_message_info_get_server_flags (CAMEL_GROUPWISE_MESSAGE_INFO (info));
+
+			server = (server & ~CAMEL_MESSAGE_SEEN) | (event == CAMEL_GROUPWISE_EVENT_READ ? CAMEL_MESSAGE_SEEN : 0);
+			if (take_server_flags (CAMEL_GROUPWISE_MESSAGE_INFO (info), server))
+				camel_folder_change_info_change_uid (changes, found);
+		}
+		g_clear_object (&info);
+	}
+	camel_folder_summary_save (summary, NULL);
+	g_mutex_unlock (&gw_folder->refresh_lock);
+
+	if (camel_folder_change_info_changed (changes))
+		camel_folder_changed (folder, changes);
+	camel_folder_change_info_free (changes);
+	g_free (found);
+
+	return TRUE;
+}
+
 /* The labels after the categories of the server, unless the user changed
  * them and did not write them back. Returns whether they changed. */
 static gboolean

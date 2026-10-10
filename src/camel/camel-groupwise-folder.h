@@ -35,6 +35,20 @@ CamelFolder *	camel_groupwise_folder_new	(CamelStore *store,
 						 GError **error);
 const gchar *	camel_groupwise_folder_get_id	(CamelGroupwiseFolder *folder);
 
+/* What an event of the POA says about an item (its ID without type and
+ * container), put into the folder at once: read or unread, or gone from
+ * it. Returns whether the folder has the item. */
+typedef enum {
+	CAMEL_GROUPWISE_EVENT_READ,
+	CAMEL_GROUPWISE_EVENT_UNREAD,
+	CAMEL_GROUPWISE_EVENT_GONE
+} CamelGroupwiseEvent;
+
+gboolean	camel_groupwise_folder_apply_event
+						(CamelGroupwiseFolder *folder,
+						 const gchar *item,
+						 CamelGroupwiseEvent event);
+
 /* A user flag on messages in the Trash: the next synchronization puts them
  * back where they were deleted from (Evolution's "Restore" of this package) */
 #define CAMEL_GROUPWISE_RESTORE_FLAG "gw-restore"
