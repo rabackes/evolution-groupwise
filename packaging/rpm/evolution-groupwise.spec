@@ -10,7 +10,7 @@
 #
 
 Name:           evolution-groupwise
-Version:        0.8.2
+Version:        0.9.0
 Release:        0
 Summary:        GroupWise mailboxes in Evolution
 License:        LGPL-2.1-or-later
@@ -100,6 +100,16 @@ line tool.
 %endif
 
 %changelog
+* Sat Oct 10 2026 Rainer Backes <rbackes@bond.de> - 0.9.0-0
+- Mail: changes of the mailbox from the events of the POA (GroupWise Web
+  Services Events). New account option: Evolution asks the server every so many
+  seconds what happened in the mailbox; new mail and what other clients do
+  (read, delete, move) shows within the interval, also in proxy accounts.
+- Second option: the server tells at once, on a port of the computer; changes
+  show within a second or two. Evolution notices when the messages do not
+  arrive and offers to open the port in the firewall.
+- Proxy accounts take both options over from the main account.
+
 * Fri Oct 09 2026 Rainer Backes <rbackes@bond.de> - 0.8.2-0
 - Deleting an own meeting asks, as the GroupWise client does, whether it is
   retracted from the attendees' mailboxes too, with a retraction comment.
