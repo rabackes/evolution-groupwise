@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: evolution-groupwise\n"
 "Report-Msgid-Bugs-To: rbackes@bond.de\n"
-"POT-Creation-Date: 2026-10-10 19:33+0200\n"
+"POT-Creation-Date: 2026-10-10 19:58+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -456,11 +456,11 @@ msgstr ""
 msgid "Proxy Access"
 msgstr ""
 
-#: src/evolution/e-groupwise-delete-dialog.c:84
+#: src/evolution/e-groupwise-delete-dialog.c:114
 msgid "Delete Only for _Me"
 msgstr ""
 
-#: src/evolution/e-groupwise-delete-dialog.c:90
+#: src/evolution/e-groupwise-delete-dialog.c:127
 #, c-format
 msgid ""
 "“%s” retracts the meeting from the mailboxes of all attendees. “%s” takes it "
@@ -759,6 +759,10 @@ msgstr ""
 
 #: src/evolution/e-groupwise-mail-ui.c:1081
 msgid "Take the selected messages back from the recipients' mailboxes"
+msgstr ""
+
+#: src/evolution/e-groupwise-name-selector.c:115
+msgid "Automatic"
 msgstr ""
 
 #: src/evolution/e-groupwise-proxy-tab.c:86
@@ -1913,23 +1917,23 @@ msgstr ""
 msgid "Out of Office"
 msgstr ""
 
-#: src/evolution/module-groupwise-configuration.c:117
+#: src/evolution/module-groupwise-configuration.c:118
 msgid "Configuration"
 msgstr ""
 
-#: src/evolution/module-groupwise-configuration.c:134
+#: src/evolution/module-groupwise-configuration.c:135
 msgid "_Server (POA):"
 msgstr ""
 
-#: src/evolution/module-groupwise-configuration.c:140
+#: src/evolution/module-groupwise-configuration.c:141
 msgid "SOAP _port:"
 msgstr ""
 
-#: src/evolution/module-groupwise-configuration.c:146
+#: src/evolution/module-groupwise-configuration.c:147
 msgid "User_name:"
 msgstr ""
 
-#: src/evolution/module-groupwise-configuration.c:150
+#: src/evolution/module-groupwise-configuration.c:151
 msgid ""
 "The connection is encrypted (TLS) when the post office offers it. A "
 "certificate of an internal certificate authority is trusted once it is "
@@ -1937,11 +1941,11 @@ msgid ""
 "groupwise/ca/."
 msgstr ""
 
-#: src/evolution/module-groupwise-configuration.c:220
+#: src/evolution/module-groupwise-configuration.c:221
 msgid "Server cannot be empty"
 msgstr ""
 
-#: src/evolution/module-groupwise-configuration.c:222
+#: src/evolution/module-groupwise-configuration.c:223
 msgid "User name cannot be empty"
 msgstr ""
 

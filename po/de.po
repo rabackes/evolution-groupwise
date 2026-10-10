@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: evolution-groupwise\n"
 "Report-Msgid-Bugs-To: rbackes@bond.de\n"
-"POT-Creation-Date: 2026-10-10 19:33+0200\n"
+"POT-Creation-Date: 2026-10-10 19:58+0200\n"
 "PO-Revision-Date: 2026-09-27 18:27+0200\n"
 "Last-Translator: Automatically generated\n"
 "Language-Team: none\n"
@@ -480,17 +480,21 @@ msgstr "Alle Benutzer"
 msgid "Proxy Access"
 msgstr "Proxy-Zugriff"
 
-#: src/evolution/e-groupwise-delete-dialog.c:84
+#: src/evolution/e-groupwise-delete-dialog.c:114
 msgid "Delete Only for _Me"
 msgstr "Nur für _mich löschen"
 
-#: src/evolution/e-groupwise-delete-dialog.c:90
+#: src/evolution/e-groupwise-delete-dialog.c:127
 #, c-format
 msgid ""
 "“%s” retracts the meeting from the mailboxes of all attendees. “%s” takes it "
 "out of your calendar only: the attendees keep the meeting, and it stays in "
 "your Sent Items, where it can still be retracted."
-msgstr "„%s“ zieht die Besprechung aus den Postfächern aller Teilnehmer zurück. „%s“ entfernt sie nur aus Ihrem Kalender: Die Teilnehmer behalten die Besprechung, und sie bleibt in Ihren gesendeten Objekten, von wo sie sich weiterhin zurückziehen lässt."
+msgstr ""
+"„%s“ zieht die Besprechung aus den Postfächern aller Teilnehmer zurück. „%s“ "
+"entfernt sie nur aus Ihrem Kalender: Die Teilnehmer behalten die "
+"Besprechung, und sie bleibt in Ihren gesendeten Objekten, von wo sie sich "
+"weiterhin zurückziehen lässt."
 
 #: src/evolution/e-groupwise-events-port.c:126
 #: src/evolution/e-groupwise-events-port.c:158
@@ -820,6 +824,10 @@ msgstr "_Zurückziehen …"
 msgid "Take the selected messages back from the recipients' mailboxes"
 msgstr ""
 "Die ausgewählten Nachrichten aus den Postfächern der Empfänger zurückholen"
+
+#: src/evolution/e-groupwise-name-selector.c:115
+msgid "Automatic"
+msgstr "Automatisch"
 
 #: src/evolution/e-groupwise-proxy-tab.c:86
 msgid "Account is made anew on OK"
@@ -2012,23 +2020,23 @@ msgstr "Externe Benutzer"
 msgid "Out of Office"
 msgstr "Abwesenheit"
 
-#: src/evolution/module-groupwise-configuration.c:117
+#: src/evolution/module-groupwise-configuration.c:118
 msgid "Configuration"
 msgstr "Konfiguration"
 
-#: src/evolution/module-groupwise-configuration.c:134
+#: src/evolution/module-groupwise-configuration.c:135
 msgid "_Server (POA):"
 msgstr "_Server (POA):"
 
-#: src/evolution/module-groupwise-configuration.c:140
+#: src/evolution/module-groupwise-configuration.c:141
 msgid "SOAP _port:"
 msgstr "SOAP-_Port:"
 
-#: src/evolution/module-groupwise-configuration.c:146
+#: src/evolution/module-groupwise-configuration.c:147
 msgid "User_name:"
 msgstr "_Benutzername:"
 
-#: src/evolution/module-groupwise-configuration.c:150
+#: src/evolution/module-groupwise-configuration.c:151
 msgid ""
 "The connection is encrypted (TLS) when the post office offers it. A "
 "certificate of an internal certificate authority is trusted once it is "
@@ -2040,11 +2048,11 @@ msgstr ""
 "bestätigt ist, oder dauerhaft, wenn die Zertifizierungsstelle in ~/.config/"
 "evolution-groupwise/ca/ liegt."
 
-#: src/evolution/module-groupwise-configuration.c:220
+#: src/evolution/module-groupwise-configuration.c:221
 msgid "Server cannot be empty"
 msgstr "Der Server darf nicht leer sein"
 
-#: src/evolution/module-groupwise-configuration.c:222
+#: src/evolution/module-groupwise-configuration.c:223
 msgid "User name cannot be empty"
 msgstr "Der Benutzername darf nicht leer sein"
 

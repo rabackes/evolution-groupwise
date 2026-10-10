@@ -21,6 +21,7 @@ src/evolution/e-groupwise-delete-dialog.c
 src/evolution/e-groupwise-events-port.c
 src/evolution/e-groupwise-junk-tab.c
 src/evolution/e-groupwise-mail-ui.c
+src/evolution/e-groupwise-name-selector.c
 src/evolution/e-groupwise-proxy-options.c
 src/evolution/e-groupwise-proxy-tab.c
 src/evolution/e-groupwise-rule-editor.c
