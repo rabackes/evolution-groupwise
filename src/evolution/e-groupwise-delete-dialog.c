@@ -47,9 +47,8 @@ find_cb (GtkWidget *widget,
 
 /* "_Delete and Send Notice" -> "Delete and Send Notice" */
 static gchar *
-dup_plain_label (GtkWidget *button)
+dup_plain_label (const gchar *label)
 {
-	const gchar *label = button && GTK_IS_BUTTON (button) ? gtk_button_get_label (GTK_BUTTON (button)) : NULL;
 	GString *plain = g_string_new (NULL);
 
 	for (; label && *label; label++) {
@@ -61,12 +60,42 @@ dup_plain_label (GtkWidget *button)
 }
 
 static void
+relabel_cb (GtkWidget *widget,
+	    gpointer user_data)
+{
+	const gchar **labels = user_data;	/* old, new */
+
+	if (GTK_IS_BUTTON (widget) && g_strcmp0 (gtk_button_get_label (GTK_BUTTON (widget)), labels[0]) == 0) {
+		gtk_button_set_use_underline (GTK_BUTTON (widget), TRUE);
+		gtk_button_set_label (GTK_BUTTON (widget), labels[1]);
+	}
+}
+
+/* The action of the alert that answers with @response (its button is not
+ * known to the dialog by the response) */
+static EUIAction *
+find_action (EAlert *alert,
+	     gint response)
+{
+	GList *link;
+
+	for (link = e_alert_peek_actions (alert); link; link = g_list_next (link)) {
+		if (GPOINTER_TO_INT (g_object_get_data (link->data, "e-alert-response-id")) == response)
+			return link->data;
+	}
+
+	return NULL;
+}
+
+static void
 adapt (GtkDialog *dialog)
 {
 	EAlert *alert = e_alert_dialog_get_alert (E_ALERT_DIALOG (dialog));
 	const gchar *tag = alert ? e_alert_get_tag (alert) : NULL;
 	gpointer found[3] = { NULL, NULL, NULL };
-	GtkWidget *only_me, *notice;
+	EUIAction *only_me, *notice;
+	gchar *old_label;
+	const gchar *labels[2];
 
 	if (g_strcmp0 (tag, "calendar:prompt-delete-meeting-with-notice-organizer") != 0 &&
 	    g_strcmp0 (tag, "calendar:prompt-delete-titled-meeting-with-notice-organizer") != 0)
@@ -74,16 +103,24 @@ adapt (GtkDialog *dialog)
 
 	found[2] = (gpointer) e_alert_get_secondary_text (alert);
 	gtk_container_forall (GTK_CONTAINER (dialog), find_cb, found);
-	only_me = gtk_dialog_get_widget_for_response (dialog, GTK_RESPONSE_YES);
-	notice = gtk_dialog_get_widget_for_response (dialog, GTK_RESPONSE_APPLY);
+	only_me = find_action (alert, GTK_RESPONSE_YES);
+	notice = find_action (alert, GTK_RESPONSE_APPLY);
 	/* With a deletion reason: a calendar that retracts */
-	if (!found[0] || !only_me || !GTK_IS_BUTTON (only_me))
+	if (!found[0] || !only_me)
 		return;
 
-	gtk_button_set_use_underline (GTK_BUTTON (only_me), TRUE);
-	gtk_button_set_label (GTK_BUTTON (only_me), _("Delete Only for _Me"));
+	old_label = g_strdup (e_ui_action_get_label (only_me));
+	labels[0] = old_label;
+	labels[1] = _("Delete Only for _Me");
+	e_ui_action_set_label (only_me, labels[1]);
+	G_GNUC_BEGIN_IGNORE_DEPRECATIONS
+	gtk_container_forall (GTK_CONTAINER (gtk_dialog_get_action_area (dialog)), relabel_cb, labels);
+	G_GNUC_END_IGNORE_DEPRECATIONS
+	g_free (old_label);
+
 	if (found[1]) {
-		gchar *with_notice = dup_plain_label (notice), *mine = dup_plain_label (only_me), *text;
+		gchar *with_notice = dup_plain_label (notice ? e_ui_action_get_label (notice) : NULL);
+		gchar *mine = dup_plain_label (labels[1]), *text;
 
 		/* Translators: the first %s is the label of the button that
 		 * retracts the meeting, the second %s that of "Delete Only for Me" */
