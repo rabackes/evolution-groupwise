@@ -54,7 +54,6 @@
 
 #include "e-gw-backend-utils.h"
 #include "e-gw-category.h"
-#include "e-gw-events.h"
 #include "e-gw-calendar.h"
 #include "e-gw-folder.h"
 #include "e-gw-xml.h"
@@ -117,9 +116,6 @@ static void	own_meetings_publish	(ECalBackendGroupwise *cbgw,
 					 GHashTable *uids);
 static gboolean	own_meetings_published	(ECalBackendGroupwise *cbgw);
 static void	own_meetings_forget	(ECalBackendGroupwise *cbgw);
-static void	forget_preview_events	(ECalBackendGroupwise *cbgw,
-					 EGwConnection *cnc,
-					 GCancellable *cancellable);
 static void	account_proxy_add	(const gchar *account_key,
 					 const gchar *email);
 static gboolean	account_proxy_contains	(const gchar *account_key,
@@ -514,7 +510,6 @@ ecb_groupwise_connect_sync (ECalMetaBackend *meta_backend,
 		 * proxy account as far as the other user granted it */
 		e_cal_backend_set_writable (E_CAL_BACKEND (cbgw), (role == ROLE_MAIN || role == ROLE_OWN) &&
 			(!e_gw_connection_get_proxy (cnc) || proxy_may_write (cbgw, cnc)));
-		forget_preview_events (cbgw, cnc, cancellable);
 		/* What the last session had: proxy calendars leave it out
 		 * from the start, not only after the first listing here */
 		if (!cbgw->proxy_session && (role == ROLE_MAIN || role == ROLE_OWN) &&
@@ -549,47 +544,6 @@ ecb_groupwise_connect_sync (ECalMetaBackend *meta_backend,
 	}
 
 	return cnc != NULL;
-}
-
-/* TEMPORARY (preview 0.9.0.90 only, never released): that build set up an
- * event configuration of the calendar's own in every mailbox it connected
- * to; it is taken out again, once per mailbox and process. */
-static void
-forget_preview_events (ECalBackendGroupwise *cbgw,
-		       EGwConnection *cnc,
-		       GCancellable *cancellable)
-{
-	static GMutex lock;
-	static GHashTable *done;
-	gchar *mailbox, *machine = NULL, *digest, *key;
-	const gchar *at;
-	gboolean first;
-
-	if (!cbgw->account_key || !cbgw->user_email || cbgw->role == ROLE_SHARED)
-		return;
-
-	mailbox = g_strconcat (cbgw->account_key, "|", cbgw->user_email, NULL);
-	g_mutex_lock (&lock);
-	if (!done)
-		done = g_hash_table_new (g_str_hash, g_str_equal);
-	first = g_hash_table_add (done, mailbox);
-	g_mutex_unlock (&lock);
-	if (!first)
-		return;
-
-	if (!g_file_get_contents ("/etc/machine-id", &machine, NULL, NULL) || !machine || !*machine) {
-		g_free (machine);
-		machine = g_strdup (g_get_host_name ());
-	}
-	digest = g_compute_checksum_for_string (G_CHECKSUM_SHA1, machine, -1);
-	at = strchr (cbgw->account_key, '@');
-	key = g_strdup_printf ("Evolution-calendar_%.8s_%.*s", digest,
-		(gint) (at ? at - cbgw->account_key : (gint) strlen (cbgw->account_key)), cbgw->account_key);
-	g_debug ("events: preview configuration %s of %s: %s", key, cbgw->user_email,
-		e_gw_connection_remove_events_sync (cnc, key, cancellable, NULL) ? "removed" : "not there");
-	g_free (key);
-	g_free (digest);
-	g_free (machine);
 }
 
 static gboolean
