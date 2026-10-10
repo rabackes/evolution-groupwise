@@ -44,11 +44,11 @@ Evolution und der GroupWise-Client nennen dieselben Dinge teils verschieden – 
 | Ganztagstermin (All Day Appointment); im Editor die Option `Ganztägiger Termin` | Option `Ganztägiges Ereignis` (All Day Event) beim Anlegen eines Termins, persönlich oder mit Teilnehmern | Termin ohne Uhrzeit, über ganze Tage. GroupWise zeigt ein ganztägiges Ereignis als „frei“, sodass an dem Tag weitere Termine ohne Konflikt möglich sind (die Messe über drei Tage und die Termine auf der Messe). In Evolution gilt auch ein Ganztagstermin zunächst als beschäftigt; schalten Sie dafür im Editor `Optionen → Zeit als beschäftigt anzeigen` aus – das kommt in GroupWise als „frei“ an, und umgekehrt. |
 | Aufgabe (Task) | Persönlicher Job (Posted Task) | Aufgabe nur für sich selbst |
 | Zugewiesene Aufgabe (Assigned Task) | Job (Task) | Aufgabe, die an andere gesendet wird |
-| Notiz (Memo) | Persönliche Notiz (Posted Reminder Note) | Notiz an einem Tag, nur für sich selbst |
-| Gemeinsame Notiz (Shared Memo) | Notiz (Reminder Note) | Notiz an einem Tag, die an andere gesendet wird |
-| – | Haftnotiz | Persönliche Notiz ohne Datum; in Evolution gibt es dafür keine Entsprechung |
+| Notiz (Memo) | Persönliche Notiz (Personal Reminder) | Notiz an einem Tag, nur für sich selbst |
+| Gemeinsame Notiz (Shared Memo) | Notiz (Reminder) | Notiz an einem Tag, die an andere gesendet wird |
+| – | Haftnotiz (Sticky Note) | Persönliche Notiz ohne Datum; in Evolution gibt es dafür keine Entsprechung |
 | E-Mail-Nachricht (Mail Message) | Mail | Nachricht |
-| – | Telefonnachricht (Phone Message) | Nachricht mit zusätzlichen Feldern für Anrufer, Firma und Telefonnummer; Evolution kann solche Nachrichten nicht anlegen |
+| – | Telefonische Nachricht (Phone Message), „Während Sie weg waren“ (While You Were Out) und die persönliche telefonische Nachricht | Nachricht mit zusätzlichen Feldern für Anrufer, Firma, Telefonnummer und Ankreuzfeldern (hat angerufen, bitte zurückrufen, dringend …). Evolution zeigt eine empfangene als gewöhnliche Nachricht, ohne diese Felder, und kann keine anlegen. |
 | Aufgaben (Tasks), die Ansicht | Jobliste (Tasklist) | Liste der offenen Aufgaben; die GroupWise-Jobliste enthält zusätzlich Nachrichten, die Sie zur Nachverfolgung markiert haben |
 | Organisator (Organizer) | Absender (From) | Wer eine Besprechung ansetzt |
 | Teilnehmer (Attendees) | Empfänger: An, Kopie (CC), Blindkopie (BC) | Wer eingeladen ist; Evolution unterscheidet stattdessen erforderliche und optionale Teilnehmer |
