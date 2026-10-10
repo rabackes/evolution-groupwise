@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 3.16)
 
-project(evolution-groupwise VERSION 0.9.0 LANGUAGES C)
+project(evolution-groupwise VERSION 0.9.1 LANGUAGES C)
 
 include(GNUInstallDirs)
 find_package(PkgConfig REQUIRED)

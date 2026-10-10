@@ -10,7 +10,7 @@
 #
 
 Name:           evolution-groupwise
-Version:        0.9.0
+Version:        0.9.1
 Release:        0
 Summary:        GroupWise mailboxes in Evolution
 License:        LGPL-2.1-or-later
@@ -100,6 +100,15 @@ line tool.
 %endif
 
 %changelog
+* Sat Oct 10 2026 Rainer Backes <rbackes@bond.de> - 0.9.1-0
+- Calendars, task and memo lists follow the events of the mailbox: what is
+  made, changed, deleted, accepted or completed in another client shows within
+  seconds while Evolution runs, with the account option for the events.
+- The background tasks of the Evolution module (signatures, options of proxy
+  accounts, rules, the question about the port) start with whichever view
+  Evolution starts in, not only with the mail view.
+- Manual: cloned machines share the machine ID and take each other's events.
+
 * Sat Oct 10 2026 Rainer Backes <rbackes@bond.de> - 0.9.0-0
 - Mail: changes of the mailbox from the events of the POA (GroupWise Web
   Services Events). New account option: Evolution asks the server every so many

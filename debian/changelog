@@ -1,3 +1,17 @@
+evolution-groupwise (0.9.1) noble; urgency=medium
+
+  * Calendars, task and memo lists follow the events of the mailbox:
+    what is made, changed, deleted, accepted or completed in another
+    client shows within seconds while Evolution runs, with the account
+    option for the events.
+  * The background tasks of the Evolution module (signatures, options of
+    proxy accounts, rules, the question about the port) start with
+    whichever view Evolution starts in, not only with the mail view.
+  * Manual: cloned machines share the machine ID and take each other's
+    events.
+
+ -- Rainer Backes <rbackes@bond.de>  Sat, 10 Oct 2026 15:47:00 +0200
+
 evolution-groupwise (0.9.0) noble; urgency=medium
 
   * Mail: changes of the mailbox from the events of the POA (GroupWise

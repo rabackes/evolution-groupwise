@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: evolution-groupwise\n"
 "Report-Msgid-Bugs-To: rbackes@bond.de\n"
-"POT-Creation-Date: 2026-10-10 13:31+0200\n"
+"POT-Creation-Date: 2026-10-10 15:47+0200\n"
 "PO-Revision-Date: 2026-09-27 18:27+0200\n"
 "Last-Translator: Automatically generated\n"
 "Language-Team: none\n"
@@ -128,7 +128,7 @@ msgstr "Der Ordner Mailbox ist nicht bekannt"
 
 #: src/camel/camel-groupwise-folder.c:1945
 #: src/camel/camel-groupwise-folder.c:2067
-#: src/camel/camel-groupwise-store.c:671
+#: src/camel/camel-groupwise-store.c:674
 #: src/camel/camel-groupwise-transport.c:220
 msgid "The account is read-only"
 msgstr "Das Konto ist schreibgeschützt"
@@ -244,58 +244,58 @@ msgstr ""
 "Für den Zugriff auf GroupWise-Postfächer über die SOAP-Schnittstelle des "
 "Post Office Agent."
 
-#: src/camel/camel-groupwise-store.c:60
+#: src/camel/camel-groupwise-store.c:63
 msgid "Password"
 msgstr "Passwort"
 
-#: src/camel/camel-groupwise-store.c:61
+#: src/camel/camel-groupwise-store.c:64
 msgid ""
 "This option will connect to the GroupWise server using a plaintext password."
 msgstr ""
 "Mit dieser Option meldet sich Evolution mit einem Klartext-Passwort am "
 "GroupWise-Server an."
 
-#: src/camel/camel-groupwise-store.c:291
+#: src/camel/camel-groupwise-store.c:294
 msgid "You must be working online to complete this operation"
 msgstr "Für diesen Vorgang müssen Sie online arbeiten"
 
-#: src/camel/camel-groupwise-store.c:334
+#: src/camel/camel-groupwise-store.c:337
 #: src/camel/camel-groupwise-transport.c:125
 #, c-format
 msgid "GroupWise server %s"
 msgstr "GroupWise-Server %s"
 
-#: src/camel/camel-groupwise-store.c:336
+#: src/camel/camel-groupwise-store.c:339
 #, c-format
 msgid "GroupWise mail of %s as proxy of %s on %s"
 msgstr "GroupWise-Mail von %s (Proxy-Zugriff als %s) auf %s"
 
-#: src/camel/camel-groupwise-store.c:338
+#: src/camel/camel-groupwise-store.c:341
 #, c-format
 msgid "GroupWise mail for %s on %s"
 msgstr "GroupWise-Mail für %s auf %s"
 
-#: src/camel/camel-groupwise-store.c:451
+#: src/camel/camel-groupwise-store.c:454
 #, c-format
 msgid "%s has not granted you the right to read mail"
 msgstr "%s hat Ihnen kein Recht zum Lesen von Mail gegeben"
 
-#: src/camel/camel-groupwise-store.c:533 src/camel/camel-groupwise-store.c:565
-#: src/camel/camel-groupwise-store.c:686 src/camel/camel-groupwise-store.c:747
-#: src/camel/camel-groupwise-store.c:837
+#: src/camel/camel-groupwise-store.c:536 src/camel/camel-groupwise-store.c:568
+#: src/camel/camel-groupwise-store.c:689 src/camel/camel-groupwise-store.c:750
+#: src/camel/camel-groupwise-store.c:840
 #, c-format
 msgid "No such folder: %s"
 msgstr "Ordner nicht vorhanden: %s"
 
-#: src/camel/camel-groupwise-store.c:593
+#: src/camel/camel-groupwise-store.c:596
 msgid "The mailbox has no Mailbox folder"
 msgstr "Das Postfach hat keinen Mailbox-Ordner"
 
-#: src/camel/camel-groupwise-store.c:614
+#: src/camel/camel-groupwise-store.c:617
 msgid "The mailbox has no Trash folder"
 msgstr "Das Postfach hat keinen Papierkorb"
 
-#: src/camel/camel-groupwise-store.c:638
+#: src/camel/camel-groupwise-store.c:641
 msgid ""
 "The mailbox has no Junk Mail folder; switch on the junk mail handling of "
 "GroupWise"
@@ -303,12 +303,12 @@ msgstr ""
 "Das Postfach hat keinen Ordner „Junk Mail“; schalten Sie die Junk-Mail-"
 "Verwaltung von GroupWise ein"
 
-#: src/camel/camel-groupwise-store.c:692
+#: src/camel/camel-groupwise-store.c:695
 #, c-format
 msgid "%s is a system folder of GroupWise"
 msgstr "%s ist ein Systemordner von GroupWise"
 
-#: src/camel/camel-groupwise-store.c:741
+#: src/camel/camel-groupwise-store.c:744
 msgid "A folder name must not contain \"/\""
 msgstr "Ein Ordnername darf kein „/“ enthalten"
 
@@ -399,7 +399,7 @@ msgstr "Proxy-Zugriff gewähren"
 
 #: src/evolution/e-groupwise-access-tab.c:157
 #: src/evolution/e-groupwise-junk-tab.c:70
-#: src/evolution/e-groupwise-mail-ui.c:416
+#: src/evolution/e-groupwise-mail-ui.c:417
 #: src/evolution/e-groupwise-rule-editor.c:1336
 #: src/evolution/e-groupwise-rules-tab.c:351
 #: src/evolution/e-groupwise-sent-items.c:457
@@ -480,29 +480,31 @@ msgstr "Alle Benutzer"
 msgid "Proxy Access"
 msgstr "Proxy-Zugriff"
 
-#: src/evolution/e-groupwise-events-port.c:133
-#: src/evolution/e-groupwise-events-port.c:159
+#: src/evolution/e-groupwise-events-port.c:126
+#: src/evolution/e-groupwise-events-port.c:158
 #, c-format
 msgid "TCP port %u could not be opened in the firewall"
 msgstr "TCP-Port %u konnte in der Firewall nicht geöffnet werden"
 
-#: src/evolution/e-groupwise-events-port.c:190
+#: src/evolution/e-groupwise-events-port.c:189
 #, c-format
 msgid ""
 "This computer has no firewalld (firewall-cmd). Let TCP port %u in with the "
 "firewall it uses."
-msgstr "Auf diesem Rechner gibt es kein firewalld (firewall-cmd). Geben Sie TCP-Port %u in der verwendeten Firewall frei."
+msgstr ""
+"Auf diesem Rechner gibt es kein firewalld (firewall-cmd). Geben Sie TCP-Port "
+"%u in der verwendeten Firewall frei."
 
-#: src/evolution/e-groupwise-events-port.c:193
+#: src/evolution/e-groupwise-events-port.c:192
 msgid "Evolution cannot open the port itself"
 msgstr "Evolution kann den Port nicht selbst öffnen"
 
-#: src/evolution/e-groupwise-events-port.c:208
+#: src/evolution/e-groupwise-events-port.c:207
 #, c-format
 msgid "The GroupWise server does not reach this computer on port %u"
 msgstr "Der GroupWise-Server erreicht diesen Rechner auf Port %u nicht"
 
-#: src/evolution/e-groupwise-events-port.c:210
+#: src/evolution/e-groupwise-events-port.c:209
 #, c-format
 msgid ""
 "The server is to tell at once when something changes in your mailbox, but "
@@ -512,17 +514,24 @@ msgid ""
 "\n"
 "Evolution can open TCP port %u in the firewall; the system then asks for the "
 "administrator's password."
-msgstr "Der Server soll sofort melden, wenn sich in Ihrem Postfach etwas ändert, aber seine Meldungen kommen nicht an: Wahrscheinlich lässt die Firewall dieses Rechners sie nicht herein. Die Änderungen erscheinen trotzdem, nach dem für das Konto eingestellten Abstand.\n\nEvolution kann TCP-Port %u in der Firewall öffnen; das System fragt dann nach dem Administrator-Passwort."
+msgstr ""
+"Der Server soll sofort melden, wenn sich in Ihrem Postfach etwas ändert, "
+"aber seine Meldungen kommen nicht an: Wahrscheinlich lässt die Firewall "
+"dieses Rechners sie nicht herein. Die Änderungen erscheinen trotzdem, nach "
+"dem für das Konto eingestellten Abstand.\n"
+"\n"
+"Evolution kann TCP-Port %u in der Firewall öffnen; das System fragt dann "
+"nach dem Administrator-Passwort."
 
-#: src/evolution/e-groupwise-events-port.c:215
+#: src/evolution/e-groupwise-events-port.c:214
 msgid "Do Not Ask _Again"
 msgstr "Nicht _mehr fragen"
 
-#: src/evolution/e-groupwise-events-port.c:216
+#: src/evolution/e-groupwise-events-port.c:215
 msgid "_Not Now"
 msgstr "_Nicht jetzt"
 
-#: src/evolution/e-groupwise-events-port.c:217
+#: src/evolution/e-groupwise-events-port.c:216
 msgid "_Open the Port"
 msgstr "Port ö_ffnen"
 
@@ -630,78 +639,78 @@ msgstr ""
 msgid "Trust List"
 msgstr "Vertrauensliste"
 
-#: src/evolution/e-groupwise-mail-ui.c:150
+#: src/evolution/e-groupwise-mail-ui.c:151
 msgid "restoring messages"
 msgstr "Nachrichten wiederherstellen"
 
-#: src/evolution/e-groupwise-mail-ui.c:361
+#: src/evolution/e-groupwise-mail-ui.c:362
 msgid "updating the junk mail lists"
 msgstr "Junk-Mail-Listen aktualisieren"
 
-#: src/evolution/e-groupwise-mail-ui.c:388
+#: src/evolution/e-groupwise-mail-ui.c:389
 msgid "Junk the Sender"
 msgstr "Sender als Junk einstufen"
 
-#: src/evolution/e-groupwise-mail-ui.c:388
+#: src/evolution/e-groupwise-mail-ui.c:389
 msgid ""
 "Future mail goes into the Junk Mail folder; this message goes there now."
 msgstr ""
 "Künftige Mail kommt in den Ordner Junk Mail; diese Nachricht kommt jetzt "
 "dorthin."
 
-#: src/evolution/e-groupwise-mail-ui.c:388
+#: src/evolution/e-groupwise-mail-ui.c:389
 msgid "_Junk"
 msgstr "Als _Junk einstufen"
 
-#: src/evolution/e-groupwise-mail-ui.c:389
+#: src/evolution/e-groupwise-mail-ui.c:390
 msgid "Block the Sender"
 msgstr "Sender blockieren"
 
-#: src/evolution/e-groupwise-mail-ui.c:389
+#: src/evolution/e-groupwise-mail-ui.c:390
 msgid ""
 "Future mail is not delivered; this message goes into the Junk Mail folder."
 msgstr ""
 "Künftige Mail wird nicht zugestellt; diese Nachricht kommt in den Ordner "
 "Junk Mail."
 
-#: src/evolution/e-groupwise-mail-ui.c:389
+#: src/evolution/e-groupwise-mail-ui.c:390
 msgid "_Block"
 msgstr "_Blockieren"
 
-#: src/evolution/e-groupwise-mail-ui.c:390
+#: src/evolution/e-groupwise-mail-ui.c:391
 msgid "Trust the Sender"
 msgstr "Sender als verbürgt einstufen"
 
-#: src/evolution/e-groupwise-mail-ui.c:390
+#: src/evolution/e-groupwise-mail-ui.c:391
 msgid ""
 "Mail from the sender is never junk; this message goes back into the Mailbox."
 msgstr ""
 "Mail vom Sender ist nie Junk; diese Nachricht kommt zurück in die Mailbox."
 
-#: src/evolution/e-groupwise-mail-ui.c:390
+#: src/evolution/e-groupwise-mail-ui.c:391
 msgid "_Trust"
 msgstr "Als _verbürgt einstufen"
 
-#: src/evolution/e-groupwise-mail-ui.c:430
+#: src/evolution/e-groupwise-mail-ui.c:431
 #, c-format
 msgid "Only the _address %s"
 msgstr "Nur die _Adresse %s"
 
-#: src/evolution/e-groupwise-mail-ui.c:432
+#: src/evolution/e-groupwise-mail-ui.c:433
 #, c-format
 msgid "Only the _addresses of the %u senders"
 msgstr "Nur die _Adressen der %u Sender"
 
-#: src/evolution/e-groupwise-mail-ui.c:436
+#: src/evolution/e-groupwise-mail-ui.c:437
 #, c-format
 msgid "The whole _domain %s (with its subdomains)"
 msgstr "Die ganze _Domain %s (mit ihren Subdomains)"
 
-#: src/evolution/e-groupwise-mail-ui.c:438
+#: src/evolution/e-groupwise-mail-ui.c:439
 msgid "Their whole _domains (with their subdomains)"
 msgstr "Ihre ganzen _Domains (mit ihren Subdomains)"
 
-#: src/evolution/e-groupwise-mail-ui.c:444
+#: src/evolution/e-groupwise-mail-ui.c:445
 msgid ""
 "This applies to Internet mail only; the lists are in the GroupWise Settings "
 "of the account."
@@ -709,21 +718,21 @@ msgstr ""
 "Das gilt nur für Internet-Mail; die Listen stehen in den GroupWise-"
 "Einstellungen des Kontos."
 
-#: src/evolution/e-groupwise-mail-ui.c:971
+#: src/evolution/e-groupwise-mail-ui.c:991
 msgid "_Restore"
 msgstr "_Wiederherstellen"
 
-#: src/evolution/e-groupwise-mail-ui.c:973
+#: src/evolution/e-groupwise-mail-ui.c:993
 msgid "Put the selected messages back into the folders they were deleted from"
 msgstr ""
 "Die ausgewählten Nachrichten in die Ordner zurücklegen, aus denen sie "
 "gelöscht wurden"
 
-#: src/evolution/e-groupwise-mail-ui.c:1013
+#: src/evolution/e-groupwise-mail-ui.c:1033
 msgid "GroupWise _Settings…"
 msgstr "GroupWise-_Einstellungen …"
 
-#: src/evolution/e-groupwise-mail-ui.c:1015
+#: src/evolution/e-groupwise-mail-ui.c:1035
 msgid ""
 "Settings the GroupWise server keeps for the account: junk mail handling and "
 "more"
@@ -731,59 +740,59 @@ msgstr ""
 "Einstellungen, die der GroupWise-Server für das Konto hält: Junk-Mail-"
 "Verwaltung und mehr"
 
-#: src/evolution/e-groupwise-mail-ui.c:1017
+#: src/evolution/e-groupwise-mail-ui.c:1037
 msgid "GroupWise _Junk Mail"
 msgstr "GroupWise-_Junkmail"
 
-#: src/evolution/e-groupwise-mail-ui.c:1020
+#: src/evolution/e-groupwise-mail-ui.c:1040
 msgid "Junk Mail _Settings…"
 msgstr "Junkmail-_Einstellungen …"
 
-#: src/evolution/e-groupwise-mail-ui.c:1022
+#: src/evolution/e-groupwise-mail-ui.c:1042
 msgid "The junk mail handling of GroupWise: settings and lists"
 msgstr "Die Junkmail-Verwaltung von GroupWise: Einstellungen und Listen"
 
-#: src/evolution/e-groupwise-mail-ui.c:1026
+#: src/evolution/e-groupwise-mail-ui.c:1046
 msgid "_Junk the Sender…"
 msgstr "Sender als _Junk einstufen …"
 
-#: src/evolution/e-groupwise-mail-ui.c:1028
+#: src/evolution/e-groupwise-mail-ui.c:1048
 msgid "Put the sender or the sender's domain onto the junk list of GroupWise"
 msgstr "Den Sender oder seine Domain auf die Junk-Liste von GroupWise setzen"
 
-#: src/evolution/e-groupwise-mail-ui.c:1032
+#: src/evolution/e-groupwise-mail-ui.c:1052
 msgid "_Block the Sender…"
 msgstr "Sender _blockieren …"
 
-#: src/evolution/e-groupwise-mail-ui.c:1034
+#: src/evolution/e-groupwise-mail-ui.c:1054
 msgid "Put the sender or the sender's domain onto the block list of GroupWise"
 msgstr "Den Sender oder seine Domain auf die Blockliste von GroupWise setzen"
 
-#: src/evolution/e-groupwise-mail-ui.c:1038
+#: src/evolution/e-groupwise-mail-ui.c:1058
 msgid "_Trust the Sender…"
 msgstr "Sender als _verbürgt einstufen …"
 
-#: src/evolution/e-groupwise-mail-ui.c:1040
+#: src/evolution/e-groupwise-mail-ui.c:1060
 msgid "Put the sender or the sender's domain onto the trust list of GroupWise"
 msgstr ""
 "Den Sender oder seine Domain auf die Vertrauensliste von GroupWise setzen"
 
-#: src/evolution/e-groupwise-mail-ui.c:1044
+#: src/evolution/e-groupwise-mail-ui.c:1064
 msgid "Delivery _Status…"
 msgstr "_Zustellstatus …"
 
-#: src/evolution/e-groupwise-mail-ui.c:1046
+#: src/evolution/e-groupwise-mail-ui.c:1066
 msgid ""
 "What happened to the message at each recipient: delivered, opened, deleted …"
 msgstr ""
 "Was mit der Nachricht bei jedem Empfänger geschah: zugestellt, geöffnet, "
 "gelöscht …"
 
-#: src/evolution/e-groupwise-mail-ui.c:1050
+#: src/evolution/e-groupwise-mail-ui.c:1070
 msgid "Resen_d…"
 msgstr "_Neu senden …"
 
-#: src/evolution/e-groupwise-mail-ui.c:1052
+#: src/evolution/e-groupwise-mail-ui.c:1072
 msgid ""
 "Open the message to change it and send it anew; sending asks whether the "
 "original is retracted"
@@ -791,11 +800,11 @@ msgstr ""
 "Die Nachricht öffnen, um sie zu ändern und neu zu senden; beim Senden wird "
 "gefragt, ob das Original zurückgezogen wird"
 
-#: src/evolution/e-groupwise-mail-ui.c:1056
+#: src/evolution/e-groupwise-mail-ui.c:1076
 msgid "Re_tract…"
 msgstr "_Zurückziehen …"
 
-#: src/evolution/e-groupwise-mail-ui.c:1058
+#: src/evolution/e-groupwise-mail-ui.c:1078
 msgid "Take the selected messages back from the recipients' mailboxes"
 msgstr ""
 "Die ausgewählten Nachrichten aus den Postfächern der Empfänger zurückholen"
