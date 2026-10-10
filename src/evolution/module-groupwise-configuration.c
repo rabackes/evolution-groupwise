@@ -38,6 +38,7 @@
 
 #include "e-groupwise-mail-ui.h"
 #include "e-groupwise-name-selector.h"
+#include "e-groupwise-new-item.h"
 #include "e-groupwise-source-config.h"
 #include "e-groupwise-travel-page.h"
 
@@ -296,6 +297,7 @@ e_module_load (GTypeModule *type_module)
 #ifdef GW_HAVE_MAIL_UI
 	e_groupwise_mail_ui_type_register (type_module);
 	e_groupwise_name_selector_type_register (type_module);
+	e_groupwise_new_item_type_register (type_module);
 	e_groupwise_travel_page_type_register (type_module);
 #endif
 }
