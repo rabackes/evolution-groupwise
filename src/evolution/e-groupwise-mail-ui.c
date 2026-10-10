@@ -39,6 +39,7 @@
 
 #include "e-gw-junk.h"
 #include "e-groupwise-calendar-events.h"
+#include "e-groupwise-delete-dialog.h"
 #include "e-groupwise-events-port.h"
 #include "e-groupwise-proxy-options.h"
 #include "e-groupwise-sent-items.h"
@@ -965,6 +966,8 @@ start_services (EShellView *shell_view)
 	e_groupwise_calendar_events_start (shell);
 	/* The rules of the client's events, for accounts that want it */
 	e_groupwise_rule_runner_start (registry);
+	/* Deleting an own meeting: what the answers do in GroupWise */
+	e_groupwise_delete_dialog_start ();
 }
 
 static void

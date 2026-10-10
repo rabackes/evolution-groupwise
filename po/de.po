@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: evolution-groupwise\n"
 "Report-Msgid-Bugs-To: rbackes@bond.de\n"
-"POT-Creation-Date: 2026-10-10 15:47+0200\n"
+"POT-Creation-Date: 2026-10-10 19:33+0200\n"
 "PO-Revision-Date: 2026-09-27 18:27+0200\n"
 "Last-Translator: Automatically generated\n"
 "Language-Team: none\n"
@@ -77,7 +77,7 @@ msgstr "delegiert"
 msgid "no answer yet"
 msgstr "noch keine Antwort"
 
-#: src/calendar/e-cal-backend-groupwise.c:2556
+#: src/calendar/e-cal-backend-groupwise.c:2560
 #, c-format
 msgid ""
 "“%s” is the preparation or travel time of an appointment. Move or delete the "
@@ -88,7 +88,7 @@ msgstr ""
 "löschen Sie den Termin selbst; die Reisezeit ändern oder entfernen Sie auf "
 "der Seite „Reisezeit“ des Termins."
 
-#: src/calendar/e-cal-backend-groupwise.c:2828
+#: src/calendar/e-cal-backend-groupwise.c:2848
 #, c-format
 msgid ""
 "“%s” is a meeting you organized in this calendar. Answer the invitation in "
@@ -97,24 +97,24 @@ msgstr ""
 "„%s“ ist eine Besprechung, die Sie in diesem Kalender organisiert haben. "
 "Beantworten Sie die Einladung im Kalender des Kontos, das sie erhalten hat."
 
-#: src/calendar/e-gw-calendar.c:1102
+#: src/calendar/e-gw-calendar.c:1108
 msgid "An appointment needs a start"
 msgstr "Ein Termin braucht einen Beginn"
 
-#: src/calendar/e-gw-calendar.c:1225
+#: src/calendar/e-gw-calendar.c:1231
 msgid "Only appointments, tasks and memos can be stored in GroupWise"
 msgstr ""
 "In GroupWise können nur Termine, Aufgaben und Notizen gespeichert werden"
 
-#: src/calendar/e-gw-calendar.c:1390
+#: src/calendar/e-gw-calendar.c:1396
 msgid "GroupWise does not support this kind of recurrence"
 msgstr "GroupWise unterstützt diese Art der Wiederholung nicht"
 
-#: src/calendar/e-gw-calendar.c:1602
+#: src/calendar/e-gw-calendar.c:1608
 msgid "The item on the server is of another kind"
 msgstr "Das Element auf dem Server ist von anderer Art"
 
-#: src/calendar/e-gw-calendar.c:1617
+#: src/calendar/e-gw-calendar.c:1623
 msgid "Cannot read the item on the server"
 msgstr "Das Element auf dem Server kann nicht gelesen werden"
 
@@ -399,7 +399,7 @@ msgstr "Proxy-Zugriff gewähren"
 
 #: src/evolution/e-groupwise-access-tab.c:157
 #: src/evolution/e-groupwise-junk-tab.c:70
-#: src/evolution/e-groupwise-mail-ui.c:417
+#: src/evolution/e-groupwise-mail-ui.c:418
 #: src/evolution/e-groupwise-rule-editor.c:1336
 #: src/evolution/e-groupwise-rules-tab.c:351
 #: src/evolution/e-groupwise-sent-items.c:457
@@ -479,6 +479,18 @@ msgstr "Alle Benutzer"
 #: src/evolution/e-groupwise-access-tab.c:468
 msgid "Proxy Access"
 msgstr "Proxy-Zugriff"
+
+#: src/evolution/e-groupwise-delete-dialog.c:84
+msgid "Delete Only for _Me"
+msgstr "Nur für _mich löschen"
+
+#: src/evolution/e-groupwise-delete-dialog.c:90
+#, c-format
+msgid ""
+"“%s” retracts the meeting from the mailboxes of all attendees. “%s” takes it "
+"out of your calendar only: the attendees keep the meeting, and it stays in "
+"your Sent Items, where it can still be retracted."
+msgstr "„%s“ zieht die Besprechung aus den Postfächern aller Teilnehmer zurück. „%s“ entfernt sie nur aus Ihrem Kalender: Die Teilnehmer behalten die Besprechung, und sie bleibt in Ihren gesendeten Objekten, von wo sie sich weiterhin zurückziehen lässt."
 
 #: src/evolution/e-groupwise-events-port.c:126
 #: src/evolution/e-groupwise-events-port.c:158
@@ -639,78 +651,78 @@ msgstr ""
 msgid "Trust List"
 msgstr "Vertrauensliste"
 
-#: src/evolution/e-groupwise-mail-ui.c:151
+#: src/evolution/e-groupwise-mail-ui.c:152
 msgid "restoring messages"
 msgstr "Nachrichten wiederherstellen"
 
-#: src/evolution/e-groupwise-mail-ui.c:362
+#: src/evolution/e-groupwise-mail-ui.c:363
 msgid "updating the junk mail lists"
 msgstr "Junk-Mail-Listen aktualisieren"
 
-#: src/evolution/e-groupwise-mail-ui.c:389
+#: src/evolution/e-groupwise-mail-ui.c:390
 msgid "Junk the Sender"
 msgstr "Sender als Junk einstufen"
 
-#: src/evolution/e-groupwise-mail-ui.c:389
+#: src/evolution/e-groupwise-mail-ui.c:390
 msgid ""
 "Future mail goes into the Junk Mail folder; this message goes there now."
 msgstr ""
 "Künftige Mail kommt in den Ordner Junk Mail; diese Nachricht kommt jetzt "
 "dorthin."
 
-#: src/evolution/e-groupwise-mail-ui.c:389
+#: src/evolution/e-groupwise-mail-ui.c:390
 msgid "_Junk"
 msgstr "Als _Junk einstufen"
 
-#: src/evolution/e-groupwise-mail-ui.c:390
+#: src/evolution/e-groupwise-mail-ui.c:391
 msgid "Block the Sender"
 msgstr "Sender blockieren"
 
-#: src/evolution/e-groupwise-mail-ui.c:390
+#: src/evolution/e-groupwise-mail-ui.c:391
 msgid ""
 "Future mail is not delivered; this message goes into the Junk Mail folder."
 msgstr ""
 "Künftige Mail wird nicht zugestellt; diese Nachricht kommt in den Ordner "
 "Junk Mail."
 
-#: src/evolution/e-groupwise-mail-ui.c:390
+#: src/evolution/e-groupwise-mail-ui.c:391
 msgid "_Block"
 msgstr "_Blockieren"
 
-#: src/evolution/e-groupwise-mail-ui.c:391
+#: src/evolution/e-groupwise-mail-ui.c:392
 msgid "Trust the Sender"
 msgstr "Sender als verbürgt einstufen"
 
-#: src/evolution/e-groupwise-mail-ui.c:391
+#: src/evolution/e-groupwise-mail-ui.c:392
 msgid ""
 "Mail from the sender is never junk; this message goes back into the Mailbox."
 msgstr ""
 "Mail vom Sender ist nie Junk; diese Nachricht kommt zurück in die Mailbox."
 
-#: src/evolution/e-groupwise-mail-ui.c:391
+#: src/evolution/e-groupwise-mail-ui.c:392
 msgid "_Trust"
 msgstr "Als _verbürgt einstufen"
 
-#: src/evolution/e-groupwise-mail-ui.c:431
+#: src/evolution/e-groupwise-mail-ui.c:432
 #, c-format
 msgid "Only the _address %s"
 msgstr "Nur die _Adresse %s"
 
-#: src/evolution/e-groupwise-mail-ui.c:433
+#: src/evolution/e-groupwise-mail-ui.c:434
 #, c-format
 msgid "Only the _addresses of the %u senders"
 msgstr "Nur die _Adressen der %u Sender"
 
-#: src/evolution/e-groupwise-mail-ui.c:437
+#: src/evolution/e-groupwise-mail-ui.c:438
 #, c-format
 msgid "The whole _domain %s (with its subdomains)"
 msgstr "Die ganze _Domain %s (mit ihren Subdomains)"
 
-#: src/evolution/e-groupwise-mail-ui.c:439
+#: src/evolution/e-groupwise-mail-ui.c:440
 msgid "Their whole _domains (with their subdomains)"
 msgstr "Ihre ganzen _Domains (mit ihren Subdomains)"
 
-#: src/evolution/e-groupwise-mail-ui.c:445
+#: src/evolution/e-groupwise-mail-ui.c:446
 msgid ""
 "This applies to Internet mail only; the lists are in the GroupWise Settings "
 "of the account."
@@ -718,21 +730,21 @@ msgstr ""
 "Das gilt nur für Internet-Mail; die Listen stehen in den GroupWise-"
 "Einstellungen des Kontos."
 
-#: src/evolution/e-groupwise-mail-ui.c:991
+#: src/evolution/e-groupwise-mail-ui.c:994
 msgid "_Restore"
 msgstr "_Wiederherstellen"
 
-#: src/evolution/e-groupwise-mail-ui.c:993
+#: src/evolution/e-groupwise-mail-ui.c:996
 msgid "Put the selected messages back into the folders they were deleted from"
 msgstr ""
 "Die ausgewählten Nachrichten in die Ordner zurücklegen, aus denen sie "
 "gelöscht wurden"
 
-#: src/evolution/e-groupwise-mail-ui.c:1033
+#: src/evolution/e-groupwise-mail-ui.c:1036
 msgid "GroupWise _Settings…"
 msgstr "GroupWise-_Einstellungen …"
 
-#: src/evolution/e-groupwise-mail-ui.c:1035
+#: src/evolution/e-groupwise-mail-ui.c:1038
 msgid ""
 "Settings the GroupWise server keeps for the account: junk mail handling and "
 "more"
@@ -740,59 +752,59 @@ msgstr ""
 "Einstellungen, die der GroupWise-Server für das Konto hält: Junk-Mail-"
 "Verwaltung und mehr"
 
-#: src/evolution/e-groupwise-mail-ui.c:1037
+#: src/evolution/e-groupwise-mail-ui.c:1040
 msgid "GroupWise _Junk Mail"
 msgstr "GroupWise-_Junkmail"
 
-#: src/evolution/e-groupwise-mail-ui.c:1040
+#: src/evolution/e-groupwise-mail-ui.c:1043
 msgid "Junk Mail _Settings…"
 msgstr "Junkmail-_Einstellungen …"
 
-#: src/evolution/e-groupwise-mail-ui.c:1042
+#: src/evolution/e-groupwise-mail-ui.c:1045
 msgid "The junk mail handling of GroupWise: settings and lists"
 msgstr "Die Junkmail-Verwaltung von GroupWise: Einstellungen und Listen"
 
-#: src/evolution/e-groupwise-mail-ui.c:1046
+#: src/evolution/e-groupwise-mail-ui.c:1049
 msgid "_Junk the Sender…"
 msgstr "Sender als _Junk einstufen …"
 
-#: src/evolution/e-groupwise-mail-ui.c:1048
+#: src/evolution/e-groupwise-mail-ui.c:1051
 msgid "Put the sender or the sender's domain onto the junk list of GroupWise"
 msgstr "Den Sender oder seine Domain auf die Junk-Liste von GroupWise setzen"
 
-#: src/evolution/e-groupwise-mail-ui.c:1052
+#: src/evolution/e-groupwise-mail-ui.c:1055
 msgid "_Block the Sender…"
 msgstr "Sender _blockieren …"
 
-#: src/evolution/e-groupwise-mail-ui.c:1054
+#: src/evolution/e-groupwise-mail-ui.c:1057
 msgid "Put the sender or the sender's domain onto the block list of GroupWise"
 msgstr "Den Sender oder seine Domain auf die Blockliste von GroupWise setzen"
 
-#: src/evolution/e-groupwise-mail-ui.c:1058
+#: src/evolution/e-groupwise-mail-ui.c:1061
 msgid "_Trust the Sender…"
 msgstr "Sender als _verbürgt einstufen …"
 
-#: src/evolution/e-groupwise-mail-ui.c:1060
+#: src/evolution/e-groupwise-mail-ui.c:1063
 msgid "Put the sender or the sender's domain onto the trust list of GroupWise"
 msgstr ""
 "Den Sender oder seine Domain auf die Vertrauensliste von GroupWise setzen"
 
-#: src/evolution/e-groupwise-mail-ui.c:1064
+#: src/evolution/e-groupwise-mail-ui.c:1067
 msgid "Delivery _Status…"
 msgstr "_Zustellstatus …"
 
-#: src/evolution/e-groupwise-mail-ui.c:1066
+#: src/evolution/e-groupwise-mail-ui.c:1069
 msgid ""
 "What happened to the message at each recipient: delivered, opened, deleted …"
 msgstr ""
 "Was mit der Nachricht bei jedem Empfänger geschah: zugestellt, geöffnet, "
 "gelöscht …"
 
-#: src/evolution/e-groupwise-mail-ui.c:1070
+#: src/evolution/e-groupwise-mail-ui.c:1073
 msgid "Resen_d…"
 msgstr "_Neu senden …"
 
-#: src/evolution/e-groupwise-mail-ui.c:1072
+#: src/evolution/e-groupwise-mail-ui.c:1075
 msgid ""
 "Open the message to change it and send it anew; sending asks whether the "
 "original is retracted"
@@ -800,11 +812,11 @@ msgstr ""
 "Die Nachricht öffnen, um sie zu ändern und neu zu senden; beim Senden wird "
 "gefragt, ob das Original zurückgezogen wird"
 
-#: src/evolution/e-groupwise-mail-ui.c:1076
+#: src/evolution/e-groupwise-mail-ui.c:1079
 msgid "Re_tract…"
 msgstr "_Zurückziehen …"
 
-#: src/evolution/e-groupwise-mail-ui.c:1078
+#: src/evolution/e-groupwise-mail-ui.c:1081
 msgid "Take the selected messages back from the recipients' mailboxes"
 msgstr ""
 "Die ausgewählten Nachrichten aus den Postfächern der Empfänger zurückholen"

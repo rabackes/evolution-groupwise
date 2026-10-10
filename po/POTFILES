@@ -17,6 +17,7 @@ src/eds/e-gw-signature-mime.c
 src/eds/e-source-groupwise-folder.c
 src/evolution/e-groupwise-access-tab.c
 src/evolution/e-groupwise-calendar-events.c
+src/evolution/e-groupwise-delete-dialog.c
 src/evolution/e-groupwise-events-port.c
 src/evolution/e-groupwise-junk-tab.c
 src/evolution/e-groupwise-mail-ui.c
