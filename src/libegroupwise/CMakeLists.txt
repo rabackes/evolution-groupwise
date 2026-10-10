@@ -9,6 +9,8 @@ add_library(egroupwise SHARED
 	e-gw-folder.h
 	e-gw-junk.c
 	e-gw-junk.h
+	e-gw-events.c
+	e-gw-events.h
 	e-gw-proxy.c
 	e-gw-proxy.h
 	e-gw-rule.c

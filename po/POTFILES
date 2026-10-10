@@ -34,6 +34,7 @@ src/evolution/module-groupwise-configuration.c
 src/libegroupwise/e-gw-addressbook.c
 src/libegroupwise/e-gw-category.c
 src/libegroupwise/e-gw-connection.c
+src/libegroupwise/e-gw-events.c
 src/libegroupwise/e-gw-folder.c
 src/libegroupwise/e-gw-junk.c
 src/libegroupwise/e-gw-proxy.c

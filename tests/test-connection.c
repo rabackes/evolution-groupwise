@@ -24,6 +24,7 @@
 
 #include "e-gw-addressbook.h"
 #include "e-gw-connection.h"
+#include "e-gw-events.h"
 #include "e-gw-folder.h"
 #include "e-gw-junk.h"
 #include "e-gw-proxy.h"
@@ -630,6 +631,55 @@ test_rules (void)
 	g_object_unref (cnc);
 }
 
+/* The events of a mailbox: configured, read once, removed */
+static void
+test_events (void)
+{
+	const gchar *types[] = { E_GW_EVENTS_MAIL, NULL };
+	EGwConnection *cnc = logged_in ();
+	GPtrArray *events;
+	EGwEvent *event;
+	GError *error = NULL;
+
+	/* None without a configuration */
+	events = e_gw_connection_get_events_sync (cnc, "test-key", TRUE, FALSE, NULL, &error);
+	g_assert_null (events);
+	g_assert_nonnull (error);
+	g_clear_error (&error);
+
+	g_assert_true (e_gw_connection_configure_events_sync (cnc, "test-key", types, 1, NULL, 0, NULL, &error));
+	g_assert_no_error (error);
+	events = e_gw_connection_get_events_sync (cnc, "test-key", TRUE, FALSE, NULL, &error);
+	g_assert_no_error (error);
+	g_assert_cmpuint (events->len, ==, 3);
+	event = events->pdata[0];
+	g_assert_cmpstr (event->type, ==, "FolderItemAdd");
+	g_assert_cmpstr (event->item, ==, "NEW1");
+	g_assert_cmpstr (event->container, ==, "PM@16");
+	g_assert_null (event->from);
+	event = events->pdata[1];
+	g_assert_cmpstr (event->type, ==, "ItemMarkRead");
+	g_assert_null (event->container);
+	event = events->pdata[2];
+	g_assert_cmpstr (event->type, ==, "ItemDelete");
+	g_assert_cmpstr (event->from, ==, "T1@14");
+	g_ptr_array_unref (events);
+
+	/* Read with remove: gone */
+	events = e_gw_connection_get_events_sync (cnc, "test-key", TRUE, FALSE, NULL, &error);
+	g_assert_no_error (error);
+	g_assert_cmpuint (events->len, ==, 0);
+	g_ptr_array_unref (events);
+
+	g_assert_true (e_gw_connection_remove_events_sync (cnc, "test-key", NULL, &error));
+	g_assert_no_error (error);
+	events = e_gw_connection_get_events_sync (cnc, "test-key", FALSE, FALSE, NULL, &error);
+	g_assert_null (events);
+	g_clear_error (&error);
+
+	g_object_unref (cnc);
+}
+
 /* The junk lists and settings */
 static void
 test_junk (void)
@@ -989,6 +1039,7 @@ main (int argc,
 	g_test_add_func ("/connection/proxy-access", test_proxy_access);
 	g_test_add_func ("/connection/signatures", test_signatures);
 	g_test_add_func ("/connection/rules", test_rules);
+	g_test_add_func ("/connection/events", test_events);
 	g_test_add_func ("/connection/junk", test_junk);
 	g_test_add_func ("/connection/vacation", test_vacation);
 	g_test_add_func ("/items/get-items", test_get_items);

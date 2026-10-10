@@ -26,6 +26,8 @@ static CamelProviderConfEntry groupwise_conf_entries[] = {
 	{ CAMEL_PROVIDER_CONF_SECTION_START, "mailcheck", NULL, N_("Checking for New Mail") },
 	{ CAMEL_PROVIDER_CONF_CHECKBOX, "filter-inbox", NULL,
 	  N_("_Apply filters and the junk test to new messages in the Mailbox"), "0" },
+	{ CAMEL_PROVIDER_CONF_CHECKSPIN, "events-interval", NULL,
+	  N_("Ask the server for _changes of the mailbox every %s seconds"), "0:15:3600" },
 	{ CAMEL_PROVIDER_CONF_SECTION_END },
 	{ CAMEL_PROVIDER_CONF_SECTION_START, "general", NULL, N_("Options") },
 	{ CAMEL_PROVIDER_CONF_CHECKBOX, "stay-synchronized", NULL,

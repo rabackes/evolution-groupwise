@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: evolution-groupwise\n"
 "Report-Msgid-Bugs-To: rbackes@bond.de\n"
-"POT-Creation-Date: 2026-09-30 16:37+0200\n"
+"POT-Creation-Date: 2026-10-10 12:29+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -75,7 +75,7 @@ msgstr ""
 msgid "no answer yet"
 msgstr ""
 
-#: src/calendar/e-cal-backend-groupwise.c:2417
+#: src/calendar/e-cal-backend-groupwise.c:2556
 #, c-format
 msgid ""
 "“%s” is the preparation or travel time of an appointment. Move or delete the "
@@ -83,7 +83,7 @@ msgid ""
 "“Travel Time” of the appointment."
 msgstr ""
 
-#: src/calendar/e-cal-backend-groupwise.c:2689
+#: src/calendar/e-cal-backend-groupwise.c:2828
 #, c-format
 msgid ""
 "“%s” is a meeting you organized in this calendar. Answer the invitation in "
@@ -120,7 +120,7 @@ msgstr ""
 
 #: src/camel/camel-groupwise-folder.c:1882
 #: src/camel/camel-groupwise-folder.c:2004
-#: src/camel/camel-groupwise-store.c:658
+#: src/camel/camel-groupwise-store.c:667
 #: src/camel/camel-groupwise-transport.c:220
 msgid "The account is read-only"
 msgstr ""
@@ -179,104 +179,109 @@ msgid "_Apply filters and the junk test to new messages in the Mailbox"
 msgstr ""
 
 #: src/camel/camel-groupwise-provider.c:30
-msgid "Options"
+#, c-format
+msgid "Ask the server for _changes of the mailbox every %s seconds"
 msgstr ""
 
 #: src/camel/camel-groupwise-provider.c:32
-msgid "Copy folder content locally for _offline operation"
+msgid "Options"
 msgstr ""
 
 #: src/camel/camel-groupwise-provider.c:34
-msgid "_Read-only: never change anything on the server"
+msgid "Copy folder content locally for _offline operation"
 msgstr ""
 
 #: src/camel/camel-groupwise-provider.c:36
-msgid "GroupWise Rules"
+msgid "_Read-only: never change anything on the server"
 msgstr ""
 
 #: src/camel/camel-groupwise-provider.c:38
-msgid "Run the rules for _startup and exit when Evolution starts and quits"
+msgid "GroupWise Rules"
 msgstr ""
 
 #: src/camel/camel-groupwise-provider.c:40
+msgid "Run the rules for _startup and exit when Evolution starts and quits"
+msgstr ""
+
+#: src/camel/camel-groupwise-provider.c:42
 msgid "Run the rules for opening and closing _folders"
 msgstr ""
 
-#: src/camel/camel-groupwise-provider.c:46
+#: src/camel/camel-groupwise-provider.c:48
 msgid "Default GroupWise SOAP port"
 msgstr ""
 
-#: src/camel/camel-groupwise-provider.c:52
+#: src/camel/camel-groupwise-provider.c:54
 msgid "GroupWise"
 msgstr ""
 
-#: src/camel/camel-groupwise-provider.c:54
+#: src/camel/camel-groupwise-provider.c:56
 msgid ""
 "For accessing GroupWise mailboxes through the SOAP interface of the Post "
 "Office Agent."
 msgstr ""
 
-#: src/camel/camel-groupwise-store.c:47
+#: src/camel/camel-groupwise-store.c:56
 msgid "Password"
 msgstr ""
 
-#: src/camel/camel-groupwise-store.c:48
+#: src/camel/camel-groupwise-store.c:57
 msgid ""
 "This option will connect to the GroupWise server using a plaintext password."
 msgstr ""
 
-#: src/camel/camel-groupwise-store.c:278
+#: src/camel/camel-groupwise-store.c:287
 msgid "You must be working online to complete this operation"
 msgstr ""
 
-#: src/camel/camel-groupwise-store.c:321
+#: src/camel/camel-groupwise-store.c:330
 #: src/camel/camel-groupwise-transport.c:125
 #, c-format
 msgid "GroupWise server %s"
 msgstr ""
 
-#: src/camel/camel-groupwise-store.c:323
+#: src/camel/camel-groupwise-store.c:332
 #, c-format
 msgid "GroupWise mail of %s as proxy of %s on %s"
 msgstr ""
 
-#: src/camel/camel-groupwise-store.c:325
+#: src/camel/camel-groupwise-store.c:334
 #, c-format
 msgid "GroupWise mail for %s on %s"
 msgstr ""
 
-#: src/camel/camel-groupwise-store.c:438
+#: src/camel/camel-groupwise-store.c:447
 #, c-format
 msgid "%s has not granted you the right to read mail"
 msgstr ""
 
-#: src/camel/camel-groupwise-store.c:520 src/camel/camel-groupwise-store.c:552
-#: src/camel/camel-groupwise-store.c:673 src/camel/camel-groupwise-store.c:734
-#: src/camel/camel-groupwise-store.c:824
+#: src/camel/camel-groupwise-store.c:529 src/camel/camel-groupwise-store.c:561
+#: src/camel/camel-groupwise-store.c:682 src/camel/camel-groupwise-store.c:743
+#: src/camel/camel-groupwise-store.c:833
 #, c-format
 msgid "No such folder: %s"
 msgstr ""
 
-#: src/camel/camel-groupwise-store.c:580
+#: src/camel/camel-groupwise-store.c:589
 msgid "The mailbox has no Mailbox folder"
 msgstr ""
 
-#: src/camel/camel-groupwise-store.c:601
+#: src/camel/camel-groupwise-store.c:610
 msgid "The mailbox has no Trash folder"
 msgstr ""
 
-#: src/camel/camel-groupwise-store.c:625
+#: src/camel/camel-groupwise-store.c:634
 msgid ""
 "The mailbox has no Junk Mail folder; switch on the junk mail handling of "
 "GroupWise"
 msgstr ""
 
-#: src/camel/camel-groupwise-store.c:679
+#: src/camel/camel-groupwise-store.c:688
 #, c-format
 msgid "%s is a system folder of GroupWise"
 msgstr ""
 
-#: src/camel/camel-groupwise-store.c:728
+#: src/camel/camel-groupwise-store.c:737
 msgid "A folder name must not contain \"/\""
 msgstr ""
 
@@ -368,10 +373,10 @@ msgstr ""
 #: src/evolution/e-groupwise-access-tab.c:157
 #: src/evolution/e-groupwise-junk-tab.c:70
 #: src/evolution/e-groupwise-mail-ui.c:414
-#: src/evolution/e-groupwise-rule-editor.c:1329
+#: src/evolution/e-groupwise-rule-editor.c:1336
 #: src/evolution/e-groupwise-rules-tab.c:351
-#: src/evolution/e-groupwise-sent-items.c:456
-#: src/evolution/e-groupwise-sent-items.c:507
+#: src/evolution/e-groupwise-sent-items.c:457
+#: src/evolution/e-groupwise-sent-items.c:508
 #: src/evolution/e-groupwise-settings-window.c:375
 #: src/evolution/e-groupwise-signatures-tab.c:228
 #: src/evolution/e-groupwise-travel-page.c:769
@@ -830,33 +835,33 @@ msgstr ""
 
 #: src/evolution/e-groupwise-rule-editor.c:95
 #: src/evolution/e-groupwise-rule-editor.c:135
-#: src/evolution/e-groupwise-sent-items.c:144
+#: src/evolution/e-groupwise-sent-items.c:145
 msgid "To"
 msgstr ""
 
 #: src/evolution/e-groupwise-rule-editor.c:95
 #: src/evolution/e-groupwise-rule-editor.c:136
-#: src/evolution/e-groupwise-sent-items.c:140
+#: src/evolution/e-groupwise-sent-items.c:141
 msgid "CC"
 msgstr ""
 
 #: src/evolution/e-groupwise-rule-editor.c:95
-#: src/evolution/e-groupwise-sent-items.c:142
+#: src/evolution/e-groupwise-sent-items.c:143
 msgid "BC"
 msgstr ""
 
 #: src/evolution/e-groupwise-rule-editor.c:98
-#: src/evolution/e-groupwise-sent-items.c:63
+#: src/evolution/e-groupwise-sent-items.c:64
 msgid "Accepted"
 msgstr ""
 
 #: src/evolution/e-groupwise-rule-editor.c:98
-#: src/evolution/e-groupwise-sent-items.c:69
+#: src/evolution/e-groupwise-sent-items.c:70
 msgid "Completed"
 msgstr ""
 
 #: src/evolution/e-groupwise-rule-editor.c:98
-#: src/evolution/e-groupwise-sent-items.c:59
+#: src/evolution/e-groupwise-sent-items.c:60
 msgid "Opened"
 msgstr ""
 
@@ -993,12 +998,12 @@ msgid "Created"
 msgstr ""
 
 #: src/evolution/e-groupwise-rule-editor.c:149
-#: src/evolution/e-groupwise-sent-items.c:50
+#: src/evolution/e-groupwise-sent-items.c:51
 msgid "Delivered"
 msgstr ""
 
 #: src/evolution/e-groupwise-rule-editor.c:150
-#: src/evolution/e-groupwise-sent-items.c:68
+#: src/evolution/e-groupwise-sent-items.c:69
 msgid "Started"
 msgstr ""
 
@@ -1283,138 +1288,138 @@ msgstr ""
 msgid "Remove the condition"
 msgstr ""
 
-#: src/evolution/e-groupwise-rule-editor.c:967
+#: src/evolution/e-groupwise-rule-editor.c:974
 msgid "Earlier"
 msgstr ""
 
-#: src/evolution/e-groupwise-rule-editor.c:971
+#: src/evolution/e-groupwise-rule-editor.c:978
 msgid "Later"
 msgstr ""
 
-#: src/evolution/e-groupwise-rule-editor.c:975
+#: src/evolution/e-groupwise-rule-editor.c:982
 msgid "Remove the action"
 msgstr ""
 
-#: src/evolution/e-groupwise-rule-editor.c:983
+#: src/evolution/e-groupwise-rule-editor.c:990
 msgid "Folder:"
 msgstr ""
 
-#: src/evolution/e-groupwise-rule-editor.c:991
+#: src/evolution/e-groupwise-rule-editor.c:998
 msgid "addresses, separated by commas"
 msgstr ""
 
-#: src/evolution/e-groupwise-rule-editor.c:993
+#: src/evolution/e-groupwise-rule-editor.c:1000
 msgid "To:"
 msgstr ""
 
-#: src/evolution/e-groupwise-rule-editor.c:1002
+#: src/evolution/e-groupwise-rule-editor.c:1009
 msgid "Subject:"
 msgstr ""
 
-#: src/evolution/e-groupwise-rule-editor.c:1015
+#: src/evolution/e-groupwise-rule-editor.c:1022
 msgid "Message:"
 msgstr ""
 
-#: src/evolution/e-groupwise-rule-editor.c:1024
+#: src/evolution/e-groupwise-rule-editor.c:1031
 msgid "Show as:"
 msgstr ""
 
-#: src/evolution/e-groupwise-rule-editor.c:1032
+#: src/evolution/e-groupwise-rule-editor.c:1039
 msgid "Comment:"
 msgstr ""
 
-#: src/evolution/e-groupwise-rule-editor.c:1048
+#: src/evolution/e-groupwise-rule-editor.c:1055
 msgid "Category:"
 msgstr ""
 
-#: src/evolution/e-groupwise-rule-editor.c:1328
+#: src/evolution/e-groupwise-rule-editor.c:1335
 msgid "Edit Rule"
 msgstr ""
 
-#: src/evolution/e-groupwise-rule-editor.c:1328
+#: src/evolution/e-groupwise-rule-editor.c:1335
 msgid "New Rule"
 msgstr ""
 
-#: src/evolution/e-groupwise-rule-editor.c:1331
+#: src/evolution/e-groupwise-rule-editor.c:1338
 msgid "_Save"
 msgstr ""
 
-#: src/evolution/e-groupwise-rule-editor.c:1343
+#: src/evolution/e-groupwise-rule-editor.c:1350
 msgid ""
 "This rule has conditions or actions Evolution cannot show; it is shown as "
 "far as possible and cannot be saved here. Edit it in the GroupWise client."
 msgstr ""
 
-#: src/evolution/e-groupwise-rule-editor.c:1359
+#: src/evolution/e-groupwise-rule-editor.c:1366
 msgid "Rule _name:"
 msgstr ""
 
-#: src/evolution/e-groupwise-rule-editor.c:1369
+#: src/evolution/e-groupwise-rule-editor.c:1376
 msgid "When _event is:"
 msgstr ""
 
-#: src/evolution/e-groupwise-rule-editor.c:1382
+#: src/evolution/e-groupwise-rule-editor.c:1389
 msgid "(any folder)"
 msgstr ""
 
-#: src/evolution/e-groupwise-rule-editor.c:1383
+#: src/evolution/e-groupwise-rule-editor.c:1390
 msgid "_Folder:"
 msgstr ""
 
-#: src/evolution/e-groupwise-rule-editor.c:1394
+#: src/evolution/e-groupwise-rule-editor.c:1401
 msgid "Item types:"
 msgstr ""
 
-#: src/evolution/e-groupwise-rule-editor.c:1398
+#: src/evolution/e-groupwise-rule-editor.c:1405
 msgid "Regardless of conflicts"
 msgstr ""
 
-#: src/evolution/e-groupwise-rule-editor.c:1399
+#: src/evolution/e-groupwise-rule-editor.c:1406
 msgid "Only without a conflict"
 msgstr ""
 
-#: src/evolution/e-groupwise-rule-editor.c:1400
+#: src/evolution/e-groupwise-rule-editor.c:1407
 msgid "Only with a conflict"
 msgstr ""
 
-#: src/evolution/e-groupwise-rule-editor.c:1403
+#: src/evolution/e-groupwise-rule-editor.c:1410
 msgid "Appointment con_flicts:"
 msgstr ""
 
-#: src/evolution/e-groupwise-rule-editor.c:1407
+#: src/evolution/e-groupwise-rule-editor.c:1414
 msgid "Conditions"
 msgstr ""
 
-#: src/evolution/e-groupwise-rule-editor.c:1409
+#: src/evolution/e-groupwise-rule-editor.c:1416
 msgid "All conditions must be met (and)"
 msgstr ""
 
-#: src/evolution/e-groupwise-rule-editor.c:1410
+#: src/evolution/e-groupwise-rule-editor.c:1417
 msgid "Any condition must be met (or)"
 msgstr ""
 
-#: src/evolution/e-groupwise-rule-editor.c:1443
+#: src/evolution/e-groupwise-rule-editor.c:1450
 msgid "Add _Condition"
 msgstr ""
 
-#: src/evolution/e-groupwise-rule-editor.c:1449
+#: src/evolution/e-groupwise-rule-editor.c:1456
 msgid "Actions"
 msgstr ""
 
-#: src/evolution/e-groupwise-rule-editor.c:1459
+#: src/evolution/e-groupwise-rule-editor.c:1466
 #, c-format
 msgid "Action “%s”"
 msgstr ""
 
-#: src/evolution/e-groupwise-rule-editor.c:1473
+#: src/evolution/e-groupwise-rule-editor.c:1480
 msgid "Add _Action"
 msgstr ""
 
-#: src/evolution/e-groupwise-rule-editor.c:1502
+#: src/evolution/e-groupwise-rule-editor.c:1509
 msgid "The rule needs a name."
 msgstr ""
 
-#: src/evolution/e-groupwise-rule-editor.c:1510
+#: src/evolution/e-groupwise-rule-editor.c:1517
 msgid "The rule needs at least one action."
 msgstr ""
 
@@ -1494,157 +1499,157 @@ msgstr ""
 msgid "Rules"
 msgstr ""
 
-#: src/evolution/e-groupwise-sent-items.c:51
+#: src/evolution/e-groupwise-sent-items.c:52
 msgid "Undeliverable"
 msgstr ""
 
-#: src/evolution/e-groupwise-sent-items.c:52
+#: src/evolution/e-groupwise-sent-items.c:53
 msgid "Transferred"
 msgstr ""
 
-#: src/evolution/e-groupwise-sent-items.c:53
+#: src/evolution/e-groupwise-sent-items.c:54
 msgid "Transfer delayed"
 msgstr ""
 
-#: src/evolution/e-groupwise-sent-items.c:54
+#: src/evolution/e-groupwise-sent-items.c:55
 msgid "Transfer failed"
 msgstr ""
 
-#: src/evolution/e-groupwise-sent-items.c:55
+#: src/evolution/e-groupwise-sent-items.c:56
 msgid "Downloaded"
 msgstr ""
 
-#: src/evolution/e-groupwise-sent-items.c:56
+#: src/evolution/e-groupwise-sent-items.c:57
 msgid "Downloaded by another program"
 msgstr ""
 
-#: src/evolution/e-groupwise-sent-items.c:57
+#: src/evolution/e-groupwise-sent-items.c:58
 msgid "Retraction requested"
 msgstr ""
 
-#: src/evolution/e-groupwise-sent-items.c:58
+#: src/evolution/e-groupwise-sent-items.c:59
 msgid "Retracted"
 msgstr ""
 
-#: src/evolution/e-groupwise-sent-items.c:60
+#: src/evolution/e-groupwise-sent-items.c:61
 msgid "Deleted"
 msgstr ""
 
-#: src/evolution/e-groupwise-sent-items.c:61
+#: src/evolution/e-groupwise-sent-items.c:62
 msgid "Undeleted"
 msgstr ""
 
-#: src/evolution/e-groupwise-sent-items.c:62
+#: src/evolution/e-groupwise-sent-items.c:63
 msgid "Purged"
 msgstr ""
 
-#: src/evolution/e-groupwise-sent-items.c:64
+#: src/evolution/e-groupwise-sent-items.c:65
 msgid "Declined"
 msgstr ""
 
-#: src/evolution/e-groupwise-sent-items.c:65
+#: src/evolution/e-groupwise-sent-items.c:66
 msgid "Replied"
 msgstr ""
 
-#: src/evolution/e-groupwise-sent-items.c:66
+#: src/evolution/e-groupwise-sent-items.c:67
 msgid "Forwarded"
 msgstr ""
 
-#: src/evolution/e-groupwise-sent-items.c:67
+#: src/evolution/e-groupwise-sent-items.c:68
 msgid "Shared"
 msgstr ""
 
-#: src/evolution/e-groupwise-sent-items.c:70
+#: src/evolution/e-groupwise-sent-items.c:71
 msgid "Marked incomplete"
 msgstr ""
 
-#: src/evolution/e-groupwise-sent-items.c:71
+#: src/evolution/e-groupwise-sent-items.c:72
 msgid "Delegated"
 msgstr ""
 
-#: src/evolution/e-groupwise-sent-items.c:200
+#: src/evolution/e-groupwise-sent-items.c:201
 msgid "No status yet"
 msgstr ""
 
-#: src/evolution/e-groupwise-sent-items.c:259
+#: src/evolution/e-groupwise-sent-items.c:260
 #, c-format
 msgid "The delivery status could not be read: %s"
 msgstr ""
 
-#: src/evolution/e-groupwise-sent-items.c:260
+#: src/evolution/e-groupwise-sent-items.c:261
 msgid "Unknown error"
 msgstr ""
 
-#: src/evolution/e-groupwise-sent-items.c:285
+#: src/evolution/e-groupwise-sent-items.c:286
 msgid "Delivery Status"
 msgstr ""
 
-#: src/evolution/e-groupwise-sent-items.c:286
+#: src/evolution/e-groupwise-sent-items.c:287
 msgid "_Close"
 msgstr ""
 
-#: src/evolution/e-groupwise-sent-items.c:295
-#: src/evolution/e-groupwise-sent-items.c:447
-#: src/evolution/e-groupwise-sent-items.c:503
+#: src/evolution/e-groupwise-sent-items.c:296
+#: src/evolution/e-groupwise-sent-items.c:448
+#: src/evolution/e-groupwise-sent-items.c:504
 msgid "(No subject)"
 msgstr ""
 
-#: src/evolution/e-groupwise-sent-items.c:309
+#: src/evolution/e-groupwise-sent-items.c:310
 msgid "Reading the delivery status from the GroupWise server…"
 msgstr ""
 
-#: src/evolution/e-groupwise-sent-items.c:323
+#: src/evolution/e-groupwise-sent-items.c:324
 msgid "Recipient / Event"
 msgstr ""
 
-#: src/evolution/e-groupwise-sent-items.c:326
+#: src/evolution/e-groupwise-sent-items.c:327
 msgid "Time"
 msgstr ""
 
-#: src/evolution/e-groupwise-sent-items.c:397
+#: src/evolution/e-groupwise-sent-items.c:398
 msgid "retracting messages"
 msgstr ""
 
-#: src/evolution/e-groupwise-sent-items.c:446
+#: src/evolution/e-groupwise-sent-items.c:447
 #, c-format
 msgid "Retract “%s” from the recipients?"
 msgstr ""
 
-#: src/evolution/e-groupwise-sent-items.c:450
+#: src/evolution/e-groupwise-sent-items.c:451
 #, c-format
 msgid "Retract the %u selected messages from the recipients?"
 msgstr ""
 
-#: src/evolution/e-groupwise-sent-items.c:453
+#: src/evolution/e-groupwise-sent-items.c:454
 msgid ""
 "GroupWise takes the message out of the mailboxes of the recipients in "
 "GroupWise; the sent message stays in the Sent Items, with the recipients "
 "shown as retracted. Recipients outside GroupWise have got it already."
 msgstr ""
 
-#: src/evolution/e-groupwise-sent-items.c:457
-#: src/evolution/e-groupwise-sent-items.c:509
+#: src/evolution/e-groupwise-sent-items.c:458
+#: src/evolution/e-groupwise-sent-items.c:510
 msgid "_Retract"
 msgstr ""
 
-#: src/evolution/e-groupwise-sent-items.c:502
+#: src/evolution/e-groupwise-sent-items.c:503
 #, c-format
 msgid "Retract the original message “%s” from the recipients?"
 msgstr ""
 
-#: src/evolution/e-groupwise-sent-items.c:505
+#: src/evolution/e-groupwise-sent-items.c:506
 msgid ""
 "The message is sent anew. GroupWise can take the original out of the "
 "mailboxes of the recipients in GroupWise; recipients outside GroupWise have "
 "got it already."
 msgstr ""
 
-#: src/evolution/e-groupwise-sent-items.c:508
+#: src/evolution/e-groupwise-sent-items.c:509
 msgid "_Do Not Retract"
 msgstr ""
 
-#: src/evolution/e-groupwise-sent-items.c:552
-#: src/evolution/e-groupwise-sent-items.c:577
+#: src/evolution/e-groupwise-sent-items.c:575
+#: src/evolution/e-groupwise-sent-items.c:608
 msgid "opening the message to resend it"
 msgstr ""
 

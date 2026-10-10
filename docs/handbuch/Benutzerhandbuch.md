@@ -106,6 +106,7 @@ Unter `Bearbeiten → Einstellungen → E-Mail-Konten → Bearbeiten` finden Sie
 
 | Option | Bedeutung |
 |---|---|
+| Den Server alle … Sekunden nach Änderungen im Postfach fragen | GroupWise notiert auf Wunsch, was im Postfach geschieht: neue, gelesene, verschobene und gelöschte Nachrichten. Mit dieser Option fragt Evolution diese Liste im eingestellten Abstand ab (Vorgabe 60 Sekunden, mindestens 15) und gleicht nur die betroffenen Ordner ab. Neue Nachrichten und alles, was Sie im GroupWise-Client oder am Mobilgerät tun, erscheinen dann innerhalb dieses Abstands statt erst beim nächsten Abruf des ganzen Kontos; die Abfrage selbst ist klein. Besonders bei Proxy-Konten spart das Zeit. Der gewohnte Abruf bleibt zusätzlich bestehen. Aus, solange Sie es nicht einschalten; schalten Sie es wieder aus, entfernt Evolution die Notizen aus dem Postfach. |
 | Filter und Junk-Prüfung auf neue Nachrichten in der Mailbox anwenden | Evolutions eigene Filterregeln und die Junk-Erkennung laufen über neu eingegangene Nachrichten. Dafür lädt Evolution jede neue Nachricht vollständig; deshalb ist die Option ausgeschaltet, solange Sie sie nicht brauchen. |
 | Ordnerinhalte für den Offline-Betrieb lokal kopieren | Nachrichten werden vorab heruntergeladen, damit sie auch ohne Verbindung lesbar sind. |
 | Schreibgeschützt: nie etwas auf dem Server ändern | Evolution liest nur. Gelesen-Status, Verschieben, Löschen und Senden werden nicht auf den Server übertragen – nützlich zum Ausprobieren. |

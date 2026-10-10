@@ -57,6 +57,21 @@ void		camel_groupwise_settings_set_run_folder_rules
 						(CamelGroupwiseSettings *settings,
 						 gboolean run_folder_rules);
 
+/* The events of the mailbox (GroupWise Web Services Events): asked for
+ * every so many seconds when switched on. Off by default; the POA keeps a
+ * configuration and the records in the mailbox for it. */
+#define CAMEL_GROUPWISE_EVENTS_INTERVAL_MIN 15
+gboolean	camel_groupwise_settings_get_use_events_interval
+						(CamelGroupwiseSettings *settings);
+void		camel_groupwise_settings_set_use_events_interval
+						(CamelGroupwiseSettings *settings,
+						 gboolean use_events_interval);
+guint		camel_groupwise_settings_get_events_interval
+						(CamelGroupwiseSettings *settings);
+void		camel_groupwise_settings_set_events_interval
+						(CamelGroupwiseSettings *settings,
+						 guint events_interval);
+
 /* A proxy account: the e-mail address of the user whose mailbox it shows,
  * logged in as the account's user; NULL for the user's own mailbox */
 gchar *		camel_groupwise_settings_dup_proxy

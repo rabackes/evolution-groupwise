@@ -129,6 +129,35 @@ class Handler(BaseHTTPRequestHandler):
             return ok(action, "<settings><setting><field>addSignature</field><value>" + ("1" if state.get("sig_auto", True) else "0") + "</value></setting>"
                               "<setting><field>globalSignatureName</field><value>" + ("Firma" if state.get("global_sig") else "") + "</value></setting>"
                               "<setting><field>globalSignatureHTML</field><value>" + escape(state.get("global_sig", "")) + "</value></setting></settings>")
+        # Events: a configuration per key; the mock records two events once
+        # for each configuration with event types
+        if action == "configureEvents":
+            key = re.search(r"<key>([^<]*)</key>", body).group(1)
+            types = re.findall(r"<event>([^<]+)</event>", body)
+            state.setdefault("events", {})[key] = [
+                "<event><event>FolderItemAdd</event><id>NEW1</id><sid>1</sid><timeStamp>2026-10-10T10:00:00Z</timeStamp>"
+                "<container>PM@16</container><key>" + key + "</key></event>",
+                "<event><event>ItemMarkRead</event><id>OLD1</id><sid>2</sid><timeStamp>2026-10-10T10:00:01Z</timeStamp>"
+                "<key>" + key + "</key></event>",
+                "<event><event>ItemDelete</event><id>OLD2</id><sid>3</sid><timeStamp>2026-10-10T10:00:02Z</timeStamp>"
+                "<from>T1@14</from><key>" + key + "</key></event>"] if types else []
+            return ok(action)
+        if action == "getEvents":
+            key = re.search(r"<key>([^<]*)</key>", body).group(1)
+            if key not in state.get("events", {}):
+                return err(action, 53761, "No event configuration")
+            events = state["events"][key]
+            if "<remove>1</remove>" in body:
+                state["events"][key] = []
+            return ok(action, "<events>" + "".join(events) + "</events>")
+        if action == "removeEvents":
+            key = re.search(r"<key>([^<]*)</key>", body).group(1)
+            if key in state.get("events", {}):
+                state["events"][key] = []
+            return ok(action)
+        if action == "removeEventConfiguration":
+            state.get("events", {}).pop(re.search(r"<key>([^<]*)</key>", body).group(1), None)
+            return ok(action)
         if action == "getProxyList":
             return ok(action, "<proxies>"
                       "<proxy><displayName>M\u00fcller, Anna</displayName><email>anna.mueller@example.com</email><uuid>U1</uuid><id>U1@38</id></proxy>"

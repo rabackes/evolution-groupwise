@@ -25,6 +25,8 @@ struct _CamelGroupwiseSettings {
 	gboolean filter_inbox;
 	gboolean run_startup_rules;
 	gboolean run_folder_rules;
+	gboolean use_events_interval;
+	guint events_interval;
 	GMutex lock;
 	gchar *proxy;
 };
@@ -40,6 +42,8 @@ enum {
 	PROP_FILTER_INBOX,
 	PROP_RUN_STARTUP_RULES,
 	PROP_RUN_FOLDER_RULES,
+	PROP_USE_EVENTS_INTERVAL,
+	PROP_EVENTS_INTERVAL,
 	PROP_PROXY
 };
 
@@ -79,6 +83,12 @@ groupwise_settings_set_property (GObject *object,
 		return;
 	case PROP_RUN_STARTUP_RULES:
 		camel_groupwise_settings_set_run_startup_rules (CAMEL_GROUPWISE_SETTINGS (object), g_value_get_boolean (value));
+		return;
+	case PROP_USE_EVENTS_INTERVAL:
+		camel_groupwise_settings_set_use_events_interval (CAMEL_GROUPWISE_SETTINGS (object), g_value_get_boolean (value));
+		return;
+	case PROP_EVENTS_INTERVAL:
+		camel_groupwise_settings_set_events_interval (CAMEL_GROUPWISE_SETTINGS (object), g_value_get_uint (value));
 		return;
 	case PROP_RUN_FOLDER_RULES:
 		camel_groupwise_settings_set_run_folder_rules (CAMEL_GROUPWISE_SETTINGS (object), g_value_get_boolean (value));
@@ -123,6 +133,12 @@ groupwise_settings_get_property (GObject *object,
 		return;
 	case PROP_RUN_STARTUP_RULES:
 		g_value_set_boolean (value, camel_groupwise_settings_get_run_startup_rules (CAMEL_GROUPWISE_SETTINGS (object)));
+		return;
+	case PROP_USE_EVENTS_INTERVAL:
+		g_value_set_boolean (value, camel_groupwise_settings_get_use_events_interval (CAMEL_GROUPWISE_SETTINGS (object)));
+		return;
+	case PROP_EVENTS_INTERVAL:
+		g_value_set_uint (value, camel_groupwise_settings_get_events_interval (CAMEL_GROUPWISE_SETTINGS (object)));
 		return;
 	case PROP_RUN_FOLDER_RULES:
 		g_value_set_boolean (value, camel_groupwise_settings_get_run_folder_rules (CAMEL_GROUPWISE_SETTINGS (object)));
@@ -184,6 +200,18 @@ camel_groupwise_settings_class_init (CamelGroupwiseSettingsClass *class)
 			"Run the rules of the events Open Folder and Close Folder when a folder is opened or left",
 			FALSE, G_PARAM_READWRITE | G_PARAM_EXPLICIT_NOTIFY | G_PARAM_STATIC_STRINGS));
 
+	/* The events of the mailbox (GroupWise Web Services Events): asked
+	 * for every so many seconds, changes show without a full check */
+	g_object_class_install_property (object_class, PROP_USE_EVENTS_INTERVAL,
+		g_param_spec_boolean ("use-events-interval", "Use Events Interval",
+			"Ask the server for the events of the mailbox",
+			FALSE, G_PARAM_READWRITE | G_PARAM_EXPLICIT_NOTIFY | G_PARAM_STATIC_STRINGS));
+	g_object_class_install_property (object_class, PROP_EVENTS_INTERVAL,
+		g_param_spec_uint ("events-interval", "Events Interval",
+			"Seconds between two questions for the events of the mailbox",
+			CAMEL_GROUPWISE_EVENTS_INTERVAL_MIN, 3600, 60,
+			G_PARAM_READWRITE | G_PARAM_EXPLICIT_NOTIFY | G_PARAM_STATIC_STRINGS));
+
 	/* A proxy account: the mailbox of this user, with the login of the
 	 * account's own user (its password is the one of the main account) */
 	g_object_class_install_property (object_class, PROP_PROXY,
@@ -196,6 +224,7 @@ static void
 camel_groupwise_settings_init (CamelGroupwiseSettings *settings)
 {
 	g_mutex_init (&settings->lock);
+	settings->events_interval = 60;
 }
 
 gboolean
@@ -294,6 +323,49 @@ camel_groupwise_settings_set_run_startup_rules (CamelGroupwiseSettings *settings
 
 	settings->run_startup_rules = run_startup_rules;
 	g_object_notify (G_OBJECT (settings), "run-startup-rules");
+}
+
+gboolean
+camel_groupwise_settings_get_use_events_interval (CamelGroupwiseSettings *settings)
+{
+	g_return_val_if_fail (CAMEL_IS_GROUPWISE_SETTINGS (settings), FALSE);
+
+	return settings->use_events_interval;
+}
+
+void
+camel_groupwise_settings_set_use_events_interval (CamelGroupwiseSettings *settings,
+						  gboolean use_events_interval)
+{
+	g_return_if_fail (CAMEL_IS_GROUPWISE_SETTINGS (settings));
+
+	if (settings->use_events_interval == use_events_interval)
+		return;
+
+	settings->use_events_interval = use_events_interval;
+	g_object_notify (G_OBJECT (settings), "use-events-interval");
+}
+
+guint
+camel_groupwise_settings_get_events_interval (CamelGroupwiseSettings *settings)
+{
+	g_return_val_if_fail (CAMEL_IS_GROUPWISE_SETTINGS (settings), 60);
+
+	return settings->events_interval;
+}
+
+void
+camel_groupwise_settings_set_events_interval (CamelGroupwiseSettings *settings,
+					      guint events_interval)
+{
+	g_return_if_fail (CAMEL_IS_GROUPWISE_SETTINGS (settings));
+
+	events_interval = CLAMP (events_interval, CAMEL_GROUPWISE_EVENTS_INTERVAL_MIN, 3600);
+	if (settings->events_interval == events_interval)
+		return;
+
+	settings->events_interval = events_interval;
+	g_object_notify (G_OBJECT (settings), "events-interval");
 }
 
 gboolean

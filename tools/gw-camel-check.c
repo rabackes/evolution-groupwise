@@ -22,6 +22,7 @@
  */
 
 #include <stdio.h>
+#include <stdlib.h>
 #include <string.h>
 
 #include <glib/gstdio.h>
@@ -141,6 +142,29 @@ print_part (CamelDataWrapper *wrapper,
 	}
 }
 
+static void
+events_changed_cb (CamelFolder *folder,
+		   CamelFolderChangeInfo *changes,
+		   gpointer user_data)
+{
+	GDateTime *now = g_date_time_new_now_local ();
+	gchar *when = g_date_time_format (now, "%H:%M:%S");
+
+	printf ("events: %s Mailbox changed: %u added, %u changed, %u removed\n", when,
+		changes->uid_added->len, changes->uid_changed->len, changes->uid_removed->len);
+	fflush (stdout);
+	g_free (when);
+	g_date_time_unref (now);
+}
+
+static gboolean
+events_stop_cb (gpointer loop)
+{
+	g_main_loop_quit (loop);
+
+	return G_SOURCE_REMOVE;
+}
+
 int
 main (int argc,
       char **argv)
@@ -197,6 +221,11 @@ main (int argc,
 		NULL);
 	/* GW_PROXY: the mailbox of that user, as proxy; GW_READ_ONLY: write nothing */
 	g_object_set (settings, "proxy", g_getenv ("GW_PROXY"), "read-only", g_getenv ("GW_READ_ONLY") != NULL, NULL);
+	/* GW_EVENTS=SECONDS: asks for the events of the mailbox (the shortest
+	 * interval) and shows that long what the Mailbox learns from them; it
+	 * leaves no configuration in the mailbox */
+	if (g_getenv ("GW_EVENTS"))
+		g_object_set (settings, "use-events-interval", TRUE, "events-interval", 15, NULL);
 	g_object_unref (settings);
 	camel_service_set_password (store, g_getenv ("GW_PASSWORD"));
 
@@ -296,6 +325,23 @@ main (int argc,
 	}
 
 	g_ptr_array_unref (infos);
+	if (g_getenv ("GW_EVENTS")) {
+		GMainLoop *loop = g_main_loop_new (NULL, FALSE);
+		guint seconds = MAX (atoi (g_getenv ("GW_EVENTS")), 20);
+
+		printf ("events: watching the Mailbox for %u seconds\n", seconds);
+		fflush (stdout);
+		g_signal_connect (inbox, "changed", G_CALLBACK (events_changed_cb), NULL);
+		g_timeout_add_seconds (seconds, events_stop_cb, loop);
+		g_main_loop_run (loop);
+		/* Switched off: the next question takes the configuration away */
+		settings = camel_service_ref_settings (store);
+		g_object_set (settings, "use-events-interval", FALSE, NULL);
+		g_object_unref (settings);
+		g_timeout_add_seconds (20, events_stop_cb, loop);
+		g_main_loop_run (loop);
+		g_main_loop_unref (loop);
+	}
 	g_object_unref (inbox);
 	camel_service_disconnect_sync (store, TRUE, NULL, NULL);
 	g_object_unref (store);

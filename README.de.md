@@ -136,6 +136,22 @@ Zertifikat, für die Mail und für Adressbücher und Kalender des Kontos.
   eine Proxy-Anmeldung am anderen Postfach gelesen, mit dem eigenen Passwort.
 - Frei/Belegt kommt aus der Belegt-Suche des POA (interne Benutzer).
 
+### Änderungen im Postfach sofort (Events)
+
+Kontooption *Den Server alle … Sekunden nach Änderungen im Postfach fragen* (Vorgabe aus, 60 s, mindestens
+15): GroupWise Web Services Events. Der Store hält eine Event-Konfiguration unter einem Schlüssel der
+Installation (`Evolution_<Hash der Maschinen-ID>_<Anmeldung>`; bei einem Proxy-Konto im Postfach des anderen
+Benutzers) für FolderItemAdd, FolderItemMove, ItemDelete, ItemUndelete, ItemPurge, ItemMarkRead,
+ItemMarkUnread und ItemModify, liest die Datensätze mit `getEvents` und `remove` und gleicht nur die Ordner
+ab, die sie nennen (`container`/`from`, sonst der geöffnete Ordner mit dem Objekt; Ausgangsnachrichten und
+Papierkorb als Ansichten). Die Datensätze bleiben einen Tag; Ausschalten entfernt Konfiguration und
+Datensätze. Am POA ermittelt: Die Ereignistypen gehen als `<events><event>…</event></events>` (eine einfache
+Liste wird angenommen und zeichnet nichts auf); ein Datensatz nennt das Objekt ohne Typ und Container;
+gelesen/ungelesen und getilgt nennen keinen Ordner; es funktioniert in Proxy-Sitzungen, die kein
+getQuickMessages haben. Andere Anwendungen halten dort ebenfalls Konfigurationen (GroupWise Mobility):
+angefasst wird nur der eigene Schlüssel. Der POA kann sich für jeden ersten neuen Datensatz auch beim Client
+melden (noch nicht genutzt).
+
 ### Junk-Mail
 
 Der Ordner „Junkmail“ (Junk Mail) von GroupWise ist Evolutions Junk-Ordner. Eine als unerwünscht markierte Nachricht kommt

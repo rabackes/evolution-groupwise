@@ -20,6 +20,7 @@
 
 #include <glib/gi18n-lib.h>
 
+#include "e-gw-events.h"
 #include "e-gw-folder.h"
 
 #include "camel-groupwise-folder.h"
@@ -35,6 +36,14 @@ struct _CamelGroupwiseStore {
 	CamelGroupwiseStoreSummary *summary;
 	CamelGroupwiseLabels *labels;
 	gboolean proxy_read_only;	/* a proxy login without the right to write mail */
+
+	/* The events of the mailbox, asked for now and then (see below) */
+	guint events_timer;
+	gint events_busy;		/* atomic: a question is on its way */
+	gint64 events_asked;		/* monotonic time of the last question */
+	gchar *events_key;
+	gboolean events_configured;	/* the POA records for the key (this session) */
+	gboolean events_cleared;	/* the key was taken away while switched off */
 };
 
 enum {
@@ -932,10 +941,261 @@ groupwise_store_get_default_port (CamelNetworkService *service,
 	return E_GW_DEFAULT_PORT;
 }
 
+/* ------------------------------------------------------------------ */
+/* Events: the POA writes down what happens in the mailbox (new, moved,
+ * deleted, read …) for a key of this installation. Asked for every so many
+ * seconds (account option), they say which folders changed; those are
+ * refreshed at once, with the cheap check they have. New mail and what
+ * other clients do shows within the interval instead of at the next check
+ * of the whole account, and a proxy account, whose folders have no cheap
+ * check, need not be gone through for it. The periodic check stays: the
+ * POA does not promise every event. */
+
+#define EVENTS_TICK_SECONDS CAMEL_GROUPWISE_EVENTS_INTERVAL_MIN
+#define EVENTS_PERSISTENCE_DAYS 1
+
+/* One key per installation and login: the configuration lies in the mailbox
+ * (of the other user for a proxy account), next to those of others */
+static gchar *
+events_dup_key (CamelGroupwiseStore *store)
+{
+	CamelSettings *settings = camel_service_ref_settings (CAMEL_SERVICE (store));
+	gchar *user = camel_network_settings_dup_user (CAMEL_NETWORK_SETTINGS (settings));
+	gchar *machine = NULL, *digest, *key;
+
+	if (!g_file_get_contents ("/etc/machine-id", &machine, NULL, NULL) || !machine || !*machine) {
+		g_free (machine);
+		machine = g_strdup (g_get_host_name ());
+	}
+	digest = g_compute_checksum_for_string (G_CHECKSUM_SHA1, machine, -1);
+	key = g_strdup_printf ("Evolution_%.8s_%s", digest, user ? user : "");
+
+	g_free (digest);
+	g_free (machine);
+	g_free (user);
+	g_object_unref (settings);
+
+	return key;
+}
+
+/* The item of an event in a folder that is open: events of some kinds do
+ * not name the folder */
+static gboolean
+folder_has_item (CamelFolder *folder,
+		 const gchar *item)
+{
+	CamelFolderSummary *summary = camel_folder_get_folder_summary (folder);
+	GPtrArray *uids = summary ? camel_folder_summary_get_array (summary) : NULL;
+	gsize len = strlen (item);
+	gboolean found = FALSE;
+	guint ii;
+
+	/* A UID is "<item>@<type>:<container>" */
+	for (ii = 0; uids && ii < uids->len && !found; ii++) {
+		const gchar *uid = uids->pdata[ii];
+
+		found = strncmp (uid, item, len) == 0 && uid[len] == '@';
+	}
+	if (uids)
+		camel_folder_summary_free_array (uids);
+
+	return found;
+}
+
+static void
+events_refresh_folders (CamelGroupwiseStore *store,
+			GPtrArray *events,
+			GCancellable *cancellable)
+{
+	CamelGroupwiseStoreSummary *summary = camel_groupwise_store_get_summary (store);
+	GHashTable *changed = g_hash_table_new_full (g_str_hash, g_str_equal, g_free, NULL);	/* folder ID -> must open */
+	GHashTable *by_name = g_hash_table_new_full (g_str_hash, g_str_equal, g_free, NULL);
+	GPtrArray *opened = camel_store_dup_opened_folders (CAMEL_STORE (store));
+	gboolean any_added = FALSE, any_trash = FALSE;
+	GHashTableIter iter;
+	gpointer key, value;
+	guint ii, jj;
+
+	for (ii = 0; ii < events->len; ii++) {
+		EGwEvent *event = events->pdata[ii];
+		gboolean added = g_str_equal (event->type, "FolderItemAdd") || g_str_equal (event->type, "FolderItemMove");
+
+		any_added = any_added || added;
+		any_trash = any_trash || g_str_equal (event->type, "ItemDelete") || g_str_equal (event->type, "ItemUndelete") ||
+			g_str_equal (event->type, "ItemPurge");
+		/* New mail counts in a folder not looked at yet, too */
+		if (event->container && (added || !g_hash_table_contains (changed, event->container)))
+			g_hash_table_insert (changed, g_strdup (event->container),
+				GINT_TO_POINTER (added || GPOINTER_TO_INT (g_hash_table_lookup (changed, event->container))));
+		if (event->from && !g_hash_table_contains (changed, event->from))
+			g_hash_table_insert (changed, g_strdup (event->from), GINT_TO_POINTER (FALSE));
+		if (!event->container && !event->from) {
+			for (jj = 0; opened && jj < opened->len; jj++) {
+				if (folder_has_item (opened->pdata[jj], event->item))
+					g_hash_table_add (by_name, g_strdup (camel_folder_get_full_name (opened->pdata[jj])));
+			}
+		}
+	}
+
+	g_hash_table_iter_init (&iter, changed);
+	while (g_hash_table_iter_next (&iter, &key, &value)) {
+		gchar *full_name = camel_groupwise_store_summary_dup_full_name (summary, key);
+
+		if (full_name && GPOINTER_TO_INT (value)) {
+			/* Opens it when it is not */
+			CamelFolder *folder = camel_store_get_folder_sync (CAMEL_STORE (store), full_name, 0, cancellable, NULL);
+
+			if (folder) {
+				g_ptr_array_add (opened, folder);
+				g_hash_table_add (by_name, g_strdup (full_name));
+			}
+		} else if (full_name) {
+			g_hash_table_add (by_name, g_strdup (full_name));
+		}
+		g_free (full_name);
+	}
+	/* Views of the POA: what was sent is "added to the Mailbox", what is
+	 * deleted shows in the Trash */
+	if (any_added) {
+		gchar *full_name = camel_groupwise_store_summary_dup_full_name_by_type (summary, E_GW_FOLDER_TYPE_SENT_ITEMS);
+
+		if (full_name)
+			g_hash_table_add (by_name, full_name);
+	}
+	if (any_trash) {
+		gchar *full_name = camel_groupwise_store_summary_dup_full_name_by_type (summary, E_GW_FOLDER_TYPE_TRASH);
+
+		if (full_name)
+			g_hash_table_add (by_name, full_name);
+	}
+
+	for (ii = 0; opened && ii < opened->len; ii++) {
+		CamelFolder *folder = opened->pdata[ii];
+
+		if (g_hash_table_remove (by_name, camel_folder_get_full_name (folder))) {
+			GError *error = NULL;
+
+			if (!camel_folder_refresh_info_sync (folder, cancellable, &error))
+				g_debug ("events: refresh of %s: %s", camel_folder_get_full_name (folder), error ? error->message : "?");
+			g_clear_error (&error);
+		}
+	}
+
+	if (opened)
+		g_ptr_array_unref (opened);
+	g_hash_table_destroy (by_name);
+	g_hash_table_destroy (changed);
+}
+
+static void
+events_thread (GTask *task,
+	       gpointer source_object,
+	       gpointer task_data,
+	       GCancellable *cancellable)
+{
+	static const gchar *types[] = { E_GW_EVENTS_MAIL, NULL };
+	CamelGroupwiseStore *store = source_object;
+	gboolean wanted = GPOINTER_TO_INT (task_data);
+	EGwConnection *cnc = camel_groupwise_store_ref_connection (store);
+	GError *error = NULL;
+
+	if (cnc && !store->events_key)
+		store->events_key = events_dup_key (store);
+
+	if (cnc && !wanted) {
+		/* Switched off: nothing of it stays in the mailbox */
+		if (!e_gw_connection_remove_events_sync (cnc, store->events_key, cancellable, &error))
+			g_debug ("events: no configuration %s to remove: %s", store->events_key, error ? error->message : "?");
+		g_clear_error (&error);
+		store->events_configured = FALSE;
+		store->events_cleared = TRUE;
+	} else if (cnc) {
+		GPtrArray *events = NULL;
+
+		if (!store->events_configured) {
+			store->events_configured = e_gw_connection_configure_events_sync (cnc, store->events_key, types,
+				EVENTS_PERSISTENCE_DAYS, NULL, 0, cancellable, &error);
+			store->events_cleared = FALSE;
+			g_debug ("events: configuration %s: %s", store->events_key,
+				store->events_configured ? "ok" : error ? error->message : "?");
+			g_clear_error (&error);
+		}
+		if (store->events_configured)
+			events = e_gw_connection_get_events_sync (cnc, store->events_key, TRUE, FALSE, cancellable, &error);
+		if (events) {
+			if (events->len) {
+				g_debug ("events: %u", events->len);
+				events_refresh_folders (store, events, cancellable);
+			}
+			g_ptr_array_unref (events);
+		} else if (store->events_configured) {
+			/* Set up again the next time (the configuration may be gone) */
+			g_debug ("events: %s", error ? error->message : "?");
+			store->events_configured = FALSE;
+		}
+		g_clear_error (&error);
+	}
+
+	g_clear_object (&cnc);
+	g_atomic_int_set (&store->events_busy, 0);
+	g_task_return_boolean (task, TRUE);
+}
+
+static gboolean
+events_tick_cb (gpointer user_data)
+{
+	CamelGroupwiseStore *store = g_weak_ref_get (user_data);
+	CamelSettings *settings;
+	gboolean wanted;
+	guint interval;
+
+	if (!store)
+		return G_SOURCE_REMOVE;
+
+	settings = camel_service_ref_settings (CAMEL_SERVICE (store));
+	wanted = camel_groupwise_settings_get_use_events_interval (CAMEL_GROUPWISE_SETTINGS (settings));
+	interval = camel_groupwise_settings_get_events_interval (CAMEL_GROUPWISE_SETTINGS (settings));
+	/* A read-only account changes nothing on the server, not this either */
+	if (camel_groupwise_settings_get_read_only (CAMEL_GROUPWISE_SETTINGS (settings))) {
+		g_object_unref (settings);
+		g_object_unref (store);
+		return G_SOURCE_CONTINUE;
+	}
+	g_object_unref (settings);
+
+	if (camel_service_get_connection_status (CAMEL_SERVICE (store)) == CAMEL_SERVICE_CONNECTED &&
+	    camel_offline_store_get_online (CAMEL_OFFLINE_STORE (store)) &&
+	    (wanted ? g_get_monotonic_time () - store->events_asked >= (gint64) interval * G_USEC_PER_SEC - G_USEC_PER_SEC :
+		!store->events_cleared) &&
+	    g_atomic_int_compare_and_exchange (&store->events_busy, 0, 1)) {
+		GTask *task = g_task_new (store, NULL, NULL, NULL);
+
+		store->events_asked = g_get_monotonic_time ();
+		g_task_set_task_data (task, GINT_TO_POINTER (wanted), NULL);
+		g_task_run_in_thread (task, events_thread);
+		g_object_unref (task);
+	}
+
+	g_object_unref (store);
+
+	return G_SOURCE_CONTINUE;
+}
+
+static void
+events_weak_ref_free (gpointer data)
+{
+	g_weak_ref_clear (data);
+	g_free (data);
+}
+
 static void
 groupwise_store_finalize (GObject *object)
 {
 	CamelGroupwiseStore *store = CAMEL_GROUPWISE_STORE (object);
+
+	if (store->events_timer)
+		g_source_remove (store->events_timer);
+	g_free (store->events_key);
 
 	g_clear_object (&store->cnc);
 	camel_groupwise_store_summary_free (store->summary);
@@ -994,4 +1254,13 @@ camel_groupwise_store_init (CamelGroupwiseStore *store)
 	camel_store_set_flags (CAMEL_STORE (store),
 		(camel_store_get_flags (CAMEL_STORE (store)) & ~(CAMEL_STORE_VTRASH | CAMEL_STORE_VJUNK)) |
 		CAMEL_STORE_REAL_JUNK_FOLDER);
+
+	/* The events of the mailbox, for accounts that want them */
+	{
+		GWeakRef *ref = g_new0 (GWeakRef, 1);
+
+		g_weak_ref_init (ref, store);
+		store->events_timer = g_timeout_add_seconds_full (G_PRIORITY_DEFAULT, EVENTS_TICK_SECONDS,
+			events_tick_cb, ref, events_weak_ref_free);
+	}
 }
