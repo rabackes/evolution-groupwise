@@ -801,55 +801,131 @@ account_book_sources (ESourceRegistry *registry,
 	return books;
 }
 
-/* The name of a place among @emails, from the GroupWise address books */
-static gchar *
-dup_place_name (EShell *shell,
-		ESource *target,
-		GPtrArray *emails)
+/* Looks a place up among e-mail addresses in the GroupWise address books of
+ * the account, one after the other and without holding up the editor (an
+ * address book may first have to be opened, which takes its time), and
+ * makes it the location of the meeting if that is still empty then */
+typedef struct {
+	GWeakRef comp_editor;
+	EShell *shell;
+	gchar *sexp;
+	GList *books;	/* ESource, still to ask */
+} PlaceLookup;
+
+static void
+place_lookup_free (PlaceLookup *lookup)
+{
+	g_weak_ref_clear (&lookup->comp_editor);
+	g_clear_object (&lookup->shell);
+	g_list_free_full (lookup->books, g_object_unref);
+	g_free (lookup->sexp);
+	g_free (lookup);
+}
+
+static void place_lookup_next (PlaceLookup *lookup);
+
+static void
+place_lookup_contacts_cb (GObject *source_object,
+			  GAsyncResult *result,
+			  gpointer user_data)
+{
+	PlaceLookup *lookup = user_data;
+	GSList *contacts = NULL, *item;
+	gchar *place = NULL;
+
+	if (e_book_client_get_contacts_finish (E_BOOK_CLIENT (source_object), result, &contacts, NULL)) {
+		for (item = contacts; item && !place; item = g_slist_next (item)) {
+			EVCardAttribute *attr = e_vcard_get_attribute (item->data, "X-GROUPWISE-PLACE");
+			gchar *value = attr ? e_vcard_attribute_get_value (attr) : NULL;
+
+			if (g_strcmp0 (value, "1") == 0) {
+				const gchar *name = e_contact_get_const (item->data, E_CONTACT_FILE_AS);
+
+				if (!name || !*name)
+					name = e_contact_get_const (item->data, E_CONTACT_FULL_NAME);
+				place = name && *name ? g_strdup (name) : NULL;
+			}
+			g_free (value);
+		}
+		g_slist_free_full (contacts, g_object_unref);
+	}
+
+	if (place) {
+		ECompEditor *comp_editor = g_weak_ref_get (&lookup->comp_editor);
+		ECompEditorPropertyPart *part = comp_editor ? e_comp_editor_get_property_part (comp_editor, I_CAL_LOCATION_PROPERTY) : NULL;
+		GtkWidget *entry = part ? e_comp_editor_property_part_get_edit_widget (part) : NULL;
+
+		if (entry && GTK_IS_ENTRY (entry) && !*gtk_entry_get_text (GTK_ENTRY (entry)))
+			gtk_entry_set_text (GTK_ENTRY (entry), place);
+		g_clear_object (&comp_editor);
+		g_free (place);
+		place_lookup_free (lookup);
+	} else {
+		place_lookup_next (lookup);
+	}
+}
+
+static void
+place_lookup_client_cb (GObject *source_object,
+			GAsyncResult *result,
+			gpointer user_data)
+{
+	PlaceLookup *lookup = user_data;
+	EClient *client = e_client_cache_get_client_finish (E_CLIENT_CACHE (source_object), result, NULL);
+
+	if (client) {
+		e_book_client_get_contacts (E_BOOK_CLIENT (client), lookup->sexp, NULL, place_lookup_contacts_cb, lookup);
+		g_object_unref (client);
+	} else {
+		place_lookup_next (lookup);
+	}
+}
+
+static void
+place_lookup_next (PlaceLookup *lookup)
+{
+	ECompEditor *comp_editor = g_weak_ref_get (&lookup->comp_editor);
+	ESource *book;
+
+	/* Nothing found, or the editor is closed */
+	if (!lookup->books || !comp_editor) {
+		g_clear_object (&comp_editor);
+		place_lookup_free (lookup);
+		return;
+	}
+	g_object_unref (comp_editor);
+
+	book = lookup->books->data;
+	lookup->books = g_list_delete_link (lookup->books, lookup->books);
+	e_client_cache_get_client (e_shell_get_client_cache (lookup->shell), book, E_SOURCE_EXTENSION_ADDRESS_BOOK, 5, NULL,
+		place_lookup_client_cb, lookup);
+	g_object_unref (book);
+}
+
+static void
+lookup_place (ECompEditor *comp_editor,
+	      EShell *shell,
+	      ESource *target,
+	      GPtrArray *emails)
 {
 	EBookQuery **tests = g_new0 (EBookQuery *, emails->len);
 	EBookQuery *query;
-	GList *books, *link;
-	gchar *sexp, *place = NULL;
+	PlaceLookup *lookup;
 	guint ii;
 
 	for (ii = 0; ii < emails->len; ii++)
 		tests[ii] = e_book_query_field_test (E_CONTACT_EMAIL, E_BOOK_QUERY_IS, emails->pdata[ii]);
 	query = e_book_query_or (emails->len, tests, TRUE);
 	g_free (tests);
-	sexp = e_book_query_to_string (query);
+
+	lookup = g_new0 (PlaceLookup, 1);
+	g_weak_ref_init (&lookup->comp_editor, comp_editor);
+	lookup->shell = g_object_ref (shell);
+	lookup->sexp = e_book_query_to_string (query);
+	lookup->books = account_book_sources (e_shell_get_registry (shell), target);
 	e_book_query_unref (query);
 
-	books = account_book_sources (e_shell_get_registry (shell), target);
-	for (link = books; link && !place; link = g_list_next (link)) {
-		EClient *client = e_client_cache_get_client_sync (e_shell_get_client_cache (shell), link->data,
-			E_SOURCE_EXTENSION_ADDRESS_BOOK, 5, NULL, NULL);
-		GSList *contacts = NULL, *item;
-
-		if (!client)
-			continue;
-		if (e_book_client_get_contacts_sync (E_BOOK_CLIENT (client), sexp, &contacts, NULL, NULL)) {
-			for (item = contacts; item && !place; item = g_slist_next (item)) {
-				EVCardAttribute *attr = e_vcard_get_attribute (item->data, "X-GROUPWISE-PLACE");
-				gchar *value = attr ? e_vcard_attribute_get_value (attr) : NULL;
-
-				if (g_strcmp0 (value, "1") == 0) {
-					const gchar *name = e_contact_get_const (item->data, E_CONTACT_FILE_AS);
-
-					if (!name || !*name)
-						name = e_contact_get_const (item->data, E_CONTACT_FULL_NAME);
-					place = name && *name ? g_strdup (name) : NULL;
-				}
-				g_free (value);
-			}
-			g_slist_free_full (contacts, g_object_unref);
-		}
-		g_object_unref (client);
-	}
-	g_list_free_full (books, g_object_unref);
-	g_free (sexp);
-
-	return place;
+	place_lookup_next (lookup);
 }
 
 /* Attendees came along (the attendee dialog closed): a place among them
@@ -864,6 +940,7 @@ travel_editor_check_places_cb (gpointer user_data)
 	GtkWidget *entry = part ? e_comp_editor_property_part_get_edit_widget (part) : NULL;
 	ECalClient *target = e_comp_editor_get_target_client (comp_editor);
 	EShell *shell = e_shell_get_default ();
+	const gchar *own_address = e_comp_editor_get_cal_email_address (comp_editor);
 	const GPtrArray *attendees;
 	GPtrArray *emails;
 	guint ii;
@@ -893,6 +970,9 @@ travel_editor_check_places_cb (gpointer user_data)
 		if (!address || !*address)
 			continue;
 		key = g_ascii_strdown (address, -1);
+		/* The user is no place (a new meeting starts with its organizer) */
+		if (own_address && g_ascii_strcasecmp (own_address, key) == 0)
+			g_hash_table_add (editor->checked, g_strdup (key));
 		if (g_hash_table_contains (editor->checked, key)) {
 			g_free (key);
 			continue;
@@ -900,13 +980,8 @@ travel_editor_check_places_cb (gpointer user_data)
 		g_hash_table_add (editor->checked, g_strdup (key));
 		g_ptr_array_add (emails, key);
 	}
-	if (emails->len) {
-		gchar *place = dup_place_name (shell, e_client_get_source (E_CLIENT (target)), emails);
-
-		if (place && !*gtk_entry_get_text (GTK_ENTRY (entry)))
-			gtk_entry_set_text (GTK_ENTRY (entry), place);
-		g_free (place);
-	}
+	if (emails->len)
+		lookup_place (comp_editor, shell, e_client_get_source (E_CLIENT (target)), emails);
 	g_ptr_array_unref (emails);
 
 	return G_SOURCE_REMOVE;

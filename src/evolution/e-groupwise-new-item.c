@@ -45,6 +45,7 @@ typedef struct _EGroupwiseNewItem {
 	EExtension parent;
 
 	gboolean checked;
+	guint idle;
 } EGroupwiseNewItem;
 
 typedef struct _EGroupwiseNewItemClass {
@@ -148,12 +149,11 @@ get_active_view (EShell *shell)
 	return NULL;
 }
 
-static void
-target_client_notify_cb (ECompEditor *comp_editor,
-			 GParamSpec *param,
-			 gpointer user_data)
+static gboolean
+check_idle_cb (gpointer user_data)
 {
 	EGroupwiseNewItem *self = user_data;
+	ECompEditor *comp_editor = E_COMP_EDITOR (e_extension_get_extensible (E_EXTENSION (self)));
 	ECalClient *client = e_comp_editor_get_target_client (comp_editor);
 	ECompEditorPage *page;
 	ESourceRegistry *registry;
@@ -162,13 +162,16 @@ target_client_notify_cb (ECompEditor *comp_editor,
 	const gchar *view_name, *extension_name;
 	gchar *role = NULL;
 
-	/* Once, when the new item first knows where it would go */
-	if (self->checked || !client)
-		return;
+	self->idle = 0;
+	/* Once, when the new item knows where it would go and its window is
+	 * there (building it, Evolution selects the calendar it started with
+	 * once more) */
+	if (self->checked || !client || !gtk_widget_get_realized (GTK_WIDGET (comp_editor)))
+		return G_SOURCE_REMOVE;
 	self->checked = TRUE;
 
 	if (!(e_comp_editor_get_flags (comp_editor) & E_COMP_EDITOR_FLAG_IS_NEW))
-		return;
+		return G_SOURCE_REMOVE;
 
 	if (E_IS_COMP_EDITOR_EVENT (comp_editor)) {
 		view_name = "calendar";
@@ -180,17 +183,17 @@ target_client_notify_cb (ECompEditor *comp_editor,
 		view_name = "memos";
 		extension_name = E_SOURCE_EXTENSION_MEMO_LIST;
 	} else {
-		return;
+		return G_SOURCE_REMOVE;
 	}
 	/* In its view the user sees what is selected */
 	if (g_strcmp0 (get_active_view (e_comp_editor_get_shell (comp_editor)), view_name) == 0)
-		return;
+		return G_SOURCE_REMOVE;
 
 	registry = e_shell_get_registry (e_comp_editor_get_shell (comp_editor));
 	source = e_client_get_source (E_CLIENT (client));
 	settings = get_account_settings (registry, source, &account);
 	if (!settings)
-		return;
+		return G_SOURCE_REMOVE;
 
 	if (e_source_has_extension (source, E_SOURCE_EXTENSION_GROUPWISE_FOLDER))
 		role = e_source_groupwise_folder_dup_role (e_source_get_extension (source, E_SOURCE_EXTENSION_GROUPWISE_FOLDER));
@@ -200,14 +203,36 @@ target_client_notify_cb (ECompEditor *comp_editor,
 		main_folder = ref_main_folder (registry, settings, extension_name);
 	page = main_folder ? e_comp_editor_get_page (comp_editor, E_TYPE_COMP_EDITOR_PAGE_GENERAL) : NULL;
 	if (page && main_folder != source) {
-		g_debug ("new item: %s of %s instead of %s", e_source_get_display_name (main_folder),
-			e_source_get_display_name (account), e_source_get_display_name (source));
+		g_debug ("new item: the main account's %s instead of %s of %s", e_source_get_display_name (main_folder),
+			e_source_get_display_name (source), e_source_get_display_name (account));
 		e_comp_editor_page_general_set_selected_source (E_COMP_EDITOR_PAGE_GENERAL (page), main_folder);
 	}
 
 	g_clear_object (&main_folder);
 	g_clear_object (&account);
 	g_free (role);
+
+	return G_SOURCE_REMOVE;
+}
+
+static void
+schedule_check_cb (EGroupwiseNewItem *self)
+{
+	if (!self->checked && !self->idle)
+		self->idle = g_idle_add (check_idle_cb, self);
+}
+
+static void
+e_groupwise_new_item_dispose (GObject *object)
+{
+	EGroupwiseNewItem *self = (EGroupwiseNewItem *) object;
+
+	if (self->idle) {
+		g_source_remove (self->idle);
+		self->idle = 0;
+	}
+
+	G_OBJECT_CLASS (e_groupwise_new_item_parent_class)->dispose (object);
 }
 
 static void
@@ -216,13 +241,16 @@ e_groupwise_new_item_constructed (GObject *object)
 	G_OBJECT_CLASS (e_groupwise_new_item_parent_class)->constructed (object);
 
 	g_signal_connect_object (e_extension_get_extensible (E_EXTENSION (object)), "notify::target-client",
-		G_CALLBACK (target_client_notify_cb), object, G_CONNECT_AFTER);
+		G_CALLBACK (schedule_check_cb), object, G_CONNECT_AFTER | G_CONNECT_SWAPPED);
+	g_signal_connect_object (e_extension_get_extensible (E_EXTENSION (object)), "realize",
+		G_CALLBACK (schedule_check_cb), object, G_CONNECT_AFTER | G_CONNECT_SWAPPED);
 }
 
 static void
 e_groupwise_new_item_class_init (EGroupwiseNewItemClass *class)
 {
 	G_OBJECT_CLASS (class)->constructed = e_groupwise_new_item_constructed;
+	G_OBJECT_CLASS (class)->dispose = e_groupwise_new_item_dispose;
 	E_EXTENSION_CLASS (class)->extensible_type = E_TYPE_COMP_EDITOR;
 }
 
