@@ -446,6 +446,30 @@ test_read_sent (void)
 	}
 	g_object_unref (comp);
 
+	/* The organizer who invited themselves and deleted the meeting only
+	 * for themselves ("deleted" from the GroupWise client, "declined"
+	 * over SOAP) takes no part any more; the others do */
+	{
+		const gchar *left[] = { "<deleted>2026-09-26T09:20:00Z</deleted>", "<declined>2026-09-26T09:20:00Z</declined>" };
+		guint ii;
+
+		for (ii = 0; ii < G_N_ELEMENTS (left); ii++) {
+			GString *text = g_string_new (sent);
+			gchar *own = g_strconcat ("<recipients><recipient><displayName>Karl Napp</displayName>"
+				"<email>KNapp@example.com</email><distType>TO</distType><recipType>User</recipType>"
+				"<recipientStatus><accepted>2026-09-26T09:00:00Z</accepted>", left[ii],
+				"</recipientStatus></recipient>", NULL);
+
+			g_string_replace (text, "<recipients>", own, 1);
+			comp = component_of (text->str, "KNapp@example.com");
+			assert_attendee (comp, "mailto:knapp@example.com", NULL);
+			assert_attendee (comp, "mailto:rbackes@example.com", "ACCEPTED REQ-PARTICIPANT");
+			g_object_unref (comp);
+			g_string_free (text, TRUE);
+			g_free (own);
+		}
+	}
+
 	/* An answer "tentative": accepted with that accept level (GroupWise 26.2) */
 	{
 		GString *tentative = g_string_new (sent);

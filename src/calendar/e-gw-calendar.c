@@ -455,7 +455,13 @@ add_people (ICalComponent *comp,
 		ICalParameterRole role = I_CAL_ROLE_REQPARTICIPANT;
 		ICalProperty *prop;
 
-		if (!email) {
+		/* The organizer who deleted the meeting for themselves only (the
+		 * attendees keep it) takes no part any more: "deleted" when it
+		 * was done in the GroupWise client, "declined" over SOAP */
+		if (!email || (sent && same_email (email, organizer) &&
+			       (e_gw_xml_find (recipient, "recipientStatus/deleted") ||
+				e_gw_xml_find (recipient, "recipientStatus/declined")))) {
+			g_free (email);
 			g_free (name);
 			g_free (dist);
 			g_free (recip_type);

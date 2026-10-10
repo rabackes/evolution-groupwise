@@ -2494,8 +2494,8 @@ ecb_groupwise_remove_component_sync (ECalMetaBackend *meta_backend,
 	EGwResponse *response;
 	GError *local_error = NULL;
 	xmlNode *item;
-	gchar *source, *id;
-	gboolean success;
+	gchar *source, *id, *own_copy_id = NULL;
+	gboolean success, retracted = FALSE;
 
 	if (!extra || !*extra)
 		return TRUE;
@@ -2521,20 +2521,23 @@ ecb_groupwise_remove_component_sync (ECalMetaBackend *meta_backend,
 	/* A meeting deleted "without telling": its CANCEL may still be on the
 	 * way, and has withdrawn it then */
 	if ((opflags & E_CAL_OPERATION_FLAG_DISABLE_ITIP_MESSAGE) && uid && object && strstr (object, "ATTENDEE") &&
-	    wait_for_cancel (uid))
+	    wait_for_cancel (uid)) {
+		retracted = TRUE;
 		g_debug ("%s was retracted", uid);
+	}
 
 	cnc = ref_connection (cbgw, error);
 	if (!cnc)
 		return FALSE;
 
 	/* A retract takes the user's own copy of a meeting along */
-	id = split_extra (extra, NULL);
+	id = split_extra (extra, &own_copy_id);
 	ids[0] = id;
 	response = get_item (cnc, id, &item, cancellable, &local_error);
 	if (!response) {
 		g_object_unref (cnc);
 		g_free (id);
+		g_free (own_copy_id);
 		/* Gone already (a retracted invitation) */
 		if (g_error_matches (local_error, E_CAL_CLIENT_ERROR, E_CAL_CLIENT_ERROR_OBJECT_NOT_FOUND) ||
 		    g_error_matches (local_error, E_GW_ERROR, E_GW_ERROR_ITEM_NOT_FOUND)) {
@@ -2552,6 +2555,7 @@ ecb_groupwise_remove_component_sync (ECalMetaBackend *meta_backend,
 		e_gw_response_free (response);
 		g_object_unref (cnc);
 		g_free (id);
+		g_free (own_copy_id);
 		g_set_error (error, E_CLIENT_ERROR, E_CLIENT_ERROR_PERMISSION_DENIED,
 			_("“%s” is the preparation or travel time of an appointment. Move or delete the appointment "
 			  "itself; the travel time is changed or taken away on the page “Travel Time” of the appointment."), subject ? subject : "");
@@ -2561,6 +2565,21 @@ ecb_groupwise_remove_component_sync (ECalMetaBackend *meta_backend,
 
 	source = e_gw_xml_dup_text (item, "source");
 	e_gw_response_free (response);
+
+	/* A meeting of the user's deleted without telling the attendees: the
+	 * user leaves it, as "only my mailbox" in the GroupWise client — the
+	 * own copy goes (and with it the meeting from the calendars), what
+	 * was sent stays in the Sent Items with the answers, to be retracted
+	 * from there later; the attendees keep it */
+	if (g_strcmp0 (source, "sent") == 0 && (opflags & E_CAL_OPERATION_FLAG_DISABLE_ITIP_MESSAGE) &&
+	    !retracted && own_copy_id) {
+		g_debug ("%s: only the own copy %s goes", id, own_copy_id);
+		g_free (id);
+		id = g_steal_pointer (&own_copy_id);
+		ids[0] = id;
+		g_free (source);
+		source = g_strdup ("received");
+	}
 
 	/* An appointment the user sent is withdrawn from the attendees, unless
 	 * the user chose not to tell them */
@@ -2614,6 +2633,7 @@ ecb_groupwise_remove_component_sync (ECalMetaBackend *meta_backend,
 
 	g_free (source);
 	g_free (id);
+	g_free (own_copy_id);
 	g_object_unref (cnc);
 	propagate_error (error, local_error);
 
