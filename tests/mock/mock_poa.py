@@ -134,6 +134,7 @@ class Handler(BaseHTTPRequestHandler):
         if action == "configureEvents":
             key = re.search(r"<key>([^<]*)</key>", body).group(1)
             types = re.findall(r"<event>([^<]+)</event>", body)
+            state.setdefault("event_types", {})[key] = types
             state.setdefault("events", {})[key] = [
                 "<event><event>FolderItemAdd</event><id>NEW1</id><sid>1</sid><timeStamp>2026-10-10T10:00:00Z</timeStamp>"
                 "<container>PM@16</container><key>" + key + "</key></event>",
@@ -142,6 +143,12 @@ class Handler(BaseHTTPRequestHandler):
                 "<event><event>ItemDelete</event><id>OLD2</id><sid>3</sid><timeStamp>2026-10-10T10:00:02Z</timeStamp>"
                 "<from>T1@14</from><key>" + key + "</key></event>"] if types else []
             return ok(action)
+        if action == "getEventConfiguration":
+            types = state.get("event_types", {})
+            return ok(action, "<events>" + "".join(
+                '<event enabled="1"><key>' + k + "</key><persistence>1</persistence><events>" +
+                "".join("<event>" + t + "</event>" for t in types.get(k, [])) + "</events></event>"
+                for k in state.get("events", {})) + "</events>")
         if action == "getEvents":
             key = re.search(r"<key>([^<]*)</key>", body).group(1)
             if key not in state.get("events", {}):

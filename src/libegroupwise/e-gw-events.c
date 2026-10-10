@@ -82,6 +82,57 @@ e_gw_connection_configure_events_sync (EGwConnection *cnc,
 	return call (cnc, "configureEvents", inner, cancellable, error);
 }
 
+gboolean
+e_gw_connection_has_events_sync (EGwConnection *cnc,
+				 const gchar *key,
+				 const gchar * const *events,
+				 GCancellable *cancellable)
+{
+	EGwResponse *response;
+	GString *inner;
+	xmlNode *config, *node;
+	gboolean has = FALSE;
+
+	g_return_val_if_fail (E_IS_GW_CONNECTION (cnc), FALSE);
+	g_return_val_if_fail (key != NULL && events != NULL, FALSE);
+
+	inner = g_string_new (NULL);
+	e_gw_xml_add_leaf (inner, "key", key);
+	response = e_gw_connection_call_sync (cnc, "getEventConfiguration", inner->str, cancellable, NULL);
+	g_string_free (inner, TRUE);
+	if (!response)
+		return FALSE;
+
+	/* <events><event enabled="1"><key/>…<events><event>Type</event>…</events></event></events> */
+	for (config = e_gw_xml_first_child (e_gw_xml_find (e_gw_response_get_node (response), "events"), "event");
+	     config && !has; config = e_gw_xml_next_sibling (config, "event")) {
+		gchar *config_key = e_gw_xml_dup_text (config, "key");
+		gchar *enabled = e_gw_xml_dup_attr (config, "enabled");
+
+		if (g_strcmp0 (config_key, key) == 0 && g_strcmp0 (enabled, "0") != 0) {
+			GHashTable *types = g_hash_table_new_full (g_str_hash, g_str_equal, g_free, NULL);
+			guint ii;
+
+			for (node = e_gw_xml_first_child (e_gw_xml_find (config, "events"), "event"); node;
+			     node = e_gw_xml_next_sibling (node, "event")) {
+				gchar *type = e_gw_xml_dup_text (node, NULL);
+
+				if (type)
+					g_hash_table_add (types, type);
+			}
+			has = g_hash_table_size (types) > 0;
+			for (ii = 0; events[ii] && has; ii++)
+				has = g_hash_table_contains (types, events[ii]);
+			g_hash_table_destroy (types);
+		}
+		g_free (config_key);
+		g_free (enabled);
+	}
+	e_gw_response_free (response);
+
+	return has;
+}
+
 GPtrArray *
 e_gw_connection_get_events_sync (EGwConnection *cnc,
 				 const gchar *key,

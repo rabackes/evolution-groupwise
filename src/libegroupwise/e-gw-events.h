@@ -60,6 +60,14 @@ gboolean	e_gw_connection_configure_events_sync
 						 GCancellable *cancellable,
 						 GError **error);
 
+/* Whether the mailbox has the configuration @key with all of @events.
+ * Setting one up anew is not without cost: the POA takes a while until it
+ * records what the GroupWise clients do for it. */
+gboolean	e_gw_connection_has_events_sync	(EGwConnection *cnc,
+						 const gchar *key,
+						 const gchar * const *events,
+						 GCancellable *cancellable);
+
 /* The records of @key since the last read with @remove.
  * Returns: (transfer container) (element-type EGwEvent) (nullable) */
 GPtrArray *	e_gw_connection_get_events_sync	(EGwConnection *cnc,

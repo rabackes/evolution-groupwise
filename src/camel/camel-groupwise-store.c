@@ -1006,8 +1006,8 @@ events_refresh_folders (CamelGroupwiseStore *store,
 		EGwEvent *event = events->pdata[ii];
 		gboolean read = g_str_equal (event->type, "ItemMarkRead"), unread = g_str_equal (event->type, "ItemMarkUnread");
 		gboolean purged = g_str_equal (event->type, "ItemPurge");
-		gboolean added = g_str_equal (event->type, "FolderItemAdd") || g_str_equal (event->type, "FolderItemMove") ||
-			g_str_equal (event->type, "ItemUndelete");
+		gboolean is_new = g_str_equal (event->type, "FolderItemAdd");
+		gboolean added = is_new || g_str_equal (event->type, "FolderItemMove") || g_str_equal (event->type, "ItemUndelete");
 
 		any_added = any_added || added;
 		any_trash = any_trash || purged || g_str_equal (event->type, "ItemDelete") || g_str_equal (event->type, "ItemUndelete");
@@ -1026,10 +1026,11 @@ events_refresh_folders (CamelGroupwiseStore *store,
 		if (event->from && g_hash_table_contains (by_id, event->from))
 			camel_groupwise_folder_apply_event (g_hash_table_lookup (by_id, event->from), event->item,
 				CAMEL_GROUPWISE_EVENT_GONE);
-		if (event->container && (added || g_hash_table_contains (by_id, event->container))) {
+		if (event->container && (is_new || g_hash_table_contains (by_id, event->container))) {
 			gchar *full_name = camel_groupwise_store_summary_dup_full_name (summary, event->container);
 
-			/* New mail counts in a folder not looked at yet, too */
+			/* New mail counts in a folder not looked at yet, too (what
+			 * is moved into such a folder waits until it is opened) */
 			if (full_name && !g_hash_table_contains (by_id, event->container)) {
 				CamelFolder *folder = camel_store_get_folder_sync (CAMEL_STORE (store), full_name, 0, cancellable, NULL);
 
@@ -1107,12 +1108,19 @@ events_thread (GTask *task,
 		GPtrArray *events = NULL;
 
 		if (!store->events_configured) {
-			store->events_configured = e_gw_connection_configure_events_sync (cnc, store->events_key, types,
-				EVENTS_PERSISTENCE_DAYS, NULL, 0, cancellable, &error);
+			/* Kept from session to session: set up anew, the POA takes
+			 * minutes until it records what the GroupWise clients do */
+			if (e_gw_connection_has_events_sync (cnc, store->events_key, types, cancellable)) {
+				store->events_configured = TRUE;
+				g_debug ("events: configuration %s is there", store->events_key);
+			} else {
+				store->events_configured = e_gw_connection_configure_events_sync (cnc, store->events_key, types,
+					EVENTS_PERSISTENCE_DAYS, NULL, 0, cancellable, &error);
+				g_debug ("events: configuration %s: %s", store->events_key,
+					store->events_configured ? "set up" : error ? error->message : "?");
+				g_clear_error (&error);
+			}
 			store->events_cleared = FALSE;
-			g_debug ("events: configuration %s: %s", store->events_key,
-				store->events_configured ? "ok" : error ? error->message : "?");
-			g_clear_error (&error);
 		}
 		if (store->events_configured)
 			events = e_gw_connection_get_events_sync (cnc, store->events_key, TRUE, FALSE, cancellable, &error);

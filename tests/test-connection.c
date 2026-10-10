@@ -647,8 +647,16 @@ test_events (void)
 	g_assert_nonnull (error);
 	g_clear_error (&error);
 
+	g_assert_false (e_gw_connection_has_events_sync (cnc, "test-key", types, NULL));
 	g_assert_true (e_gw_connection_configure_events_sync (cnc, "test-key", types, 1, NULL, 0, NULL, &error));
 	g_assert_no_error (error);
+	g_assert_true (e_gw_connection_has_events_sync (cnc, "test-key", types, NULL));
+	g_assert_false (e_gw_connection_has_events_sync (cnc, "other-key", types, NULL));
+	{
+		const gchar *more[] = { E_GW_EVENTS_MAIL, "FolderAdd", NULL };
+
+		g_assert_false (e_gw_connection_has_events_sync (cnc, "test-key", more, NULL));
+	}
 	events = e_gw_connection_get_events_sync (cnc, "test-key", TRUE, FALSE, NULL, &error);
 	g_assert_no_error (error);
 	g_assert_cmpuint (events->len, ==, 3);
