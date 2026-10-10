@@ -105,7 +105,8 @@ e_gw_connection_has_events_sync (EGwConnection *cnc,
 	if (!response)
 		return FALSE;
 
-	/* <events><event enabled="1"><key/>…<events><event>Type</event>…</events></event></events> */
+	/* <events><event enabled="1"><key/><ipAddress/><port/>
+	 *   <definition><events><event>Type</event>…</events></definition></event></events> */
 	for (config = e_gw_xml_first_child (e_gw_xml_find (e_gw_response_get_node (response), "events"), "event");
 	     config && !has; config = e_gw_xml_next_sibling (config, "event")) {
 		gchar *config_key = e_gw_xml_dup_text (config, "key");
@@ -115,7 +116,7 @@ e_gw_connection_has_events_sync (EGwConnection *cnc,
 			GHashTable *types = g_hash_table_new_full (g_str_hash, g_str_equal, g_free, NULL);
 			guint ii;
 
-			for (node = e_gw_xml_first_child (e_gw_xml_find (config, "events"), "event"); node;
+			for (node = e_gw_xml_first_child (e_gw_xml_find (config, "definition/events"), "event"); node;
 			     node = e_gw_xml_next_sibling (node, "event")) {
 				gchar *type = e_gw_xml_dup_text (node, NULL);
 

@@ -149,8 +149,8 @@ class Handler(BaseHTTPRequestHandler):
             types = state.get("event_types", {})
             return ok(action, "<events>" + "".join(
                 '<event enabled="1"><key>' + k + "</key><persistence>1</persistence>" +
-                ("<ipAddress>%s</ipAddress><port>%s</port>" % state["event_tell"][k] if state.get("event_tell", {}).get(k) else "") + "<events>" +
-                "".join("<event>" + t + "</event>" for t in types.get(k, [])) + "</events></event>"
+                ("<ipAddress>%s</ipAddress><port>%s</port>" % state["event_tell"][k] if state.get("event_tell", {}).get(k) else "") + "<definition><events>" +
+                "".join("<event>" + t + "</event>" for t in types.get(k, [])) + "</events></definition></event>"
                 for k in state.get("events", {})) + "</events>")
         if action == "getEvents":
             key = re.search(r"<key>([^<]*)</key>", body).group(1)
