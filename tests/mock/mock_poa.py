@@ -301,6 +301,19 @@ class Handler(BaseHTTPRequestHandler):
             who = ("<distribution><recipients><recipient><displayName>Bob</displayName><email>bob@phantom.com</email><distType>TO</distType></recipient></recipients></distribution>"
                    if source == "draft" else "")
             return ok(action, f"<item type='{kind}'><id>{iid}</id><container>{FOLDERS['calendar']}</container><status/><source>{source}</source><subject>Aufgabe</subject>{who}{msg}{dates}</item>")
+        if action == "getItem" and "<id>SHM" in body:
+            # an internal message in a folder another user shares: the POA does not stream it as RFC 822
+            return ok(action, "<item type='Mail'><id>SHM1@1:MOUNT1@34:OWNERF1</id><status><read>1</read></status><source>received</source>"
+                              "<msgId>SHMSG1</msgId><delivered>2026-09-28T11:39:55Z</delivered><subject>Aus der Freigabe</subject>"
+                              "<distribution><from><displayName>Egon</displayName><email>egon@example.com</email></from><recipients>"
+                              "<recipient><displayName>Bob</displayName><email>bob@phantom.com</email><distType>TO</distType></recipient>"
+                              "<recipient><displayName>Anna</displayName><email>anna@example.com</email><distType>CC</distType></recipient>"
+                              "<recipient><displayName>Geheim</displayName><email>g@example.com</email><distType>BC</distType></recipient>"
+                              "</recipients></distribution>"
+                              "<message><part contentType='text/plain' length='7'>" + base64.b64encode("Grüße".encode()).decode() + "</part></message>"
+                              f"<attachments><attachment><id>{ATT}</id><name>Text.htm</name><contentType>TEXT/HTML</contentType><hidden>1</hidden></attachment>"
+                              f"<attachment><id>{ATT}</id><name>notes.txt</name><contentType>text/plain</contentType><hidden>0</hidden></attachment>"
+                              "<attachment><id>GONE1</id><name>weg.bin</name></attachment></attachments></item>")
         if action == "getItem" and "<id>DRAFTH" in body:
             return ok(action, "<item type='Mail'><id>DRAFTH1</id><status/><source>draft</source><subject>HTML-Entwurf</subject>"
                               "<distribution><recipients><recipient><displayName>Bob</displayName><email>bob@phantom.com</email>"

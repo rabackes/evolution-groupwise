@@ -1890,6 +1890,48 @@ test_original_unavailable (Fixture *fixture,
 	g_object_unref (folder);
 }
 
+/* In a folder another user shares the POA hands out no RFC 822 of a
+ * GroupWise message: it is put together from the item and its parts */
+static void
+test_message_from_parts (Fixture *fixture,
+			 gconstpointer data)
+{
+	CamelFolder *folder = open_inbox (fixture);
+	GError *error = NULL;
+	CamelMimeMessage *message;
+	CamelDataWrapper *content;
+	CamelMimePart *part;
+	gchar *text;
+
+	message = camel_folder_get_message_sync (folder, "SHM1@1:MOUNT1@34:OWNERF1", NULL, &error);
+	g_assert_no_error (error);
+	g_assert_nonnull (message);
+	g_assert_cmpstr (camel_mime_message_get_subject (message), ==, "Aus der Freigabe");
+	g_assert_cmpstr (camel_mime_message_get_message_id (message), ==, "SHMSG1@GroupWise");
+	text = camel_address_format (CAMEL_ADDRESS (camel_mime_message_get_from (message)));
+	g_assert_cmpstr (text, ==, "Egon <egon@example.com>");
+	g_free (text);
+	text = camel_address_format (CAMEL_ADDRESS (camel_mime_message_get_recipients (message, CAMEL_RECIPIENT_TYPE_TO)));
+	g_assert_cmpstr (text, ==, "Bob <bob@phantom.com>");
+	g_free (text);
+	text = camel_address_format (CAMEL_ADDRESS (camel_mime_message_get_recipients (message, CAMEL_RECIPIENT_TYPE_CC)));
+	g_assert_cmpstr (text, ==, "Anna <anna@example.com>");
+	g_free (text);
+
+	/* mixed: alternative (text, HTML), the attachment; what cannot be read is left out */
+	content = camel_medium_get_content (CAMEL_MEDIUM (message));
+	g_assert_true (CAMEL_IS_MULTIPART (content));
+	g_assert_cmpuint (camel_multipart_get_number (CAMEL_MULTIPART (content)), ==, 2);
+	part = camel_multipart_get_part (CAMEL_MULTIPART (content), 0);
+	g_assert_true (CAMEL_IS_MULTIPART (camel_medium_get_content (CAMEL_MEDIUM (part))));
+	g_assert_cmpuint (camel_multipart_get_number (CAMEL_MULTIPART (camel_medium_get_content (CAMEL_MEDIUM (part)))), ==, 2);
+	part = camel_multipart_get_part (CAMEL_MULTIPART (content), 1);
+	g_assert_cmpstr (camel_mime_part_get_filename (part), ==, "notes.txt");
+	g_object_unref (message);
+
+	g_object_unref (folder);
+}
+
 static void
 test_summary_persists (Fixture *fixture,
 		       gconstpointer data)
@@ -1984,6 +2026,7 @@ main (int argc,
 	g_test_add ("/camel/save-draft", Fixture, NULL, fixture_setup, test_save_draft, fixture_teardown);
 	g_test_add ("/camel/append-elsewhere", Fixture, NULL, fixture_setup, test_append_elsewhere, fixture_teardown);
 	g_test_add ("/camel/original-unavailable", Fixture, NULL, fixture_setup, test_original_unavailable, fixture_teardown);
+	g_test_add ("/camel/message-from-parts", Fixture, NULL, fixture_setup, test_message_from_parts, fixture_teardown);
 
 	return g_test_run ();
 }

@@ -439,6 +439,8 @@ Das Symbol wechselt, sobald Sie eine Freigabe übernommen oder aufgehoben haben.
 
 Bei einem Ordner, den ein anderer Benutzer für Sie freigegeben hat, zeigt der Reiter den Eigentümer und Ihre Rechte; ändern lässt sich dort nichts.
 
+Nachrichten in einem solchen Ordner lesen Sie wie alle anderen. GroupWise-interne Nachrichten gibt der Server dort allerdings nicht als Ganzes heraus; Evolution setzt sie aus Text, HTML-Fassung und Anhängen zusammen. In eine solche Nachricht eingebettete GroupWise-Nachrichten fehlen dabei.
+
 > **Neu einlesen nach dem Freigeben:** Der Server führt einen freigegebenen Ordner unter einer anderen Kennung als einen nicht freigegebenen. Nach dem ersten Freigeben oder dem Aufheben der Freigabe liest Evolution die Nachrichtenliste dieses Ordners deshalb beim nächsten Start einmal neu ein.
 
 # 5 Kalender

@@ -2374,12 +2374,301 @@ add_phone_fields (CamelFolder *folder,
 	g_string_free (text, TRUE);
 }
 
+/* A plain part of the message being put together */
+static CamelMimePart *
+new_part (const guchar *data,
+	  gsize len,
+	  const gchar *content_type,
+	  gboolean text)
+{
+	CamelMimePart *part = camel_mime_part_new ();
+
+	camel_mime_part_set_content (part, (const gchar *) data, len, content_type);
+	camel_mime_part_set_encoding (part, text ? CAMEL_TRANSFER_ENCODING_QUOTEDPRINTABLE : CAMEL_TRANSFER_ENCODING_BASE64);
+
+	return part;
+}
+
+static CamelMultipart *
+new_multipart (const gchar *subtype)
+{
+	CamelMultipart *multipart = camel_multipart_new ();
+	gchar *type = g_strconcat ("multipart/", subtype, NULL);
+
+	camel_data_wrapper_set_mime_type (CAMEL_DATA_WRAPPER (multipart), type);
+	camel_multipart_set_boundary (multipart, NULL);
+	g_free (type);
+
+	return multipart;
+}
+
+/* @multipart as one part of another */
+static CamelMimePart *
+wrap_multipart (CamelMultipart *multipart)
+{
+	CamelMimePart *part = camel_mime_part_new ();
+
+	camel_medium_set_content (CAMEL_MEDIUM (part), CAMEL_DATA_WRAPPER (multipart));
+	g_object_unref (multipart);
+
+	return part;
+}
+
+/* In a folder another user shares the POA does not hand out a GroupWise
+ * message as RFC 822 (mime=1 answers 0xD107), while the item and each of
+ * its attachments can be read. The message is then put together from
+ * them, the way the POA does it: the text, the HTML body of the hidden
+ * attachment Text.htm with its pictures, and the attachments. */
+static gboolean
+build_to_cache (CamelFolder *folder,
+		EGwConnection *cnc,
+		const gchar *message_uid,
+		GCancellable *cancellable,
+		GError **error)
+{
+	CamelGroupwiseFolder *gw_folder = CAMEL_GROUPWISE_FOLDER (folder);
+	CamelMimeMessage *message;
+	CamelInternetAddress *from, *to, *cc;
+	CamelMimePart *body = NULL, *html = NULL;
+	GPtrArray *pictures, *attachments;
+	EGwResponse *response;
+	GIOStream *stream;
+	xmlNode *item, *node;
+	gchar *text, *name, *email;
+	gint64 when;
+	gboolean success = FALSE;
+	guint ii;
+
+	response = e_gw_connection_get_item_sync (cnc, message_uid, "default peek message attachments recipients", cancellable, error);
+	if (!response)
+		return FALSE;
+	item = e_gw_xml_find (e_gw_response_get_node (response), "item");
+	if (!item) {
+		e_gw_response_free (response);
+		g_set_error (error, CAMEL_FOLDER_ERROR, CAMEL_FOLDER_ERROR_INVALID, _("Cannot get the message %s"), message_uid);
+		return FALSE;
+	}
+
+	message = camel_mime_message_new ();
+	text = e_gw_xml_dup_text (item, "subject");
+	camel_mime_message_set_subject (message, text ? text : "");
+	g_free (text);
+
+	from = camel_internet_address_new ();
+	name = e_gw_xml_dup_text (item, "distribution/from/displayName");
+	email = e_gw_xml_dup_text (item, "distribution/from/email");
+	if ((name && *name) || (email && *email))
+		camel_internet_address_add (from, name, email ? email : "");
+	camel_mime_message_set_from (message, from);
+	g_object_unref (from);
+	g_free (name);
+	g_free (email);
+
+	to = camel_internet_address_new ();
+	cc = camel_internet_address_new ();
+	node = e_gw_xml_find (item, "distribution/recipients");
+	for (node = e_gw_xml_first_child (node, "recipient"); node; node = e_gw_xml_next_sibling (node, "recipient")) {
+		gchar *kind = e_gw_xml_dup_text (node, "distType");
+
+		name = e_gw_xml_dup_text (node, "displayName");
+		email = e_gw_xml_dup_text (node, "email");
+		if (g_strcmp0 (kind, "CC") == 0)
+			camel_internet_address_add (cc, name, email ? email : "");
+		else if (g_strcmp0 (kind, "BC") != 0)
+			camel_internet_address_add (to, name, email ? email : "");
+		g_free (kind);
+		g_free (name);
+		g_free (email);
+	}
+	if (camel_address_length (CAMEL_ADDRESS (to)))
+		camel_mime_message_set_recipients (message, CAMEL_RECIPIENT_TYPE_TO, to);
+	if (camel_address_length (CAMEL_ADDRESS (cc)))
+		camel_mime_message_set_recipients (message, CAMEL_RECIPIENT_TYPE_CC, cc);
+	g_object_unref (to);
+	g_object_unref (cc);
+
+	text = e_gw_xml_dup_text (item, "delivered");
+	if (!text || !*text) {
+		g_free (text);
+		text = e_gw_xml_dup_text (item, "created");
+	}
+	when = text ? camel_groupwise_parse_time (text) : 0;
+	g_free (text);
+	if (when > 0)
+		camel_mime_message_set_date (message, (time_t) when, 0);
+
+	text = e_gw_xml_dup_text (item, "msgId");
+	if (text && *text) {
+		gchar *id = g_strconcat (text, "@GroupWise", NULL);
+
+		camel_mime_message_set_message_id (message, id);
+		g_free (id);
+	}
+	g_free (text);
+
+	/* The text of the message */
+	node = e_gw_xml_find (item, "message");
+	for (node = e_gw_xml_first_child (node, "part"); node && !body; node = e_gw_xml_next_sibling (node, "part")) {
+		gchar *type = e_gw_xml_dup_attr (node, "contentType");
+		xmlChar *content = xmlNodeGetContent (node);
+
+		if (content && (!type || g_ascii_strcasecmp (type, "text/plain") == 0)) {
+			gsize len = 0;
+			guchar *decoded = g_base64_decode ((const gchar *) content, &len);
+
+			body = new_part (decoded, len, g_utf8_validate ((const gchar *) decoded, len, NULL) ?
+				"text/plain; charset=utf-8" : "text/plain; charset=iso-8859-1", TRUE);
+			g_free (decoded);
+		}
+		if (content)
+			xmlFree (content);
+		g_free (type);
+	}
+
+	pictures = g_ptr_array_new_with_free_func (g_object_unref);
+	attachments = g_ptr_array_new_with_free_func (g_object_unref);
+	node = e_gw_xml_find (item, "attachments");
+	for (node = e_gw_xml_first_child (node, "attachment"); node; node = e_gw_xml_next_sibling (node, "attachment")) {
+		gchar *raw = e_gw_xml_dup_text (node, "id"), *id = raw ? e_gw_clean_id (raw) : NULL;
+		gchar *type = e_gw_xml_dup_text (node, "contentType"), *content_id = e_gw_xml_dup_text (node, "contentId");
+		gboolean hidden = e_gw_xml_get_bool (node, "hidden");
+		GOutputStream *memory;
+		CamelMimePart *part;
+		const guchar *data;
+		gsize len;
+
+		name = e_gw_xml_dup_text (node, "name");
+		g_free (raw);
+		if (!id || (name && g_ascii_strcasecmp (name, "Mime.822") == 0)) {
+			g_free (id);
+			g_free (type);
+			g_free (content_id);
+			g_free (name);
+			continue;
+		}
+
+		memory = g_memory_output_stream_new_resizable ();
+		/* What cannot be read (an item attached, say) is left out */
+		if (!e_gw_connection_download_sync (cnc, id, FALSE, memory, cancellable, NULL)) {
+			g_object_unref (memory);
+			g_free (id);
+			g_free (type);
+			g_free (content_id);
+			g_free (name);
+			if (g_cancellable_is_cancelled (cancellable))
+				break;
+			continue;
+		}
+		g_output_stream_close (memory, NULL, NULL);
+		data = g_memory_output_stream_get_data (G_MEMORY_OUTPUT_STREAM (memory));
+		len = g_memory_output_stream_get_data_size (G_MEMORY_OUTPUT_STREAM (memory));
+
+		if (hidden && !html && name && g_ascii_strcasecmp (name, "Text.htm") == 0) {
+			html = new_part (data, len, g_utf8_validate ((const gchar *) data, len, NULL) ?
+				"text/html; charset=utf-8" : "text/html; charset=iso-8859-1", TRUE);
+		} else {
+			gchar *lower = type && *type ? g_ascii_strdown (type, -1) : g_strdup ("application/octet-stream");
+
+			part = new_part (data, len, lower, g_str_has_prefix (lower, "text/"));
+			g_free (lower);
+			if (content_id && *content_id) {
+				gsize id_len = strlen (content_id);
+
+				/* <id> */
+				if (id_len > 2 && content_id[0] == '<' && content_id[id_len - 1] == '>') {
+					content_id[id_len - 1] = '\0';
+					camel_mime_part_set_content_id (part, content_id + 1);
+				} else {
+					camel_mime_part_set_content_id (part, content_id);
+				}
+			}
+			if (hidden && content_id && *content_id) {
+				camel_mime_part_set_disposition (part, "inline");
+				g_ptr_array_add (pictures, part);
+			} else {
+				camel_mime_part_set_disposition (part, "attachment");
+				if (name && *name)
+					camel_mime_part_set_filename (part, name);
+				g_ptr_array_add (attachments, part);
+			}
+		}
+		g_object_unref (memory);
+		g_free (id);
+		g_free (type);
+		g_free (content_id);
+		g_free (name);
+	}
+	e_gw_response_free (response);
+
+	if (!g_cancellable_set_error_if_cancelled (cancellable, error)) {
+		/* The HTML body with its pictures */
+		if (html && pictures->len) {
+			CamelMultipart *related = new_multipart ("related");
+
+			camel_multipart_add_part (related, html);
+			g_object_unref (html);
+			for (ii = 0; ii < pictures->len; ii++)
+				camel_multipart_add_part (related, pictures->pdata[ii]);
+			html = wrap_multipart (related);
+		} else {
+			/* Pictures without a body to show them: attachments */
+			for (ii = 0; ii < pictures->len; ii++)
+				g_ptr_array_add (attachments, g_object_ref (pictures->pdata[ii]));
+		}
+		if (body && html) {
+			CamelMultipart *alternative = new_multipart ("alternative");
+
+			camel_multipart_add_part (alternative, body);
+			camel_multipart_add_part (alternative, html);
+			g_object_unref (body);
+			g_object_unref (html);
+			body = wrap_multipart (alternative);
+		} else if (html) {
+			body = html;
+		} else if (!body) {
+			body = new_part ((const guchar *) "", 0, "text/plain; charset=utf-8", TRUE);
+		}
+		html = NULL;
+
+		if (attachments->len) {
+			CamelMultipart *mixed = new_multipart ("mixed");
+
+			camel_multipart_add_part (mixed, body);
+			for (ii = 0; ii < attachments->len; ii++)
+				camel_multipart_add_part (mixed, attachments->pdata[ii]);
+			camel_medium_set_content (CAMEL_MEDIUM (message), CAMEL_DATA_WRAPPER (mixed));
+			g_object_unref (mixed);
+		} else {
+			camel_mime_part_set_encoding (CAMEL_MIME_PART (message), camel_mime_part_get_encoding (body));
+			camel_medium_set_content (CAMEL_MEDIUM (message), camel_medium_get_content (CAMEL_MEDIUM (body)));
+		}
+
+		stream = camel_data_cache_add (gw_folder->cache, CACHE_PATH, message_uid, error);
+		if (stream) {
+			success = camel_data_wrapper_write_to_output_stream_sync (CAMEL_DATA_WRAPPER (message),
+				g_io_stream_get_output_stream (stream), cancellable, error) >= 0 &&
+				g_output_stream_flush (g_io_stream_get_output_stream (stream), cancellable, error);
+			g_object_unref (stream);
+			if (!success)
+				camel_data_cache_remove (gw_folder->cache, CACHE_PATH, message_uid, NULL);
+		}
+	}
+
+	g_clear_object (&body);
+	g_clear_object (&html);
+	g_ptr_array_unref (pictures);
+	g_ptr_array_unref (attachments);
+	g_object_unref (message);
+
+	return success;
+}
+
 /* Brings the message into the cache. For mail from the Internet the POA
  * keeps the original as the hidden attachment "Mime.822": exact headers,
  * Message-ID and signatures, which mime=1 would rebuild or lose. Like the
  * gac archive connector, the attachment is tried first, then with the ID
- * suffix of this message (after a move it may name another copy), and
- * finally the item as RFC 822. */
+ * suffix of this message (after a move it may name another copy), then
+ * the item as RFC 822, and finally the item put together here. */
 static gboolean
 groupwise_folder_download (CamelFolder *folder,
 			   const gchar *message_uid,
@@ -2417,6 +2706,16 @@ groupwise_folder_download (CamelFolder *folder,
 	if (!success && !g_cancellable_is_cancelled (cancellable)) {
 		g_clear_error (&local_error);
 		success = download_to_cache (gw_folder, cnc, message_uid, message_uid, TRUE, cancellable, &local_error);
+	}
+
+	/* Refused in a folder another user shares: from the item and its parts */
+	if (!success && !g_cancellable_is_cancelled (cancellable)) {
+		GError *build_error = NULL;
+
+		success = build_to_cache (folder, cnc, message_uid, cancellable, &build_error);
+		if (success)
+			g_clear_error (&local_error);
+		g_clear_error (&build_error);
 	}
 
 	if (success && phone_message)
