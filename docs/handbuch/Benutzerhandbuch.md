@@ -412,11 +412,11 @@ Die Kalender anderer Benutzer, die Sie im GroupWise-Client als Proxy-Kalender hi
 
 Einen eigenen Ordner können Sie für andere GroupWise-Benutzer freigeben: Er erscheint dann auch in deren Ordnerliste, mit den Rechten, die Sie vergeben. Anders als beim Proxy-Zugriff (4.8), der das ganze Postfach öffnet, betrifft eine Freigabe nur diesen einen Ordner – auf Wunsch mit seinen Unterordnern.
 
-Wie im GroupWise-Client ist die Freigabe ein Reiter (Registerkarte) der Ordnereigenschaften. Wählen Sie im Kontextmenü des Ordners `Freigabe …` (öffnet die Eigenschaften gleich mit diesem Reiter) oder `Eigenschaften` und dort den Reiter `Freigabe`. Den Reiter gibt es bei Ordnern, die Sie selbst angelegt haben, und bei Ordnern, die andere für Sie freigegeben haben; Systemordner wie die Mailbox haben ihn nicht. Er erscheint einen Augenblick nach dem Dialog, sobald der Server geantwortet hat.
+Wie im GroupWise-Client ist die Freigabe ein Reiter (Registerkarte) der Ordnereigenschaften. Wählen Sie im Kontextmenü des Ordners `Freigabe …` (direkt über `Eigenschaften`; öffnet die Eigenschaften gleich mit diesem Reiter) oder `Eigenschaften` und dort den Reiter `Freigabe`. Den Reiter gibt es bei Ordnern, die Sie selbst angelegt haben, und bei Ordnern, die andere für Sie freigegeben haben; Systemordner wie die Mailbox haben ihn nicht. Er erscheint einen Augenblick nach dem Dialog, sobald der Server geantwortet hat.
 
 - **Nicht freigegeben / Freigegeben für**: „Nicht freigegeben“ entzieht den Ordner allen Benutzern der Liste.
 
-- **Name**: Tippen Sie einen Namen oder eine E-Mail-Adresse – Evolution schlägt Einträge aus den Adressbüchern vor – und setzen Sie den Benutzer mit `Benutzer hinzufügen` auf die Liste. Oder wählen Sie über den Knopf mit dem Adressbuch aus: Der Auswahldialog öffnet sich mit dem GroupWise-Adressbuch des Systems, denn nur dessen Benutzer können eine Freigabe erhalten; wen Sie dort auswählen, steht nach dem Schließen des Dialogs gleich in der Liste. Der Server prüft dabei, ob es den Benutzer im GroupWise-System gibt.
+- **Name**: Tippen Sie einen Namen oder eine E-Mail-Adresse – Evolution schlägt Einträge aus dem GroupWise-Adressbuch des Systems vor – und setzen Sie den Benutzer mit `Benutzer hinzufügen` auf die Liste. Oder wählen Sie über den Knopf mit dem Adressbuch aus: Der Auswahldialog öffnet sich mit dem GroupWise-Adressbuch des Systems, denn nur dessen Benutzer können eine Freigabe erhalten; wen Sie dort auswählen, steht nach dem Schließen des Dialogs gleich in der Liste. Der Server prüft dabei, ob es den Benutzer im GroupWise-System gibt.
 
 - **Freigabeliste**: Name, Status und Zugriff. Der Status zeigt, wie weit der Benutzer mit der Freigabe ist: *Neu* (noch nicht gesendet), *Ausstehend*, *Geöffnet* (die Benachrichtigung wurde gelesen), *Akzeptiert* oder *Gelöscht*. `Benutzer entfernen` entzieht dem markierten Benutzer den Ordner.
 
@@ -428,7 +428,7 @@ Der Eigenschaftendialog von Evolution kennt nur `Schließen`, kein „Abbrechen�
 
 **Proxy-Konten:** Auch die Ordner eines Proxy-Kontos (4.8) lassen sich so freigeben, soweit Ihre Proxy-Rechte in diesem Postfach reichen – wichtig etwa für Ressourcen, die nur über den Proxy-Zugriff verwaltet werden. Die Benachrichtigung kommt dann vom Postfach des Proxy-Kontos.
 
-Der Empfänger nimmt die Freigabe im GroupWise-Client an (Annehmen in Evolution folgt); entziehen Sie ihm den Ordner wieder, verschwindet er aus seiner Ordnerliste.
+Der Empfänger nimmt die Freigabe an (siehe unten); entziehen Sie ihm den Ordner wieder, verschwindet er aus seiner Ordnerliste.
 
 **Symbole in der Ordnerliste:** Der GroupWise-Client setzt ein kleines Benutzer-Symbol an den Ordner – grün links für Ordner, die Sie freigegeben haben, blau rechts für angenommene Freigaben anderer. Evolution verwendet stattdessen zwei eigene Ordnersymbole:
 
@@ -438,6 +438,18 @@ Der Empfänger nimmt die Freigabe im GroupWise-Client an (Annehmen in Evolution 
 | von anderen für Sie freigegeben | Ordner mit einem Netzwerkanschluss darunter |
 
 Das Symbol wechselt, sobald Sie eine Freigabe übernommen oder aufgehoben haben.
+
+### Eine Freigabe annehmen
+
+Gibt ein anderer Benutzer einen Ordner für Sie frei, erhalten Sie in der Mailbox die Nachricht **Benachrichtigung über freigegebenen Ordner: …**. Markieren Sie sie und wählen Sie im Kontextmenü oder im Menü `Nachricht` den Eintrag `Freigegebenen Ordner installieren …` (er erscheint nur bei solchen Nachrichten). Der Dialog zeigt, wer welchen Ordner freigibt, die Mitteilung des Absenders und Ihre Zugriffsrechte, und fragt:
+
+- **Name** – wie der Ordner bei Ihnen heißen soll; vorbelegt ist sein Name beim Eigentümer.
+
+- **Beschreibung** – frei wählbar.
+
+- **Position** – der Ordner, in dem der neue Ordner angelegt wird; vorgewählt ist der Aktenschrank. Die Reihenfolge innerhalb eines Ordners bestimmt Evolution selbst, „Nach oben/Nach unten“ wie im GroupWise-Client gibt es deshalb nicht.
+
+`Installieren` nimmt die Freigabe an: Der Ordner erscheint in der Ordnerliste, und die Benachrichtigung verschwindet aus der Mailbox. Ablehnen müssen Sie eine Freigabe nicht – wer sie nicht annimmt, lässt die Nachricht liegen oder löscht sie. Das geht auch in einem Proxy-Konto, etwa um für eine Ressource eine Freigabe anzunehmen.
 
 Bei einem Ordner, den ein anderer Benutzer für Sie freigegeben hat, zeigt der Reiter den Eigentümer und Ihre Rechte; ändern lässt sich dort nichts.
 
@@ -562,7 +574,7 @@ Die Adressbücher werden lokal vorgehalten, damit die **Autovervollständigung**
 | Thema | Stand |
 |---|---|
 | Kalender anderer Benutzer | Proxy-Kalender unter dem eigenen Konto und freigegebene Kalender sind nur lesbar; die Kalender eines Proxy-Kontos sind nach den gewährten Rechten beschreibbar. |
-| Freigaben | Mailordner lassen sich freigeben (4.9). Eine Freigabe anderer annehmen sowie Kalender und Adressbücher freigeben geht noch nicht in Evolution; freigegebene Adressbücher werden noch nicht angezeigt. Die Rechte in einem für Sie freigegebenen Ordner prüft der Server: Was Sie nicht dürfen, lehnt er mit einer Fehlermeldung ab. |
+| Freigaben | Mailordner lassen sich freigeben und Freigaben anderer annehmen (4.9). Kalender und Adressbücher freigeben geht noch nicht in Evolution; freigegebene Adressbücher werden noch nicht angezeigt. Die Rechte in einem für Sie freigegebenen Ordner prüft der Server: Was Sie nicht dürfen, lehnt er mit einer Fehlermeldung ab. |
 | Proxy-Konten | Neue Nachrichten werden bei jedem Abgleich über die ganze Ordnerliste ermittelt, da der POA in Proxy-Sitzungen keine Änderungsabfrage beantwortet. Mit der Kontooption „Den Server alle … Sekunden nach Änderungen im Postfach fragen“ erscheinen sie trotzdem sofort. |
 | Geklonte Rechner | Zwei Rechner mit derselben Maschinen-ID stören sich bei der Abfrage der Änderungen am selben Postfach gegenseitig (siehe Kontooptionen in Kapitel 3). |
 | Signierte oder verschlüsselte Nachrichten | können nicht über GroupWise gesendet werden; empfangene werden angezeigt. |

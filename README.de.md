@@ -383,9 +383,15 @@ eingefügt. Ein für den Benutzer freigegebener Ordner zeigt dort Eigentümer un
 einen freigegebenen Ordner unter einer anderen ID (aus `@13` wird `@35`), seine Nachrichtenliste wird
 deshalb einmal neu eingelesen.
 
+Ein von einem anderen Benutzer freigegebener Ordner kommt als Benachrichtigung in die Mailbox; *Freigegebenen
+Ordner installieren …* an dieser Nachricht (Kontextmenü, Menü *Nachricht*) zeigt Absender, Text und Rechte,
+fragt Name, Beschreibung und übergeordneten Ordner ab und nimmt an (`acceptShareRequest`). In einem solchen
+Ordner gibt der POA eine GroupWise-Nachricht nicht als RFC 822 heraus; der Provider setzt sie dann aus dem
+Item und seinen Anhängen zusammen.
+
 ### Noch nicht unterstützt
 
-Freigaben anderer annehmen, Kalender und Adressbücher freigeben, freigegebene Adressbücher, Schreiben in Kalender anderer Benutzer, signierte oder verschlüsselte Nachrichten (GroupWise baut die Nachricht für die Empfänger
+Kalender und Adressbücher freigeben, freigegebene Adressbücher, Schreiben in Kalender anderer Benutzer, signierte oder verschlüsselte Nachrichten (GroupWise baut die Nachricht für die Empfänger
 selbst zusammen).
 
 ## Werkzeuge

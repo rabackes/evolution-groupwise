@@ -31,6 +31,7 @@ src/evolution/e-groupwise-rule-runner.c
 src/evolution/e-groupwise-rules-tab.c
 src/evolution/e-groupwise-sent-items.c
 src/evolution/e-groupwise-settings-window.c
+src/evolution/e-groupwise-share-accept.c
 src/evolution/e-groupwise-share-tab.c
 src/evolution/e-groupwise-signatures-tab.c
 src/evolution/e-groupwise-signature-sync.c

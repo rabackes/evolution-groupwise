@@ -44,6 +44,7 @@
 #include "e-groupwise-events-port.h"
 #include "e-groupwise-proxy-options.h"
 #include "e-groupwise-sent-items.h"
+#include "e-groupwise-share-accept.h"
 #include "e-groupwise-share-tab.h"
 
 #include "e-groupwise-mail-ui.h"
@@ -57,6 +58,7 @@
 #define RESTORE_ACTION "groupwise-mail-restore"
 #define SETTINGS_ACTION "groupwise-account-settings"
 #define SHARE_ACTION "groupwise-folder-share"
+#define ACCEPT_SHARE_ACTION "groupwise-share-accept"
 #define JUNK_MENU "groupwise-junk-menu"
 #define JUNK_ACTION "groupwise-junk-sender"
 #define BLOCK_ACTION "groupwise-block-sender"
@@ -691,6 +693,48 @@ action_status_cb (EUIAction *action,
 	sent_action (user_data, SENT_STATUS);
 }
 
+/* The notification of a shared folder, when it alone is selected in a
+ * folder of a writable GroupWise account: its UID */
+static gchar *
+dup_selected_share_offer (EMailReader *reader,
+			  CamelFolder **out_folder)
+{
+	CamelFolder *folder = ref_groupwise_folder (reader);
+	GPtrArray *uids = folder ? e_mail_reader_get_selected_uids (reader) : NULL;
+	gchar *uid = NULL;
+
+	if (uids && uids->len == 1 && e_groupwise_share_accept_is_notification (uids->pdata[0]))
+		uid = g_strdup (uids->pdata[0]);
+	g_clear_pointer (&uids, g_ptr_array_unref);
+	if (uid && out_folder)
+		*out_folder = folder;
+	else
+		g_clear_object (&folder);
+
+	return uid;
+}
+
+static void
+action_accept_share_cb (EUIAction *action,
+			GVariant *parameter,
+			gpointer user_data)
+{
+	EShellView *shell_view = user_data;
+	EMailReader *reader = ref_reader (shell_view);
+	CamelFolder *folder = NULL;
+	gchar *uid = reader ? dup_selected_share_offer (reader, &folder) : NULL;
+	ESource *account = uid ? e_groupwise_ui_ref_account_source (shell_view_get_registry (shell_view),
+		CAMEL_SERVICE (camel_folder_get_parent_store (folder))) : NULL;
+
+	if (account)
+		e_groupwise_share_accept_run (shell_view, shell_view_get_registry (shell_view), account, folder, uid);
+
+	g_clear_object (&account);
+	g_clear_object (&folder);
+	g_clear_object (&reader);
+	g_free (uid);
+}
+
 static void
 set_visible (EUIActionGroup *action_group,
 	     const gchar *name,
@@ -747,6 +791,12 @@ update_actions_cb (EShellView *shell_view,
 	set_visible (action_group, RESTORE_ACTION, trash != NULL);
 	set_visible (action_group, SETTINGS_ACTION, account != NULL);
 	set_visible (action_group, SHARE_ACTION, !account && own_folder_selected (shell_view));
+	{
+		gchar *offer = reader ? dup_selected_share_offer (reader, NULL) : NULL;
+
+		set_visible (action_group, ACCEPT_SHARE_ACTION, offer != NULL);
+		g_free (offer);
+	}
 	/* Messages of GroupWise, not in the Trash */
 	set_visible (action_group, JUNK_MENU, folder && !trash && uids && uids->len > 0);
 	set_visible (action_group, JUNK_ACTION, folder && !trash);
@@ -852,6 +902,48 @@ move_junk_menu (EUIManager *ui_manager)
 			g_ptr_array_add (order, copy_element_deep (e_ui_element_get_child (popup, n - 2)));
 			g_ptr_array_add (order, copy_element_deep (e_ui_element_get_child (popup, n - 1)));
 		}
+	}
+	for (ii = 0; ii < n; ii++)
+		e_ui_element_remove_child (popup, e_ui_element_get_child (popup, 0));
+	for (ii = 0; ii < order->len; ii++)
+		e_ui_element_add_child (popup, order->pdata[ii]);
+	g_ptr_array_unref (order);
+
+	e_ui_manager_changed (ui_manager);
+}
+
+/* Sharing is a page of the folder properties: its item, merged at the end
+ * of the menu of a folder, goes right above the properties */
+static void
+move_share_item (EUIManager *ui_manager)
+{
+	EUIElement *root = e_ui_parser_get_root (e_ui_manager_get_parser (ui_manager));
+	EUIElement *popup = root ? e_ui_element_get_child_by_id (root, "mail-folder-popup") : NULL;
+	EUIElement *last;
+	GPtrArray *order;
+	guint n, ii, anchor = G_MAXUINT;
+
+	n = popup ? e_ui_element_get_n_children (popup) : 0;
+	last = n ? e_ui_element_get_child (popup, n - 1) : NULL;
+	if (!last || e_ui_element_get_kind (last) != E_UI_ELEMENT_KIND_ITEM ||
+	    g_strcmp0 (e_ui_element_item_get_action (last), SHARE_ACTION) != 0)
+		return;
+
+	for (ii = 0; ii + 1 < n && anchor == G_MAXUINT; ii++) {
+		EUIElement *child = e_ui_element_get_child (popup, ii);
+
+		if (e_ui_element_get_kind (child) == E_UI_ELEMENT_KIND_ITEM &&
+		    g_strcmp0 (e_ui_element_item_get_action (child), "mail-folder-properties") == 0)
+			anchor = ii;
+	}
+	if (anchor == G_MAXUINT)
+		return;
+
+	order = g_ptr_array_new ();
+	for (ii = 0; ii + 1 < n; ii++) {
+		if (ii == anchor)
+			g_ptr_array_add (order, copy_element_deep (last));
+		g_ptr_array_add (order, copy_element_deep (e_ui_element_get_child (popup, ii)));
 	}
 	for (ii = 0; ii < n; ii++)
 		e_ui_element_remove_child (popup, e_ui_element_get_child (popup, 0));
@@ -1050,8 +1142,8 @@ e_groupwise_mail_ui_constructed (GObject *object)
 		  "<menu id='mail-folder-popup' is-popup='true'>"
 		    "<placeholder id='mail-folder-popup-actions'>"
 		      "<item action='" SETTINGS_ACTION "'/>"
-		      "<item action='" SHARE_ACTION "'/>"
 		    "</placeholder>"
+		    "<item action='" SHARE_ACTION "'/>"
 		  "</menu>"
 		  "<menu id='mail-message-popup' is-popup='true'>"
 		    "<submenu action='" JUNK_MENU "'>"
@@ -1137,6 +1229,31 @@ e_groupwise_mail_ui_constructed (GObject *object)
 		  action_retract_cb, NULL, NULL, NULL }
 	};
 
+	/* Merged after the menus above are put in order */
+	static const gchar *share_eui =
+		"<eui>"
+		  "<menu id='mail-message-popup' is-popup='true'>"
+		    "<separator/>"
+		    "<item action='" ACCEPT_SHARE_ACTION "'/>"
+		  "</menu>"
+		  "<menu id='main-menu'>"
+		    "<placeholder id='custom-menus'>"
+		      "<submenu action='mail-message-menu'>"
+			"<item action='" ACCEPT_SHARE_ACTION "'/>"
+		      "</submenu>"
+		    "</placeholder>"
+		  "</menu>"
+		"</eui>";
+
+	static const EUIActionEntry share_entries[] = {
+		{ ACCEPT_SHARE_ACTION,
+		  "folder-new",
+		  N_("Install Shared _Folder…"),
+		  NULL,
+		  N_("Accept the folder this notification offers: it is added to the folder list"),
+		  action_accept_share_cb, NULL, NULL, NULL }
+	};
+
 	EShellView *shell_view;
 	EShellViewClass *shell_view_class;
 
@@ -1158,6 +1275,10 @@ e_groupwise_mail_ui_constructed (GObject *object)
 	e_ui_manager_add_actions_with_eui_data (e_shell_view_get_ui_manager (shell_view), "mail", GETTEXT_PACKAGE,
 		more_entries, G_N_ELEMENTS (more_entries), shell_view, more_eui);
 	move_junk_menu (e_shell_view_get_ui_manager (shell_view));
+	move_share_item (e_shell_view_get_ui_manager (shell_view));
+
+	e_ui_manager_add_actions_with_eui_data (e_shell_view_get_ui_manager (shell_view), "mail", GETTEXT_PACKAGE,
+		share_entries, G_N_ELEMENTS (share_entries), shell_view, share_eui);
 
 	g_signal_connect (shell_view, "update-actions", G_CALLBACK (update_actions_cb), NULL);
 	setup_folder_tree ();

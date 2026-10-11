@@ -32,6 +32,7 @@
 
 #include <glib/gi18n-lib.h>
 
+#include <libebook/libebook.h>
 #include <e-util/e-util.h>
 #include <libemail-engine/libemail-engine.h>
 #include <mail/e-mail-backend.h>
@@ -603,6 +604,26 @@ dup_system_book_uid (ShareTab *tab)
 	return uid;
 }
 
+/* The system address book is open: what is typed completes from it */
+static void
+book_client_cb (GObject *source_object,
+		GAsyncResult *result,
+		gpointer user_data)
+{
+	ShareTab *tab = user_data;
+	EClient *client = e_client_cache_get_client_finish (E_CLIENT_CACHE (source_object), result, NULL);
+
+	if (client && tab->dialog && tab->name_selector) {
+		ENameSelectorEntry *entry = e_name_selector_peek_section_entry (tab->name_selector, SECTION);
+		EContactStore *store = entry ? e_name_selector_entry_peek_contact_store (entry) : NULL;
+
+		if (store)
+			e_contact_store_add_client (store, E_BOOK_CLIENT (client));
+	}
+	g_clear_object (&client);
+	share_tab_unref (tab);
+}
+
 static void
 remove_clicked_cb (GtkButton *button,
 		   ShareTab *tab)
@@ -925,6 +946,7 @@ build_page (ShareTab *tab,
 {
 	GtkWidget *page, *grid, *label, *box, *scrolled, *frame, *button, *selector_dialog;
 	gchar *book_uid;
+	ESource *book;
 	GtkTreeViewColumn *column;
 	GtkCellRenderer *renderer;
 	ENameSelectorModel *selector_model;
@@ -968,11 +990,21 @@ build_page (ShareTab *tab,
 	tab->name_selector = e_name_selector_new (client_cache);
 	selector_model = e_name_selector_peek_model (tab->name_selector);
 	e_name_selector_model_add_section (selector_model, SECTION, _("Users"), NULL);
-	e_name_selector_load_books (tab->name_selector);
 	selector_dialog = GTK_WIDGET (e_name_selector_peek_dialog (tab->name_selector));
 	book_uid = dup_system_book_uid (tab);
-	if (book_uid)
+	book = book_uid ? e_source_registry_ref_source (tab->registry, book_uid) : NULL;
+	if (book) {
+		/* Only users of the GroupWise system can be given a folder:
+		 * typing completes from the system address book alone, and
+		 * the dialog opens with it */
+		e_client_cache_get_client (client_cache, book, E_SOURCE_EXTENSION_ADDRESS_BOOK, 30, tab->cancellable,
+			book_client_cb, share_tab_ref (tab));
 		g_object_set_data_full (G_OBJECT (selector_dialog), E_GROUPWISE_NAME_SELECTOR_BOOK, book_uid, g_free);
+		g_object_unref (book);
+	} else {
+		e_name_selector_load_books (tab->name_selector);
+		g_free (book_uid);
+	}
 	g_signal_connect (selector_dialog, "response", G_CALLBACK (selector_response_cb), tab);
 	g_signal_connect (selector_dialog, "hide", G_CALLBACK (selector_hide_cb), tab);
 
