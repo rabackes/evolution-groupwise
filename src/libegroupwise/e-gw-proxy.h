@@ -46,6 +46,17 @@ gboolean	e_gw_proxy_access_is_all_users	(const EGwProxyAccess *access);
 /* The rights in an <entry> (proxy login, access list) */
 EGwProxyRights	e_gw_proxy_rights_from_entry	(xmlNode *entry);
 
+/* The GroupWise user of an e-mail address or a name (resolveRequest);
+ * E_GW_ERROR_UNKNOWN_USER if there is none */
+gboolean	e_gw_connection_resolve_user_sync
+						(EGwConnection *cnc,
+						 const gchar *who,
+						 gchar **out_uuid,
+						 gchar **out_email,
+						 gchar **out_display_name,
+						 GCancellable *cancellable,
+						 GError **error);
+
 /* Returns: (transfer container) (element-type EGwProxyAccess) (nullable) */
 GPtrArray *	e_gw_connection_get_proxy_access_list_sync
 						(EGwConnection *cnc,

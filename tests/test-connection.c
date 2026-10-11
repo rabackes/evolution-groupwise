@@ -29,6 +29,7 @@
 #include "e-gw-junk.h"
 #include "e-gw-proxy.h"
 #include "e-gw-rule.h"
+#include "e-gw-share.h"
 #include "e-gw-signature.h"
 #include "e-gw-vacation.h"
 #include "e-gw-xml.h"
@@ -467,6 +468,136 @@ test_proxy_access (void)
 	g_assert_null (e_gw_connection_create_proxy_access_sync (cnc, "niemand@example.com", E_GW_PROXY_MAIL_READ, NULL, &error));
 	g_assert_error (error, E_GW_ERROR, E_GW_ERROR_UNKNOWN_USER);
 	g_clear_error (&error);
+
+	g_object_unref (cnc);
+}
+
+/* Shared folders: who has one, share it, other rights, take it away; accept one */
+static void
+test_shares (void)
+{
+	EGwConnection *cnc = logged_in ();
+	EGwShare *share;
+	EGwShareEntry *entry;
+	EGwShareNotification *offer;
+	GPtrArray *added, *changed, *removed;
+	GError *error = NULL;
+	gchar *id, *text;
+
+	g_free (mock_get ("/_test/reset"));
+
+	/* A folder the user shares; asked for with its ID from before */
+	share = e_gw_connection_get_share_sync (cnc, "F3.domain1.po1.100.0.1.0.1@14", NULL, &error);
+	g_assert_no_error (error);
+	g_assert_cmpstr (share->id, ==, "F3.domain1.po1.100.0.1.0.1@35");
+	g_assert_true (share->shared_by_me);
+	g_assert_false (share->shared_to_me);
+	g_assert_true (share->share_tree);
+	g_assert_cmpuint (share->entries->len, ==, 1);
+	entry = share->entries->pdata[0];
+	g_assert_cmpstr (entry->email, ==, "anna.mueller@example.com");
+	g_assert_cmpint (entry->rights, ==, E_GW_SHARE_READ | E_GW_SHARE_ADD);
+	g_assert_cmpint (entry->status, ==, E_GW_SHARE_STATUS_ACCEPTED);
+	g_assert_cmpint (e_gw_share_get_my_rights (share), ==, E_GW_SHARE_ALL);
+
+	/* Anna gets more rights, Max the folder too */
+	changed = g_ptr_array_new_with_free_func ((GDestroyNotify) e_gw_share_entry_free);
+	g_ptr_array_add (changed, e_gw_share_entry_copy (entry));
+	((EGwShareEntry *) changed->pdata[0])->rights = E_GW_SHARE_ALL;
+	added = g_ptr_array_new_with_free_func ((GDestroyNotify) e_gw_share_entry_free);
+	g_ptr_array_add (added, e_gw_share_entry_new ("Weber, Max", "max.weber@example.com", E_GW_SHARE_EDIT));
+	g_assert_true (e_gw_connection_modify_share_sync (cnc, share->id, added, changed, NULL, FALSE,
+		"Ordner f\303\274r dich", "Schau <mal> rein", NULL, NULL, &error));
+	g_assert_no_error (error);
+	text = mock_get ("/_test/shares");
+	g_assert_cmpstr (text, ==, "F3.domain1.po1.100.0.1.0.1:1:anna.mueller@example.com=raed/accepted,max.weber@example.com=re/");
+	g_free (text);
+	g_ptr_array_unref (added);
+	g_ptr_array_unref (changed);
+	e_gw_share_free (share);
+
+	/* Max has not answered yet */
+	share = e_gw_connection_get_share_sync (cnc, "F3.domain1.po1.100.0.1.0.1@35", NULL, &error);
+	g_assert_no_error (error);
+	g_assert_cmpuint (share->entries->len, ==, 2);
+	entry = share->entries->pdata[1];
+	g_assert_cmpstr (entry->display_name, ==, "Weber, Max");
+	g_assert_cmpint (entry->status, ==, E_GW_SHARE_STATUS_PENDING);
+
+	/* Both lose it: an ordinary folder again */
+	removed = g_ptr_array_new_with_free_func ((GDestroyNotify) e_gw_share_entry_free);
+	g_ptr_array_add (removed, e_gw_share_entry_copy (share->entries->pdata[0]));
+	g_ptr_array_add (removed, e_gw_share_entry_copy (share->entries->pdata[1]));
+	g_assert_true (e_gw_connection_modify_share_sync (cnc, share->id, NULL, NULL, removed, FALSE, NULL, NULL, NULL, NULL, &error));
+	g_assert_no_error (error);
+	g_ptr_array_unref (removed);
+	e_gw_share_free (share);
+	share = e_gw_connection_get_share_sync (cnc, "F3.domain1.po1.100.0.1.0.1@35", NULL, &error);
+	g_assert_no_error (error);
+	g_assert_cmpstr (share->id, ==, "F3.domain1.po1.100.0.1.0.1@14");
+	g_assert_false (share->shared_by_me);
+	g_assert_cmpuint (share->entries->len, ==, 0);
+	e_gw_share_free (share);
+
+	/* A folder not shared so far, with its subfolders */
+	added = g_ptr_array_new_with_free_func ((GDestroyNotify) e_gw_share_entry_free);
+	g_ptr_array_add (added, e_gw_share_entry_new ("Weber, Max", "max.weber@example.com", 0));
+	g_assert_true (e_gw_connection_modify_share_sync (cnc, "F1.domain1.po1.100.0.1.0.1@14", added, NULL, NULL, TRUE,
+		"Archiv", NULL, "Altes", NULL, &error));
+	g_assert_no_error (error);
+	g_ptr_array_unref (added);
+	text = mock_get ("/_test/shares");
+	g_assert_cmpstr (text, ==, "F1.domain1.po1.100.0.1.0.1:1:max.weber@example.com=r/;F3.domain1.po1.100.0.1.0.1:1:");
+	g_free (text);
+
+	/* Nothing to do, nothing sent */
+	g_assert_true (e_gw_connection_modify_share_sync (cnc, "F1.domain1.po1.100.0.1.0.1@14", NULL, NULL, NULL, TRUE,
+		NULL, NULL, NULL, NULL, &error));
+	g_assert_no_error (error);
+
+	/* A folder of another user */
+	share = e_gw_connection_get_share_sync (cnc, "T1@14", NULL, &error);
+	g_assert_no_error (error);
+	g_assert_true (share->shared_to_me);
+	g_assert_cmpstr (share->owner_name, ==, "Egon");
+	g_assert_cmpstr (share->owner_email, ==, "egon@example.com");
+	g_assert_cmpstr (share->description, ==, "Gemeinsame Ablage");
+	g_assert_cmpint (e_gw_share_get_my_rights (share), ==, E_GW_SHARE_READ | E_GW_SHARE_ADD);
+	g_assert_cmpint (((EGwShareEntry *) share->entries->pdata[0])->status, ==, E_GW_SHARE_STATUS_ACCEPTED);
+	e_gw_share_free (share);
+
+	/* The message offering a folder, and one that does not */
+	g_assert_true (e_gw_share_is_notification_id ("SN1@37:7.domain1.po1.100.0.1.0.1@16"));
+	g_assert_true (e_gw_share_is_notification_id ("SN1@37"));
+	g_assert_false (e_gw_share_is_notification_id ("SN1@1:7.domain1.po1.100.0.1.0.1@37"));
+	g_assert_false (e_gw_share_is_notification_id ("SN1@371"));
+	g_assert_false (e_gw_share_is_notification_id (NULL));
+
+	offer = e_gw_connection_get_share_notification_sync (cnc, "SN1@37:7.domain1.po1.100.0.1.0.1@16", NULL, &error);
+	g_assert_no_error (error);
+	g_assert_cmpstr (offer->folder_name, ==, "Projekt A");
+	g_assert_cmpstr (offer->sender_name, ==, "Egon");
+	g_assert_cmpstr (offer->message, ==, "Bitte annehmen");
+	g_assert_cmpstr (offer->description, ==, "Unterlagen");
+	g_assert_cmpint (offer->rights, ==, E_GW_SHARE_READ | E_GW_SHARE_ADD | E_GW_SHARE_EDIT);
+
+	g_assert_null (e_gw_connection_get_share_notification_sync (cnc, MAIL1, NULL, &error));
+	g_assert_error (error, E_GW_ERROR, E_GW_ERROR_ITEM_NOT_FOUND);
+	g_clear_error (&error);
+
+	id = e_gw_connection_accept_share_sync (cnc, offer->id, "Projekt von Egon", NULL, "F1.domain1.po1.100.0.1.0.1@14", NULL, &error);
+	g_assert_no_error (error);
+	g_assert_cmpstr (id, ==, "MOUNT1@34:OWNERF1");
+	g_free (id);
+	text = mock_get ("/_test/shares");
+	g_assert_true (g_str_has_suffix (text, ";accepted:Projekt von Egon:F1.domain1.po1.100.0.1.0.1@14"));
+	g_free (text);
+
+	/* Only once */
+	g_assert_null (e_gw_connection_accept_share_sync (cnc, offer->id, NULL, NULL, NULL, NULL, &error));
+	g_assert_error (error, E_GW_ERROR, E_GW_ERROR_ITEM_NOT_FOUND);
+	g_clear_error (&error);
+	e_gw_share_notification_free (offer);
 
 	g_object_unref (cnc);
 }
@@ -1052,6 +1183,7 @@ main (int argc,
 	g_test_add_func ("/folders/list", test_folder_list);
 	g_test_add_func ("/connection/proxy", test_proxy);
 	g_test_add_func ("/connection/proxy-access", test_proxy_access);
+	g_test_add_func ("/connection/shares", test_shares);
 	g_test_add_func ("/connection/signatures", test_signatures);
 	g_test_add_func ("/connection/rules", test_rules);
 	g_test_add_func ("/connection/events", test_events);

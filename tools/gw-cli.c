@@ -29,6 +29,7 @@
 #include "e-gw-folder.h"
 #include "e-gw-proxy.h"
 #include "e-gw-rule.h"
+#include "e-gw-share.h"
 #include "e-gw-vacation.h"
 #include "e-gw-xml.h"
 
@@ -65,6 +66,12 @@ static const gchar *summary =
 	"  access-grant EMAIL RIGHTS grant rights (hex, EGwProxyRights) to a user\n"
 	"  access-set ID OLD NEW     change the rights of an entry\n"
 	"  access-remove ID          take the access away\n"
+	"  share FOLDER-ID           show how a folder is shared (rights: 1 read, 2 add, 4 edit, 8 delete)\n"
+	"  share-add FOLDER-ID EMAIL RIGHTS SUBJECT [MESSAGE [tree]]  share it with a user\n"
+	"  share-set FOLDER-ID EMAIL RIGHTS  change the rights of a user\n"
+	"  share-remove FOLDER-ID EMAIL      take the folder from a user\n"
+	"  share-offer ITEM-ID       show the notification of a shared folder\n"
+	"  share-accept ITEM-ID [NAME [PARENT-ID]]  accept it\n"
 	"  items CONTAINER [COUNT]   list the items of a folder\n"
 	"  item ID [VIEW]            print an item as XML\n"
 	"  mime ID                   write an item as RFC 822 to stdout\n"
@@ -437,6 +444,85 @@ run_command (EGwConnection *cnc,
 			(EGwProxyRights) g_ascii_strtoull (argv[4], NULL, 16), NULL, error);
 	if (g_str_equal (cmd, "access-remove") && argc >= 3)
 		return e_gw_connection_remove_proxy_access_sync (cnc, argv[2], NULL, error);
+	if (g_str_equal (cmd, "share") && argc >= 3) {
+		static const gchar *status[] = { "pending", "opened", "accepted", "deleted", "owner" };
+		g_autoptr(EGwShare) share = e_gw_connection_get_share_sync (cnc, argv[2], NULL, error);
+		guint ii;
+
+		if (!share)
+			return FALSE;
+		printf ("%s  %s%s%s\n", share->id, share->shared_by_me ? "shared by me" : share->shared_to_me ? "shared to me" : "not shared",
+			share->share_tree ? ", with subfolders" : "", share->description ? ", described" : "");
+		if (share->shared_to_me)
+			printf ("owner: %s <%s>\n", share->owner_name ? share->owner_name : "", share->owner_email ? share->owner_email : "");
+		for (ii = 0; ii < share->entries->len; ii++) {
+			EGwShareEntry *entry = share->entries->pdata[ii];
+
+			printf ("%-30s %-28s 0x%x %s\n", entry->display_name ? entry->display_name : "",
+				entry->email ? entry->email : "", entry->rights, status[entry->status]);
+		}
+		return TRUE;
+	}
+	if (g_str_equal (cmd, "share-add") && argc >= 6) {
+		g_autoptr(GPtrArray) added = g_ptr_array_new_with_free_func ((GDestroyNotify) e_gw_share_entry_free);
+		gchar *uuid = NULL, *email = NULL, *name = NULL;
+		EGwShareEntry *entry;
+
+		if (!e_gw_connection_resolve_user_sync (cnc, argv[3], &uuid, &email, &name, NULL, error))
+			return FALSE;
+		entry = e_gw_share_entry_new (name, email, (EGwShareRights) g_ascii_strtoull (argv[4], NULL, 16));
+		entry->uuid = uuid;
+		g_free (email);
+		g_free (name);
+		g_ptr_array_add (added, entry);
+		return e_gw_connection_modify_share_sync (cnc, argv[2], added, NULL, NULL, argc >= 8 && g_str_equal (argv[7], "tree"),
+			argv[5], argc >= 7 ? argv[6] : NULL, NULL, NULL, error);
+	}
+	if ((g_str_equal (cmd, "share-set") && argc >= 5) || (g_str_equal (cmd, "share-remove") && argc >= 4)) {
+		g_autoptr(EGwShare) share = e_gw_connection_get_share_sync (cnc, argv[2], NULL, error);
+		g_autoptr(GPtrArray) list = g_ptr_array_new_with_free_func ((GDestroyNotify) e_gw_share_entry_free);
+		gboolean set = g_str_equal (cmd, "share-set");
+		guint ii;
+
+		if (!share)
+			return FALSE;
+		for (ii = 0; ii < share->entries->len; ii++) {
+			EGwShareEntry *entry = share->entries->pdata[ii];
+
+			if (entry->email && g_ascii_strcasecmp (entry->email, argv[3]) == 0) {
+				entry = e_gw_share_entry_copy (entry);
+				if (set)
+					entry->rights = (EGwShareRights) g_ascii_strtoull (argv[4], NULL, 16) | E_GW_SHARE_READ;
+				g_ptr_array_add (list, entry);
+			}
+		}
+		if (!list->len) {
+			g_set_error (error, E_GW_ERROR, E_GW_ERROR_UNKNOWN_USER, "The folder is not shared with %s", argv[3]);
+			return FALSE;
+		}
+		return e_gw_connection_modify_share_sync (cnc, share->id, NULL, set ? list : NULL, set ? NULL : list,
+			FALSE, NULL, NULL, NULL, NULL, error);
+	}
+	if (g_str_equal (cmd, "share-offer") && argc >= 3) {
+		g_autoptr(EGwShareNotification) offer = e_gw_connection_get_share_notification_sync (cnc, argv[2], NULL, error);
+
+		if (!offer)
+			return FALSE;
+		printf ("folder: %s\nfrom: %s <%s>\nsubject: %s\nrights: 0x%x\ndescription: %s\nmessage: %s\n",
+			offer->folder_name ? offer->folder_name : "", offer->sender_name ? offer->sender_name : "",
+			offer->sender_email ? offer->sender_email : "", offer->subject ? offer->subject : "", offer->rights,
+			offer->description ? offer->description : "", offer->message ? offer->message : "");
+		return TRUE;
+	}
+	if (g_str_equal (cmd, "share-accept") && argc >= 3) {
+		gchar *id = e_gw_connection_accept_share_sync (cnc, argv[2], argc >= 4 ? argv[3] : NULL, NULL,
+			argc >= 5 ? argv[4] : NULL, NULL, error);
+
+		if (id)
+			printf ("id: %s\n", id);
+		g_free (id);
+		return id != NULL;
+	}
 	if (g_str_equal (cmd, "vacation")) {
 		EGwVacation *vacation = e_gw_connection_get_vacation_sync (cnc, NULL, error);
 		gchar *tz;

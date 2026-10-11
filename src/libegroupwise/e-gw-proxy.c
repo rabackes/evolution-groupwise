@@ -138,16 +138,14 @@ e_gw_connection_get_proxy_access_list_sync (EGwConnection *cnc,
 	return list;
 }
 
-/* The GroupWise user of an e-mail address or a name (resolveRequest):
- * the POA grants rights only with the UUID */
-static gboolean
-resolve_user (EGwConnection *cnc,
-	      const gchar *who,
-	      gchar **out_uuid,
-	      gchar **out_email,
-	      gchar **out_display_name,
-	      GCancellable *cancellable,
-	      GError **error)
+gboolean
+e_gw_connection_resolve_user_sync (EGwConnection *cnc,
+				   const gchar *who,
+				   gchar **out_uuid,
+				   gchar **out_email,
+				   gchar **out_display_name,
+				   GCancellable *cancellable,
+				   GError **error)
 {
 	EGwResponse *response;
 	GString *inner;
@@ -192,7 +190,7 @@ e_gw_connection_create_proxy_access_sync (EGwConnection *cnc,
 	g_return_val_if_fail (E_IS_GW_CONNECTION (cnc), NULL);
 	g_return_val_if_fail (who != NULL, NULL);
 
-	if (!resolve_user (cnc, who, &uuid, &email, &display_name, cancellable, error))
+	if (!e_gw_connection_resolve_user_sync (cnc, who, &uuid, &email, &display_name, cancellable, error))
 		return NULL;
 
 	inner = g_string_new ("<entry>");

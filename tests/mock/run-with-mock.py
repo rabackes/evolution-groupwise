@@ -27,6 +27,8 @@ Extensions over mock_poa.py for the libegroupwise tests:
   GET /_test/rule-xml?id=ID        filter and actions of a rule as stored
   GET /_test/signatures            the signatures ("name:default:body of a text/plain MIME;..")
   GET /_test/access                the proxy access list ("email:group/right,..;..", by ID)
+  GET /_test/shares                the shared folders ("id:tree:email=rights/status,..;..", rights as
+                                   letters r a e d), and "accepted:NOTIFICATION:NAME:PARENT" once done
   GET /_test/junk-entries          the junk, block and trust lists ("list:match", sorted)
   GET /_test/junk-settings         the junk mail settings ("field=value", sorted)
   GET /_test/vacation              the item XML of the last out of office rule written
@@ -113,6 +115,15 @@ def default_access():
 USERS = {"anna.mueller@example.com": ("U1", "M\u00fcller, Anna"), "max.weber@example.com": ("U2", "Weber, Max"),
          "bob@phantom.com": ("UB", "Bob")}
 
+def default_shares():
+    """The folders the user shares: base ID -> [share tree, {email: [uuid, name, rights, status]}]."""
+    return {"F3.domain1.po1.100.0.1.0.1": [True, {"anna.mueller@example.com": ["U1", "M\u00fcller, Anna", "ra", "accepted"]}]}
+
+
+# The notification of a folder shared to the user
+SHARE_OFFER = "SN1@37:" + mock_poa.FOLDERS["inbox"]
+
+
 def default_signatures():
     """[id, name, default, base64 MIME]"""
     import base64
@@ -136,6 +147,8 @@ RULE_FIELDS = ("name", "enabled", "execution", "sequence", "types", "source", "c
 state["rules"] = default_rules()
 state["executed_rules"] = []
 state["access"] = default_access()
+state["shares"] = default_shares()
+state["accepted_share"] = None
 state["junk"] = default_junk()
 state["vacation"] = None  # the body of the last createItem VacationRule
 state["junk_settings"] = {"useJunkList": "1", "useBlockList": "1", "usePAB": "0", "persistence": "14", "autoDelete": "0"}
@@ -157,6 +170,8 @@ def reset():
     state["categories"] = default_categories()
     state["junk"] = default_junk()
     state["access"] = default_access()
+    state["shares"] = default_shares()
+    state["accepted_share"] = None
     state["rules"] = default_rules()
     state["executed_rules"] = []
     state["signatures"] = default_signatures()
@@ -510,6 +525,70 @@ class Handler(mock_poa.Handler):
             aid = xml_unescape(re.search(r"<id>(.*?)</id>", body).group(1))
             state["access"] = [e for e in state["access"] if e[0] != aid]
             return mock_poa.ok(action)
+        if action == "getFolder":
+            # like the POA: sharing a folder changes the end of its ID, the old one still finds it
+            base = base_id(re.search(r"<id>(.*?)</id>", body).group(1)).split("@")[0]
+            if base == "T1":
+                return mock_poa.ok(action, "<folder type='SharedFolder'><id>T1@34:OWNER1</id><name>Team</name>"
+                                   "<description>Gemeinsame Ablage</description><flags><shareTree>1</shareTree></flags>"
+                                   "<acl><entry><displayName>User One</displayName><email>u1@phantom.com</email><uuid>ME1</uuid>"
+                                   "<rights><read>1</read><add>1</add></rights></entry></acl>"
+                                   "<owner><displayName>Egon</displayName><email>egon@example.com</email><uuid>UE</uuid></owner>"
+                                   "<isSharedToMe>1</isSharedToMe></folder>")
+            share = state["shares"].get(base)
+            if not share or not share[1]:
+                return mock_poa.ok(action, f"<folder type='Folder'><id>{base}@14</id><name>Ordner</name></folder>")
+            names = {"r": "read", "a": "add", "e": "edit", "d": "delete"}
+            entries = "".join(
+                f"<entry><displayName>{xml_escape(n)}</displayName><email>{e}</email><uuid>{u}</uuid><rights>"
+                + "".join(f"<{names[c]}>1</{names[c]}>" for c in r) + "</rights>"
+                + (f"<status>{st}</status>" if st else "") + "</entry>" for e, (u, n, r, st) in share[1].items())
+            return mock_poa.ok(action, f"<folder type='SharedFolder'><id>{base}@35</id><name>Ordner</name>"
+                               + ("<flags><shareTree>1</shareTree></flags>" if share[0] else "")
+                               + f"<acl>{entries}</acl><isSharedByMe>1</isSharedByMe></folder>")
+        if action == "modifyItem" and "<acl>" in body:
+            base = base_id(re.search(r"<id>(.*?)</id>", body).group(1)).split("@")[0]
+            share = state["shares"].setdefault(base, [False, {}])
+
+            updates = ET.fromstring(re.search(r"<updates>.*</updates>", body, re.S).group(0))
+
+            def entries(part):
+                for entry in updates.findall(f"{part}/acl/entry"):
+                    yield (entry.findtext("email").lower(), entry.findtext("displayName"),
+                           "".join(right.tag[0] for right in entry.find("rights") if right.text == "1"))
+            added = list(entries("add"))
+            if added and "<notification>" not in body:
+                return mock_poa.err(action, 59920, "Missing notification")
+            for email, name, rights in added:
+                share[1][email] = [USERS.get(email, ("",))[0], name, rights, ""]
+                # only with new users, like the POA
+                if updates.findtext("add/flags/shareTree") == "1":
+                    share[0] = True
+            for email, _, _ in entries("delete"):
+                share[1].pop(email, None)
+            for email, _, rights in entries("update"):
+                if email in share[1]:
+                    share[1][email][2] = rights
+            state["share_notification"] = re.search(r"<notification>(.*?)</notification>", body, re.S)
+            return mock_poa.ok(action, "<modified>2026-10-11T12:00:00Z</modified>")
+        if action == "getItem" and base_id(re.search(r"<id>(.*?)</id>", body).group(1)) == "SN1@37":
+            if state["accepted_share"]:
+                return mock_poa.err(action, 59906, "")
+            assert "peek" in body, body
+            import base64
+            return mock_poa.ok(action, f"<item type='SharedNotification'><id>{SHARE_OFFER}</id><name>Projekt A</name>"
+                               "<subject>Benachrichtigung \u00fcber freigegebenen Ordner: Projekt A</subject>"
+                               "<distribution><from><displayName>Egon</displayName><email>egon@example.com</email></from></distribution>"
+                               "<message><part contentType='text/plain'>" + base64.b64encode("Bitte annehmen".encode()).decode()
+                               + "</part></message><notification>SharedFolder</notification>"
+                               "<description>Unterlagen</description><rights><read>1</read><add>1</add><edit>1</edit></rights></item>")
+        if action == "acceptShare":
+            if clean(re.search(r"<id>(.*?)</id>", body).group(1)) != SHARE_OFFER or state["accepted_share"]:
+                return mock_poa.err(action, 59906, "")
+            name = re.search(r"<name>(.*?)</name>", body)
+            parent = re.search(r"<container>(.*?)</container>", body)
+            state["accepted_share"] = (name.group(1) if name else "Projekt A", parent.group(1) if parent else "")
+            return mock_poa.ok(action, "<id>MOUNT1@34:\n  OWNERF1</id>")
         if action == "getJunkEntries":
             out = ""
             for kind in ("junk", "block", "trust"):
@@ -723,6 +802,12 @@ class Handler(mock_poa.Handler):
         if url.path == "/_test/access":
             return self.reply(200, ";".join(f"{e[2] or e[1]}:" + ",".join(sorted(e[4]))
                                             for e in sorted(state["access"], key=lambda e: e[0])).encode())
+        if url.path == "/_test/shares":
+            out = [f"{fid}:{int(tree)}:" + ",".join(f"{e}={v[2]}/{v[3]}" for e, v in sorted(users.items()))
+                   for fid, (tree, users) in sorted(state["shares"].items())]
+            if state["accepted_share"]:
+                out.append("accepted:" + ":".join(state["accepted_share"]))
+            return self.reply(200, ";".join(out).encode())
         if url.path == "/_test/junk-entries":
             return self.reply(200, ",".join(sorted(f"{k}:{m}" for _, m, _, k in state["junk"])).encode())
         if url.path == "/_test/vacation":

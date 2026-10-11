@@ -15,6 +15,8 @@ add_library(egroupwise SHARED
 	e-gw-proxy.h
 	e-gw-rule.c
 	e-gw-rule.h
+	e-gw-share.c
+	e-gw-share.h
 	e-gw-signature.c
 	e-gw-signature.h
 	e-gw-vacation.c
