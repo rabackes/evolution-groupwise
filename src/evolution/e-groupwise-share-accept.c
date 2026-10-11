@@ -41,6 +41,7 @@
 enum {
 	COL_NAME,
 	COL_ID,
+	COL_HOLDS,	/* a folder can be put into it */
 	N_COLS
 };
 
@@ -185,19 +186,65 @@ rights_text (EGwShareRights rights)
 	return g_string_free (text, FALSE);
 }
 
-/* Where a folder can go: the Cabinet and the folders the user made */
+/* Where a folder can go: beside the Cabinet (into the root), into the
+ * Cabinet and into the folders the user made */
 static gboolean
 can_hold (const EGwFolder *folder)
 {
 	if (folder->is_calendar || folder->is_shared_to_me)
 		return FALSE;
 
-	return folder->type == E_GW_FOLDER_TYPE_CABINET ||
+	return folder->type == E_GW_FOLDER_TYPE_ROOT || folder->type == E_GW_FOLDER_TYPE_CABINET ||
 		(folder->type == E_GW_FOLDER_TYPE_NORMAL && folder->kind != E_GW_FOLDER_KIND_SYSTEM);
 }
 
-/* The folders as a tree, parents first as the server lists them; returns
- * the row of the Cabinet */
+/* The name of a folder as the folder list shows it: the system folders in
+ * the user's language (the POA names them in English) */
+static gchar *
+dup_folder_name (const EGwFolder *folder)
+{
+	static const struct {
+		EGwFolderType type;
+		const gchar *name;
+	} system_folders[] = {
+		{ E_GW_FOLDER_TYPE_MAILBOX, N_("Mailbox") },
+		{ E_GW_FOLDER_TYPE_JUNK, N_("Junk Mail") },
+		{ E_GW_FOLDER_TYPE_TRASH, N_("Trash") },
+		{ E_GW_FOLDER_TYPE_SENT_ITEMS, N_("Sent Items") },
+		{ E_GW_FOLDER_TYPE_DRAFT, N_("Work In Progress") },
+		{ E_GW_FOLDER_TYPE_CABINET, N_("Cabinet") },
+		{ E_GW_FOLDER_TYPE_CHECKLIST, N_("Tasklist") },
+		{ E_GW_FOLDER_TYPE_CALENDAR, N_("Calendar") },
+		{ E_GW_FOLDER_TYPE_CONTACTS, N_("Contacts") },
+		{ E_GW_FOLDER_TYPE_DOCUMENTS, N_("Documents") }
+	};
+	const gchar *name = folder->name && *folder->name ? folder->name : folder->id;
+	guint ii;
+
+	if (folder->type == E_GW_FOLDER_TYPE_ROOT) {
+		/* "Karl Napp Home" */
+		if (g_str_has_suffix (name, " Home")) {
+			gchar *user = g_strndup (name, strlen (name) - strlen (" Home"));
+			/* Translators: the top of the folder list of a mailbox; %s is the name of its user */
+			gchar *text = g_strdup_printf (_("%s Home"), user);
+
+			g_free (user);
+			return text;
+		}
+		return g_strdup (name);
+	}
+
+	for (ii = 0; folder->kind == E_GW_FOLDER_KIND_SYSTEM && ii < G_N_ELEMENTS (system_folders); ii++) {
+		if (folder->type == system_folders[ii].type)
+			return g_strdup (_(system_folders[ii].name));
+	}
+
+	return g_strdup (name);
+}
+
+/* The folders as a tree, parents first as the server lists them: the root
+ * with the system folders of the mailbox, as the place is seen there, and
+ * the folders that can hold another. Returns the row of the Cabinet. */
 static GtkTreePath *
 fill_folders (GtkTreeStore *store,
 	      GPtrArray *folders)
@@ -209,22 +256,49 @@ fill_folders (GtkTreeStore *store,
 	for (ii = 0; ii < folders->len; ii++) {
 		EGwFolder *folder = folders->pdata[ii];
 		GtkTreeIter iter, *parent;
+		gboolean holds = can_hold (folder);
+		gchar *name;
 
-		if (!can_hold (folder))
-			continue;
 		parent = folder->parent_id ? g_hash_table_lookup (rows, folder->parent_id) : NULL;
-		/* Below something that cannot hold a folder: not offered */
-		if (!parent && folder->type != E_GW_FOLDER_TYPE_CABINET)
-			continue;
+		if (folder->type != E_GW_FOLDER_TYPE_ROOT) {
+			/* Below something not shown */
+			if (!parent)
+				continue;
+			/* What cannot hold a folder: only the system folders beside the Cabinet */
+			if (!holds && (folder->kind != E_GW_FOLDER_KIND_SYSTEM || folder->type == E_GW_FOLDER_TYPE_QUERY ||
+			    folder->type == E_GW_FOLDER_TYPE_OTHER || gtk_tree_store_iter_depth (store, parent) > 0))
+				continue;
+		}
+		name = dup_folder_name (folder);
 		gtk_tree_store_insert_with_values (store, &iter, parent, -1,
-			COL_NAME, folder->name && *folder->name ? folder->name : folder->id, COL_ID, folder->id, -1);
-		g_hash_table_insert (rows, folder->id, gtk_tree_iter_copy (&iter));
+			COL_NAME, name, COL_ID, folder->id, COL_HOLDS, holds, -1);
+		g_free (name);
+		/* Only rows that hold folders have rows below them */
+		if (holds)
+			g_hash_table_insert (rows, folder->id, gtk_tree_iter_copy (&iter));
 		if (folder->type == E_GW_FOLDER_TYPE_CABINET && !cabinet)
 			cabinet = gtk_tree_model_get_path (GTK_TREE_MODEL (store), &iter);
 	}
 	g_hash_table_destroy (rows);
 
 	return cabinet;
+}
+
+/* Only folders that can hold another are chosen */
+static gboolean
+select_func (GtkTreeSelection *selection,
+	     GtkTreeModel *model,
+	     GtkTreePath *path,
+	     gboolean currently_selected,
+	     gpointer user_data)
+{
+	GtkTreeIter iter;
+	gboolean holds = FALSE;
+
+	if (gtk_tree_model_get_iter (model, &iter, path))
+		gtk_tree_model_get (model, &iter, COL_HOLDS, &holds, -1);
+
+	return holds || currently_selected;
 }
 
 static GtkWidget *
@@ -327,17 +401,19 @@ run_dialog (AcceptData *data,
 	/* Where the folder goes */
 	label = left_label (_("_Position:"), TRUE);
 	gtk_grid_attach (GTK_GRID (grid), label, 0, row, 1, 1);
-	store = gtk_tree_store_new (N_COLS, G_TYPE_STRING, G_TYPE_STRING);
+	store = gtk_tree_store_new (N_COLS, G_TYPE_STRING, G_TYPE_STRING, G_TYPE_BOOLEAN);
 	cabinet = fill_folders (store, data->folders);
 	view = gtk_tree_view_new_with_model (GTK_TREE_MODEL (store));
 	gtk_tree_view_set_headers_visible (GTK_TREE_VIEW (view), FALSE);
 	gtk_tree_view_insert_column_with_attributes (GTK_TREE_VIEW (view), -1, NULL, gtk_cell_renderer_text_new (),
-		"text", COL_NAME, NULL);
-	gtk_widget_set_tooltip_text (view, _("The new folder is put into the folder selected here"));
+		"text", COL_NAME, "sensitive", COL_HOLDS, NULL);
+	gtk_widget_set_tooltip_text (view, _("The new folder is put into the folder selected here; the topmost row puts it beside the Cabinet"));
 	gtk_label_set_mnemonic_widget (GTK_LABEL (label), view);
 	selection = gtk_tree_view_get_selection (GTK_TREE_VIEW (view));
 	gtk_tree_selection_set_mode (selection, GTK_SELECTION_BROWSE);
+	gtk_tree_selection_set_select_function (selection, select_func, NULL, NULL);
 	if (cabinet) {
+		gtk_tree_view_expand_to_path (GTK_TREE_VIEW (view), cabinet);
 		gtk_tree_view_expand_row (GTK_TREE_VIEW (view), cabinet, FALSE);
 		gtk_tree_selection_select_path (selection, cabinet);
 		gtk_tree_path_free (cabinet);

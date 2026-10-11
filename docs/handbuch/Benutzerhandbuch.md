@@ -447,7 +447,7 @@ Gibt ein anderer Benutzer einen Ordner für Sie frei, erhalten Sie in der Mailbo
 
 - **Beschreibung** – frei wählbar.
 
-- **Position** – der Ordner, in dem der neue Ordner angelegt wird; vorgewählt ist der Aktenschrank. Die Reihenfolge innerhalb eines Ordners bestimmt Evolution selbst, „Nach oben/Nach unten“ wie im GroupWise-Client gibt es deshalb nicht.
+- **Position** – der Ordner, in dem der neue Ordner angelegt wird; vorgewählt ist der Aktenschrank. Der Baum beginnt wie im GroupWise-Client mit dem Basisordner des Postfachs: Markieren Sie ihn, um den Ordner neben dem Aktenschrank anzulegen. Die übrigen Systemordner dieser Ebene sind zur Orientierung grau mit aufgeführt; in sie lässt sich nichts einhängen. Die Reihenfolge innerhalb eines Ordners bestimmt Evolution selbst, „Nach oben/Nach unten“ wie im GroupWise-Client gibt es deshalb nicht.
 
 `Installieren` nimmt die Freigabe an: Der Ordner erscheint in der Ordnerliste, und die Benachrichtigung verschwindet aus der Mailbox. Ablehnen müssen Sie eine Freigabe nicht – wer sie nicht annimmt, lässt die Nachricht liegen oder löscht sie. Das geht auch in einem Proxy-Konto, etwa um für eine Ressource eine Freigabe anzunehmen.
 
