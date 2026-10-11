@@ -59,6 +59,8 @@ typedef struct {
 	gint64 unread_count;		/* -1 if not reported */
 	gboolean is_shared_to_me;
 	gboolean is_shared_by_me;
+	guint share_rights;		/* shared to the user: what the user may do
+					 * there (EGwShareRights) */
 	gchar *owner;			/* e-mail of the owner of a shared folder */
 	gchar *owner_name;		/* and the owner's name, if given */
 	gchar *proxy_email;		/* a proxy calendar: e-mail of its user as typed

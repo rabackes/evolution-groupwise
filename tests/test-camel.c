@@ -1023,6 +1023,36 @@ test_search_folder (Fixture *fixture,
 	g_object_unref (all);
 }
 
+/* A folder another user shares for reading only: nothing goes in */
+static void
+test_shared_read_only (Fixture *fixture,
+		       gconstpointer data)
+{
+	CamelFolder *inbox = open_inbox (fixture), *shared = open_folder (fixture, "Nur lesen");
+	GPtrArray *uids = g_ptr_array_new ();
+	GError *error = NULL;
+	gchar *before = mock_get ("/_test/calls?action=moveItems"), *calls;
+
+	g_ptr_array_add (uids, (gpointer) MAIL1);
+	g_assert_false (camel_folder_transfer_messages_to_sync (inbox, uids, shared, FALSE, NULL, NULL, &error));
+	g_assert_error (error, CAMEL_FOLDER_ERROR, CAMEL_FOLDER_ERROR_INVALID);
+	g_assert_nonnull (strstr (error->message, "Nur lesen"));
+	g_clear_error (&error);
+	g_assert_false (camel_folder_transfer_messages_to_sync (inbox, uids, shared, TRUE, NULL, NULL, &error));
+	g_clear_error (&error);
+
+	/* The server was not asked */
+	calls = mock_get ("/_test/calls?action=moveItems");
+	g_assert_cmpstr (calls, ==, before);
+	g_free (calls);
+	g_free (before);
+	g_assert_true (has_message (inbox, MAIL1));
+
+	g_ptr_array_unref (uids);
+	g_object_unref (shared);
+	g_object_unref (inbox);
+}
+
 static void
 test_copy (Fixture *fixture,
 	   gconstpointer data)
@@ -2008,6 +2038,7 @@ main (int argc,
 	g_test_add ("/camel/search-folder", Fixture, NULL, fixture_setup, test_search_folder, fixture_teardown);
 	g_test_add ("/camel/move", Fixture, NULL, fixture_setup, test_move, fixture_teardown);
 	g_test_add ("/camel/copy", Fixture, NULL, fixture_setup, test_copy, fixture_teardown);
+	g_test_add ("/camel/shared-read-only", Fixture, NULL, fixture_setup, test_shared_read_only, fixture_teardown);
 	g_test_add ("/camel/delete", Fixture, NULL, fixture_setup, test_delete, fixture_teardown);
 	g_test_add ("/camel/prune", Fixture, NULL, fixture_setup, test_prune, fixture_teardown);
 	g_test_add ("/camel/empty-trash-keeps-linked", Fixture, NULL, fixture_setup, test_empty_trash_keeps_linked, fixture_teardown);

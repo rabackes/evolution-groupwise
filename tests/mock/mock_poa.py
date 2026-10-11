@@ -436,6 +436,10 @@ class Handler(BaseHTTPRequestHandler):
                       f"<folder type='Folder'><id>F1.domain1.po1.100.0.1.0.1@14</id><name>Archiv</name><parent>{FOLDERS['root']}</parent><count>4</count></folder>"
                       f"<folder type='Folder'><id>F2.domain1.po1.100.0.1.0.1@14</id><name>Amazon</name><parent>F1.domain1.po1.100.0.1.0.1@14</parent><count>2</count></folder>"
                       f"<folder type='Folder'><id>F3.domain1.po1.100.0.1.0.1@14</id><name>Amazon</name><parent>{FOLDERS['root']}</parent><count>0</count></folder>"
+                      # shared by another user who lets the user only read
+                      f"<folder type='SharedFolder'><id>RO1@34:OWNERRO</id><name>Nur lesen</name><parent>{FOLDERS['root']}</parent><count>0</count>"
+                      "<acl><entry><displayName>User One</displayName><email>u1@phantom.com</email><rights><read>1</read></rights></entry></acl>"
+                      "<owner><displayName>Egon</displayName><email>egon@example.com</email></owner><isSharedToMe>1</isSharedToMe></folder>"
                       # shared by another user, whose folder above it is gone: the GroupWise client hides it
                       "<folder type='SharedFolder'><id>O1@14</id><name>Verwaist</name><parent>GONE@34</parent>"
                       "<owner><displayName>Etienne</displayName><email>e@phantom.com</email></owner></folder>"

@@ -19,6 +19,7 @@
 #include <string.h>
 
 #include "e-gw-folder.h"
+#include "e-gw-share.h"
 #include "e-gw-xml.h"
 
 static const struct {
@@ -87,6 +88,9 @@ e_gw_folder_new_from_node (xmlNode *node)
 	folder->unread_count = e_gw_xml_get_int (node, "unreadCount", -1);
 	folder->is_shared_to_me = e_gw_xml_get_bool (node, "isSharedToMe");
 	folder->is_shared_by_me = e_gw_xml_get_bool (node, "isSharedByMe");
+	/* A folder of another user lists the user alone */
+	if (folder->is_shared_to_me)
+		folder->share_rights = e_gw_share_rights_from_node (e_gw_xml_find (node, "acl/entry")) | E_GW_SHARE_READ;
 	/* GroupWise 26 names the owner with <displayName>, <email>, <uuid> */
 	if (e_gw_xml_find (node, "owner/email")) {
 		folder->owner = e_gw_xml_dup_text (node, "owner/email");

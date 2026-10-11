@@ -20,6 +20,8 @@
 
 #include <glib/gi18n-lib.h>
 
+#include "e-gw-share.h"
+
 #include "camel-groupwise-store-summary.h"
 
 struct _CamelGroupwiseStoreSummary {
@@ -148,6 +150,7 @@ camel_groupwise_folder_records_from_folders (GPtrArray *folders)
 		record->total = folder->count;
 		record->unread = folder->unread_count;
 		record->shared = folder->is_shared_to_me ? 2 : folder->is_shared_by_me ? 1 : 0;
+		record->rights = folder->share_rights;
 		g_ptr_array_add (records, record);
 		g_hash_table_add (full_names, record->full_name);
 	}
@@ -180,6 +183,7 @@ load (CamelGroupwiseStoreSummary *summary)
 		record->total = g_key_file_get_int64 (key_file, groups[ii], "Total", NULL);
 		record->unread = g_key_file_get_int64 (key_file, groups[ii], "Unread", NULL);
 		record->shared = g_key_file_get_integer (key_file, groups[ii], "Shared", NULL);
+		record->rights = (guint) g_key_file_get_integer (key_file, groups[ii], "Rights", NULL);
 
 		if (record->full_name)
 			g_ptr_array_add (summary->records, record);
@@ -243,6 +247,8 @@ camel_groupwise_store_summary_replace (CamelGroupwiseStoreSummary *summary,
 		g_key_file_set_int64 (key_file, record->id, "Unread", record->unread);
 		if (record->shared)
 			g_key_file_set_integer (key_file, record->id, "Shared", record->shared);
+		if (record->rights)
+			g_key_file_set_integer (key_file, record->id, "Rights", (gint) record->rights);
 	}
 
 	dirname = g_path_get_dirname (summary->filename);
@@ -303,6 +309,23 @@ camel_groupwise_store_summary_dup_id (CamelGroupwiseStoreSummary *summary,
 	g_mutex_unlock (&summary->lock);
 
 	return id;
+}
+
+guint
+camel_groupwise_store_summary_get_rights (CamelGroupwiseStoreSummary *summary,
+					  const gchar *full_name)
+{
+	CamelGroupwiseFolderRecord *record;
+	guint rights = E_GW_SHARE_ALL;
+
+	g_mutex_lock (&summary->lock);
+	record = find_record (summary, full_name, NULL, -1);
+	/* Summaries from before the rights were kept have none */
+	if (record && record->shared == 2 && record->rights)
+		rights = record->rights;
+	g_mutex_unlock (&summary->lock);
+
+	return rights;
 }
 
 gchar *

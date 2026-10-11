@@ -964,7 +964,7 @@ test_folder_list (void)
 	folders = e_gw_connection_get_folder_list_sync (cnc, NULL, TRUE, NULL, &error);
 	g_assert_no_error (error);
 	g_assert_nonnull (folders);
-	g_assert_cmpuint (folders->len, ==, 15);
+	g_assert_cmpuint (folders->len, ==, 16);
 
 	folder = find_folder (folders, "u1", NULL);
 	g_assert_nonnull (folder);
@@ -990,6 +990,12 @@ test_folder_list (void)
 	g_assert_cmpint (folder->kind, ==, E_GW_FOLDER_KIND_SHARED);
 	g_assert_true (folder->is_shared_to_me);
 	g_assert_cmpstr (folder->owner, ==, "egon@example.com");
+
+	/* What the owner lets the user do there */
+	folder = find_folder (folders, "Nur lesen", NULL);
+	g_assert_true (folder->is_shared_to_me);
+	g_assert_cmpuint (folder->share_rights, ==, E_GW_SHARE_READ);
+	g_assert_cmpuint (find_folder (folders, "Archiv", NULL)->share_rights, ==, 0);
 
 	/* Two folders with the same name, told apart by their parent */
 	archive = find_folder (folders, "Archiv", NULL);

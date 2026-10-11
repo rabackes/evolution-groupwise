@@ -453,6 +453,8 @@ Gibt ein anderer Benutzer einen Ordner für Sie frei, erhalten Sie in der Mailbo
 
 Bei einem Ordner, den ein anderer Benutzer für Sie freigegeben hat, zeigt der Reiter den Eigentümer und Ihre Rechte; ändern lässt sich dort nichts.
 
+**Ihre Rechte in einem solchen Ordner:** Lesen dürfen Sie immer. Ohne das Recht *Hinzufügen* lässt sich nichts in den Ordner verschieben oder kopieren, ohne das Recht *Löschen* lassen sich seine Nachrichten weder löschen noch in einen anderen Ordner verschieben (kopieren geht). Evolution sagt Ihnen dann, welches Recht fehlt; eine zum Löschen markierte Nachricht erscheint beim nächsten Abgleich wieder. Ändert der Eigentümer Ihre Rechte, gelten die neuen nach dem nächsten Einlesen der Ordnerliste.
+
 Nachrichten in einem solchen Ordner lesen Sie wie alle anderen. GroupWise-interne Nachrichten gibt der Server dort allerdings nicht als Ganzes heraus; Evolution setzt sie aus Text, HTML-Fassung und Anhängen zusammen. In eine solche Nachricht eingebettete GroupWise-Nachrichten fehlen dabei.
 
 > **Neu einlesen nach dem Freigeben:** Der Server führt einen freigegebenen Ordner unter einer anderen Kennung als einen nicht freigegebenen. Nach dem ersten Freigeben oder dem Aufheben der Freigabe liest Evolution die Nachrichtenliste dieses Ordners deshalb beim nächsten Start einmal neu ein.
@@ -574,7 +576,7 @@ Die Adressbücher werden lokal vorgehalten, damit die **Autovervollständigung**
 | Thema | Stand |
 |---|---|
 | Kalender anderer Benutzer | Proxy-Kalender unter dem eigenen Konto und freigegebene Kalender sind nur lesbar; die Kalender eines Proxy-Kontos sind nach den gewährten Rechten beschreibbar. |
-| Freigaben | Mailordner lassen sich freigeben und Freigaben anderer annehmen (4.9). Kalender und Adressbücher freigeben geht noch nicht in Evolution; freigegebene Adressbücher werden noch nicht angezeigt. Die Rechte in einem für Sie freigegebenen Ordner prüft der Server: Was Sie nicht dürfen, lehnt er mit einer Fehlermeldung ab. |
+| Freigaben | Mailordner lassen sich freigeben und Freigaben anderer annehmen (4.9). Kalender und Adressbücher freigeben geht noch nicht in Evolution; freigegebene Adressbücher werden noch nicht angezeigt. |
 | Proxy-Konten | Neue Nachrichten werden bei jedem Abgleich über die ganze Ordnerliste ermittelt, da der POA in Proxy-Sitzungen keine Änderungsabfrage beantwortet. Mit der Kontooption „Den Server alle … Sekunden nach Änderungen im Postfach fragen“ erscheinen sie trotzdem sofort. |
 | Geklonte Rechner | Zwei Rechner mit derselben Maschinen-ID stören sich bei der Abfrage der Änderungen am selben Postfach gegenseitig (siehe Kontooptionen in Kapitel 3). |
 | Signierte oder verschlüsselte Nachrichten | können nicht über GroupWise gesendet werden; empfangene werden angezeigt. |

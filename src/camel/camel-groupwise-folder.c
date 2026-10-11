@@ -25,6 +25,7 @@
 #include <glib/gi18n-lib.h>
 
 #include "e-gw-category.h"
+#include "e-gw-share.h"
 #include "e-gw-junk.h"
 #include "e-gw-xml.h"
 
@@ -121,6 +122,45 @@ folder_is_read_only (CamelFolder *folder)
 	CamelStore *store = camel_folder_get_parent_store (folder);
 
 	return !store || camel_groupwise_store_get_read_only (CAMEL_GROUPWISE_STORE (store));
+}
+
+/* Whether the user may do that in the folder; in a folder another user
+ * shares that is up to the owner. Says so in @error if not. */
+static gboolean
+folder_check_right (CamelFolder *folder,
+		    EGwShareRights right,
+		    GError **error)
+{
+	CamelGroupwiseStore *store = folder_ref_store (folder);
+	guint rights = E_GW_SHARE_ALL;
+
+	if (store) {
+		rights = camel_groupwise_store_summary_get_rights (camel_groupwise_store_get_summary (store),
+			camel_folder_get_full_name (folder));
+		g_object_unref (store);
+	}
+	if (rights & right)
+		return TRUE;
+
+	switch (right) {
+	case E_GW_SHARE_ADD:
+		g_set_error (error, CAMEL_FOLDER_ERROR, CAMEL_FOLDER_ERROR_INVALID,
+			_("The folder “%s” is shared with you without the right to add: nothing can be moved or copied into it."),
+			camel_folder_get_display_name (folder));
+		break;
+	case E_GW_SHARE_DELETE:
+		g_set_error (error, CAMEL_FOLDER_ERROR, CAMEL_FOLDER_ERROR_INVALID,
+			_("The folder “%s” is shared with you without the right to delete: its messages can neither be deleted nor moved away."),
+			camel_folder_get_display_name (folder));
+		break;
+	default:
+		g_set_error (error, CAMEL_FOLDER_ERROR, CAMEL_FOLDER_ERROR_INVALID,
+			_("The folder “%s” is shared with you without the right to change its messages."),
+			camel_folder_get_display_name (folder));
+		break;
+	}
+
+	return FALSE;
 }
 
 static EGwConnection *
@@ -1388,6 +1428,26 @@ groupwise_folder_sync_deleted (CamelFolder *folder,
 		return TRUE;
 	}
 
+	/* Not allowed in this folder: the messages are back, with a word why */
+	if (!folder_check_right (folder, E_GW_SHARE_DELETE, error)) {
+		changes = camel_folder_change_info_new ();
+		for (ii = 0; ii < deleted->len; ii++) {
+			CamelMessageInfo *info = camel_folder_summary_get (summary, deleted->pdata[ii]);
+
+			if (info) {
+				camel_message_info_set_flags (info, CAMEL_MESSAGE_DELETED, 0);
+				camel_message_info_set_folder_flagged (info, FALSE);
+				camel_folder_change_info_change_uid (changes, deleted->pdata[ii]);
+				g_object_unref (info);
+			}
+		}
+		camel_folder_changed (folder, changes);
+		camel_folder_change_info_free (changes);
+		g_ptr_array_unref (deleted);
+		camel_folder_summary_free_array (uids);
+		return FALSE;
+	}
+
 	cnc = folder_ref_connection_sync (folder, cancellable, error);
 	if (!cnc) {
 		g_ptr_array_unref (deleted);
@@ -1967,6 +2027,11 @@ groupwise_folder_transfer_messages_to_sync (CamelFolder *source,
 			_("A search result folder shows messages of other folders; nothing can be moved or copied into it"));
 		return FALSE;
 	}
+
+	/* Folders another user shares: as far as the owner allows */
+	if (!folder_check_right (destination, E_GW_SHARE_ADD, error) ||
+	    (delete_originals && !folder_check_right (source, E_GW_SHARE_DELETE, error)))
+		return FALSE;
 
 	cnc = folder_ref_connection_sync (source, cancellable, error);
 	if (!cnc)

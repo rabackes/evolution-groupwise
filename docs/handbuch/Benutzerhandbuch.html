@@ -806,6 +806,12 @@ nicht annimmt, lässt die Nachricht liegen oder löscht sie. Das geht auch in ei
 für eine Ressource eine Freigabe anzunehmen.</p>
 <p>Bei einem Ordner, den ein anderer Benutzer für Sie freigegeben hat, zeigt der Reiter den Eigentümer
 und Ihre Rechte; ändern lässt sich dort nichts.</p>
+<p><b>Ihre Rechte in einem solchen Ordner:</b> Lesen dürfen Sie immer. Ohne das Recht
+<i>Hinzufügen</i> lässt sich nichts in den Ordner verschieben oder kopieren, ohne das Recht <i>Löschen</i>
+lassen sich seine Nachrichten weder löschen noch in einen anderen Ordner verschieben (kopieren geht).
+Evolution sagt Ihnen dann, welches Recht fehlt; eine zum Löschen markierte Nachricht erscheint beim
+nächsten Abgleich wieder. Ändert der Eigentümer Ihre Rechte, gelten die neuen nach dem nächsten Einlesen
+der Ordnerliste.</p>
 <p>Nachrichten in einem solchen Ordner lesen Sie wie alle anderen. GroupWise-interne Nachrichten gibt der
 Server dort allerdings nicht als Ganzes heraus; Evolution setzt sie aus Text, HTML-Fassung und Anhängen
 zusammen. In eine solche Nachricht eingebettete GroupWise-Nachrichten fehlen dabei.</p>
@@ -1039,8 +1045,7 @@ Eigenschaften eines Adressbuchs können Sie das ändern.</p>
 		beschreibbar.</td></tr>
 	<tr><td>Freigaben</td><td>Mailordner lassen sich freigeben und Freigaben anderer annehmen (4.9).
 		Kalender und Adressbücher freigeben geht noch nicht in Evolution; freigegebene Adressbücher werden
-		noch nicht angezeigt. Die Rechte in einem für Sie freigegebenen Ordner prüft der Server: Was Sie
-		nicht dürfen, lehnt er mit einer Fehlermeldung ab.</td></tr>
+		noch nicht angezeigt.</td></tr>
 	<tr><td>Proxy-Konten</td><td>Neue Nachrichten werden bei jedem Abgleich über die ganze Ordnerliste ermittelt, da der
 		POA in Proxy-Sitzungen keine Änderungsabfrage beantwortet. Mit der Kontooption „Den Server alle …
 		Sekunden nach Änderungen im Postfach fragen“ erscheinen sie trotzdem sofort.</td></tr>

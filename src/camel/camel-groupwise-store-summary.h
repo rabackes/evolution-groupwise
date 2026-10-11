@@ -33,6 +33,7 @@ typedef struct {
 	gint64 total;
 	gint64 unread;
 	gint shared;			/* 1: the user shares it, 2: shared to the user */
+	guint rights;			/* shared to the user: EGwShareRights */
 } CamelGroupwiseFolderRecord;
 
 void		camel_groupwise_folder_record_free
@@ -68,6 +69,11 @@ gchar *		camel_groupwise_store_summary_dup_id
 gchar *		camel_groupwise_store_summary_dup_full_name
 						(CamelGroupwiseStoreSummary *summary,
 						 const gchar *id);
+/* What the user may do in the folder (EGwShareRights): everything, unless
+ * another user shares it with less */
+guint		camel_groupwise_store_summary_get_rights
+						(CamelGroupwiseStoreSummary *summary,
+						 const gchar *full_name);
 /* The first folder of a type, e.g. the Mailbox */
 gchar *		camel_groupwise_store_summary_dup_full_name_by_type
 						(CamelGroupwiseStoreSummary *summary,

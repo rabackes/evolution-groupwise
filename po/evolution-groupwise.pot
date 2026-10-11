@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: evolution-groupwise\n"
 "Report-Msgid-Bugs-To: rbackes@bond.de\n"
-"POT-Creation-Date: 2026-10-11 17:05+0200\n"
+"POT-Creation-Date: 2026-10-11 17:12+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -110,101 +110,121 @@ msgstr ""
 msgid "Cannot read the item on the server"
 msgstr ""
 
-#: src/camel/camel-groupwise-folder.c:135
+#: src/camel/camel-groupwise-folder.c:148
+#, c-format
+msgid ""
+"The folder “%s” is shared with you without the right to add: nothing can be "
+"moved or copied into it."
+msgstr ""
+
+#: src/camel/camel-groupwise-folder.c:153
+#, c-format
+msgid ""
+"The folder “%s” is shared with you without the right to delete: its messages "
+"can neither be deleted nor moved away."
+msgstr ""
+
+#: src/camel/camel-groupwise-folder.c:158
+#, c-format
+msgid ""
+"The folder “%s” is shared with you without the right to change its messages."
+msgstr ""
+
+#: src/camel/camel-groupwise-folder.c:175
 msgid "The folder has no store"
 msgstr ""
 
-#: src/camel/camel-groupwise-folder.c:1664
+#: src/camel/camel-groupwise-folder.c:1724
 msgid "The Mailbox folder is not known"
 msgstr ""
 
-#: src/camel/camel-groupwise-folder.c:1958
-#: src/camel/camel-groupwise-folder.c:2080
+#: src/camel/camel-groupwise-folder.c:2018
+#: src/camel/camel-groupwise-folder.c:2145
 #: src/camel/camel-groupwise-store.c:674
 #: src/camel/camel-groupwise-transport.c:220
 msgid "The account is read-only"
 msgstr ""
 
-#: src/camel/camel-groupwise-folder.c:1967
+#: src/camel/camel-groupwise-folder.c:2027
 msgid ""
 "A search result folder shows messages of other folders; nothing can be moved "
 "or copied into it"
 msgstr ""
 
-#: src/camel/camel-groupwise-folder.c:2086
+#: src/camel/camel-groupwise-folder.c:2151
 msgid ""
 "GroupWise can only store drafts this way. Messages can be moved or copied "
 "between GroupWise folders."
 msgstr ""
 
-#: src/camel/camel-groupwise-folder.c:2113
+#: src/camel/camel-groupwise-folder.c:2178
 msgid "The server returned no ID for the draft"
 msgstr ""
 
-#: src/camel/camel-groupwise-folder.c:2286
+#: src/camel/camel-groupwise-folder.c:2351
 msgid "Telephoned"
 msgstr ""
 
-#: src/camel/camel-groupwise-folder.c:2287
+#: src/camel/camel-groupwise-folder.c:2352
 msgid "Please call"
 msgstr ""
 
-#: src/camel/camel-groupwise-folder.c:2288
+#: src/camel/camel-groupwise-folder.c:2353
 msgid "Will call again"
 msgstr ""
 
-#: src/camel/camel-groupwise-folder.c:2289
+#: src/camel/camel-groupwise-folder.c:2354
 msgid "Returned your call"
 msgstr ""
 
-#: src/camel/camel-groupwise-folder.c:2290
+#: src/camel/camel-groupwise-folder.c:2355
 msgid "Wants to see you"
 msgstr ""
 
-#: src/camel/camel-groupwise-folder.c:2291
+#: src/camel/camel-groupwise-folder.c:2356
 msgid "Came to see you"
 msgstr ""
 
-#: src/camel/camel-groupwise-folder.c:2292
+#: src/camel/camel-groupwise-folder.c:2357
 msgid "Urgent"
 msgstr ""
 
-#: src/camel/camel-groupwise-folder.c:2297
+#: src/camel/camel-groupwise-folder.c:2362
 msgid "Caller:"
 msgstr ""
 
-#: src/camel/camel-groupwise-folder.c:2298
+#: src/camel/camel-groupwise-folder.c:2363
 msgid "Company:"
 msgstr ""
 
-#: src/camel/camel-groupwise-folder.c:2299
+#: src/camel/camel-groupwise-folder.c:2364
 msgid "Phone:"
 msgstr ""
 
-#: src/camel/camel-groupwise-folder.c:2319
+#: src/camel/camel-groupwise-folder.c:2384
 msgid "While you were out"
 msgstr ""
 
-#: src/camel/camel-groupwise-folder.c:2319
+#: src/camel/camel-groupwise-folder.c:2384
 msgid "Phone Message"
 msgstr ""
 
-#: src/camel/camel-groupwise-folder.c:2461
-#: src/camel/camel-groupwise-folder.c:2742
+#: src/camel/camel-groupwise-folder.c:2526
+#: src/camel/camel-groupwise-folder.c:2807
 #, c-format
 msgid "Cannot get the message %s"
 msgstr ""
 
-#: src/camel/camel-groupwise-folder.c:2788
+#: src/camel/camel-groupwise-folder.c:2853
 msgid "This message is not available in offline mode."
 msgstr ""
 
-#: src/camel/camel-groupwise-folder.c:2798
+#: src/camel/camel-groupwise-folder.c:2863
 #, c-format
 msgid "Cannot read the message %s"
 msgstr ""
 
-#: src/camel/camel-groupwise-folder.c:3026
+#: src/camel/camel-groupwise-folder.c:3091
 #, c-format
 msgid "Cannot create folder cache %s: %s"
 msgstr ""
@@ -339,55 +359,55 @@ msgstr ""
 msgid "A folder name must not contain \"/\""
 msgstr ""
 
-#: src/camel/camel-groupwise-store-summary.c:364
+#: src/camel/camel-groupwise-store-summary.c:387
 #: src/evolution/e-groupwise-share-accept.c:210
 msgid "Mailbox"
 msgstr ""
 
-#: src/camel/camel-groupwise-store-summary.c:365
+#: src/camel/camel-groupwise-store-summary.c:388
 #: src/evolution/e-groupwise-junk-tab.c:528
 #: src/evolution/e-groupwise-share-accept.c:211
 msgid "Junk Mail"
 msgstr ""
 
-#: src/camel/camel-groupwise-store-summary.c:366
+#: src/camel/camel-groupwise-store-summary.c:389
 #: src/evolution/e-groupwise-share-accept.c:212
 msgid "Trash"
 msgstr ""
 
-#: src/camel/camel-groupwise-store-summary.c:367
+#: src/camel/camel-groupwise-store-summary.c:390
 #: src/evolution/e-groupwise-share-accept.c:213
 msgid "Sent Items"
 msgstr ""
 
-#: src/camel/camel-groupwise-store-summary.c:368
+#: src/camel/camel-groupwise-store-summary.c:391
 #: src/evolution/e-groupwise-share-accept.c:214
 msgid "Work In Progress"
 msgstr ""
 
-#: src/camel/camel-groupwise-store-summary.c:369
+#: src/camel/camel-groupwise-store-summary.c:392
 #: src/evolution/e-groupwise-share-accept.c:215
 msgid "Cabinet"
 msgstr ""
 
-#: src/camel/camel-groupwise-store-summary.c:370
-#: src/camel/camel-groupwise-store-summary.c:371
+#: src/camel/camel-groupwise-store-summary.c:393
+#: src/camel/camel-groupwise-store-summary.c:394
 #: src/evolution/e-groupwise-share-accept.c:216
 msgid "Tasklist"
 msgstr ""
 
-#: src/camel/camel-groupwise-store-summary.c:372
+#: src/camel/camel-groupwise-store-summary.c:395
 #: src/evolution/e-groupwise-share-accept.c:217
 #: src/registry/module-groupwise-backend.c:261
 msgid "Calendar"
 msgstr ""
 
-#: src/camel/camel-groupwise-store-summary.c:373
+#: src/camel/camel-groupwise-store-summary.c:396
 #: src/evolution/e-groupwise-share-accept.c:218
 msgid "Contacts"
 msgstr ""
 
-#: src/camel/camel-groupwise-store-summary.c:374
+#: src/camel/camel-groupwise-store-summary.c:397
 #: src/evolution/e-groupwise-share-accept.c:219
 msgid "Documents"
 msgstr ""
