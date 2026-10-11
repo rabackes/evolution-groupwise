@@ -428,7 +428,14 @@ Der Eigenschaftendialog von Evolution kennt nur `Schließen`, kein „Abbrechen�
 
 Der Empfänger nimmt die Freigabe im GroupWise-Client an (Annehmen in Evolution folgt); entziehen Sie ihm den Ordner wieder, verschwindet er aus seiner Ordnerliste.
 
-In der Ordnerliste tragen freigegebene Ordner ein eigenes Symbol: eines für Ordner, die Sie für andere freigegeben haben, ein anderes für Ordner, die andere für Sie freigegeben haben.
+**Symbole in der Ordnerliste:** Der GroupWise-Client setzt ein kleines Benutzer-Symbol an den Ordner – grün links für Ordner, die Sie freigegeben haben, blau rechts für angenommene Freigaben anderer. Evolution verwendet stattdessen zwei eigene Ordnersymbole:
+
+| Ordner | Symbol in Evolution |
+|---|---|
+| von Ihnen für andere freigegeben | Ordner mit dem Teilen-Zeichen (drei verbundene Punkte) auf der Vorderseite |
+| von anderen für Sie freigegeben | Ordner mit einem Netzwerkanschluss darunter |
+
+Das Symbol wechselt, sobald Sie eine Freigabe übernommen oder aufgehoben haben.
 
 Bei einem Ordner, den ein anderer Benutzer für Sie freigegeben hat, zeigt der Reiter den Eigentümer und Ihre Rechte; ändern lässt sich dort nichts.
 
