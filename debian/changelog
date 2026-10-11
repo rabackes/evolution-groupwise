@@ -1,3 +1,24 @@
+evolution-groupwise (0.9.3) noble; urgency=medium
+
+  * Sharing mail folders: the page "Sharing" of the folder properties
+    (context menu "Sharing…") lists the users a folder is shared with,
+    how far they got and their rights, adds and removes users (chosen
+    from the system address book), and applies with a button of its own;
+    new users get the notification with subject and text.
+  * Accepting a shared folder: a double click on the notification (or
+    the Message menu) opens "Install Shared Folder" with sender, text
+    and rights, and asks for name, description and position.
+  * Sharing and accepting also work in proxy accounts, as needed for
+    resources.
+  * Folders shared to the user: the rights add and delete are checked
+    with a clear message; GroupWise messages, which the POA does not
+    hand out as RFC 822 there, are built from the item and its
+    attachments.
+  * Shared folders carry Evolution's shared-by-me and shared-to-me icons
+    in the folder list.
+
+ -- Rainer Backes <rbackes@bond.de>  Sun, 11 Oct 2026 18:00:00 +0200
+
 evolution-groupwise (0.9.2) noble; urgency=medium
 
   * Calendar: deleting an own meeting "only for me" takes it out of the

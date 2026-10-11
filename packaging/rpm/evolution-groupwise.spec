@@ -10,7 +10,7 @@
 #
 
 Name:           evolution-groupwise
-Version:        0.9.2
+Version:        0.9.3
 Release:        0
 Summary:        GroupWise mailboxes in Evolution
 License:        LGPL-2.1-or-later
@@ -100,6 +100,22 @@ line tool.
 %endif
 
 %changelog
+* Sun Oct 11 2026 Rainer Backes <rbackes@bond.de> - 0.9.3-0
+- Sharing mail folders: the page "Sharing" of the folder properties (context
+  menu "Sharing…") lists the users a folder is shared with, how far they got
+  and their rights, adds and removes users (chosen from the system address
+  book), and applies with a button of its own; new users get the notification
+  with subject and text.
+- Accepting a shared folder: a double click on the notification (or the
+  Message menu) opens "Install Shared Folder" with sender, text and rights,
+  and asks for name, description and position.
+- Sharing and accepting also work in proxy accounts, as needed for resources.
+- Folders shared to the user: the rights add and delete are checked with a
+  clear message; GroupWise messages, which the POA does not hand out as RFC
+  822 there, are built from the item and its attachments.
+- Shared folders carry Evolution's shared-by-me and shared-to-me icons in the
+  folder list.
+
 * Sat Oct 10 2026 Rainer Backes <rbackes@bond.de> - 0.9.2-0
 - Calendar: deleting an own meeting "only for me" takes it out of the own
   calendar and leaves it to the attendees; it stays in the Sent Items with the

@@ -222,7 +222,7 @@ dup_folder_name (const EGwFolder *folder)
 	guint ii;
 
 	if (folder->type == E_GW_FOLDER_TYPE_ROOT) {
-		/* "Karl Napp Home" */
+		/* "User One Home" */
 		if (g_str_has_suffix (name, " Home")) {
 			gchar *user = g_strndup (name, strlen (name) - strlen (" Home"));
 			/* Translators: the top of the folder list of a mailbox; %s is the name of its user */
