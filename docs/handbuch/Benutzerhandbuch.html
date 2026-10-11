@@ -744,9 +744,12 @@ Augenblick nach dem Dialog, sobald der Server geantwortet hat.</p>
 	<li><b>Nicht freigegeben / Freigegeben für</b>: „Nicht freigegeben“ entzieht den Ordner allen
 		Benutzern der Liste.</li>
 	<li><b>Name</b>: Tippen Sie einen Namen oder eine E-Mail-Adresse – Evolution schlägt Einträge aus
-		den Adressbüchern vor – oder wählen Sie über den Knopf mit dem Adressbuch aus.
-		<span class="menu">Benutzer hinzufügen</span> setzt den Benutzer auf die Liste; der Server
-		prüft dabei, ob es ihn im GroupWise-System gibt.</li>
+		den Adressbüchern vor – und setzen Sie den Benutzer mit
+		<span class="menu">Benutzer hinzufügen</span> auf die Liste. Oder wählen Sie über den Knopf
+		mit dem Adressbuch aus: Der Auswahldialog öffnet sich mit dem GroupWise-Adressbuch des
+		Systems, denn nur dessen Benutzer können eine Freigabe erhalten; wen Sie dort auswählen, steht
+		nach dem Schließen des Dialogs gleich in der Liste. Der Server prüft dabei, ob es den
+		Benutzer im GroupWise-System gibt.</li>
 	<li><b>Freigabeliste</b>: Name, Status und Zugriff. Der Status zeigt, wie weit der Benutzer mit der
 		Freigabe ist: <i>Neu</i> (noch nicht gesendet), <i>Ausstehend</i>, <i>Geöffnet</i> (die
 		Benachrichtigung wurde gelesen), <i>Akzeptiert</i> oder <i>Gelöscht</i>.
@@ -757,12 +760,17 @@ Augenblick nach dem Dialog, sobald der Server geantwortet hat.</p>
 	<li><b>Alle Unterordner freigeben</b>: lässt sich nur zusammen mit neuen Benutzern setzen – der
 		Server übernimmt die Angabe später nicht mehr.</li>
 </ul>
-<p>Die Änderungen werden übernommen, wenn Sie den Dialog mit <span class="menu">Schließen</span> beenden.
-Sind neue Benutzer dabei, fragt Evolution vorher nach Betreff und Mitteilung der
-<b>Benachrichtigung über freigegebenen Ordner</b>, die diese Benutzer erhalten; den Namen des Ordners hängt
-der Server selbst an den Betreff an. <span class="menu">Abbrechen</span> in dieser Abfrage verwirft alle
-Änderungen an der Freigabe. Der Empfänger nimmt die Freigabe im GroupWise-Client an (Annehmen in
-Evolution folgt); entziehen Sie ihm den Ordner wieder, verschwindet er aus seiner Ordnerliste.</p>
+<p>Der Eigenschaftendialog von Evolution kennt nur <span class="menu">Schließen</span>, kein
+„Abbrechen“. Die Freigabe hat deshalb einen eigenen Knopf: <span class="menu">Freigabe übernehmen</span>
+sendet, was Sie eingestellt haben, an den Server; die Liste zeigt danach den neuen Stand. Sind neue Benutzer
+dabei, fragt Evolution vorher nach Betreff und Mitteilung der <b>Benachrichtigung über freigegebenen
+Ordner</b>, die diese Benutzer erhalten; <span class="menu">Abbrechen</span> dort sendet nichts.
+Schließen Sie die Eigenschaften mit Änderungen, die noch nicht übernommen sind, fragt Evolution, ob es sie
+<span class="menu">Übernehmen</span> oder <span class="menu">Verwerfen</span> soll.</p>
+<p>Der Empfänger nimmt die Freigabe im GroupWise-Client an (Annehmen in Evolution folgt); entziehen Sie
+ihm den Ordner wieder, verschwindet er aus seiner Ordnerliste.</p>
+<p>In der Ordnerliste tragen freigegebene Ordner ein eigenes Symbol: eines für Ordner, die Sie für andere
+freigegeben haben, ein anderes für Ordner, die andere für Sie freigegeben haben.</p>
 <p>Bei einem Ordner, den ein anderer Benutzer für Sie freigegeben hat, zeigt der Reiter den Eigentümer
 und Ihre Rechte; ändern lässt sich dort nichts.</p>
 <div class="note"><b>Neu einlesen nach dem Freigeben:</b> Der Server führt einen freigegebenen Ordner unter einer anderen

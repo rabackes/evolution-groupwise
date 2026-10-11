@@ -267,7 +267,13 @@ show_cb (GtkWidget *dialog,
 {
 	EGroupwiseNameSelector *self = user_data;
 
+	const gchar *book_uid = g_object_get_data (G_OBJECT (dialog), E_GROUPWISE_NAME_SELECTOR_BOOK);
+
 	if (self->idle || !ensure_entry (self))
+		return;
+
+	/* The caller wants one address book (users of the GroupWise system) */
+	if (book_uid && gtk_combo_box_set_active_id (self->combo, book_uid))
 		return;
 
 	if (g_strcmp0 (gtk_combo_box_get_active_id (self->combo), AUTOMATIC_UID) != 0) {

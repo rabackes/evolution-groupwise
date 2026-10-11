@@ -22,8 +22,10 @@
  * what they may do in it. Evolution has no place for a module to add a page
  * to its folder properties (they are a dialog around an EConfig, which only
  * the old plugins could extend), so the page is added when that dialog
- * shows. The dialog has just the button Close, which applies: so does the
- * page, after asking for the text of the notification when users are new.
+ * shows. That dialog has just the button Close and no Cancel, so the page
+ * has a button of its own that applies the sharing, after asking for the
+ * text of the notification when users are new; closing with changes left
+ * asks what to do with them.
  */
 
 #include <string.h>
@@ -43,7 +45,9 @@
 #include "e-gw-folder.h"
 #include "e-gw-proxy.h"
 #include "e-gw-share.h"
+#include "e-source-groupwise-folder.h"
 
+#include "e-groupwise-name-selector.h"
 #include "e-groupwise-share-tab.h"
 #include "e-groupwise-ui-utils.h"
 
@@ -85,6 +89,7 @@ typedef struct {
 	EGwConnection *cnc;
 	EGwShare *share;
 
+	GtkWidget *page, *apply_button;
 	GtkWidget *radio_none, *radio_shared;
 	GtkWidget *shared_box;
 	GtkWidget *entry, *add_button, *remove_button;
@@ -96,6 +101,8 @@ typedef struct {
 	ENameSelector *name_selector;
 	GPtrArray *removed;		/* EGwShareEntry */
 	gboolean updating;
+	gboolean applying;
+	gboolean hiding;
 	guint resolving;
 } ShareTab;
 
@@ -219,6 +226,74 @@ has_new_users (ShareTab *tab)
 	return FALSE;
 }
 
+static EGwShareEntry *
+entry_of_row (ShareTab *tab,
+	      GtkTreeIter *iter,
+	      gboolean old_rights)
+{
+	EGwShareEntry *entry;
+	gchar *name = NULL, *email = NULL, *uuid = NULL;
+	guint rights, old;
+
+	gtk_tree_model_get (GTK_TREE_MODEL (tab->model), iter, COL_NAME, &name, COL_EMAIL, &email, COL_UUID, &uuid,
+		COL_RIGHTS, &rights, COL_OLD_RIGHTS, &old, -1);
+	entry = e_gw_share_entry_new (name, email, old_rights ? old : rights);
+	entry->uuid = uuid;
+	g_free (name);
+	g_free (email);
+
+	return entry;
+}
+
+/* What the page has that the server has not; the lists may be NULL.
+ * Returns whether there is anything. */
+static gboolean
+collect_changes (ShareTab *tab,
+		 GPtrArray *added,
+		 GPtrArray *changed,
+		 GPtrArray *removed)
+{
+	GtkTreeModel *model = GTK_TREE_MODEL (tab->model);
+	GtkTreeIter iter;
+	gboolean valid, shared, any;
+	guint ii;
+
+	if (!is_mine (tab))
+		return FALSE;
+
+	any = tab->removed->len > 0;
+	for (ii = 0; removed && ii < tab->removed->len; ii++)
+		g_ptr_array_add (removed, e_gw_share_entry_copy (tab->removed->pdata[ii]));
+
+	shared = gtk_toggle_button_get_active (GTK_TOGGLE_BUTTON (tab->radio_shared));
+	for (valid = gtk_tree_model_get_iter_first (model, &iter); valid; valid = gtk_tree_model_iter_next (model, &iter)) {
+		GPtrArray *list = NULL;
+		gboolean old = FALSE;
+		guint rights, old_rights;
+		gint status;
+
+		gtk_tree_model_get (model, &iter, COL_STATUS, &status, COL_RIGHTS, &rights, COL_OLD_RIGHTS, &old_rights, -1);
+		if (!shared) {
+			/* Not shared: taken from everybody who has it */
+			if (status < 0)
+				continue;
+			list = removed;
+			old = TRUE;
+		} else if (status < 0) {
+			list = added;
+		} else if (rights != old_rights) {
+			list = changed;
+		} else {
+			continue;
+		}
+		any = TRUE;
+		if (list)
+			g_ptr_array_add (list, entry_of_row (tab, &iter, old));
+	}
+
+	return any;
+}
+
 static void
 update_sensitivity (ShareTab *tab)
 {
@@ -247,6 +322,7 @@ update_sensitivity (ShareTab *tab)
 	gtk_widget_set_sensitive (tab->rights_box, mine && selected);
 	/* The server takes it only along with new users */
 	gtk_widget_set_sensitive (tab->tree_box, mine && !tab->share->share_tree && has_new_users (tab));
+	gtk_widget_set_sensitive (tab->apply_button, !tab->applying && collect_changes (tab, NULL, NULL, NULL));
 }
 
 static void
@@ -283,6 +359,7 @@ box_toggled_cb (GtkToggleButton *button,
 			rights &= ~rights_boxes[ii].right;
 	}
 	gtk_list_store_set (tab->model, &iter, COL_RIGHTS, rights | E_GW_SHARE_READ, -1);
+	update_sensitivity (tab);
 }
 
 static void
@@ -469,23 +546,51 @@ book_clicked_cb (GtkButton *button,
 	e_name_selector_show_dialog (tab->name_selector, tab->dialog);
 }
 
-static EGwShareEntry *
-entry_of_row (ShareTab *tab,
-	      GtkTreeIter *iter,
-	      gboolean old_rights)
+static void
+selector_response_cb (GtkDialog *dialog,
+		      gint response,
+		      ShareTab *tab)
 {
-	EGwShareEntry *entry;
-	gchar *name = NULL, *email = NULL, *uuid = NULL;
-	guint rights, old;
+	gtk_widget_hide (GTK_WIDGET (dialog));
+}
 
-	gtk_tree_model_get (GTK_TREE_MODEL (tab->model), iter, COL_NAME, &name, COL_EMAIL, &email, COL_UUID, &uuid,
-		COL_RIGHTS, &rights, COL_OLD_RIGHTS, &old, -1);
-	entry = e_gw_share_entry_new (name, email, old_rights ? old : rights);
-	entry->uuid = uuid;
-	g_free (name);
-	g_free (email);
+/* As in the GroupWise client: who was chosen is on the list at once */
+static void
+selector_hide_cb (GtkWidget *dialog,
+		  ShareTab *tab)
+{
+	if (tab->dialog && !tab->hiding) {
+		tab->hiding = TRUE;
+		add_clicked_cb (NULL, tab);
+		tab->hiding = FALSE;
+	}
+}
 
-	return entry;
+/* The UID of the system address book of the account: only its users can
+ * be given a folder */
+static gchar *
+dup_system_book_uid (ShareTab *tab)
+{
+	GList *sources, *link;
+	gchar *parent = e_source_dup_parent (tab->account), *uid = NULL;
+
+	sources = e_source_registry_list_enabled (tab->registry, E_SOURCE_EXTENSION_ADDRESS_BOOK);
+	for (link = sources; link && !uid && parent; link = g_list_next (link)) {
+		ESource *source = link->data;
+		gchar *other = e_source_dup_parent (source), *id = NULL;
+
+		if (g_strcmp0 (other, parent) == 0 && e_source_has_extension (source, E_SOURCE_EXTENSION_GROUPWISE_FOLDER))
+			id = e_source_groupwise_folder_dup_id (e_source_get_extension (source, E_SOURCE_EXTENSION_GROUPWISE_FOLDER));
+		/* GroupWiseSystemAddressBook@52 */
+		if (id && g_str_has_suffix (id, "@52"))
+			uid = e_source_dup_uid (source);
+		g_free (other);
+		g_free (id);
+	}
+	g_list_free_full (sources, g_object_unref);
+	g_free (parent);
+
+	return uid;
 }
 
 static void
@@ -513,6 +618,7 @@ typedef struct {
 	GPtrArray *added, *changed, *removed;
 	gboolean share_tree;
 	gchar *subject, *message;
+	EGwShare *share;	/* as it is afterwards */
 } ApplyData;
 
 static void
@@ -524,6 +630,7 @@ apply_data_free (gpointer ptr)
 	g_ptr_array_unref (data->added);
 	g_ptr_array_unref (data->changed);
 	g_ptr_array_unref (data->removed);
+	g_clear_pointer (&data->share, e_gw_share_free);
 	g_free (data->subject);
 	g_free (data->message);
 	g_free (data);
@@ -539,11 +646,15 @@ apply_thread (GTask *task,
 	ShareTab *tab = data->tab;
 	GError *error = NULL;
 
-	if (e_gw_connection_modify_share_sync (tab->cnc, tab->share->id, data->added, data->changed, data->removed,
-		data->share_tree, data->subject, data->message, NULL, cancellable, &error))
-		g_task_return_boolean (task, TRUE);
-	else
+	if (!e_gw_connection_modify_share_sync (tab->cnc, tab->share->id, data->added, data->changed, data->removed,
+		data->share_tree, data->subject, data->message, NULL, NULL, &error)) {
 		g_task_return_error (task, error);
+		return;
+	}
+
+	/* Shared, the folder has another ID; the old one still finds it */
+	data->share = e_gw_connection_get_share_sync (tab->cnc, tab->share->id, NULL, NULL);
+	g_task_return_boolean (task, TRUE);
 }
 
 static void
@@ -553,9 +664,14 @@ folder_info_cb (GObject *source_object,
 {
 	CamelFolderInfo *info = camel_store_get_folder_info_finish (CAMEL_STORE (source_object), result, NULL);
 
-	if (info)
+	if (info) {
 		camel_folder_info_free (info);
+		/* The folder list shows who shares what */
+		camel_store_folder_info_stale (CAMEL_STORE (source_object));
+	}
 }
+
+static void fill_model (ShareTab *tab);
 
 static void
 apply_done_cb (GObject *source_object,
@@ -566,14 +682,32 @@ apply_done_cb (GObject *source_object,
 	ShareTab *tab = data->tab;
 	GError *error = NULL;
 
+	tab->applying = FALSE;
 	if (!g_task_propagate_boolean (G_TASK (result), &error)) {
-		e_alert_submit (E_ALERT_SINK (e_shell_view_get_shell_content (tab->shell_view)), "mail:async-error",
-			_("sharing the folder"), error ? error->message : "", NULL);
+		if (tab->dialog) {
+			gtk_widget_set_sensitive (tab->page, TRUE);
+			set_message (tab, error ? error->message : NULL);
+			update_sensitivity (tab);
+		} else {
+			e_alert_submit (E_ALERT_SINK (e_shell_view_get_shell_content (tab->shell_view)), "mail:async-error",
+				_("sharing the folder"), error ? error->message : "", NULL);
+		}
 		g_clear_error (&error);
 		return;
 	}
 
-	/* Shared, the folder has another ID */
+	if (data->share) {
+		e_gw_share_free (tab->share);
+		tab->share = g_steal_pointer (&data->share);
+	}
+	if (tab->dialog) {
+		g_ptr_array_set_size (tab->removed, 0);
+		fill_model (tab);
+		set_message (tab, NULL);
+		gtk_widget_set_sensitive (tab->page, TRUE);
+		update_sensitivity (tab);
+	}
+
 	camel_store_get_folder_info (tab->store, NULL, CAMEL_STORE_FOLDER_INFO_RECURSIVE | CAMEL_STORE_FOLDER_INFO_REFRESH,
 		G_PRIORITY_DEFAULT, NULL, folder_info_cb, NULL);
 }
@@ -589,6 +723,7 @@ ask_notification (ShareTab *tab,
 	GtkTextBuffer *buffer;
 	GtkTextIter start, end;
 	GString *names = g_string_new (NULL);
+	gchar *preset;
 	gboolean send;
 	guint ii;
 
@@ -634,8 +769,12 @@ ask_notification (ShareTab *tab,
 	gtk_label_set_xalign (GTK_LABEL (label), 0.0);
 	gtk_grid_attach (GTK_GRID (grid), label, 0, 1, 1, 1);
 	subject = gtk_entry_new ();
-	/* The server puts the name of the folder behind it */
-	gtk_entry_set_text (GTK_ENTRY (subject), _("Shared folder notification"));
+	/* As the GroupWise client presets it. The server puts the name of
+	 * the folder behind a subject that does not end with it. */
+	/* Translators: %s is the name of the folder */
+	preset = g_strdup_printf (_("Shared folder notification: %s"), tab->share->name ? tab->share->name : "");
+	gtk_entry_set_text (GTK_ENTRY (subject), preset);
+	g_free (preset);
 	gtk_entry_set_activates_default (GTK_ENTRY (subject), TRUE);
 	gtk_widget_set_hexpand (subject, TRUE);
 	gtk_label_set_mnemonic_widget (GTK_LABEL (label), subject);
@@ -672,20 +811,16 @@ ask_notification (ShareTab *tab,
 	return send;
 }
 
-static void
-response_cb (GtkDialog *dialog,
-	     gint response,
-	     ShareTab *tab)
+/* Sends what the page has to the server; new users are notified. Returns
+ * FALSE when there is nothing to do or the user thought better of it. */
+static gboolean
+start_apply (ShareTab *tab)
 {
-	GtkTreeModel *model = GTK_TREE_MODEL (tab->model);
 	ApplyData *data;
-	GtkTreeIter iter;
-	gboolean valid, shared;
 	GTask *task;
-	guint ii;
 
-	if (response != GTK_RESPONSE_OK || !tab->share || !tab->model || !is_mine (tab))
-		return;
+	if (tab->applying)
+		return FALSE;
 
 	data = g_new0 (ApplyData, 1);
 	data->tab = share_tab_ref (tab);
@@ -694,46 +829,92 @@ response_cb (GtkDialog *dialog,
 	data->removed = g_ptr_array_new_with_free_func ((GDestroyNotify) e_gw_share_entry_free);
 	data->share_tree = gtk_toggle_button_get_active (GTK_TOGGLE_BUTTON (tab->tree_box));
 
-	for (ii = 0; ii < tab->removed->len; ii++)
-		g_ptr_array_add (data->removed, e_gw_share_entry_copy (tab->removed->pdata[ii]));
-
-	shared = gtk_toggle_button_get_active (GTK_TOGGLE_BUTTON (tab->radio_shared));
-	for (valid = gtk_tree_model_get_iter_first (model, &iter); valid; valid = gtk_tree_model_iter_next (model, &iter)) {
-		guint rights, old;
-		gint status;
-
-		gtk_tree_model_get (model, &iter, COL_STATUS, &status, COL_RIGHTS, &rights, COL_OLD_RIGHTS, &old, -1);
-		if (!shared) {
-			/* Not shared: taken from everybody who has it */
-			if (status >= 0)
-				g_ptr_array_add (data->removed, entry_of_row (tab, &iter, TRUE));
-		} else if (status < 0) {
-			g_ptr_array_add (data->added, entry_of_row (tab, &iter, FALSE));
-		} else if (rights != old) {
-			g_ptr_array_add (data->changed, entry_of_row (tab, &iter, FALSE));
-		}
-	}
-
-	if ((!data->added->len && !data->changed->len && !data->removed->len) ||
+	if (!collect_changes (tab, data->added, data->changed, data->removed) ||
 	    (data->added->len && !ask_notification (tab, data->added, &data->subject, &data->message))) {
 		apply_data_free (data);
-		return;
+		return FALSE;
 	}
 
+	tab->applying = TRUE;
+	gtk_widget_set_sensitive (tab->page, FALSE);
 	task = g_task_new (NULL, NULL, apply_done_cb, NULL);
 	g_task_set_task_data (task, data, apply_data_free);
 	g_task_run_in_thread (task, apply_thread);
 	g_object_unref (task);
+
+	return TRUE;
+}
+
+static void
+apply_clicked_cb (GtkButton *button,
+		  ShareTab *tab)
+{
+	start_apply (tab);
+}
+
+/* The properties are closed: changes of the sharing not applied yet are
+ * not lost without a word */
+static void
+response_cb (GtkDialog *dialog,
+	     gint response,
+	     ShareTab *tab)
+{
+	GtkWidget *question;
+	gint answer;
+
+	if (!tab->share || !tab->model || tab->applying || !collect_changes (tab, NULL, NULL, NULL))
+		return;
+
+	question = gtk_message_dialog_new (GTK_WINDOW (dialog), GTK_DIALOG_MODAL | GTK_DIALOG_DESTROY_WITH_PARENT,
+		GTK_MESSAGE_QUESTION, GTK_BUTTONS_NONE, "%s", _("Apply the changes to the sharing of the folder?"));
+	gtk_message_dialog_format_secondary_text (GTK_MESSAGE_DIALOG (question), "%s",
+		_("You changed whom the folder is shared with or what they may do, and did not apply that yet."));
+	gtk_dialog_add_buttons (GTK_DIALOG (question), _("_Discard"), GTK_RESPONSE_REJECT, _("_Apply"), GTK_RESPONSE_ACCEPT, NULL);
+	gtk_dialog_set_default_response (GTK_DIALOG (question), GTK_RESPONSE_ACCEPT);
+	answer = gtk_dialog_run (GTK_DIALOG (question));
+	gtk_widget_destroy (question);
+
+	if (answer == GTK_RESPONSE_ACCEPT)
+		start_apply (tab);
 }
 
 /* ------------------------------------------------------------------ */
 /* The page */
 
+/* The list and the choices as the server has them */
+static void
+fill_model (ShareTab *tab)
+{
+	guint ii;
+
+	tab->updating = TRUE;
+	gtk_list_store_clear (tab->model);
+	for (ii = 0; ii < tab->share->entries->len; ii++) {
+		EGwShareEntry *entry = tab->share->entries->pdata[ii];
+
+		gtk_list_store_insert_with_values (tab->model, NULL, -1,
+			COL_NAME, entry->display_name && *entry->display_name ? entry->display_name : entry->email,
+			COL_EMAIL, entry->email, COL_UUID, entry->uuid, COL_STATUS, (gint) entry->status,
+			COL_RIGHTS, (guint) (entry->rights | E_GW_SHARE_READ), COL_OLD_RIGHTS, (guint) (entry->rights | E_GW_SHARE_READ), -1);
+	}
+	if (!is_mine (tab)) {
+		gtk_list_store_insert_with_values (tab->model, NULL, -1,
+			COL_NAME, tab->share->owner_name && *tab->share->owner_name ? tab->share->owner_name : tab->share->owner_email,
+			COL_EMAIL, tab->share->owner_email, COL_STATUS, (gint) E_GW_SHARE_STATUS_OWNER,
+			COL_RIGHTS, (guint) E_GW_SHARE_ALL, COL_OLD_RIGHTS, (guint) E_GW_SHARE_ALL, -1);
+	}
+	gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (tab->tree_box), tab->share->share_tree);
+	gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (tab->share->shared_by_me || tab->share->shared_to_me ?
+		tab->radio_shared : tab->radio_none), TRUE);
+	tab->updating = FALSE;
+}
+
 static GtkWidget *
 build_page (ShareTab *tab,
 	    EClientCache *client_cache)
 {
-	GtkWidget *page, *grid, *label, *box, *scrolled, *frame, *button;
+	GtkWidget *page, *grid, *label, *box, *scrolled, *frame, *button, *selector_dialog;
+	gchar *book_uid;
 	GtkTreeViewColumn *column;
 	GtkCellRenderer *renderer;
 	ENameSelectorModel *selector_model;
@@ -741,7 +922,7 @@ build_page (ShareTab *tab,
 	guint ii;
 	gint row = 0;
 
-	page = gtk_box_new (GTK_ORIENTATION_VERTICAL, 6);
+	tab->page = page = gtk_box_new (GTK_ORIENTATION_VERTICAL, 6);
 	gtk_container_set_border_width (GTK_CONTAINER (page), 12);
 
 	if (!mine) {
@@ -778,6 +959,12 @@ build_page (ShareTab *tab,
 	selector_model = e_name_selector_peek_model (tab->name_selector);
 	e_name_selector_model_add_section (selector_model, SECTION, _("Users"), NULL);
 	e_name_selector_load_books (tab->name_selector);
+	selector_dialog = GTK_WIDGET (e_name_selector_peek_dialog (tab->name_selector));
+	book_uid = dup_system_book_uid (tab);
+	if (book_uid)
+		g_object_set_data_full (G_OBJECT (selector_dialog), E_GROUPWISE_NAME_SELECTOR_BOOK, book_uid, g_free);
+	g_signal_connect (selector_dialog, "response", G_CALLBACK (selector_response_cb), tab);
+	g_signal_connect (selector_dialog, "hide", G_CALLBACK (selector_hide_cb), tab);
 
 	label = gtk_label_new_with_mnemonic (_("Na_me:"));
 	gtk_label_set_xalign (GTK_LABEL (label), 0.0);
@@ -860,24 +1047,16 @@ build_page (ShareTab *tab,
 	gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (tab->tree_box), tab->share->share_tree);
 	gtk_grid_attach (GTK_GRID (grid), tab->tree_box, 0, row++, 3, 1);
 
-	/* Who has it */
-	for (ii = 0; ii < tab->share->entries->len; ii++) {
-		EGwShareEntry *entry = tab->share->entries->pdata[ii];
+	/* Closing the properties does not apply (it cannot be cancelled) */
+	tab->apply_button = gtk_button_new_with_mnemonic (_("A_pply Sharing"));
+	gtk_widget_set_tooltip_text (tab->apply_button, _("Share the folder as set here; new users are sent a notification"));
+	gtk_widget_set_halign (tab->apply_button, GTK_ALIGN_END);
+	g_signal_connect (tab->apply_button, "clicked", G_CALLBACK (apply_clicked_cb), tab);
+	gtk_box_pack_start (GTK_BOX (page), tab->apply_button, FALSE, FALSE, 0);
+	if (!mine)
+		gtk_widget_set_no_show_all (tab->apply_button, TRUE);
 
-		gtk_list_store_insert_with_values (tab->model, NULL, -1,
-			COL_NAME, entry->display_name && *entry->display_name ? entry->display_name : entry->email,
-			COL_EMAIL, entry->email, COL_UUID, entry->uuid, COL_STATUS, (gint) entry->status,
-			COL_RIGHTS, (guint) (entry->rights | E_GW_SHARE_READ), COL_OLD_RIGHTS, (guint) (entry->rights | E_GW_SHARE_READ), -1);
-	}
-	if (!mine) {
-		gtk_list_store_insert_with_values (tab->model, NULL, -1,
-			COL_NAME, tab->share->owner_name && *tab->share->owner_name ? tab->share->owner_name : tab->share->owner_email,
-			COL_EMAIL, tab->share->owner_email, COL_STATUS, (gint) E_GW_SHARE_STATUS_OWNER,
-			COL_RIGHTS, (guint) E_GW_SHARE_ALL, COL_OLD_RIGHTS, (guint) E_GW_SHARE_ALL, -1);
-	}
-
-	gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (tab->share->shared_by_me || tab->share->shared_to_me ?
-		tab->radio_shared : tab->radio_none), TRUE);
+	fill_model (tab);
 	g_signal_connect (tab->radio_shared, "toggled", G_CALLBACK (radio_toggled_cb), tab);
 	g_signal_connect (gtk_tree_view_get_selection (GTK_TREE_VIEW (tab->view)), "changed", G_CALLBACK (selection_changed_cb), tab);
 	update_sensitivity (tab);

@@ -23,6 +23,10 @@
 
 G_BEGIN_DECLS
 
+/* Object data of an ENameSelectorDialog: the UID (a string the dialog may
+ * keep) of the address book it opens with, instead of "Automatic" */
+#define E_GROUPWISE_NAME_SELECTOR_BOOK "groupwise-name-selector-book"
+
 void		e_groupwise_name_selector_type_register	(GTypeModule *type_module);
 
 G_END_DECLS

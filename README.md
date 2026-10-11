@@ -351,8 +351,9 @@ used. For complete searches use Evolution's own search folders (*Edit → Search
 A mail folder of the user is shared on the page *Sharing* of its properties (context menu *Sharing…*), as in
 the GroupWise client: the users, how far each got with the share (pending, opened, accepted, deleted), the
 rights add, edit and delete beside reading, and "share all subfolders" (which the POA takes only along with
-new users). Closing the dialog applies; for new users it asks for subject and text of the notification
-first. Evolution has no extension point for its folder properties, so the page is added when the dialog
+new users). The button *Apply Sharing* sends it (the dialog itself has only *Close*); for new users it asks for
+subject and text of the notification first, and closing with changes left asks whether to apply them. Shared
+folders carry Evolution's shared-by-me / shared-to-me icons in the folder list. Evolution has no extension point for its folder properties, so the page is added when the dialog
 shows. A folder shared to the user shows its owner and the user's rights there. The POA keeps a shared
 folder under another ID (`@13` becomes `@35`), so its message list is read anew once.
 

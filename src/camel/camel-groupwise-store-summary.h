@@ -32,6 +32,7 @@ typedef struct {
 	EGwFolderType type;
 	gint64 total;
 	gint64 unread;
+	gint shared;			/* 1: the user shares it, 2: shared to the user */
 } CamelGroupwiseFolderRecord;
 
 void		camel_groupwise_folder_record_free

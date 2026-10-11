@@ -147,6 +147,7 @@ camel_groupwise_folder_records_from_folders (GPtrArray *folders)
 		record->type = folder->type;
 		record->total = folder->count;
 		record->unread = folder->unread_count;
+		record->shared = folder->is_shared_to_me ? 2 : folder->is_shared_by_me ? 1 : 0;
 		g_ptr_array_add (records, record);
 		g_hash_table_add (full_names, record->full_name);
 	}
@@ -178,6 +179,7 @@ load (CamelGroupwiseStoreSummary *summary)
 		record->type = g_key_file_get_integer (key_file, groups[ii], "Type", NULL);
 		record->total = g_key_file_get_int64 (key_file, groups[ii], "Total", NULL);
 		record->unread = g_key_file_get_int64 (key_file, groups[ii], "Unread", NULL);
+		record->shared = g_key_file_get_integer (key_file, groups[ii], "Shared", NULL);
 
 		if (record->full_name)
 			g_ptr_array_add (summary->records, record);
@@ -239,6 +241,8 @@ camel_groupwise_store_summary_replace (CamelGroupwiseStoreSummary *summary,
 		g_key_file_set_integer (key_file, record->id, "Type", record->type);
 		g_key_file_set_int64 (key_file, record->id, "Total", record->total);
 		g_key_file_set_int64 (key_file, record->id, "Unread", record->unread);
+		if (record->shared)
+			g_key_file_set_integer (key_file, record->id, "Shared", record->shared);
 	}
 
 	dirname = g_path_get_dirname (summary->filename);
@@ -432,6 +436,11 @@ camel_groupwise_store_summary_build_folder_info (CamelGroupwiseStoreSummary *sum
 		fi->full_name = g_strdup (record->full_name);
 		fi->display_name = dup_display_name (record);
 		fi->flags = folder_info_flags (record->type);
+		/* Evolution marks the folder icon */
+		if (record->shared == 1)
+			fi->flags |= CAMEL_FOLDER_SHARED_BY_ME;
+		else if (record->shared == 2)
+			fi->flags |= CAMEL_FOLDER_SHARED_TO_ME;
 		fi->total = record->total >= 0 ? (gint) record->total : -1;
 		fi->unread = record->unread >= 0 ? (gint) record->unread : -1;
 		g_ptr_array_add (infos, fi);

@@ -374,8 +374,10 @@ Protokollversion. Vollständige Suchen bieten Evolutions eigene Suchordner (*Bea
 Einen eigenen Mailordner gibt man wie im GroupWise-Client auf dem Reiter *Freigabe* seiner Eigenschaften frei
 (Kontextmenü *Freigabe …*): die Benutzer, wie weit jeder mit der Freigabe ist (ausstehend, geöffnet,
 akzeptiert, gelöscht), die Rechte Hinzufügen, Bearbeiten und Löschen neben dem Lesen und „Alle Unterordner
-freigeben“ (das der POA nur zusammen mit neuen Benutzern übernimmt). Schließen des Dialogs übernimmt die
-Änderungen; bei neuen Benutzern fragt es vorher nach Betreff und Text der Benachrichtigung. Evolution hat
+freigeben“ (das der POA nur zusammen mit neuen Benutzern übernimmt). Der Knopf *Freigabe übernehmen* sendet
+die Änderungen (der Dialog selbst hat nur *Schließen*); bei neuen Benutzern fragt er vorher nach Betreff und Text
+der Benachrichtigung, und Schließen mit offenen Änderungen fragt, ob sie übernommen werden sollen. Freigegebene
+Ordner tragen in der Ordnerliste Evolutions Symbole für „von mir“ und „für mich freigegeben“. Evolution hat
 keine Erweiterungsstelle für seine Ordnereigenschaften, der Reiter wird deshalb beim Anzeigen des Dialogs
 eingefügt. Ein für den Benutzer freigegebener Ordner zeigt dort Eigentümer und eigene Rechte. Der POA führt
 einen freigegebenen Ordner unter einer anderen ID (aus `@13` wird `@35`), seine Nachrichtenliste wird
