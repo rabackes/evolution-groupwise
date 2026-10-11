@@ -1280,10 +1280,6 @@ e_groupwise_mail_ui_constructed (GObject *object)
 	/* Merged after the menus above are put in order */
 	static const gchar *share_eui =
 		"<eui>"
-		  "<menu id='mail-message-popup' is-popup='true'>"
-		    "<separator/>"
-		    "<item action='" ACCEPT_SHARE_ACTION "'/>"
-		  "</menu>"
 		  "<menu id='main-menu'>"
 		    "<placeholder id='custom-menus'>"
 		      "<submenu action='mail-message-menu'>"

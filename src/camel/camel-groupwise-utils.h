@@ -29,12 +29,12 @@ G_BEGIN_DECLS
  * gives that subject only when originalSubject is asked for as well, else
  * the original one). "category" gives <categories>. "peek" in every view:
  * looking at an item must not mark it opened or read. */
-#define CAMEL_GROUPWISE_FLAGS_VIEW "id modified status subject originalSubject category peek"
+#define CAMEL_GROUPWISE_FLAGS_VIEW "id modified status subject originalSubject category subType peek"
 
 /* Everything the message list shows. "messageID" is spelled like this in
  * views, the element in the response is <messageId>. */
 #define CAMEL_GROUPWISE_SUMMARY_VIEW \
-	"id modified status source subject from to cc delivered created size hasAttachment messageID priority startDate container originalSubject category peek"
+	"id modified status source subject from to cc delivered created size hasAttachment messageID priority startDate container originalSubject category subType peek"
 
 /* The message flags GroupWise keeps; everything else is local to Evolution */
 #define CAMEL_GROUPWISE_SERVER_FLAGS (CAMEL_MESSAGE_SEEN | CAMEL_MESSAGE_ANSWERED)
@@ -45,8 +45,10 @@ gboolean	camel_groupwise_item_is_calendar
 						(xmlNode *item);
 gint64		camel_groupwise_parse_time	(const gchar *iso8601);
 
-/* The user tag (value "1") of the message that offers a shared folder; the
- * ID of the message does not tell (the Mailbox lists it as a mail) */
+/* The user tag (value "1") of the message that offers a shared folder. The
+ * POA lists such a message as a plain mail (type Mail, ID ...@1:...) unless
+ * the view asks for "subType"; then it is a SharedNotification with the ID
+ * ...@37:... The UID stays the one of the mail in either case. */
 #define CAMEL_GROUPWISE_SHARE_TAG "groupwise-share"
 gboolean	camel_groupwise_item_is_share_offer
 						(xmlNode *item);

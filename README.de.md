@@ -384,7 +384,7 @@ einen freigegebenen Ordner unter einer anderen ID (aus `@13` wird `@35`), seine 
 deshalb einmal neu eingelesen.
 
 Ein von einem anderen Benutzer freigegebener Ordner kommt als Benachrichtigung in die Mailbox; *Freigegebenen
-Ordner installieren …* an dieser Nachricht (Kontextmenü, Menü *Nachricht*) zeigt Absender, Text und Rechte,
+Ordner installieren …* an dieser Nachricht (Doppelklick oder Menü *Nachricht*) zeigt Absender, Text und Rechte,
 fragt Name, Beschreibung und übergeordneten Ordner ab und nimmt an (`acceptShareRequest`). In einem solchen
 Ordner gibt der POA eine GroupWise-Nachricht nicht als RFC 822 heraus; der Provider setzt sie dann aus dem
 Item und seinen Anhängen zusammen.

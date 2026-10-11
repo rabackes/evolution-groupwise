@@ -28,8 +28,18 @@ camel_groupwise_item_dup_id (xmlNode *item)
 {
 	gchar *raw = e_gw_xml_dup_text (item, "id");
 	gchar *id = raw && *raw ? e_gw_clean_id (raw) : NULL;
+	gchar *at = id ? strchr (id, '@') : NULL;
 
 	g_free (raw);
+
+	/* The notification of a shared folder under the ID it has in views
+	 * that do not tell its type: BASE@37:CONTAINER -> BASE@1:CONTAINER */
+	if (at && g_str_has_prefix (at, "@37:")) {
+		gchar *mail = g_strdup_printf ("%.*s@1%s", (gint) (at - id), id, at + 3);
+
+		g_free (id);
+		id = mail;
+	}
 
 	return id;
 }

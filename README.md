@@ -358,7 +358,7 @@ shows. A folder shared to the user shows its owner and the user's rights there. 
 folder under another ID (`@13` becomes `@35`), so its message list is read anew once.
 
 A folder another user shares arrives as a notification in the Mailbox; *Install Shared Folder…* on that
-message (context menu, menu *Message*) shows sender, text and rights and asks for name, description and
+message (a double click, or the menu *Message*) shows sender, text and rights and asks for name, description and
 parent folder, then accepts (`acceptShareRequest`). In such a folder the POA does not stream a GroupWise
 message as RFC 822; the provider then builds it from the item and its attachments.
 

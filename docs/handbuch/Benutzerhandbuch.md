@@ -441,7 +441,7 @@ Das Symbol wechselt, sobald Sie eine Freigabe übernommen oder aufgehoben haben.
 
 ### Eine Freigabe annehmen
 
-Gibt ein anderer Benutzer einen Ordner für Sie frei, erhalten Sie in der Mailbox die Nachricht **Benachrichtigung über freigegebenen Ordner: …**. Ein Doppelklick auf die Nachricht öffnet – wie das Öffnen im GroupWise-Client – den Dialog **Freigegebenen Ordner installieren**; ebenso der Eintrag `Freigegebenen Ordner installieren …` im Kontextmenü der Nachricht und im Menü `Nachricht` (er erscheint nur bei solchen Nachrichten). Den Text der Benachrichtigung lesen Sie in der Vorschau oder über `In neuem Fenster öffnen`. Der Dialog zeigt, wer welchen Ordner freigibt, die Mitteilung des Absenders und Ihre Zugriffsrechte, und fragt:
+Gibt ein anderer Benutzer einen Ordner für Sie frei, erhalten Sie in der Mailbox die Nachricht **Benachrichtigung über freigegebenen Ordner: …**. Ein Doppelklick auf die Nachricht öffnet – wie das Öffnen im GroupWise-Client – den Dialog **Freigegebenen Ordner installieren**; ebenso der Eintrag `Freigegebenen Ordner installieren …` im Menü `Nachricht` (er erscheint nur bei solchen Nachrichten). Den Text der Benachrichtigung lesen Sie in der Vorschau oder über `In neuem Fenster öffnen`. Der Dialog zeigt, wer welchen Ordner freigibt, die Mitteilung des Absenders und Ihre Zugriffsrechte, und fragt:
 
 - **Name** – wie der Ordner bei Ihnen heißen soll; vorbelegt ist sein Name beim Eigentümer.
 
