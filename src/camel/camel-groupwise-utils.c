@@ -47,6 +47,18 @@ camel_groupwise_item_is_calendar (xmlNode *item)
 	return calendar;
 }
 
+/* The notification of a folder another user shares */
+gboolean
+camel_groupwise_item_is_share_offer (xmlNode *item)
+{
+	gchar *type = e_gw_xml_dup_attr (item, "type");
+	gboolean offer = type && g_str_has_suffix (type, "SharedNotification");
+
+	g_free (type);
+
+	return offer;
+}
+
 /* An unread item comes without <status> at all */
 guint32
 camel_groupwise_item_get_flags (xmlNode *item)
@@ -139,6 +151,8 @@ camel_groupwise_message_info_new_from_item (CamelFolderSummary *summary,
 	camel_message_info_set_abort_notifications (info, TRUE);
 
 	camel_message_info_set_uid (info, id);
+	if (camel_groupwise_item_is_share_offer (item))
+		camel_message_info_set_user_tag (info, CAMEL_GROUPWISE_SHARE_TAG, "1");
 
 	text = e_gw_xml_dup_text (item, "subject");
 	camel_message_info_set_subject (info, text);

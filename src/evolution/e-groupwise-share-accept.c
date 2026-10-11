@@ -82,9 +82,23 @@ accept_data_unref (gpointer ptr)
 }
 
 gboolean
-e_groupwise_share_accept_is_notification (const gchar *uid)
+e_groupwise_share_accept_is_notification (CamelFolder *folder,
+					  const gchar *uid)
 {
-	return e_gw_share_is_notification_id (uid);
+	CamelMessageInfo *info;
+	gboolean offer;
+
+	if (!folder || !uid)
+		return FALSE;
+	/* The provider marks it; the ID tells only in some listings */
+	if (e_gw_share_is_notification_id (uid))
+		return TRUE;
+
+	info = camel_folder_get_message_info (folder, uid);
+	offer = info && g_strcmp0 (camel_message_info_get_user_tag (info, "groupwise-share"), "1") == 0;
+	g_clear_object (&info);
+
+	return offer;
 }
 
 static void

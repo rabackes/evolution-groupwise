@@ -24,9 +24,10 @@
 
 G_BEGIN_DECLS
 
-/* Whether the message of @uid is the notification of a shared folder */
+/* Whether the message @uid of @folder is the notification of a shared folder */
 gboolean	e_groupwise_share_accept_is_notification
-						(const gchar *uid);
+						(CamelFolder *folder,
+						 const gchar *uid);
 
 /* Shows who shares which folder with which rights and asks for the name,
  * the description and the place of the folder in the mailbox of

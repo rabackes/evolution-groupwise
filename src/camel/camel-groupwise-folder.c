@@ -156,6 +156,7 @@ typedef struct {
 	gchar *subject;		/* NULL: not in the view */
 	gchar **categories;
 	gboolean calendar;
+	gboolean share_offer;
 } ServerState;
 
 static void
@@ -184,6 +185,7 @@ collect_state_cb (xmlNode *item,
 	state->subject = e_gw_xml_find (item, "subject") ? e_gw_xml_dup_text (item, "subject") : NULL;
 	state->categories = e_gw_item_dup_categories (item);
 	state->calendar = camel_groupwise_item_is_calendar (item);
+	state->share_offer = camel_groupwise_item_is_share_offer (item);
 	g_hash_table_replace (server, id, state);
 
 	return TRUE;
@@ -437,6 +439,17 @@ apply_server_state (CamelFolder *folder,
 
 		if (info) {
 			gboolean changed = take_server_flags (CAMEL_GROUPWISE_MESSAGE_INFO (info), state->flags);
+
+			/* Messages listed before the tag was known */
+			if (state->share_offer && !camel_message_info_get_user_tag (info, CAMEL_GROUPWISE_SHARE_TAG)) {
+				gboolean was_flagged = camel_message_info_get_folder_flagged (info);
+
+				camel_message_info_set_user_tag (info, CAMEL_GROUPWISE_SHARE_TAG, "1");
+				/* Nothing to write back */
+				if (!was_flagged)
+					camel_message_info_set_folder_flagged (info, FALSE);
+				changed = TRUE;
+			}
 
 			changed = take_server_categories (labels, CAMEL_GROUPWISE_MESSAGE_INFO (info),
 				(const gchar * const *) state->categories) || changed;

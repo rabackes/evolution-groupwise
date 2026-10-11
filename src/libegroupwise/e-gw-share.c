@@ -390,7 +390,18 @@ e_gw_connection_get_share_notification_sync (EGwConnection *cnc,
 	g_free (kind);
 
 	notification = g_new0 (EGwShareNotification, 1);
-	notification->id = g_strdup (id);
+	/* The Mailbox may list the message under the ID of a mail (@1); the
+	 * item itself has the one to accept with (@37) */
+	notification->id = e_gw_xml_dup_text (item, "id");
+	if (notification->id && *notification->id) {
+		gchar *clean = e_gw_clean_id (notification->id);
+
+		g_free (notification->id);
+		notification->id = clean;
+	} else {
+		g_free (notification->id);
+		notification->id = g_strdup (id);
+	}
 	notification->folder_name = e_gw_xml_dup_text (item, "name");
 	notification->subject = e_gw_xml_dup_text (item, "subject");
 	notification->sender_name = e_gw_xml_dup_text (item, "distribution/from/displayName");

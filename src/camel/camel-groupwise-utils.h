@@ -44,6 +44,12 @@ guint32		camel_groupwise_item_get_flags	(xmlNode *item);
 gboolean	camel_groupwise_item_is_calendar
 						(xmlNode *item);
 gint64		camel_groupwise_parse_time	(const gchar *iso8601);
+
+/* The user tag (value "1") of the message that offers a shared folder; the
+ * ID of the message does not tell (the Mailbox lists it as a mail) */
+#define CAMEL_GROUPWISE_SHARE_TAG "groupwise-share"
+gboolean	camel_groupwise_item_is_share_offer
+						(xmlNode *item);
 CamelMessageInfo *
 		camel_groupwise_message_info_new_from_item
 						(CamelFolderSummary *summary,

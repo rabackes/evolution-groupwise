@@ -33,6 +33,7 @@
 #include <mail/e-mail-backend.h>
 #include <mail/e-mail-reader.h>
 #include <mail/em-folder-tree.h>
+#include <mail/message-list.h>
 #include <shell/e-shell-sidebar.h>
 #include <shell/e-shell-window.h>
 #include <shell/e-shell-view.h>
@@ -703,7 +704,7 @@ dup_selected_share_offer (EMailReader *reader,
 	GPtrArray *uids = folder ? e_mail_reader_get_selected_uids (reader) : NULL;
 	gchar *uid = NULL;
 
-	if (uids && uids->len == 1 && e_groupwise_share_accept_is_notification (uids->pdata[0]))
+	if (uids && uids->len == 1 && e_groupwise_share_accept_is_notification (folder, uids->pdata[0]))
 		uid = g_strdup (uids->pdata[0]);
 	g_clear_pointer (&uids, g_ptr_array_unref);
 	if (uid && out_folder)
@@ -759,15 +760,62 @@ folder_loaded_cb (EMailReader *reader,
 	g_object_set_data_full (G_OBJECT (reader), "groupwise-rule-folder", folder, folder ? g_object_unref : NULL);
 }
 
+/* A double click opens a message; on the notification of a shared folder
+ * it asks to install the folder, as opening it does in the GroupWise
+ * client. (The menu and the keyboard still open it as a message.) */
+static void
+double_click_cb (GtkWidget *message_list,
+		 gint row,
+		 gpointer path,
+		 gint col,
+		 GdkEvent *event,
+		 gpointer user_data)
+{
+	EShellView *shell_view = user_data;
+	EMailReader *reader = ref_reader (shell_view);
+	EUIAction *action;
+	gchar *offer;
+
+	if (!reader)
+		return;
+
+	/* As Evolution's own handler: columns that handle their own state */
+	if (!MESSAGE_LIST_COLUMN_IS_ACTIVE (col)) {
+		offer = dup_selected_share_offer (reader, NULL);
+		action = offer ? e_ui_action_group_get_action (e_ui_manager_get_action_group (
+			e_shell_view_get_ui_manager (shell_view), "mail"), ACCEPT_SHARE_ACTION) :
+			e_mail_reader_get_action (reader, "mail-message-open");
+		if (action)
+			g_action_activate (G_ACTION (action), NULL);
+		g_free (offer);
+	}
+	g_object_unref (reader);
+}
+
 static void
 watch_reader (EShellView *shell_view,
 	      EMailReader *reader)
 {
+	GtkWidget *message_list;
+	guint signal_id;
+	gulong handler;
+
 	if (!reader || g_object_get_data (G_OBJECT (reader), "groupwise-rule-watch"))
 		return;
 
 	g_object_set_data (G_OBJECT (reader), "groupwise-rule-watch", GINT_TO_POINTER (1));
 	g_signal_connect (reader, "folder-loaded", G_CALLBACK (folder_loaded_cb), shell_view);
+
+	/* Evolution's handler of the double click gives way to one that
+	 * knows the notification of a shared folder; without it nothing changes */
+	message_list = e_mail_reader_get_message_list (reader);
+	signal_id = message_list ? g_signal_lookup ("double-click", G_OBJECT_TYPE (message_list)) : 0;
+	handler = signal_id ? g_signal_handler_find (message_list, G_SIGNAL_MATCH_ID | G_SIGNAL_MATCH_DATA,
+		signal_id, 0, NULL, NULL, reader) : 0;
+	if (handler) {
+		g_signal_handler_block (message_list, handler);
+		g_signal_connect (message_list, "double-click", G_CALLBACK (double_click_cb), shell_view);
+	}
 }
 
 static void
