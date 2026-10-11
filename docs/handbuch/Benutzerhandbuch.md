@@ -412,7 +412,7 @@ Die Kalender anderer Benutzer, die Sie im GroupWise-Client als Proxy-Kalender hi
 
 Einen eigenen Ordner können Sie für andere GroupWise-Benutzer freigeben: Er erscheint dann auch in deren Ordnerliste, mit den Rechten, die Sie vergeben. Anders als beim Proxy-Zugriff (4.8), der das ganze Postfach öffnet, betrifft eine Freigabe nur diesen einen Ordner – auf Wunsch mit seinen Unterordnern.
 
-Wie im GroupWise-Client ist die Freigabe ein Reiter (Registerkarte) der Ordnereigenschaften. Wählen Sie im Kontextmenü des Ordners `Freigabe …` (öffnet die Eigenschaften gleich mit diesem Reiter) oder `Eigenschaften` und dort den Reiter `Freigabe`. Den Reiter gibt es bei Ordnern, die Sie selbst angelegt haben, und bei Ordnern, die andere für Sie freigegeben haben; Systemordner wie die Mailbox und die Ordner eines Proxy-Kontos haben ihn nicht. Er erscheint einen Augenblick nach dem Dialog, sobald der Server geantwortet hat.
+Wie im GroupWise-Client ist die Freigabe ein Reiter (Registerkarte) der Ordnereigenschaften. Wählen Sie im Kontextmenü des Ordners `Freigabe …` (öffnet die Eigenschaften gleich mit diesem Reiter) oder `Eigenschaften` und dort den Reiter `Freigabe`. Den Reiter gibt es bei Ordnern, die Sie selbst angelegt haben, und bei Ordnern, die andere für Sie freigegeben haben; Systemordner wie die Mailbox haben ihn nicht. Er erscheint einen Augenblick nach dem Dialog, sobald der Server geantwortet hat.
 
 - **Nicht freigegeben / Freigegeben für**: „Nicht freigegeben“ entzieht den Ordner allen Benutzern der Liste.
 
@@ -425,6 +425,8 @@ Wie im GroupWise-Client ist die Freigabe ein Reiter (Registerkarte) der Ordnerei
 - **Alle Unterordner freigeben**: lässt sich nur zusammen mit neuen Benutzern setzen – der Server übernimmt die Angabe später nicht mehr.
 
 Der Eigenschaftendialog von Evolution kennt nur `Schließen`, kein „Abbrechen“. Die Freigabe hat deshalb einen eigenen Knopf: `Freigabe übernehmen` sendet, was Sie eingestellt haben, an den Server; die Liste zeigt danach den neuen Stand. Sind neue Benutzer dabei, fragt Evolution vorher nach Betreff und Mitteilung der **Benachrichtigung über freigegebenen Ordner**, die diese Benutzer erhalten; `Abbrechen` dort sendet nichts. Schließen Sie die Eigenschaften mit Änderungen, die noch nicht übernommen sind, fragt Evolution, ob es sie `Übernehmen` oder `Verwerfen` soll.
+
+**Proxy-Konten:** Auch die Ordner eines Proxy-Kontos (4.8) lassen sich so freigeben, soweit Ihre Proxy-Rechte in diesem Postfach reichen – wichtig etwa für Ressourcen, die nur über den Proxy-Zugriff verwaltet werden. Die Benachrichtigung kommt dann vom Postfach des Proxy-Kontos.
 
 Der Empfänger nimmt die Freigabe im GroupWise-Client an (Annehmen in Evolution folgt); entziehen Sie ihm den Ordner wieder, verschwindet er aus seiner Ordnerliste.
 

@@ -566,29 +566,39 @@ selector_hide_cb (GtkWidget *dialog,
 	}
 }
 
-/* The UID of the system address book of the account: only its users can
- * be given a folder */
+/* The UID of the system address book: only its users can be given a
+ * folder. That of the account, or (a proxy account has none of its own)
+ * that of any GroupWise account. */
 static gchar *
 dup_system_book_uid (ShareTab *tab)
 {
 	GList *sources, *link;
-	gchar *parent = e_source_dup_parent (tab->account), *uid = NULL;
+	gchar *parent = e_source_dup_parent (tab->account), *uid = NULL, *other_uid = NULL;
 
 	sources = e_source_registry_list_enabled (tab->registry, E_SOURCE_EXTENSION_ADDRESS_BOOK);
-	for (link = sources; link && !uid && parent; link = g_list_next (link)) {
+	for (link = sources; link && !uid; link = g_list_next (link)) {
 		ESource *source = link->data;
 		gchar *other = e_source_dup_parent (source), *id = NULL;
 
-		if (g_strcmp0 (other, parent) == 0 && e_source_has_extension (source, E_SOURCE_EXTENSION_GROUPWISE_FOLDER))
+		if (e_source_has_extension (source, E_SOURCE_EXTENSION_GROUPWISE_FOLDER))
 			id = e_source_groupwise_folder_dup_id (e_source_get_extension (source, E_SOURCE_EXTENSION_GROUPWISE_FOLDER));
 		/* GroupWiseSystemAddressBook@52 */
-		if (id && g_str_has_suffix (id, "@52"))
-			uid = e_source_dup_uid (source);
+		if (id && g_str_has_suffix (id, "@52")) {
+			if (parent && g_strcmp0 (other, parent) == 0)
+				uid = e_source_dup_uid (source);
+			else if (!other_uid)
+				other_uid = e_source_dup_uid (source);
+		}
 		g_free (other);
 		g_free (id);
 	}
 	g_list_free_full (sources, g_object_unref);
 	g_free (parent);
+
+	if (uid)
+		g_free (other_uid);
+	else
+		uid = other_uid;
 
 	return uid;
 }
@@ -1208,9 +1218,9 @@ adapt (GtkDialog *dialog)
 	backend = e_shell_view_get_shell_backend (shell_view);
 	registry = e_mail_session_get_registry (e_mail_backend_get_session (E_MAIL_BACKEND (backend)));
 	account = e_groupwise_ui_ref_account_source (registry, CAMEL_SERVICE (store));
-	/* The folders of another mailbox are for its user to share */
-	if (!account || e_groupwise_ui_is_proxy_store (CAMEL_SERVICE (store))) {
-		g_clear_object (&account);
+	/* Also in the mailbox of a proxy account, as far as the rights there
+	 * go (a resource is managed that way only) */
+	if (!account) {
 		g_object_unref (store);
 		g_free (full_name);
 		return;

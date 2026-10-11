@@ -222,7 +222,7 @@ ref_selected_account (EShellView *shell_view)
 	return account;
 }
 
-/* Whether a folder of an own GroupWise mailbox is selected in the folder list */
+/* Whether a folder of a GroupWise mailbox is selected in the folder list */
 static gboolean
 own_folder_selected (EShellView *shell_view)
 {
@@ -236,7 +236,7 @@ own_folder_selected (EShellView *shell_view)
 	g_object_get (sidebar, "folder-tree", &folder_tree, NULL);
 	if (folder_tree && em_folder_tree_get_selected (folder_tree, &store, &full_name) && store && full_name) {
 		account = e_groupwise_ui_ref_account_source (shell_view_get_registry (shell_view), CAMEL_SERVICE (store));
-		own = account && !e_groupwise_ui_is_proxy_store (CAMEL_SERVICE (store));
+		own = account != NULL;
 	}
 	g_clear_object (&account);
 	g_clear_object (&store);
