@@ -54,6 +54,11 @@ gchar *		e_groupwise_ui_dup_proxy	(ESource *source);
 /* Whether the store is one of a GroupWise proxy account */
 gboolean	e_groupwise_ui_is_proxy_store	(CamelService *service);
 
+/* The GroupWise folder IDs by the Camel full names of the folders, as the
+ * store builds them from @folders (EGwFolder, the whole list).
+ * Returns: (transfer full) (element-type utf8 utf8) */
+GHashTable *	e_groupwise_ui_folder_ids	(GPtrArray *folders);
+
 G_END_DECLS
 
 #endif /* E_GROUPWISE_UI_UTILS_H */

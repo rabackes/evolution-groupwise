@@ -31,6 +31,7 @@ src/evolution/e-groupwise-rule-runner.c
 src/evolution/e-groupwise-rules-tab.c
 src/evolution/e-groupwise-sent-items.c
 src/evolution/e-groupwise-settings-window.c
+src/evolution/e-groupwise-share-tab.c
 src/evolution/e-groupwise-signatures-tab.c
 src/evolution/e-groupwise-signature-sync.c
 src/evolution/e-groupwise-source-config.c
@@ -46,6 +47,7 @@ src/libegroupwise/e-gw-folder.c
 src/libegroupwise/e-gw-junk.c
 src/libegroupwise/e-gw-proxy.c
 src/libegroupwise/e-gw-rule.c
+src/libegroupwise/e-gw-share.c
 src/libegroupwise/e-gw-signature.c
 src/libegroupwise/e-gw-vacation.c
 src/libegroupwise/e-gw-xml.c

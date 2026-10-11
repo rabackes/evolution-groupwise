@@ -81,44 +81,6 @@ e_groupwise_rule_runner_forget (const gchar *account_uid)
 	g_mutex_unlock (&account->lock);
 }
 
-/* The Camel full names of the folders, as the store builds them */
-static GHashTable *
-folder_ids_of (GPtrArray *folders)
-{
-	GHashTable *by_id = g_hash_table_new (g_str_hash, g_str_equal);
-	GHashTable *ids = g_hash_table_new_full (g_str_hash, g_str_equal, g_free, g_free);
-	guint ii;
-
-	for (ii = 0; ii < folders->len; ii++) {
-		EGwFolder *folder = folders->pdata[ii];
-
-		g_hash_table_insert (by_id, folder->id, folder);
-	}
-	for (ii = 0; ii < folders->len; ii++) {
-		EGwFolder *folder = folders->pdata[ii], *up = folder;
-		GString *path = g_string_new (NULL);
-		guint depth = 0;
-
-		while (up && up->type != E_GW_FOLDER_TYPE_ROOT && depth++ < 64) {
-			gchar *name = g_strdup (up->name && *up->name ? up->name : up->id);
-
-			g_strdelimit (name, "/", '_');
-			if (path->len)
-				g_string_prepend_c (path, '/');
-			g_string_prepend (path, name);
-			g_free (name);
-			up = up->parent_id ? g_hash_table_lookup (by_id, up->parent_id) : NULL;
-		}
-		if (path->len)
-			g_hash_table_insert (ids, g_string_free (path, FALSE), g_strdup (folder->id));
-		else
-			g_string_free (path, TRUE);
-	}
-	g_hash_table_destroy (by_id);
-
-	return ids;
-}
-
 /* Logged in, with the rules; the account is locked */
 static gboolean
 prepare_account (Account *account,
@@ -140,7 +102,7 @@ prepare_account (Account *account,
 			return FALSE;
 		folders = e_gw_connection_get_folder_list_sync (account->cnc, NULL, TRUE, cancellable, NULL);
 		if (folders) {
-			account->folder_ids = folder_ids_of (folders);
+			account->folder_ids = e_groupwise_ui_folder_ids (folders);
 			g_ptr_array_unref (folders);
 		}
 	}

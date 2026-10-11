@@ -346,9 +346,19 @@ are checked at most every 15 minutes and not kept for offline use.
 4000 in tests, of 61552 shown by the GroupWise client), whatever view, count, filter or API version is
 used. For complete searches use Evolution's own search folders (*Edit → Search Folders*).
 
+### Sharing folders
+
+A mail folder of the user is shared on the page *Sharing* of its properties (context menu *Sharing…*), as in
+the GroupWise client: the users, how far each got with the share (pending, opened, accepted, deleted), the
+rights add, edit and delete beside reading, and "share all subfolders" (which the POA takes only along with
+new users). Closing the dialog applies; for new users it asks for subject and text of the notification
+first. Evolution has no extension point for its folder properties, so the page is added when the dialog
+shows. A folder shared to the user shows its owner and the user's rights there. The POA keeps a shared
+folder under another ID (`@13` becomes `@35`), so its message list is read anew once.
+
 ### Not yet supported
 
-Shared mail folders and address books, writing into other users' calendars, signed or encrypted messages (GroupWise builds the message for the recipients itself).
+Accepting a folder another user shares, sharing calendars and address books, shared address books, writing into other users' calendars, signed or encrypted messages (GroupWise builds the message for the recipients itself).
 
 ## Tools
 

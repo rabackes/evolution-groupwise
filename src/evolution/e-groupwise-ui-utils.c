@@ -20,6 +20,7 @@
 
 #include "e-gw-backend-utils.h"
 
+#include "e-gw-folder.h"
 #include "e-groupwise-ui-utils.h"
 
 ESource *
@@ -156,4 +157,42 @@ e_groupwise_ui_connect_items_sync (ESourceRegistry *registry,
 				   GError **error)
 {
 	return connect_account_sync (registry, account_source, FALSE, cancellable, error);
+}
+
+/* The Camel full names of the folders, as the store builds them */
+GHashTable *
+e_groupwise_ui_folder_ids (GPtrArray *folders)
+{
+	GHashTable *by_id = g_hash_table_new (g_str_hash, g_str_equal);
+	GHashTable *ids = g_hash_table_new_full (g_str_hash, g_str_equal, g_free, g_free);
+	guint ii;
+
+	for (ii = 0; ii < folders->len; ii++) {
+		EGwFolder *folder = folders->pdata[ii];
+
+		g_hash_table_insert (by_id, folder->id, folder);
+	}
+	for (ii = 0; ii < folders->len; ii++) {
+		EGwFolder *folder = folders->pdata[ii], *up = folder;
+		GString *path = g_string_new (NULL);
+		guint depth = 0;
+
+		while (up && up->type != E_GW_FOLDER_TYPE_ROOT && depth++ < 64) {
+			gchar *name = g_strdup (up->name && *up->name ? up->name : up->id);
+
+			g_strdelimit (name, "/", '_');
+			if (path->len)
+				g_string_prepend_c (path, '/');
+			g_string_prepend (path, name);
+			g_free (name);
+			up = up->parent_id ? g_hash_table_lookup (by_id, up->parent_id) : NULL;
+		}
+		if (path->len)
+			g_hash_table_insert (ids, g_string_free (path, FALSE), g_strdup (folder->id));
+		else
+			g_string_free (path, TRUE);
+	}
+	g_hash_table_destroy (by_id);
+
+	return ids;
 }

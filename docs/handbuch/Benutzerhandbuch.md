@@ -408,6 +408,28 @@ Ein Proxy-Konto heißt „*Name* (Proxy)“ und ist ein eigenständiges Konto: S
 
 Die Kalender anderer Benutzer, die Sie im GroupWise-Client als Proxy-Kalender hinzugefügt haben, erscheinen unter Ihrem eigenen Konto (siehe Abschnitt 5.1) – außer für Benutzer, für die Sie ein Proxy-Konto eingerichtet haben: deren Kalender stehen dann nur beim Proxy-Konto.
 
+## 4.9 Ordner freigeben
+
+Einen eigenen Ordner können Sie für andere GroupWise-Benutzer freigeben: Er erscheint dann auch in deren Ordnerliste, mit den Rechten, die Sie vergeben. Anders als beim Proxy-Zugriff (4.8), der das ganze Postfach öffnet, betrifft eine Freigabe nur diesen einen Ordner – auf Wunsch mit seinen Unterordnern.
+
+Wie im GroupWise-Client ist die Freigabe ein Reiter (Registerkarte) der Ordnereigenschaften. Wählen Sie im Kontextmenü des Ordners `Freigabe …` (öffnet die Eigenschaften gleich mit diesem Reiter) oder `Eigenschaften` und dort den Reiter `Freigabe`. Den Reiter gibt es bei Ordnern, die Sie selbst angelegt haben, und bei Ordnern, die andere für Sie freigegeben haben; Systemordner wie die Mailbox und die Ordner eines Proxy-Kontos haben ihn nicht. Er erscheint einen Augenblick nach dem Dialog, sobald der Server geantwortet hat.
+
+- **Nicht freigegeben / Freigegeben für**: „Nicht freigegeben“ entzieht den Ordner allen Benutzern der Liste.
+
+- **Name**: Tippen Sie einen Namen oder eine E-Mail-Adresse – Evolution schlägt Einträge aus den Adressbüchern vor – oder wählen Sie über den Knopf mit dem Adressbuch aus. `Benutzer hinzufügen` setzt den Benutzer auf die Liste; der Server prüft dabei, ob es ihn im GroupWise-System gibt.
+
+- **Freigabeliste**: Name, Status und Zugriff. Der Status zeigt, wie weit der Benutzer mit der Freigabe ist: *Neu* (noch nicht gesendet), *Ausstehend*, *Geöffnet* (die Benachrichtigung wurde gelesen), *Akzeptiert* oder *Gelöscht*. `Benutzer entfernen` entzieht dem markierten Benutzer den Ordner.
+
+- **Weiterer Zugriff**: Lesen darf jeder Benutzer der Liste; `Hinzufügen`, `Bearbeiten` und `Löschen` vergeben Sie je Benutzer zusätzlich.
+
+- **Alle Unterordner freigeben**: lässt sich nur zusammen mit neuen Benutzern setzen – der Server übernimmt die Angabe später nicht mehr.
+
+Die Änderungen werden übernommen, wenn Sie den Dialog mit `Schließen` beenden. Sind neue Benutzer dabei, fragt Evolution vorher nach Betreff und Mitteilung der **Benachrichtigung über freigegebenen Ordner**, die diese Benutzer erhalten; den Namen des Ordners hängt der Server selbst an den Betreff an. `Abbrechen` in dieser Abfrage verwirft alle Änderungen an der Freigabe. Der Empfänger nimmt die Freigabe im GroupWise-Client an (Annehmen in Evolution folgt); entziehen Sie ihm den Ordner wieder, verschwindet er aus seiner Ordnerliste.
+
+Bei einem Ordner, den ein anderer Benutzer für Sie freigegeben hat, zeigt der Reiter den Eigentümer und Ihre Rechte; ändern lässt sich dort nichts.
+
+> **Neu einlesen nach dem Freigeben:** Der Server führt einen freigegebenen Ordner unter einer anderen Kennung als einen nicht freigegebenen. Nach dem ersten Freigeben oder dem Aufheben der Freigabe liest Evolution die Nachrichtenliste dieses Ordners deshalb beim nächsten Start einmal neu ein.
+
 # 5 Kalender
 
 ## 5.1 Die Kalender eines Kontos
@@ -525,7 +547,7 @@ Die Adressbücher werden lokal vorgehalten, damit die **Autovervollständigung**
 | Thema | Stand |
 |---|---|
 | Kalender anderer Benutzer | Proxy-Kalender unter dem eigenen Konto und freigegebene Kalender sind nur lesbar; die Kalender eines Proxy-Kontos sind nach den gewährten Rechten beschreibbar. |
-| Freigegebene Mailordner und Adressbücher | werden noch nicht angezeigt. |
+| Freigaben | Mailordner lassen sich freigeben (4.9). Eine Freigabe anderer annehmen sowie Kalender und Adressbücher freigeben geht noch nicht in Evolution; freigegebene Adressbücher werden noch nicht angezeigt. Die Rechte in einem für Sie freigegebenen Ordner prüft der Server: Was Sie nicht dürfen, lehnt er mit einer Fehlermeldung ab. |
 | Proxy-Konten | Neue Nachrichten werden bei jedem Abgleich über die ganze Ordnerliste ermittelt, da der POA in Proxy-Sitzungen keine Änderungsabfrage beantwortet. Mit der Kontooption „Den Server alle … Sekunden nach Änderungen im Postfach fragen“ erscheinen sie trotzdem sofort. |
 | Geklonte Rechner | Zwei Rechner mit derselben Maschinen-ID stören sich bei der Abfrage der Änderungen am selben Postfach gegenseitig (siehe Kontooptionen in Kapitel 3). |
 | Signierte oder verschlüsselte Nachrichten | können nicht über GroupWise gesendet werden; empfangene werden angezeigt. |
@@ -534,8 +556,6 @@ Die Adressbücher werden lokal vorgehalten, damit die **Autovervollständigung**
 | Abonnierte Internet-Kalender | werden ausgelassen. |
 | Ziehen auf die Kalenderliste | in Evolution nicht zuverlässig; Kontextmenü oder Editor verwenden. |
 | Wiederherstellen im Papierkorb | erst ab Evolution 3.56. |
-
-Freigaben – Ordner oder Kalender freigeben und Freigaben anderer annehmen – sind noch nicht umgesetzt.
 
 # 9 Fehlersuche
 

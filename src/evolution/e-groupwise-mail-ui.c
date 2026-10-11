@@ -44,6 +44,7 @@
 #include "e-groupwise-events-port.h"
 #include "e-groupwise-proxy-options.h"
 #include "e-groupwise-sent-items.h"
+#include "e-groupwise-share-tab.h"
 
 #include "e-groupwise-mail-ui.h"
 #include "e-groupwise-settings-window.h"
@@ -55,6 +56,7 @@
 #define RESTORE_FLAG "gw-restore"
 #define RESTORE_ACTION "groupwise-mail-restore"
 #define SETTINGS_ACTION "groupwise-account-settings"
+#define SHARE_ACTION "groupwise-folder-share"
 #define JUNK_MENU "groupwise-junk-menu"
 #define JUNK_ACTION "groupwise-junk-sender"
 #define BLOCK_ACTION "groupwise-block-sender"
@@ -218,6 +220,46 @@ ref_selected_account (EShellView *shell_view)
 	g_clear_object (&folder_tree);
 
 	return account;
+}
+
+/* Whether a folder of an own GroupWise mailbox is selected in the folder list */
+static gboolean
+own_folder_selected (EShellView *shell_view)
+{
+	EShellSidebar *sidebar = e_shell_view_get_shell_sidebar (shell_view);
+	EMFolderTree *folder_tree = NULL;
+	CamelStore *store = NULL;
+	ESource *account = NULL;
+	gchar *full_name = NULL;
+	gboolean own = FALSE;
+
+	g_object_get (sidebar, "folder-tree", &folder_tree, NULL);
+	if (folder_tree && em_folder_tree_get_selected (folder_tree, &store, &full_name) && store && full_name) {
+		account = e_groupwise_ui_ref_account_source (shell_view_get_registry (shell_view), CAMEL_SERVICE (store));
+		own = account && !e_groupwise_ui_is_proxy_store (CAMEL_SERVICE (store));
+	}
+	g_clear_object (&account);
+	g_clear_object (&store);
+	g_clear_object (&folder_tree);
+	g_free (full_name);
+
+	return own;
+}
+
+/* Sharing is a page of the folder properties */
+static void
+action_share_cb (EUIAction *action,
+		 GVariant *parameter,
+		 gpointer user_data)
+{
+	EShellView *shell_view = user_data;
+	EUIActionGroup *action_group = e_ui_manager_get_action_group (e_shell_view_get_ui_manager (shell_view), "mail");
+	EUIAction *properties = action_group ? e_ui_action_group_get_action (action_group, "mail-folder-properties") : NULL;
+
+	if (properties) {
+		e_groupwise_share_tab_select_next ();
+		g_action_activate (G_ACTION (properties), NULL);
+	}
 }
 
 static void
@@ -704,6 +746,7 @@ update_actions_cb (EShellView *shell_view,
 	action_group = e_ui_manager_get_action_group (e_shell_view_get_ui_manager (shell_view), "mail");
 	set_visible (action_group, RESTORE_ACTION, trash != NULL);
 	set_visible (action_group, SETTINGS_ACTION, account != NULL);
+	set_visible (action_group, SHARE_ACTION, !account && own_folder_selected (shell_view));
 	/* Messages of GroupWise, not in the Trash */
 	set_visible (action_group, JUNK_MENU, folder && !trash && uids && uids->len > 0);
 	set_visible (action_group, JUNK_ACTION, folder && !trash);
@@ -971,6 +1014,8 @@ start_services (EShellView *shell_view)
 	e_groupwise_defaults_start (registry);
 	/* Deleting an own meeting: what the answers do in GroupWise */
 	e_groupwise_delete_dialog_start ();
+	/* The properties of a mail folder: whom it is shared with */
+	e_groupwise_share_tab_start ();
 }
 
 static void
@@ -1005,6 +1050,7 @@ e_groupwise_mail_ui_constructed (GObject *object)
 		  "<menu id='mail-folder-popup' is-popup='true'>"
 		    "<placeholder id='mail-folder-popup-actions'>"
 		      "<item action='" SETTINGS_ACTION "'/>"
+		      "<item action='" SHARE_ACTION "'/>"
 		    "</placeholder>"
 		  "</menu>"
 		  "<menu id='mail-message-popup' is-popup='true'>"
@@ -1040,6 +1086,12 @@ e_groupwise_mail_ui_constructed (GObject *object)
 		  NULL,
 		  N_("Settings the GroupWise server keeps for the account: junk mail handling and more"),
 		  action_settings_cb, NULL, NULL, NULL },
+		{ SHARE_ACTION,
+		  NULL,
+		  N_("S_haring…"),
+		  NULL,
+		  N_("Share the folder with other GroupWise users, or see who shares it"),
+		  action_share_cb, NULL, NULL, NULL },
 		{ JUNK_MENU, NULL, N_("GroupWise _Junk Mail"), NULL, NULL, NULL, NULL, NULL, NULL },
 		{ JUNK_SETTINGS_ACTION,
 		  NULL,

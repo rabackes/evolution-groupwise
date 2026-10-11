@@ -369,9 +369,21 @@ vorgehalten.
 etwas über 4000 von 61552, die der GroupWise-Client zeigt), unabhängig von View, `count`, Filter oder
 Protokollversion. Vollständige Suchen bieten Evolutions eigene Suchordner (*Bearbeiten → Suchordner*).
 
+### Ordner freigeben
+
+Einen eigenen Mailordner gibt man wie im GroupWise-Client auf dem Reiter *Freigabe* seiner Eigenschaften frei
+(Kontextmenü *Freigabe …*): die Benutzer, wie weit jeder mit der Freigabe ist (ausstehend, geöffnet,
+akzeptiert, gelöscht), die Rechte Hinzufügen, Bearbeiten und Löschen neben dem Lesen und „Alle Unterordner
+freigeben“ (das der POA nur zusammen mit neuen Benutzern übernimmt). Schließen des Dialogs übernimmt die
+Änderungen; bei neuen Benutzern fragt es vorher nach Betreff und Text der Benachrichtigung. Evolution hat
+keine Erweiterungsstelle für seine Ordnereigenschaften, der Reiter wird deshalb beim Anzeigen des Dialogs
+eingefügt. Ein für den Benutzer freigegebener Ordner zeigt dort Eigentümer und eigene Rechte. Der POA führt
+einen freigegebenen Ordner unter einer anderen ID (aus `@13` wird `@35`), seine Nachrichtenliste wird
+deshalb einmal neu eingelesen.
+
 ### Noch nicht unterstützt
 
-Freigegebene Mailordner und Adressbücher, Schreiben in Kalender anderer Benutzer, signierte oder verschlüsselte Nachrichten (GroupWise baut die Nachricht für die Empfänger
+Freigaben anderer annehmen, Kalender und Adressbücher freigeben, freigegebene Adressbücher, Schreiben in Kalender anderer Benutzer, signierte oder verschlüsselte Nachrichten (GroupWise baut die Nachricht für die Empfänger
 selbst zusammen).
 
 ## Werkzeuge
