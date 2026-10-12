@@ -390,6 +390,18 @@ in Evolution that does not come from the server is written to the server in a lo
 (`modifyItemRequest`); the backend keeps the password of the last login in memory for that. Proxy accounts
 are left out.
 
+### Recurring appointments
+
+GroupWise keeps a series as one item per appointment with a common `<recurrenceKey>`; since about GroupWise
+2012 every item carries the rule (`<rrule><value>FREQ=…</value></rrule>`) and the start of the series
+(`<dtStart>`), older ones the key alone. `e-gw-series.c` turns the items of one key into a recurring event at
+the end of the listing: a master with the rule, EXDATEs for occurrences without an item, a detached instance
+for every item that differs from the majority or was moved; the rule ends with the last item there is. On
+saving, each item is compared with what the event says for its occurrence now and before (cache): what
+changed goes the way of single appointments, an item without occurrence is deleted. The POA does not change
+times "for all" (`recurrenceAllInstances` works on text fields only), does not change the rule and makes no
+further appointments; drafts (`<source>draft</source>`) it lists with the Calendar, they are left out.
+
 ### Read receipt
 
 The composer's *Request Read Receipt* (header `Disposition-Notification-To`) becomes

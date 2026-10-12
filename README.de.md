@@ -418,6 +418,18 @@ Adressbuch (`AddressBook`) an und gleicht die Quellen neu ab, `delete_resource_s
 eigenen Login auf den Server geschrieben (`modifyItemRequest`); das Passwort der letzten Anmeldung hält das
 Backend dafür im Speicher. Proxy-Konten bleiben außen vor.
 
+### Serientermine
+
+GroupWise führt eine Serie als ein Item je Termin mit gemeinsamem `<recurrenceKey>`; seit etwa GroupWise 2012
+trägt jedes Item die Regel (`<rrule><value>FREQ=…</value></rrule>`) und den Serienbeginn (`<dtStart>`), ältere
+nur den Schlüssel. `e-gw-series.c` macht aus den Items eines Schlüssels am Ende der Auflistung ein
+wiederkehrendes Ereignis: Master mit Regel, EXDATE für Vorkommen ohne Item, abgetrennte Instanz für jedes Item,
+das von der Mehrheit abweicht oder verlegt wurde; die Regel endet mit dem letzten vorhandenen Item. Beim
+Speichern wird je Item verglichen, was das Ereignis für sein Vorkommen jetzt und vorher (Cache) sagt:
+Geändertes geht durch den Weg der Einzeltermine, ein Item ohne Vorkommen wird gelöscht. Der POA ändert Zeiten
+nicht „für alle“ (`recurrenceAllInstances` wirkt nur auf Textfelder), ändert die Regel nicht und legt keine
+Termine nach; Entwürfe (`<source>draft</source>`) listet er mit dem Kalender, sie werden ausgelassen.
+
 ### Lesebestätigung
 
 Die Option *Lesebestätigung anfordern* des Editors (Kopfzeile `Disposition-Notification-To`) wird zu

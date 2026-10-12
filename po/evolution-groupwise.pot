@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: evolution-groupwise\n"
 "Report-Msgid-Bugs-To: rbackes@bond.de\n"
-"POT-Creation-Date: 2026-10-12 14:03+0200\n"
+"POT-Creation-Date: 2026-10-12 14:41+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -55,69 +55,67 @@ msgstr ""
 msgid "The calendar is not set up for GroupWise"
 msgstr ""
 
-#: src/calendar/e-cal-backend-groupwise.c:1263
+#: src/calendar/e-cal-backend-groupwise.c:1275
 msgid "accepted"
 msgstr ""
 
-#: src/calendar/e-cal-backend-groupwise.c:1266
+#: src/calendar/e-cal-backend-groupwise.c:1278
 msgid "declined"
 msgstr ""
 
-#: src/calendar/e-cal-backend-groupwise.c:1269
+#: src/calendar/e-cal-backend-groupwise.c:1281
 msgid "tentative"
 msgstr ""
 
-#: src/calendar/e-cal-backend-groupwise.c:1272
+#: src/calendar/e-cal-backend-groupwise.c:1284
 msgid "delegated"
 msgstr ""
 
-#: src/calendar/e-cal-backend-groupwise.c:1275
+#: src/calendar/e-cal-backend-groupwise.c:1287
 msgid "no answer yet"
 msgstr ""
 
-#: src/calendar/e-cal-backend-groupwise.c:2463
+#: src/calendar/e-cal-backend-groupwise.c:2485
 msgid ""
 "The owner of this shared calendar did not grant you the right to add "
 "appointments to it."
 msgstr ""
 
-#: src/calendar/e-cal-backend-groupwise.c:2466
+#: src/calendar/e-cal-backend-groupwise.c:2488
 msgid ""
 "The owner of this shared calendar did not grant you the right to delete "
 "appointments from it."
 msgstr ""
 
-#: src/calendar/e-cal-backend-groupwise.c:2469
+#: src/calendar/e-cal-backend-groupwise.c:2491
 msgid ""
 "The owner of this shared calendar did not grant you the right to change its "
 "appointments."
 msgstr ""
 
-#: src/calendar/e-cal-backend-groupwise.c:2506
+#: src/calendar/e-cal-backend-groupwise.c:2602
 msgid ""
-"The appointments of a series cannot be changed here yet. Change them in the "
-"GroupWise client."
+"GroupWise makes the appointments of a series when the series is created: its "
+"rule cannot be changed to other days, and no appointments can be added. "
+"Delete the appointments no longer wanted and create a new series for the "
+"others."
 msgstr ""
 
-#: src/calendar/e-cal-backend-groupwise.c:2513
-msgid "A series cannot be moved or copied into another calendar here yet."
+#: src/calendar/e-cal-backend-groupwise.c:2692
+msgid "A series of GroupWise cannot be moved or copied into another calendar."
 msgstr ""
 
-#: src/calendar/e-cal-backend-groupwise.c:2557
+#: src/calendar/e-cal-backend-groupwise.c:2738
 msgid ""
 "A shared calendar takes appointments without attendees only. Create the "
 "meeting in your own calendar."
 msgstr ""
 
-#: src/calendar/e-cal-backend-groupwise.c:2786
-msgid "A series cannot be deleted here yet. Delete it in the GroupWise client."
-msgstr ""
-
-#: src/calendar/e-cal-backend-groupwise.c:2834
+#: src/calendar/e-cal-backend-groupwise.c:3035
 msgid "The server did not delete the appointment from the shared calendar."
 msgstr ""
 
-#: src/calendar/e-cal-backend-groupwise.c:2876
+#: src/calendar/e-cal-backend-groupwise.c:3077
 #, c-format
 msgid ""
 "“%s” is the preparation or travel time of an appointment. Move or delete the "
@@ -125,7 +123,7 @@ msgid ""
 "“Travel Time” of the appointment."
 msgstr ""
 
-#: src/calendar/e-cal-backend-groupwise.c:3164
+#: src/calendar/e-cal-backend-groupwise.c:3384
 #, c-format
 msgid ""
 "“%s” is a meeting you organized in this calendar. Answer the invitation in "

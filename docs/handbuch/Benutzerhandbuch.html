@@ -937,8 +937,24 @@ eingestellten Abstands, mit der Sofort-Meldung des Servers nach wenigen Sekunden
 		einer Serie mit dem Wiederholungs-Symbol (zwei Pfeile) und abweichende Einzeltermine mit einer
 		Stecknadel; haben Sie in GroupWise jeden Termin einer Serie einzeln benannt, tragen deshalb alle
 		bis auf einen die Stecknadel.<br>
-		<b>Ändern und Löschen</b> einer solchen Serie ist in Evolution <b>noch nicht möglich</b> (in
-		Arbeit); Evolution meldet das. Nehmen Sie dafür vorerst den GroupWise-Client.<br>
+		<b>Ändern und Löschen</b>: Evolution fragt bei einem Termin einer Serie wie der GroupWise-Client,
+		was gemeint ist – <b>nur dieser Termin</b>, <b>dieser und folgende Termine</b> oder <b>alle
+		Termine</b>.
+		<ul>
+			<li><i>Nur dieser Termin</i> ändert oder löscht den einen Termin in GroupWise; er wird zum
+				abweichenden Einzeltermin bzw. zur Ausnahme der Serie.</li>
+			<li><i>Alle Termine</i> ändert alle Termine der Serie, die ihr noch folgen; einzeln
+				abgeänderte Termine behalten ihre Abweichung. Auch die Uhrzeit der ganzen Serie lässt
+				sich so verschieben. <span class="menu">Löschen</span> mit „alle“ löscht die ganze Serie.</li>
+			<li><i>Dieser und folgende Termine</i> löschen beendet die Serie an dieser Stelle: Die
+				früheren Termine – die ja stattgefunden haben – bleiben erhalten. Beim Ändern trennt
+				Evolution die Serie: Die folgenden Termine werden gelöscht und als neue Serie angelegt.</li>
+		</ul>
+		Jede Änderung wird Termin für Termin nach GroupWise geschrieben; bei langen Serien dauert das
+		einen Moment. <b>Nicht möglich</b> ist, einer Serie Termine hinzuzufügen oder ihre Regel auf andere
+		Tage zu ändern (GroupWise legt die Termine einer Serie beim Anlegen an) – löschen Sie dann die
+		nicht mehr gewünschten Termine und legen Sie eine neue Serie an – sowie eine Serie als Ganzes in
+		einen anderen Kalender zu verschieben oder zu kopieren. Evolution meldet das jeweils.<br>
 		Alte Serien, die GroupWise ohne Regel führt (angelegt mit sehr alten Versionen), erscheinen
 		weiterhin als einzelne Termine. Eine neue Serie (täglich, wöchentlich, monatlich, jährlich) legen
 		Sie in Evolution wie gewohnt mit einer Wiederholung an.</li>
@@ -1240,8 +1256,10 @@ Kontaktansicht. Ein nur zum Lesen freigegebenes Adressbuch ist in Evolution schr
 	<tr><td>Signierte oder verschlüsselte Nachrichten</td><td>können nicht über GroupWise gesendet werden;
 		empfangene werden angezeigt.</td></tr>
 	<tr><td>Suchergebnisordner</td><td>zeigen über SOAP nur einen Teil der Treffer (siehe 4.6).</td></tr>
-	<tr><td>Serientermine</td><td>erscheinen als Serie mit ihrer Regel (5.2), lassen sich in Evolution aber
-		noch nicht ändern oder löschen. Sehr alte Serien ohne Regel erscheinen als einzelne Termine.</td></tr>
+	<tr><td>Serientermine</td><td>erscheinen als Serie mit ihrer Regel und lassen sich für einen, alle oder
+		die folgenden Termine ändern und löschen (5.2). Termine hinzufügen, die Regel auf andere Tage ändern
+		und eine Serie in einen anderen Kalender verschieben geht nicht. Sehr alte Serien ohne Regel
+		erscheinen als einzelne Termine.</td></tr>
 	<tr><td>Abonnierte Internet-Kalender</td><td>werden ausgelassen.</td></tr>
 	<tr><td>Ziehen auf die Kalenderliste</td><td>in Evolution nicht zuverlässig; Kontextmenü oder Editor
 		verwenden.</td></tr>
@@ -1307,6 +1325,10 @@ Entwicklung fortgeschrieben.</p>
 	<tr><td>Papierkorb: Wiederherstellen, Leeren</td><td>ja (<a href="#mail-papierkorb">4.3</a>)</td></tr>
 	<tr><td>Suchergebnisordner</td>
 		<td>werden angezeigt, mit einem Teil der Treffer; angelegt werden sie im Client (<a href="#mail-suche">4.6</a>)</td></tr>
+	<tr><td>Serientermine: als Serie anzeigen; dieser Termin, alle Termine, dieser und folgende ändern
+		und löschen</td>
+		<td>ja, für Serien mit Regel (<a href="#kal-termine">5.2</a>); Evolution kennzeichnet Serientermine
+		zusätzlich mit einem Symbol</td></tr>
 	<tr><td>Termine und Besprechungen: planen, annehmen, ablehnen, ändern, absagen; Internet-Einladungen</td>
 		<td>ja (<a href="#kal-besprechungen">5.3</a>)</td></tr>
 	<tr><td>Belegt-Suche, Alarme, Zeitzonen, Ressourcen, Vorbereitungs- und Reisezeit</td>
@@ -1338,9 +1360,9 @@ Entwicklung fortgeschrieben.</p>
 <h2>Nicht oder nur eingeschränkt vorhanden</h2>
 <table>
 	<tr><th style="width:42%">Funktion des GroupWise-Clients</th><th>Stand</th></tr>
-	<tr><td>Serientermine als Serie bearbeiten</td>
-		<td>Serien werden als Serie mit Regel angezeigt (<a href="#kal-termine">5.2</a>); „dieser Termin /
-		alle Termine / ab diesem Termin“ ändern und löschen ist in Arbeit.</td></tr>
+	<tr><td>Regel einer Serie ändern, Termine zu einer Serie hinzufügen</td>
+		<td>nicht möglich; die nicht mehr gewünschten Termine löschen und eine neue Serie anlegen
+		(<a href="#kal-termine">5.2</a>).</td></tr>
 	<tr><td>Einladungen delegieren, neue Zeit vorschlagen</td>
 		<td>fehlt; eine delegierte Einladung wird als Status angezeigt.</td></tr>
 	<tr><td>Sendeoptionen für Mail</td>
