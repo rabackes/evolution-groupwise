@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: evolution-groupwise\n"
 "Report-Msgid-Bugs-To: rbackes@bond.de\n"
-"POT-Creation-Date: 2026-10-12 12:26+0200\n"
+"POT-Creation-Date: 2026-10-12 12:32+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -484,7 +484,7 @@ msgstr ""
 
 #: src/evolution/e-groupwise-access-tab.c:157
 #: src/evolution/e-groupwise-junk-tab.c:70
-#: src/evolution/e-groupwise-mail-ui.c:467
+#: src/evolution/e-groupwise-mail-ui.c:471
 #: src/evolution/e-groupwise-rule-editor.c:1336
 #: src/evolution/e-groupwise-rules-tab.c:351
 #: src/evolution/e-groupwise-sent-items.c:457
@@ -722,182 +722,195 @@ msgstr ""
 msgid "Trust List"
 msgstr ""
 
-#: src/evolution/e-groupwise-mail-ui.c:161
+#: src/evolution/e-groupwise-mail-ui.c:165
 msgid "restoring messages"
 msgstr ""
 
-#: src/evolution/e-groupwise-mail-ui.c:412
+#: src/evolution/e-groupwise-mail-ui.c:416
 msgid "updating the junk mail lists"
 msgstr ""
 
-#: src/evolution/e-groupwise-mail-ui.c:439
+#: src/evolution/e-groupwise-mail-ui.c:443
 msgid "Junk the Sender"
 msgstr ""
 
-#: src/evolution/e-groupwise-mail-ui.c:439
+#: src/evolution/e-groupwise-mail-ui.c:443
 msgid ""
 "Future mail goes into the Junk Mail folder; this message goes there now."
 msgstr ""
 
-#: src/evolution/e-groupwise-mail-ui.c:439
+#: src/evolution/e-groupwise-mail-ui.c:443
 msgid "_Junk"
 msgstr ""
 
-#: src/evolution/e-groupwise-mail-ui.c:440
+#: src/evolution/e-groupwise-mail-ui.c:444
 msgid "Block the Sender"
 msgstr ""
 
-#: src/evolution/e-groupwise-mail-ui.c:440
+#: src/evolution/e-groupwise-mail-ui.c:444
 msgid ""
 "Future mail is not delivered; this message goes into the Junk Mail folder."
 msgstr ""
 
-#: src/evolution/e-groupwise-mail-ui.c:440
+#: src/evolution/e-groupwise-mail-ui.c:444
 msgid "_Block"
 msgstr ""
 
-#: src/evolution/e-groupwise-mail-ui.c:441
+#: src/evolution/e-groupwise-mail-ui.c:445
 msgid "Trust the Sender"
 msgstr ""
 
-#: src/evolution/e-groupwise-mail-ui.c:441
+#: src/evolution/e-groupwise-mail-ui.c:445
 msgid ""
 "Mail from the sender is never junk; this message goes back into the Mailbox."
 msgstr ""
 
-#: src/evolution/e-groupwise-mail-ui.c:441
+#: src/evolution/e-groupwise-mail-ui.c:445
 msgid "_Trust"
 msgstr ""
 
-#: src/evolution/e-groupwise-mail-ui.c:481
+#: src/evolution/e-groupwise-mail-ui.c:485
 #, c-format
 msgid "Only the _address %s"
 msgstr ""
 
-#: src/evolution/e-groupwise-mail-ui.c:483
+#: src/evolution/e-groupwise-mail-ui.c:487
 #, c-format
 msgid "Only the _addresses of the %u senders"
 msgstr ""
 
-#: src/evolution/e-groupwise-mail-ui.c:487
+#: src/evolution/e-groupwise-mail-ui.c:491
 #, c-format
 msgid "The whole _domain %s (with its subdomains)"
 msgstr ""
 
-#: src/evolution/e-groupwise-mail-ui.c:489
+#: src/evolution/e-groupwise-mail-ui.c:493
 msgid "Their whole _domains (with their subdomains)"
 msgstr ""
 
-#: src/evolution/e-groupwise-mail-ui.c:495
+#: src/evolution/e-groupwise-mail-ui.c:499
 msgid ""
 "This applies to Internet mail only; the lists are in the GroupWise Settings "
 "of the account."
 msgstr ""
 
-#: src/evolution/e-groupwise-mail-ui.c:1282
-#: src/evolution/e-groupwise-mail-ui.c:1308
-#: src/evolution/e-groupwise-mail-ui.c:1389
+#: src/evolution/e-groupwise-mail-ui.c:1327
+#: src/evolution/e-groupwise-mail-ui.c:1360
+#: src/evolution/e-groupwise-mail-ui.c:1447
 msgid "S_haring…"
 msgstr ""
 
-#: src/evolution/e-groupwise-mail-ui.c:1284
+#: src/evolution/e-groupwise-mail-ui.c:1329
 msgid "Share the address book with other GroupWise users, or see who shares it"
 msgstr ""
 
-#: src/evolution/e-groupwise-mail-ui.c:1310
+#: src/evolution/e-groupwise-mail-ui.c:1333
+#: src/evolution/e-groupwise-mail-ui.c:1366
+msgid "_Rename…"
+msgstr ""
+
+#: src/evolution/e-groupwise-mail-ui.c:1335
+msgid "Rename the address book, in GroupWise as well"
+msgstr ""
+
+#: src/evolution/e-groupwise-mail-ui.c:1362
 msgid "Share the calendar with other GroupWise users, or see who shares it"
 msgstr ""
 
-#: src/evolution/e-groupwise-mail-ui.c:1340
+#: src/evolution/e-groupwise-mail-ui.c:1368
+msgid "Rename the calendar, in GroupWise as well"
+msgstr ""
+
+#: src/evolution/e-groupwise-mail-ui.c:1398
 msgid "_Restore"
 msgstr ""
 
-#: src/evolution/e-groupwise-mail-ui.c:1342
+#: src/evolution/e-groupwise-mail-ui.c:1400
 msgid "Put the selected messages back into the folders they were deleted from"
 msgstr ""
 
-#: src/evolution/e-groupwise-mail-ui.c:1383
+#: src/evolution/e-groupwise-mail-ui.c:1441
 msgid "GroupWise _Settings…"
 msgstr ""
 
-#: src/evolution/e-groupwise-mail-ui.c:1385
+#: src/evolution/e-groupwise-mail-ui.c:1443
 msgid ""
 "Settings the GroupWise server keeps for the account: junk mail handling and "
 "more"
 msgstr ""
 
-#: src/evolution/e-groupwise-mail-ui.c:1391
+#: src/evolution/e-groupwise-mail-ui.c:1449
 msgid "Share the folder with other GroupWise users, or see who shares it"
 msgstr ""
 
-#: src/evolution/e-groupwise-mail-ui.c:1393
+#: src/evolution/e-groupwise-mail-ui.c:1451
 msgid "GroupWise _Junk Mail"
 msgstr ""
 
-#: src/evolution/e-groupwise-mail-ui.c:1396
+#: src/evolution/e-groupwise-mail-ui.c:1454
 msgid "Junk Mail _Settings…"
 msgstr ""
 
-#: src/evolution/e-groupwise-mail-ui.c:1398
+#: src/evolution/e-groupwise-mail-ui.c:1456
 msgid "The junk mail handling of GroupWise: settings and lists"
 msgstr ""
 
-#: src/evolution/e-groupwise-mail-ui.c:1402
+#: src/evolution/e-groupwise-mail-ui.c:1460
 msgid "_Junk the Sender…"
 msgstr ""
 
-#: src/evolution/e-groupwise-mail-ui.c:1404
+#: src/evolution/e-groupwise-mail-ui.c:1462
 msgid "Put the sender or the sender's domain onto the junk list of GroupWise"
 msgstr ""
 
-#: src/evolution/e-groupwise-mail-ui.c:1408
+#: src/evolution/e-groupwise-mail-ui.c:1466
 msgid "_Block the Sender…"
 msgstr ""
 
-#: src/evolution/e-groupwise-mail-ui.c:1410
+#: src/evolution/e-groupwise-mail-ui.c:1468
 msgid "Put the sender or the sender's domain onto the block list of GroupWise"
 msgstr ""
 
-#: src/evolution/e-groupwise-mail-ui.c:1414
+#: src/evolution/e-groupwise-mail-ui.c:1472
 msgid "_Trust the Sender…"
 msgstr ""
 
-#: src/evolution/e-groupwise-mail-ui.c:1416
+#: src/evolution/e-groupwise-mail-ui.c:1474
 msgid "Put the sender or the sender's domain onto the trust list of GroupWise"
 msgstr ""
 
-#: src/evolution/e-groupwise-mail-ui.c:1420
+#: src/evolution/e-groupwise-mail-ui.c:1478
 msgid "Delivery _Status…"
 msgstr ""
 
-#: src/evolution/e-groupwise-mail-ui.c:1422
+#: src/evolution/e-groupwise-mail-ui.c:1480
 msgid ""
 "What happened to the message at each recipient: delivered, opened, deleted …"
 msgstr ""
 
-#: src/evolution/e-groupwise-mail-ui.c:1426
+#: src/evolution/e-groupwise-mail-ui.c:1484
 msgid "Resen_d…"
 msgstr ""
 
-#: src/evolution/e-groupwise-mail-ui.c:1428
+#: src/evolution/e-groupwise-mail-ui.c:1486
 msgid ""
 "Open the message to change it and send it anew; sending asks whether the "
 "original is retracted"
 msgstr ""
 
-#: src/evolution/e-groupwise-mail-ui.c:1432
+#: src/evolution/e-groupwise-mail-ui.c:1490
 msgid "Re_tract…"
 msgstr ""
 
-#: src/evolution/e-groupwise-mail-ui.c:1434
+#: src/evolution/e-groupwise-mail-ui.c:1492
 msgid "Take the selected messages back from the recipients' mailboxes"
 msgstr ""
 
-#: src/evolution/e-groupwise-mail-ui.c:1453
+#: src/evolution/e-groupwise-mail-ui.c:1511
 msgid "Install Shared _Folder…"
 msgstr ""
 
-#: src/evolution/e-groupwise-mail-ui.c:1455
+#: src/evolution/e-groupwise-mail-ui.c:1513
 msgid ""
 "Accept the folder this notification offers: it is added to the folder list"
 msgstr ""

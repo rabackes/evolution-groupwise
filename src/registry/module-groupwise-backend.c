@@ -929,6 +929,22 @@ gw_collection_authenticate_sync (EBackend *backend,
 	g_object_set_data_full (G_OBJECT (backend), DATA_CREDENTIALS, e_named_parameters_new_clone (credentials),
 		(GDestroyNotify) e_named_parameters_free);
 	e_server_side_source_set_remote_creatable (E_SERVER_SIDE_SOURCE (source), !backend_is_proxy (collection_backend));
+	/* Evolution then lets the name be changed in the properties of a
+	 * calendar or address book as well */
+	{
+		ESourceCollection *extension = e_source_get_extension (source, E_SOURCE_EXTENSION_COLLECTION);
+		gboolean rename = !backend_is_proxy (collection_backend);
+
+		if (e_source_collection_get_allow_sources_rename (extension) != rename) {
+			GError *local_error = NULL;
+
+			e_source_collection_set_allow_sources_rename (extension, rename);
+			if (!e_source_write_sync (source, NULL, &local_error)) {
+				g_warning ("GroupWise: cannot store %s: %s", e_source_get_uid (source), local_error->message);
+				g_clear_error (&local_error);
+			}
+		}
+	}
 
 	return E_SOURCE_AUTHENTICATION_ACCEPTED;
 }

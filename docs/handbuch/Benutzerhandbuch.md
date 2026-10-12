@@ -539,7 +539,7 @@ Anders als im GroupWise-Client färben Kategorien Termine in Evolution nicht ein
 
 - **Anlegen**: `Datei → Neu → Kalender` oder `Neuer Kalender` im Kontextmenü der Kalenderliste. Wählen Sie im Dialog **Neuer Kalender** unter **Art** Ihr GroupWise-Konto, geben Sie Namen und Farbe an und bestätigen Sie: Der Kalender wird in GroupWise als persönlicher Kalender unter dem Hauptkalender angelegt, in dieser Farbe, und erscheint in der Kalenderliste.
 
-- **Umbenennen**: `Umbenennen …` im Kontextmenü (oder der Name in den `Eigenschaften`) benennt den Kalender auch in GroupWise um. Bei einem Kalender, den ein anderer Benutzer für Sie freigegeben hat, ändert das nur Ihren Namen dafür; der Eigentümer in Klammern bleibt stehen.
+- **Umbenennen**: `Umbenennen …` im Kontextmenü (der Name wird direkt in der Liste bearbeitet) oder das Feld **Name** in den `Eigenschaften` benennt den Kalender auch in GroupWise um. Den Menüeintrag bringt das GroupWise-Modul mit: Evolution selbst bietet das Umbenennen für Kalender eines Kontos nicht an. Bei einem Kalender, den ein anderer Benutzer für Sie freigegeben hat, ändert das nur Ihren Namen dafür; der Eigentümer in Klammern bleibt stehen.
 
 - **Löschen**: `Kalender löschen` im Kontextmenü löscht den Kalender nach einer Rückfrage in GroupWise, **mit allen Terminen darin**. Ein für Sie freigegebener Kalender verschwindet dabei nur aus Ihrem Postfach; beim Eigentümer bleibt er bestehen.
 

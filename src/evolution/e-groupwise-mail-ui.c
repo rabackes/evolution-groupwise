@@ -63,6 +63,10 @@
 #define ACCEPT_SHARE_ACTION "groupwise-share-accept"
 #define CALENDAR_SHARE_ACTION "groupwise-calendar-share"
 #define BOOK_SHARE_ACTION "groupwise-book-share"
+#define CALENDAR_RENAME_ACTION "groupwise-calendar-rename"
+#define BOOK_RENAME_ACTION "groupwise-book-rename"
+
+static gboolean	selected_source_is_renamable	(EShellView *shell_view);
 #define JUNK_MENU "groupwise-junk-menu"
 #define JUNK_ACTION "groupwise-junk-sender"
 #define BLOCK_ACTION "groupwise-block-sender"
@@ -1209,7 +1213,46 @@ calendar_update_actions_cb (EShellView *shell_view,
 	ESource *calendar = ref_shareable_calendar (shell_view);
 
 	set_visible (action_group, CALENDAR_SHARE_ACTION, calendar != NULL);
+	set_visible (action_group, CALENDAR_RENAME_ACTION, selected_source_is_renamable (shell_view));
 	g_clear_object (&calendar);
+}
+
+/* ------------------------------------------------------------------ */
+/* Renaming a calendar or address book */
+
+/* Evolution offers "Rename" for no source of an account. The GroupWise
+ * calendars and address books that can be deleted on the server can be
+ * renamed there as well: the collection backend writes the new name. */
+static gboolean
+selected_source_is_renamable (EShellView *shell_view)
+{
+	ESourceSelector *selector = NULL;
+	ESource *source;
+	gboolean renamable;
+
+	g_object_get (e_shell_view_get_shell_sidebar (shell_view), "selector", &selector, NULL);
+	source = selector ? e_source_selector_ref_primary_selection (selector) : NULL;
+	g_clear_object (&selector);
+
+	renamable = source && e_source_has_extension (source, E_SOURCE_EXTENSION_GROUPWISE_FOLDER) &&
+		e_source_get_remote_deletable (source);
+	g_clear_object (&source);
+
+	return renamable;
+}
+
+static void
+action_source_rename_cb (EUIAction *action,
+			 GVariant *parameter,
+			 gpointer user_data)
+{
+	EShellView *shell_view = user_data;
+	ESourceSelector *selector = NULL;
+
+	g_object_get (e_shell_view_get_shell_sidebar (shell_view), "selector", &selector, NULL);
+	if (selector && selected_source_is_renamable (shell_view))
+		e_source_selector_edit_primary_selection (selector);
+	g_clear_object (&selector);
 }
 
 /* ------------------------------------------------------------------ */
@@ -1261,6 +1304,7 @@ book_update_actions_cb (EShellView *shell_view,
 	ESource *book = ref_shareable_book (shell_view);
 
 	set_visible (action_group, BOOK_SHARE_ACTION, book != NULL);
+	set_visible (action_group, BOOK_RENAME_ACTION, selected_source_is_renamable (shell_view));
 	g_clear_object (&book);
 }
 
@@ -1271,6 +1315,7 @@ setup_contacts_view (EShellView *shell_view)
 		"<eui>"
 		  "<menu id='address-book-popup' is-popup='true'>"
 		    "<placeholder id='address-book-popup-actions'>"
+		      "<item action='" BOOK_RENAME_ACTION "'/>"
 		      "<item action='" BOOK_SHARE_ACTION "'/>"
 		    "</placeholder>"
 		  "</menu>"
@@ -1282,7 +1327,13 @@ setup_contacts_view (EShellView *shell_view)
 		  N_("S_haring…"),
 		  NULL,
 		  N_("Share the address book with other GroupWise users, or see who shares it"),
-		  action_book_share_cb, NULL, NULL, NULL }
+		  action_book_share_cb, NULL, NULL, NULL },
+		{ BOOK_RENAME_ACTION,
+		  NULL,
+		  N_("_Rename…"),
+		  NULL,
+		  N_("Rename the address book, in GroupWise as well"),
+		  action_source_rename_cb, NULL, NULL, NULL }
 	};
 
 	e_ui_manager_add_actions_with_eui_data (e_shell_view_get_ui_manager (shell_view), "contacts", GETTEXT_PACKAGE,
@@ -1297,6 +1348,7 @@ setup_calendar_view (EShellView *shell_view)
 		"<eui>"
 		  "<menu id='calendar-popup' is-popup='true'>"
 		    "<placeholder id='calendar-popup-actions'>"
+		      "<item action='" CALENDAR_RENAME_ACTION "'/>"
 		      "<item action='" CALENDAR_SHARE_ACTION "'/>"
 		    "</placeholder>"
 		  "</menu>"
@@ -1308,7 +1360,13 @@ setup_calendar_view (EShellView *shell_view)
 		  N_("S_haring…"),
 		  NULL,
 		  N_("Share the calendar with other GroupWise users, or see who shares it"),
-		  action_calendar_share_cb, NULL, NULL, NULL }
+		  action_calendar_share_cb, NULL, NULL, NULL },
+		{ CALENDAR_RENAME_ACTION,
+		  NULL,
+		  N_("_Rename…"),
+		  NULL,
+		  N_("Rename the calendar, in GroupWise as well"),
+		  action_source_rename_cb, NULL, NULL, NULL }
 	};
 
 	e_ui_manager_add_actions_with_eui_data (e_shell_view_get_ui_manager (shell_view), "calendars", GETTEXT_PACKAGE,

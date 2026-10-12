@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: evolution-groupwise\n"
 "Report-Msgid-Bugs-To: rbackes@bond.de\n"
-"POT-Creation-Date: 2026-10-12 12:26+0200\n"
+"POT-Creation-Date: 2026-10-12 12:32+0200\n"
 "PO-Revision-Date: 2026-09-27 18:27+0200\n"
 "Last-Translator: Automatically generated\n"
 "Language-Team: none\n"
@@ -521,7 +521,7 @@ msgstr "Proxy-Zugriff gewähren"
 
 #: src/evolution/e-groupwise-access-tab.c:157
 #: src/evolution/e-groupwise-junk-tab.c:70
-#: src/evolution/e-groupwise-mail-ui.c:467
+#: src/evolution/e-groupwise-mail-ui.c:471
 #: src/evolution/e-groupwise-rule-editor.c:1336
 #: src/evolution/e-groupwise-rules-tab.c:351
 #: src/evolution/e-groupwise-sent-items.c:457
@@ -784,78 +784,78 @@ msgstr ""
 msgid "Trust List"
 msgstr "Vertrauensliste"
 
-#: src/evolution/e-groupwise-mail-ui.c:161
+#: src/evolution/e-groupwise-mail-ui.c:165
 msgid "restoring messages"
 msgstr "Nachrichten wiederherstellen"
 
-#: src/evolution/e-groupwise-mail-ui.c:412
+#: src/evolution/e-groupwise-mail-ui.c:416
 msgid "updating the junk mail lists"
 msgstr "Junk-Mail-Listen aktualisieren"
 
-#: src/evolution/e-groupwise-mail-ui.c:439
+#: src/evolution/e-groupwise-mail-ui.c:443
 msgid "Junk the Sender"
 msgstr "Sender als Junk einstufen"
 
-#: src/evolution/e-groupwise-mail-ui.c:439
+#: src/evolution/e-groupwise-mail-ui.c:443
 msgid ""
 "Future mail goes into the Junk Mail folder; this message goes there now."
 msgstr ""
 "Künftige Mail kommt in den Ordner Junk Mail; diese Nachricht kommt jetzt "
 "dorthin."
 
-#: src/evolution/e-groupwise-mail-ui.c:439
+#: src/evolution/e-groupwise-mail-ui.c:443
 msgid "_Junk"
 msgstr "Als _Junk einstufen"
 
-#: src/evolution/e-groupwise-mail-ui.c:440
+#: src/evolution/e-groupwise-mail-ui.c:444
 msgid "Block the Sender"
 msgstr "Sender blockieren"
 
-#: src/evolution/e-groupwise-mail-ui.c:440
+#: src/evolution/e-groupwise-mail-ui.c:444
 msgid ""
 "Future mail is not delivered; this message goes into the Junk Mail folder."
 msgstr ""
 "Künftige Mail wird nicht zugestellt; diese Nachricht kommt in den Ordner "
 "Junk Mail."
 
-#: src/evolution/e-groupwise-mail-ui.c:440
+#: src/evolution/e-groupwise-mail-ui.c:444
 msgid "_Block"
 msgstr "_Blockieren"
 
-#: src/evolution/e-groupwise-mail-ui.c:441
+#: src/evolution/e-groupwise-mail-ui.c:445
 msgid "Trust the Sender"
 msgstr "Sender als verbürgt einstufen"
 
-#: src/evolution/e-groupwise-mail-ui.c:441
+#: src/evolution/e-groupwise-mail-ui.c:445
 msgid ""
 "Mail from the sender is never junk; this message goes back into the Mailbox."
 msgstr ""
 "Mail vom Sender ist nie Junk; diese Nachricht kommt zurück in die Mailbox."
 
-#: src/evolution/e-groupwise-mail-ui.c:441
+#: src/evolution/e-groupwise-mail-ui.c:445
 msgid "_Trust"
 msgstr "Als _verbürgt einstufen"
 
-#: src/evolution/e-groupwise-mail-ui.c:481
+#: src/evolution/e-groupwise-mail-ui.c:485
 #, c-format
 msgid "Only the _address %s"
 msgstr "Nur die _Adresse %s"
 
-#: src/evolution/e-groupwise-mail-ui.c:483
+#: src/evolution/e-groupwise-mail-ui.c:487
 #, c-format
 msgid "Only the _addresses of the %u senders"
 msgstr "Nur die _Adressen der %u Sender"
 
-#: src/evolution/e-groupwise-mail-ui.c:487
+#: src/evolution/e-groupwise-mail-ui.c:491
 #, c-format
 msgid "The whole _domain %s (with its subdomains)"
 msgstr "Die ganze _Domain %s (mit ihren Subdomains)"
 
-#: src/evolution/e-groupwise-mail-ui.c:489
+#: src/evolution/e-groupwise-mail-ui.c:493
 msgid "Their whole _domains (with their subdomains)"
 msgstr "Ihre ganzen _Domains (mit ihren Subdomains)"
 
-#: src/evolution/e-groupwise-mail-ui.c:495
+#: src/evolution/e-groupwise-mail-ui.c:499
 msgid ""
 "This applies to Internet mail only; the lists are in the GroupWise Settings "
 "of the account."
@@ -863,39 +863,52 @@ msgstr ""
 "Das gilt nur für Internet-Mail; die Listen stehen in den GroupWise-"
 "Einstellungen des Kontos."
 
-#: src/evolution/e-groupwise-mail-ui.c:1282
-#: src/evolution/e-groupwise-mail-ui.c:1308
-#: src/evolution/e-groupwise-mail-ui.c:1389
+#: src/evolution/e-groupwise-mail-ui.c:1327
+#: src/evolution/e-groupwise-mail-ui.c:1360
+#: src/evolution/e-groupwise-mail-ui.c:1447
 msgid "S_haring…"
 msgstr "_Freigabe …"
 
-#: src/evolution/e-groupwise-mail-ui.c:1284
+#: src/evolution/e-groupwise-mail-ui.c:1329
 msgid "Share the address book with other GroupWise users, or see who shares it"
 msgstr ""
 "Das Adressbuch für andere GroupWise-Benutzer freigeben oder sehen, wer es "
 "freigibt"
 
-#: src/evolution/e-groupwise-mail-ui.c:1310
+#: src/evolution/e-groupwise-mail-ui.c:1333
+#: src/evolution/e-groupwise-mail-ui.c:1366
+msgid "_Rename…"
+msgstr "_Umbenennen …"
+
+#: src/evolution/e-groupwise-mail-ui.c:1335
+msgid "Rename the address book, in GroupWise as well"
+msgstr "Das Adressbuch umbenennen, auch in GroupWise"
+
+#: src/evolution/e-groupwise-mail-ui.c:1362
 msgid "Share the calendar with other GroupWise users, or see who shares it"
 msgstr ""
 "Den Kalender für andere GroupWise-Benutzer freigeben oder sehen, wer ihn "
 "freigibt"
 
-#: src/evolution/e-groupwise-mail-ui.c:1340
+#: src/evolution/e-groupwise-mail-ui.c:1368
+msgid "Rename the calendar, in GroupWise as well"
+msgstr "Den Kalender umbenennen, auch in GroupWise"
+
+#: src/evolution/e-groupwise-mail-ui.c:1398
 msgid "_Restore"
 msgstr "_Wiederherstellen"
 
-#: src/evolution/e-groupwise-mail-ui.c:1342
+#: src/evolution/e-groupwise-mail-ui.c:1400
 msgid "Put the selected messages back into the folders they were deleted from"
 msgstr ""
 "Die ausgewählten Nachrichten in die Ordner zurücklegen, aus denen sie "
 "gelöscht wurden"
 
-#: src/evolution/e-groupwise-mail-ui.c:1383
+#: src/evolution/e-groupwise-mail-ui.c:1441
 msgid "GroupWise _Settings…"
 msgstr "GroupWise-_Einstellungen …"
 
-#: src/evolution/e-groupwise-mail-ui.c:1385
+#: src/evolution/e-groupwise-mail-ui.c:1443
 msgid ""
 "Settings the GroupWise server keeps for the account: junk mail handling and "
 "more"
@@ -903,65 +916,65 @@ msgstr ""
 "Einstellungen, die der GroupWise-Server für das Konto hält: Junk-Mail-"
 "Verwaltung und mehr"
 
-#: src/evolution/e-groupwise-mail-ui.c:1391
+#: src/evolution/e-groupwise-mail-ui.c:1449
 msgid "Share the folder with other GroupWise users, or see who shares it"
 msgstr ""
 "Den Ordner für andere GroupWise-Benutzer freigeben oder sehen, wer ihn "
 "freigibt"
 
-#: src/evolution/e-groupwise-mail-ui.c:1393
+#: src/evolution/e-groupwise-mail-ui.c:1451
 msgid "GroupWise _Junk Mail"
 msgstr "GroupWise-_Junkmail"
 
-#: src/evolution/e-groupwise-mail-ui.c:1396
+#: src/evolution/e-groupwise-mail-ui.c:1454
 msgid "Junk Mail _Settings…"
 msgstr "Junkmail-_Einstellungen …"
 
-#: src/evolution/e-groupwise-mail-ui.c:1398
+#: src/evolution/e-groupwise-mail-ui.c:1456
 msgid "The junk mail handling of GroupWise: settings and lists"
 msgstr "Die Junkmail-Verwaltung von GroupWise: Einstellungen und Listen"
 
-#: src/evolution/e-groupwise-mail-ui.c:1402
+#: src/evolution/e-groupwise-mail-ui.c:1460
 msgid "_Junk the Sender…"
 msgstr "Sender als _Junk einstufen …"
 
-#: src/evolution/e-groupwise-mail-ui.c:1404
+#: src/evolution/e-groupwise-mail-ui.c:1462
 msgid "Put the sender or the sender's domain onto the junk list of GroupWise"
 msgstr "Den Sender oder seine Domain auf die Junk-Liste von GroupWise setzen"
 
-#: src/evolution/e-groupwise-mail-ui.c:1408
+#: src/evolution/e-groupwise-mail-ui.c:1466
 msgid "_Block the Sender…"
 msgstr "Sender _blockieren …"
 
-#: src/evolution/e-groupwise-mail-ui.c:1410
+#: src/evolution/e-groupwise-mail-ui.c:1468
 msgid "Put the sender or the sender's domain onto the block list of GroupWise"
 msgstr "Den Sender oder seine Domain auf die Blockliste von GroupWise setzen"
 
-#: src/evolution/e-groupwise-mail-ui.c:1414
+#: src/evolution/e-groupwise-mail-ui.c:1472
 msgid "_Trust the Sender…"
 msgstr "Sender als _verbürgt einstufen …"
 
-#: src/evolution/e-groupwise-mail-ui.c:1416
+#: src/evolution/e-groupwise-mail-ui.c:1474
 msgid "Put the sender or the sender's domain onto the trust list of GroupWise"
 msgstr ""
 "Den Sender oder seine Domain auf die Vertrauensliste von GroupWise setzen"
 
-#: src/evolution/e-groupwise-mail-ui.c:1420
+#: src/evolution/e-groupwise-mail-ui.c:1478
 msgid "Delivery _Status…"
 msgstr "_Zustellstatus …"
 
-#: src/evolution/e-groupwise-mail-ui.c:1422
+#: src/evolution/e-groupwise-mail-ui.c:1480
 msgid ""
 "What happened to the message at each recipient: delivered, opened, deleted …"
 msgstr ""
 "Was mit der Nachricht bei jedem Empfänger geschah: zugestellt, geöffnet, "
 "gelöscht …"
 
-#: src/evolution/e-groupwise-mail-ui.c:1426
+#: src/evolution/e-groupwise-mail-ui.c:1484
 msgid "Resen_d…"
 msgstr "_Neu senden …"
 
-#: src/evolution/e-groupwise-mail-ui.c:1428
+#: src/evolution/e-groupwise-mail-ui.c:1486
 msgid ""
 "Open the message to change it and send it anew; sending asks whether the "
 "original is retracted"
@@ -969,20 +982,20 @@ msgstr ""
 "Die Nachricht öffnen, um sie zu ändern und neu zu senden; beim Senden wird "
 "gefragt, ob das Original zurückgezogen wird"
 
-#: src/evolution/e-groupwise-mail-ui.c:1432
+#: src/evolution/e-groupwise-mail-ui.c:1490
 msgid "Re_tract…"
 msgstr "_Zurückziehen …"
 
-#: src/evolution/e-groupwise-mail-ui.c:1434
+#: src/evolution/e-groupwise-mail-ui.c:1492
 msgid "Take the selected messages back from the recipients' mailboxes"
 msgstr ""
 "Die ausgewählten Nachrichten aus den Postfächern der Empfänger zurückholen"
 
-#: src/evolution/e-groupwise-mail-ui.c:1453
+#: src/evolution/e-groupwise-mail-ui.c:1511
 msgid "Install Shared _Folder…"
 msgstr "Freigegebenen Ordner _installieren …"
 
-#: src/evolution/e-groupwise-mail-ui.c:1455
+#: src/evolution/e-groupwise-mail-ui.c:1513
 msgid ""
 "Accept the folder this notification offers: it is added to the folder list"
 msgstr ""
@@ -2690,7 +2703,9 @@ msgstr "Das Postfach hat keinen Kalender"
 
 #: src/registry/module-groupwise-backend.c:758
 msgid "This calendar or address book cannot be deleted in GroupWise"
-msgstr "Dieser Kalender bzw. dieses Adressbuch kann in GroupWise nicht gelöscht werden"
+msgstr ""
+"Dieser Kalender bzw. dieses Adressbuch kann in GroupWise nicht gelöscht "
+"werden"
 
 #~ msgid "Shared address books cannot be installed here yet"
 #~ msgstr "Freigegebene Adressbücher können hier noch nicht installiert werden"
