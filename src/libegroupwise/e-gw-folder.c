@@ -16,6 +16,7 @@
  * License for more details.
  */
 
+#include <stdio.h>
 #include <string.h>
 
 #include "e-gw-folder.h"
@@ -299,4 +300,34 @@ e_gw_connection_get_folder_list_sync (EGwConnection *cnc,
 	e_gw_response_free (response);
 
 	return folders;
+}
+
+gchar *
+e_gw_connection_create_calendar_sync (EGwConnection *cnc,
+				      const gchar *calendar_id,
+				      const gchar *name,
+				      const gchar *color,
+				      GCancellable *cancellable,
+				      GError **error)
+{
+	GString *xml;
+	guint red, green, blue;
+	gchar *id;
+
+	g_return_val_if_fail (E_IS_GW_CONNECTION (cnc), NULL);
+	g_return_val_if_fail (calendar_id != NULL, NULL);
+	g_return_val_if_fail (name != NULL, NULL);
+
+	xml = g_string_new ("<item xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xsi:type=\"Folder\">");
+	e_gw_xml_add_leaf (xml, "name", name);
+	e_gw_xml_add_leaf (xml, "parent", calendar_id);
+	g_string_append (xml, "<calendarAttribute><flags>ShowInList</flags>");
+	/* COLORREF: red in the lowest byte */
+	if (color && sscanf (color, "#%2x%2x%2x", &red, &green, &blue) == 3)
+		e_gw_xml_add_int (xml, "color", (gint) (red | (green << 8) | (blue << 16)));
+	g_string_append (xml, "</calendarAttribute></item>");
+	id = e_gw_connection_create_item_sync (cnc, xml->str, cancellable, error);
+	g_string_free (xml, TRUE);
+
+	return id;
 }

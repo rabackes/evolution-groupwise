@@ -32,6 +32,8 @@
  * user's collection then leaves out the proxy calendars of that user.
  */
 
+#include <string.h>
+
 #include <glib/gi18n-lib.h>
 #include <libebackend/libebackend.h>
 
@@ -86,6 +88,65 @@ child_folder_id (ESource *child)
 		return NULL;
 
 	return e_source_groupwise_folder_dup_id (e_source_get_extension (child, E_SOURCE_EXTENSION_GROUPWISE_FOLDER));
+}
+
+/* The user's password from the last login, for what the user does to the
+ * calendars and address books later (make, rename, delete one) */
+#define DATA_CREDENTIALS "groupwise-credentials"
+/* UID -> the name the source got from the server: another name is the user's */
+#define DATA_NAMES "groupwise-server-names"
+/* On a child: it can be renamed and deleted on the server */
+#define DATA_MANAGED "groupwise-managed"
+/* On a child: " (Owner)" the name of a shared calendar ends with here */
+#define DATA_SUFFIX "groupwise-name-suffix"
+
+static GMutex names_lock;
+
+static GHashTable *
+backend_names (ECollectionBackend *backend)
+{
+	GHashTable *names = g_object_get_data (G_OBJECT (backend), DATA_NAMES);
+
+	if (!names) {
+		names = g_hash_table_new_full (g_str_hash, g_str_equal, g_free, g_free);
+		g_object_set_data_full (G_OBJECT (backend), DATA_NAMES, names, (GDestroyNotify) g_hash_table_destroy);
+	}
+
+	return names;
+}
+
+/* The name a source has on the server; noted first, so that the change is
+ * not taken for the user's */
+static void
+set_server_name (ECollectionBackend *backend,
+		 ESource *child,
+		 const gchar *name)
+{
+	g_mutex_lock (&names_lock);
+	g_hash_table_insert (backend_names (backend), e_source_dup_uid (child), g_strdup (name));
+	g_mutex_unlock (&names_lock);
+
+	if (g_strcmp0 (e_source_get_display_name (child), name) != 0)
+		e_source_set_display_name (child, name);
+}
+
+/* A calendar or address book the user can rename and delete in Evolution:
+ * not those of another mailbox (a proxy account) */
+static void
+set_managed (ECollectionBackend *backend,
+	     ESource *child,
+	     gboolean managed,
+	     const gchar *suffix)
+{
+	gchar *proxy = dup_collection_proxy (e_backend_get_source (E_BACKEND (backend)));
+
+	if (proxy)
+		managed = FALSE;
+	g_free (proxy);
+
+	g_object_set_data (G_OBJECT (child), DATA_MANAGED, GINT_TO_POINTER (managed ? 1 : 0));
+	g_object_set_data_full (G_OBJECT (child), DATA_SUFFIX, g_strdup (suffix), g_free);
+	e_server_side_source_set_remote_deletable (E_SERVER_SIDE_SOURCE (child), managed);
 }
 
 /* How often calendars, task lists and memo lists are compared with the
@@ -222,9 +283,13 @@ sync_address_books (ECollectionBackend *backend,
 		/* The system address book by the name GroupWise gives it in the user's language */
 		const gchar *name = book->name && *book->name ? book->name : book->id;
 
+		/* The user's books and those shared to the user; not the system
+		 * address book and the Frequent Contacts */
+		gboolean managed = book->is_personal && !book->is_system && !book->is_frequent_contacts;
+
 		if (child) {
-			if (g_strcmp0 (e_source_get_display_name (child), name) != 0)
-				e_source_set_display_name (child, name);
+			set_server_name (backend, child, name);
+			set_managed (backend, child, managed, NULL);
 			/* Address books from before the autocompletion setting */
 			if (!e_source_has_extension (child, E_SOURCE_EXTENSION_AUTOCOMPLETE))
 				e_source_autocomplete_set_include_me (e_source_get_extension (child, E_SOURCE_EXTENSION_AUTOCOMPLETE),
@@ -234,7 +299,8 @@ sync_address_books (ECollectionBackend *backend,
 			g_hash_table_remove (by_id, book->id);
 		} else {
 			child = new_address_book (backend, book);
-			e_source_set_display_name (child, name);
+			set_server_name (backend, child, name);
+			set_managed (backend, child, managed, NULL);
 			e_source_registry_server_add_source (server, child);
 			g_object_unref (child);
 		}
@@ -386,12 +452,16 @@ sync_calendar_source (ECollectionBackend *backend,
 	gchar *resource_id = g_strconcat (calendar_kinds[kind].prefix, stable_id, NULL);
 	gchar *name = calendar_display_name (folder, role, kind);
 	ESource *child = g_hash_table_lookup (by_resource, resource_id);
+	/* A calendar the user made, or accepted from another user */
+	gboolean managed = kind == 0 && (role == E_GW_CALENDAR_ROLE_OWN || role == E_GW_CALENDAR_ROLE_SHARED);
+	gchar *suffix = role == E_GW_CALENDAR_ROLE_SHARED && folder->owner_name && *folder->owner_name ?
+		g_strdup_printf (" (%s)", folder->owner_name) : NULL;
 
 	if (child) {
 		gboolean changed;
 
-		if (g_strcmp0 (e_source_get_display_name (child), name) != 0)
-			e_source_set_display_name (child, name);
+		set_server_name (backend, child, name);
+		set_managed (backend, child, managed, suffix);
 		ensure_trust_extension (child);
 		/* Sources from before the refresh setting or the roles */
 		changed = ensure_calendar_refresh (child);
@@ -416,11 +486,13 @@ sync_calendar_source (ECollectionBackend *backend,
 		g_hash_table_remove (by_resource, resource_id);
 	} else {
 		child = new_calendar (backend, kind, folder, role, proxy);
-		e_source_set_display_name (child, name);
+		set_server_name (backend, child, name);
+		set_managed (backend, child, managed, suffix);
 		e_source_registry_server_add_source (server, child);
 		g_object_unref (child);
 	}
 
+	g_free (suffix);
 	g_free (name);
 	g_free (resource_id);
 	g_free (stable_id);
@@ -523,36 +595,15 @@ list_proxy_accounts (ECollectionBackend *backend)
 	return accounts;
 }
 
-static ESourceAuthenticationResult
-gw_collection_authenticate_sync (EBackend *backend,
-				 const ENamedParameters *credentials,
-				 gchar **out_certificate_pem,
-				 GTlsCertificateFlags *out_certificate_errors,
-				 GCancellable *cancellable,
-				 GError **error)
+/* The address books and calendars of the mailbox as sources */
+static void
+sync_resources (ECollectionBackend *collection_backend,
+		EGwConnection *cnc,
+		const gchar *proxy,
+		GCancellable *cancellable)
 {
-	ECollectionBackend *collection_backend = E_COLLECTION_BACKEND (backend);
-	ESource *source = e_backend_get_source (backend);
-	ESourceAuthenticationResult result;
-	CamelGroupwiseSettings *settings;
-	EGwConnection *cnc;
+	ESource *source = e_backend_get_source (E_BACKEND (collection_backend));
 	GPtrArray *books;
-	gchar *proxy;
-
-	settings = e_gw_backend_ref_settings (NULL, source);
-	if (!settings) {
-		g_set_error_literal (error, G_IO_ERROR, G_IO_ERROR_INVALID_DATA, _("The account has no GroupWise settings"));
-		return E_SOURCE_AUTHENTICATION_ERROR;
-	}
-
-	proxy = camel_groupwise_settings_dup_proxy (settings);
-	cnc = e_gw_backend_connect_sync (NULL, source, settings, proxy, credentials, &result,
-		out_certificate_pem, out_certificate_errors, cancellable, error);
-	g_object_unref (settings);
-	if (!cnc) {
-		g_free (proxy);
-		return result;
-	}
 
 	if (e_collection_backend_get_part_enabled (collection_backend, E_COLLECTION_BACKEND_PART_CONTACTS)) {
 		GError *local_error = NULL;
@@ -593,6 +644,274 @@ gw_collection_authenticate_sync (EBackend *backend,
 			g_clear_error (&local_error);
 		}
 	}
+}
+
+/* ------------------------------------------------------------------ */
+/* Making, renaming and deleting calendars and address books */
+
+/* A login of its own with the password of the last one */
+static EGwConnection *
+connect_again (ECollectionBackend *backend,
+	       GCancellable *cancellable,
+	       GError **error)
+{
+	ESource *source = e_backend_get_source (E_BACKEND (backend));
+	ENamedParameters *credentials = g_object_get_data (G_OBJECT (backend), DATA_CREDENTIALS);
+	CamelGroupwiseSettings *settings = e_gw_backend_ref_settings (NULL, source);
+	ESourceAuthenticationResult result;
+	EGwConnection *cnc = NULL;
+
+	if (!credentials || !settings || backend_is_proxy (backend)) {
+		g_set_error_literal (error, G_IO_ERROR, G_IO_ERROR_NOT_CONNECTED,
+			_("The GroupWise account is not connected"));
+	} else {
+		cnc = e_gw_backend_connect_sync (NULL, source, settings, NULL, credentials, &result, NULL, NULL, cancellable, error);
+	}
+	g_clear_object (&settings);
+
+	return cnc;
+}
+
+/* "Name (Owner)" of a calendar another user shares is "Name" on the server */
+static gchar *
+dup_name_for_server (ESource *child,
+		     const gchar *name)
+{
+	const gchar *suffix = g_object_get_data (G_OBJECT (child), DATA_SUFFIX);
+	gchar *plain = g_strdup (name);
+
+	if (suffix && g_str_has_suffix (plain, suffix) && strlen (plain) > strlen (suffix))
+		plain[strlen (plain) - strlen (suffix)] = '\0';
+
+	return g_strstrip (plain);
+}
+
+static gboolean
+gw_collection_create_resource_sync (ECollectionBackend *backend,
+				    ESource *source,
+				    GCancellable *cancellable,
+				    GError **error)
+{
+	EGwConnection *cnc;
+	gchar *name = g_strstrip (e_source_dup_display_name (source)), *id = NULL;
+
+	if (!*name || (!e_source_has_extension (source, E_SOURCE_EXTENSION_CALENDAR) &&
+	    !e_source_has_extension (source, E_SOURCE_EXTENSION_ADDRESS_BOOK))) {
+		g_free (name);
+		g_set_error_literal (error, G_IO_ERROR, G_IO_ERROR_NOT_SUPPORTED,
+			_("GroupWise can make calendars and address books, with a name"));
+		return FALSE;
+	}
+
+	cnc = connect_again (backend, cancellable, error);
+	if (!cnc) {
+		g_free (name);
+		return FALSE;
+	}
+
+	if (e_source_has_extension (source, E_SOURCE_EXTENSION_CALENDAR)) {
+		GPtrArray *folders = e_gw_connection_get_folder_list_sync (cnc, NULL, TRUE, cancellable, error);
+		gchar *color = e_source_selectable_dup_color (e_source_get_extension (source, E_SOURCE_EXTENSION_CALENDAR));
+		const gchar *calendar_id = NULL;
+		guint ii;
+
+		for (ii = 0; folders && ii < folders->len && !calendar_id; ii++) {
+			EGwFolder *folder = folders->pdata[ii];
+
+			if (e_gw_folder_get_calendar_role (folder, folders) == E_GW_CALENDAR_ROLE_MAIN)
+				calendar_id = folder->id;
+		}
+		if (calendar_id)
+			id = e_gw_connection_create_calendar_sync (cnc, calendar_id, name, color, cancellable, error);
+		else if (folders)
+			g_set_error_literal (error, G_IO_ERROR, G_IO_ERROR_NOT_FOUND, _("The mailbox has no Calendar"));
+		g_clear_pointer (&folders, g_ptr_array_unref);
+		g_free (color);
+	} else {
+		id = e_gw_connection_create_address_book_sync (cnc, name, cancellable, error);
+	}
+
+	/* The new one shows as the others do */
+	if (id)
+		sync_resources (backend, cnc, NULL, cancellable);
+	e_gw_connection_logout_sync (cnc, cancellable);
+	g_object_unref (cnc);
+	g_free (name);
+	g_free (id);
+
+	return id != NULL;
+}
+
+static gboolean
+gw_collection_delete_resource_sync (ECollectionBackend *backend,
+				    ESource *source,
+				    GCancellable *cancellable,
+				    GError **error)
+{
+	EGwConnection *cnc;
+	gchar *id = child_folder_id (source);
+	gboolean success;
+
+	if (!id || !g_object_get_data (G_OBJECT (source), DATA_MANAGED)) {
+		g_free (id);
+		g_set_error_literal (error, G_IO_ERROR, G_IO_ERROR_NOT_SUPPORTED,
+			_("This calendar or address book cannot be deleted in GroupWise"));
+		return FALSE;
+	}
+
+	cnc = connect_again (backend, cancellable, error);
+	if (!cnc) {
+		g_free (id);
+		return FALSE;
+	}
+
+	/* With all that is in it; one another user shared only leaves the
+	 * user's mailbox */
+	success = e_gw_connection_remove_folder_sync (cnc, id, cancellable, error);
+	if (success) {
+		ESourceRegistryServer *server = e_collection_backend_ref_server (backend);
+
+		e_source_registry_server_remove_source (server, source);
+		g_object_unref (server);
+	}
+	e_gw_connection_logout_sync (cnc, cancellable);
+	g_object_unref (cnc);
+	g_free (id);
+
+	return success;
+}
+
+typedef struct {
+	ECollectionBackend *backend;
+	ESource *child;
+	gchar *name;		/* as the user wrote it */
+	gchar *old_name;
+} RenameData;
+
+static void
+rename_data_free (gpointer ptr)
+{
+	RenameData *data = ptr;
+
+	g_object_unref (data->backend);
+	g_object_unref (data->child);
+	g_free (data->name);
+	g_free (data->old_name);
+	g_free (data);
+}
+
+static void
+rename_thread (GTask *task,
+	       gpointer source_object,
+	       gpointer task_data,
+	       GCancellable *cancellable)
+{
+	RenameData *data = task_data;
+	EGwConnection *cnc;
+	GError *error = NULL;
+	gchar *id = child_folder_id (data->child), *plain = dup_name_for_server (data->child, data->name);
+	const gchar *suffix = g_object_get_data (G_OBJECT (data->child), DATA_SUFFIX);
+	gboolean success = FALSE;
+
+	cnc = id && *plain ? connect_again (data->backend, cancellable, &error) : NULL;
+	if (cnc) {
+		if (e_source_has_extension (data->child, E_SOURCE_EXTENSION_ADDRESS_BOOK))
+			success = e_gw_connection_rename_address_book_sync (cnc, id, plain, cancellable, &error);
+		else
+			success = e_gw_connection_modify_folder_sync (cnc, id, plain, NULL, cancellable, &error);
+		e_gw_connection_logout_sync (cnc, cancellable);
+		g_object_unref (cnc);
+	}
+
+	if (success) {
+		/* A shared calendar keeps the owner behind its name */
+		gchar *shown = g_strconcat (plain, suffix, NULL);
+
+		g_debug ("%s renamed to %s", id, plain);
+		set_server_name (data->backend, data->child, shown);
+		g_free (shown);
+	} else {
+		g_warning ("GroupWise: cannot rename %s: %s", id ? id : "?", error ? error->message : "no name");
+		/* As it is on the server */
+		if (data->old_name)
+			set_server_name (data->backend, data->child, data->old_name);
+	}
+	g_clear_error (&error);
+	g_free (plain);
+	g_free (id);
+	g_task_return_boolean (task, success);
+}
+
+/* A name other than the one from the server is the user's: the calendar or
+ * address book gets it in GroupWise */
+static void
+child_name_changed_cb (ESource *child,
+		       GParamSpec *param,
+		       ECollectionBackend *backend)
+{
+	const gchar *known;
+	gchar *name = e_source_dup_display_name (child), *old_name;
+	RenameData *data;
+	GTask *task;
+
+	g_mutex_lock (&names_lock);
+	known = g_hash_table_lookup (backend_names (backend), e_source_get_uid (child));
+	old_name = g_strdup (known);
+	g_mutex_unlock (&names_lock);
+
+	if (!old_name || !name || g_strcmp0 (old_name, name) == 0 || !g_object_get_data (G_OBJECT (child), DATA_MANAGED)) {
+		g_free (old_name);
+		g_free (name);
+		return;
+	}
+
+	/* Noted at once: the write that follows tells the same name again */
+	g_mutex_lock (&names_lock);
+	g_hash_table_insert (backend_names (backend), e_source_dup_uid (child), g_strdup (name));
+	g_mutex_unlock (&names_lock);
+
+	data = g_new0 (RenameData, 1);
+	data->backend = g_object_ref (backend);
+	data->child = g_object_ref (child);
+	data->name = name;
+	data->old_name = old_name;
+	task = g_task_new (NULL, NULL, NULL, NULL);
+	g_task_set_task_data (task, data, rename_data_free);
+	g_task_run_in_thread (task, rename_thread);
+	g_object_unref (task);
+}
+
+static ESourceAuthenticationResult
+gw_collection_authenticate_sync (EBackend *backend,
+				 const ENamedParameters *credentials,
+				 gchar **out_certificate_pem,
+				 GTlsCertificateFlags *out_certificate_errors,
+				 GCancellable *cancellable,
+				 GError **error)
+{
+	ECollectionBackend *collection_backend = E_COLLECTION_BACKEND (backend);
+	ESource *source = e_backend_get_source (backend);
+	ESourceAuthenticationResult result;
+	CamelGroupwiseSettings *settings;
+	EGwConnection *cnc;
+	gchar *proxy;
+
+	settings = e_gw_backend_ref_settings (NULL, source);
+	if (!settings) {
+		g_set_error_literal (error, G_IO_ERROR, G_IO_ERROR_INVALID_DATA, _("The account has no GroupWise settings"));
+		return E_SOURCE_AUTHENTICATION_ERROR;
+	}
+
+	proxy = camel_groupwise_settings_dup_proxy (settings);
+	cnc = e_gw_backend_connect_sync (NULL, source, settings, proxy, credentials, &result,
+		out_certificate_pem, out_certificate_errors, cancellable, error);
+	g_object_unref (settings);
+	if (!cnc) {
+		g_free (proxy);
+		return result;
+	}
+
+	sync_resources (collection_backend, cnc, proxy, cancellable);
 
 	/* The signatures with the mail */
 	if (e_collection_backend_get_part_enabled (collection_backend, E_COLLECTION_BACKEND_PART_MAIL))
@@ -604,6 +923,12 @@ gw_collection_authenticate_sync (EBackend *backend,
 
 	/* One password for the whole account */
 	e_collection_backend_authenticate_children (collection_backend, credentials);
+
+	/* ... kept for making, renaming and deleting calendars and address
+	 * books, which Evolution offers for the user's own mailbox */
+	g_object_set_data_full (G_OBJECT (backend), DATA_CREDENTIALS, e_named_parameters_new_clone (credentials),
+		(GDestroyNotify) e_named_parameters_free);
+	e_server_side_source_set_remote_creatable (E_SERVER_SIDE_SOURCE (source), !backend_is_proxy (collection_backend));
 
 	return E_SOURCE_AUTHENTICATION_ACCEPTED;
 }
@@ -706,6 +1031,11 @@ gw_collection_child_added (ECollectionBackend *backend,
 
 	E_COLLECTION_BACKEND_CLASS (e_gw_collection_backend_parent_class)->child_added (backend, child);
 
+	/* Renamed in Evolution, a calendar or address book is renamed in GroupWise */
+	if (e_source_has_extension (child, E_SOURCE_EXTENSION_CALENDAR) ||
+	    e_source_has_extension (child, E_SOURCE_EXTENSION_ADDRESS_BOOK))
+		g_signal_connect_object (child, "notify::display-name", G_CALLBACK (child_name_changed_cb), backend, 0);
+
 	/* A proxy account made by version 0.3 below the collection: the
 	 * settings window removes it and makes it anew as an account of its own */
 	if (child_is_proxy_account (child))
@@ -723,6 +1053,8 @@ e_gw_collection_backend_class_init (EGwCollectionBackendClass *class)
 	collection_class->populate = gw_collection_populate;
 	collection_class->dup_resource_id = gw_collection_dup_resource_id;
 	collection_class->child_added = gw_collection_child_added;
+	collection_class->create_resource_sync = gw_collection_create_resource_sync;
+	collection_class->delete_resource_sync = gw_collection_delete_resource_sync;
 
 	E_BACKEND_CLASS (class)->authenticate_sync = gw_collection_authenticate_sync;
 }

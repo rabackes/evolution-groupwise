@@ -20,8 +20,11 @@
 /*
  * Evolution's properties dialog of a calendar, task list, memo list or
  * address book (name, color, offline, ...) needs a config backend for the
- * backend name of the source; without one it cannot be saved. GroupWise
- * sources come from the account: none is created in the dialog.
+ * backend name of the source; without one it cannot be saved. With it the
+ * dialog for a new calendar or address book also offers the GroupWise
+ * accounts (those whose collection says it can create: the user's own, once
+ * logged in); the collection backend then makes it on the server. GroupWise
+ * knows calendars of the user's, but no further task or memo lists.
  */
 
 #include <e-util/e-util.h>
@@ -42,7 +45,12 @@ G_DEFINE_DYNAMIC_TYPE (EBookConfigGroupwise, e_book_config_groupwise, E_TYPE_SOU
 static gboolean
 groupwise_config_allow_creation (ESourceConfigBackend *backend)
 {
-	return FALSE;
+	ESourceConfig *config = e_source_config_backend_get_config (backend);
+
+	if (E_IS_CAL_SOURCE_CONFIG (config))
+		return e_cal_source_config_get_source_type (E_CAL_SOURCE_CONFIG (config)) == E_CAL_CLIENT_SOURCE_TYPE_EVENTS;
+
+	return TRUE;
 }
 
 static void

@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: evolution-groupwise\n"
 "Report-Msgid-Bugs-To: rbackes@bond.de\n"
-"POT-Creation-Date: 2026-10-12 10:29+0200\n"
+"POT-Creation-Date: 2026-10-12 12:26+0200\n"
 "PO-Revision-Date: 2026-09-27 18:27+0200\n"
 "Last-Translator: Automatically generated\n"
 "Language-Team: none\n"
@@ -463,7 +463,7 @@ msgstr "Jobliste"
 
 #: src/camel/camel-groupwise-store-summary.c:395
 #: src/evolution/e-groupwise-share-accept.c:237
-#: src/registry/module-groupwise-backend.c:276
+#: src/registry/module-groupwise-backend.c:342
 msgid "Calendar"
 msgstr "Kalender"
 
@@ -557,7 +557,7 @@ msgid "Reminder Notes"
 msgstr "Erinnerungsnotizen"
 
 #: src/evolution/e-groupwise-access-tab.c:219
-#: src/registry/module-groupwise-backend.c:276
+#: src/registry/module-groupwise-backend.c:342
 msgid "Tasks"
 msgstr "Aufgaben"
 
@@ -871,7 +871,9 @@ msgstr "_Freigabe …"
 
 #: src/evolution/e-groupwise-mail-ui.c:1284
 msgid "Share the address book with other GroupWise users, or see who shares it"
-msgstr "Das Adressbuch für andere GroupWise-Benutzer freigeben oder sehen, wer es freigibt"
+msgstr ""
+"Das Adressbuch für andere GroupWise-Benutzer freigeben oder sehen, wer es "
+"freigibt"
 
 #: src/evolution/e-groupwise-mail-ui.c:1310
 msgid "Share the calendar with other GroupWise users, or see who shares it"
@@ -2117,7 +2119,9 @@ msgstr "Neu"
 msgid ""
 "The rights in an address book cannot be changed later: remove the user, "
 "apply, and add the user anew"
-msgstr "Die Rechte in einem Adressbuch lassen sich nachträglich nicht ändern: Benutzer entfernen, übernehmen und neu hinzufügen"
+msgstr ""
+"Die Rechte in einem Adressbuch lassen sich nachträglich nicht ändern: "
+"Benutzer entfernen, übernehmen und neu hinzufügen"
 
 #: src/evolution/e-groupwise-share-tab.c:500 src/libegroupwise/e-gw-proxy.c:172
 #, c-format
@@ -2156,7 +2160,9 @@ msgstr "_Senden"
 msgid ""
 "The new participants are sent a notification that you shared this address "
 "book with them. You may add a message for them."
-msgstr "Die neuen Teilnehmer erhalten eine Benachrichtigung, dass Sie dieses Adressbuch für sie freigegeben haben. Sie können eine Mitteilung hinzufügen."
+msgstr ""
+"Die neuen Teilnehmer erhalten eine Benachrichtigung, dass Sie dieses "
+"Adressbuch für sie freigegeben haben. Sie können eine Mitteilung hinzufügen."
 
 #: src/evolution/e-groupwise-share-tab.c:799
 msgid ""
@@ -2219,7 +2225,9 @@ msgstr "Die Änderungen an der Freigabe des Ordners übernehmen?"
 msgid ""
 "You changed whom the address book is shared with or what they may do, and "
 "did not apply that yet."
-msgstr "Sie haben geändert, für wen das Adressbuch freigegeben ist oder was die Benutzer dürfen, und das noch nicht übernommen."
+msgstr ""
+"Sie haben geändert, für wen das Adressbuch freigegeben ist oder was die "
+"Benutzer dürfen, und das noch nicht übernommen."
 
 #: src/evolution/e-groupwise-share-tab.c:938
 msgid ""
@@ -2322,7 +2330,9 @@ msgstr "Freigabe ü_bernehmen"
 
 #: src/evolution/e-groupwise-share-tab.c:1142
 msgid "Share the address book as set here; new users are sent a notification"
-msgstr "Das Adressbuch wie hier eingestellt freigeben; neue Benutzer erhalten eine Benachrichtigung"
+msgstr ""
+"Das Adressbuch wie hier eingestellt freigeben; neue Benutzer erhalten eine "
+"Benachrichtigung"
 
 #: src/evolution/e-groupwise-share-tab.c:1143
 msgid "Share the calendar as set here; new users are sent a notification"
@@ -2435,7 +2445,7 @@ msgstr ""
 "Evolution speichern"
 
 #: src/evolution/e-groupwise-ui-utils.c:110
-#: src/registry/module-groupwise-backend.c:544
+#: src/registry/module-groupwise-backend.c:901
 msgid "The account has no GroupWise settings"
 msgstr "Das Konto hat keine GroupWise-Einstellungen"
 
@@ -2662,9 +2672,25 @@ msgstr "Die Nachricht bietet keinen freigegebenen Ordner an"
 msgid "Signature"
 msgstr "Signatur"
 
-#: src/registry/module-groupwise-backend.c:276
+#: src/registry/module-groupwise-backend.c:342
 msgid "Notes"
 msgstr "Notizen"
+
+#: src/registry/module-groupwise-backend.c:666
+msgid "The GroupWise account is not connected"
+msgstr "Das GroupWise-Konto ist nicht verbunden"
+
+#: src/registry/module-groupwise-backend.c:702
+msgid "GroupWise can make calendars and address books, with a name"
+msgstr "GroupWise kann Kalender und Adressbücher anlegen, mit einem Namen"
+
+#: src/registry/module-groupwise-backend.c:727
+msgid "The mailbox has no Calendar"
+msgstr "Das Postfach hat keinen Kalender"
+
+#: src/registry/module-groupwise-backend.c:758
+msgid "This calendar or address book cannot be deleted in GroupWise"
+msgstr "Dieser Kalender bzw. dieses Adressbuch kann in GroupWise nicht gelöscht werden"
 
 #~ msgid "Shared address books cannot be installed here yet"
 #~ msgstr "Freigegebene Adressbücher können hier noch nicht installiert werden"

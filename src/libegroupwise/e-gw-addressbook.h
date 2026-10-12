@@ -53,6 +53,21 @@ GPtrArray *	e_gw_connection_get_address_books_sync
 						 GCancellable *cancellable,
 						 GError **error);
 
+/* Makes a personal address book; returns its ID */
+gchar *		e_gw_connection_create_address_book_sync
+						(EGwConnection *cnc,
+						 const gchar *name,
+						 GCancellable *cancellable,
+						 GError **error);
+
+/* Renames one: an own book, or one another user shared (for the user alone) */
+gboolean	e_gw_connection_rename_address_book_sync
+						(EGwConnection *cnc,
+						 const gchar *id,
+						 const gchar *name,
+						 GCancellable *cancellable,
+						 GError **error);
+
 G_END_DECLS
 
 #endif /* E_GW_ADDRESSBOOK_H */

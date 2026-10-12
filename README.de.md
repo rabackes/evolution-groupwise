@@ -407,6 +407,17 @@ nur ohne Teilnehmer; Ändern und Löschen prüft das Backend selbst, denn der PO
 Hinzufügen ab. Gelöscht wird mit `removeItemRequest` ohne Container – aus dem Ordner allein entfernt, meldet
 der POA Erfolg und behält den Termin.
 
+### Kalender und Adressbücher anlegen, umbenennen, löschen
+
+Evolutions eigene Dialoge (*Neuer Kalender*, *Neues Adressbuch*, *Umbenennen …*, *Löschen*) arbeiten mit
+GroupWise: Die Collection des eigenen Kontos ist nach der Anmeldung „remote-creatable“, ihre persönlichen und
+angenommenen Kalender und Adressbücher sind „remote-deletable“. `create_resource_sync` legt den Kalender
+(`createItemRequest` eines Ordners unter dem Hauptkalender mit `<calendarAttribute>` und Farbe) bzw. das
+Adressbuch (`AddressBook`) an und gleicht die Quellen neu ab, `delete_resource_sync` entfernt es mit
+`removeItemRequest`. Ein in Evolution geänderter Anzeigename, der nicht vom Server stammt, wird in einem
+eigenen Login auf den Server geschrieben (`modifyItemRequest`); das Passwort der letzten Anmeldung hält das
+Backend dafür im Speicher. Proxy-Konten bleiben außen vor.
+
 ### Adressbücher freigeben
 
 Ein persönliches Adressbuch wird über *Freigabe …* in seinem Kontextmenü freigegeben (derselbe Dialog).

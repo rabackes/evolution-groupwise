@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: evolution-groupwise\n"
 "Report-Msgid-Bugs-To: rbackes@bond.de\n"
-"POT-Creation-Date: 2026-10-12 10:29+0200\n"
+"POT-Creation-Date: 2026-10-12 12:26+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -426,7 +426,7 @@ msgstr ""
 
 #: src/camel/camel-groupwise-store-summary.c:395
 #: src/evolution/e-groupwise-share-accept.c:237
-#: src/registry/module-groupwise-backend.c:276
+#: src/registry/module-groupwise-backend.c:342
 msgid "Calendar"
 msgstr ""
 
@@ -520,7 +520,7 @@ msgid "Reminder Notes"
 msgstr ""
 
 #: src/evolution/e-groupwise-access-tab.c:219
-#: src/registry/module-groupwise-backend.c:276
+#: src/registry/module-groupwise-backend.c:342
 msgid "Tasks"
 msgstr ""
 
@@ -2303,7 +2303,7 @@ msgid ""
 msgstr ""
 
 #: src/evolution/e-groupwise-ui-utils.c:110
-#: src/registry/module-groupwise-backend.c:544
+#: src/registry/module-groupwise-backend.c:901
 msgid "The account has no GroupWise settings"
 msgstr ""
 
@@ -2520,6 +2520,22 @@ msgstr ""
 msgid "Signature"
 msgstr ""
 
-#: src/registry/module-groupwise-backend.c:276
+#: src/registry/module-groupwise-backend.c:342
 msgid "Notes"
+msgstr ""
+
+#: src/registry/module-groupwise-backend.c:666
+msgid "The GroupWise account is not connected"
+msgstr ""
+
+#: src/registry/module-groupwise-backend.c:702
+msgid "GroupWise can make calendars and address books, with a name"
+msgstr ""
+
+#: src/registry/module-groupwise-backend.c:727
+msgid "The mailbox has no Calendar"
+msgstr ""
+
+#: src/registry/module-groupwise-backend.c:758
+msgid "This calendar or address book cannot be deleted in GroupWise"
 msgstr ""

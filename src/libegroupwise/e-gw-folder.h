@@ -115,6 +115,16 @@ GPtrArray *	e_gw_connection_get_folder_list_sync
 						 GCancellable *cancellable,
 						 GError **error);
 
+/* Makes a calendar of the user's below the Calendar (@calendar_id); @color
+ * as "#rrggbb" or NULL. Returns its ID. */
+gchar *		e_gw_connection_create_calendar_sync
+						(EGwConnection *cnc,
+						 const gchar *calendar_id,
+						 const gchar *name,
+						 const gchar *color,
+						 GCancellable *cancellable,
+						 GError **error);
+
 G_END_DECLS
 
 #endif /* E_GW_FOLDER_H */

@@ -533,7 +533,17 @@ Anders als im GroupWise-Client färben Kategorien Termine in Evolution nicht ein
 
 ## 5.6 Farbe und Eigenschaften
 
-Über `Eigenschaften` im Kontextmenü eines Kalenders ändern Sie Farbe und angezeigten Namen sowie das Abgleichintervall. Die Farbe aus GroupWise wird nur beim ersten Anlegen übernommen; Ihre Änderungen in Evolution bleiben erhalten. Die Reihenfolge der Kalender (Hauptkalender, Unterkalender, Proxy-Kalender, freigegebene Kalender) legt das Modul beim ersten Anlegen fest. Neue GroupWise-Kalender können hier nicht angelegt werden – sie erscheinen automatisch, sobald sie in GroupWise existieren.
+Über `Eigenschaften` im Kontextmenü eines Kalenders ändern Sie Farbe und Namen sowie das Abgleichintervall. Die Farbe aus GroupWise wird nur beim ersten Anlegen übernommen; Ihre Änderungen in Evolution bleiben erhalten. Die Reihenfolge der Kalender (Hauptkalender, Unterkalender, Proxy-Kalender, freigegebene Kalender) legt das Modul beim ersten Anlegen fest.
+
+### Kalender anlegen, umbenennen und löschen
+
+- **Anlegen**: `Datei → Neu → Kalender` oder `Neuer Kalender` im Kontextmenü der Kalenderliste. Wählen Sie im Dialog **Neuer Kalender** unter **Art** Ihr GroupWise-Konto, geben Sie Namen und Farbe an und bestätigen Sie: Der Kalender wird in GroupWise als persönlicher Kalender unter dem Hauptkalender angelegt, in dieser Farbe, und erscheint in der Kalenderliste.
+
+- **Umbenennen**: `Umbenennen …` im Kontextmenü (oder der Name in den `Eigenschaften`) benennt den Kalender auch in GroupWise um. Bei einem Kalender, den ein anderer Benutzer für Sie freigegeben hat, ändert das nur Ihren Namen dafür; der Eigentümer in Klammern bleibt stehen.
+
+- **Löschen**: `Kalender löschen` im Kontextmenü löscht den Kalender nach einer Rückfrage in GroupWise, **mit allen Terminen darin**. Ein für Sie freigegebener Kalender verschwindet dabei nur aus Ihrem Postfach; beim Eigentümer bleibt er bestehen.
+
+Das gilt für Ihre eigenen Unterkalender und für Kalender, die andere für Sie freigegeben haben. Der Hauptkalender, die Aufgaben- und Notizliste sowie Proxy-Kalender lassen sich weder umbenennen noch löschen (ein Name, den Sie dort vergeben, wird beim nächsten Abgleich zurückgesetzt); in Proxy-Konten legen Sie Kalender weiterhin im GroupWise-Client an. Weitere Aufgaben- oder Notizlisten kennt GroupWise nicht. Voraussetzung ist, dass das Konto verbunden ist.
 
 ## 5.7 Vorbereitungs- und Reisezeit
 
@@ -597,6 +607,10 @@ In der Kontaktansicht stehen unter dem Namen des Kontos:
 - **Freigegebene Adressbücher** – Adressbücher, die andere Benutzer für Sie freigegeben haben, mit dem Namen des Eigentümers in Klammern; nur lesbar oder beschreibbar, je nach Freigabe.
 
 Die Adressbücher werden lokal vorgehalten, damit die **Autovervollständigung** beim Schreiben schnell ist und offline funktioniert. Sie ist für die GroupWise-Adressbücher eingeschaltet; in den Eigenschaften eines Adressbuchs können Sie das ändern.
+
+## Adressbücher anlegen, umbenennen und löschen
+
+Wie bei den Kalendern ([5.6](#kal-anlegen)): `Datei → Neu → Adressbuch` oder `Neues Adressbuch` im Kontextmenü legt mit der **Art** Ihres GroupWise-Kontos ein persönliches Adressbuch in GroupWise an; `Umbenennen …` benennt es dort um, und `Adressbuch löschen` löscht es nach einer Rückfrage **mit allen Kontakten**. Ein Adressbuch, das ein anderer Benutzer für Sie freigegeben hat, können Sie ebenfalls umbenennen (nur für sich) und löschen (es verlässt dann nur Ihr Postfach). Das GroupWise-Adressbuch und „Häufige Kontakte“ lassen sich weder umbenennen noch löschen.
 
 ## Adressbücher freigeben
 
@@ -668,7 +682,7 @@ gw-cli items ORDNER-ID 20
 
 # 10 Vergleich mit dem GroupWise-Client
 
-Diese Übersicht stellt die Funktionen des GroupWise-Clients für Windows denen von Evolution mit evolution-groupwise gegenüber. Sie folgt dem Aufbau des *GroupWise Client User Guide* (GroupWise 26, April 2026) und gibt den Stand von **Version 0.9.3** wieder; sie wird mit jeder Version fortgeschrieben.
+Diese Übersicht stellt die Funktionen des GroupWise-Clients für Windows denen von Evolution mit evolution-groupwise gegenüber. Sie folgt dem Aufbau des *GroupWise Client User Guide* (GroupWise 26, April 2026) und gibt den **Stand vom 12.10.2026** (nach Version 0.9.3) wieder; sie wird mit der Entwicklung fortgeschrieben.
 
 ## Vorhanden
 
@@ -684,9 +698,9 @@ Diese Übersicht stellt die Funktionen des GroupWise-Clients für Windows denen 
 | Suchergebnisordner | werden angezeigt, mit einem Teil der Treffer; angelegt werden sie im Client ([4.6](#mail-suche)) |
 | Termine und Besprechungen: planen, annehmen, ablehnen, ändern, absagen; Internet-Einladungen | ja ([5.3](#kal-besprechungen)) |
 | Belegt-Suche, Alarme, Zeitzonen, Ressourcen, Vorbereitungs- und Reisezeit | ja ([5.7](#kal-reisezeit)) |
-| Persönliche Kalender (Unterkalender), Farben, Termine zwischen Kalendern verschieben | ja; angelegt werden Kalender im Client ([5.1](#kal-liste)) |
+| Persönliche Kalender (Unterkalender), Farben, Termine zwischen Kalendern verschieben | ja, auch anlegen, umbenennen und löschen ([5.1](#kal-liste), [5.6](#kal-anlegen)) |
 | Aufgaben (auch zugewiesene) und Erinnerungsnotizen | ja ([Kapitel 6](#aufgaben)) |
-| GroupWise-Adressbuch, Häufige Kontakte, persönliche Adressbücher; Namensergänzung und Adressauswahl | ja; angelegt werden Adressbücher im Client ([Kapitel 7](#adressbuecher)) |
+| GroupWise-Adressbuch, Häufige Kontakte, persönliche Adressbücher; Namensergänzung und Adressauswahl | ja, auch anlegen, umbenennen und löschen ([Kapitel 7](#adressbuecher)) |
 | Regeln einschließlich Abwesenheit; Regeln manuell ausführen | ja; besonders verschachtelte Regeln nur anzeigen ([Kapitel 3](#regeln)) |
 | Proxy: Rechte vergeben, als Proxy in einem anderen Postfach arbeiten | ja, als Proxy-Konten ([4.8](#mail-proxy)) |
 | Freigegebene Ordner, Kalender und Adressbücher: freigeben und annehmen | ja ([4.9](#mail-freigabe), [5.8](#kal-freigabe), [Kapitel 7](#adr-freigabe)) |
@@ -703,7 +717,6 @@ Diese Übersicht stellt die Funktionen des GroupWise-Clients für Windows denen 
 | Einladungen delegieren, neue Zeit vorschlagen | fehlt; eine delegierte Einladung wird als Status angezeigt. |
 | Sendeoptionen für Mail | Die Priorität wird übertragen. Benachrichtigung beim Öffnen oder Löschen, verzögerte Zustellung, Verfallsdatum, „Antwort angefordert“, Klassifizierung und verborgener Betreff fehlen; den Status einer gesendeten Nachricht zeigt `Zustellstatus …`. |
 | Suchen im ganzen Postfach auf dem Server (Volltext) | Evolution durchsucht, was es lokal kennt: die Nachrichtenlisten und bereits geladene Nachrichten. |
-| Kalender und Adressbücher anlegen, umbenennen, löschen | nur im GroupWise-Client; sie erscheinen danach von selbst in Evolution. |
 | Proxy-Kalender unter dem eigenen Konto beschreiben | nur lesbar; zum Schreiben dient das Proxy-Konto. |
 | Archiv | Das GroupWise-Archiv hat ein eigenes, nicht offengelegtes Format und lässt sich nur mit dem GroupWise-Client lesen. |
 | Besprechungen mit Teams, Zoom oder WebEx planen | fehlt. |

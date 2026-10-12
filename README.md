@@ -379,6 +379,17 @@ attendees only; the backend checks changing and deleting itself, since over SOAP
 Deleting uses `removeItemRequest` without a container – taken out of the folder alone, the POA reports success
 and keeps the appointment.
 
+### Creating, renaming and deleting calendars and address books
+
+Evolution's own dialogs (*New Calendar*, *New Address Book*, *Rename…*, *Delete*) work with GroupWise: the
+collection of the user's own account is remote-creatable once logged in, its personal and accepted calendars
+and address books are remote-deletable. `create_resource_sync` makes the calendar (`createItemRequest` of a
+folder below the Calendar with `<calendarAttribute>` and colour) or the address book (`AddressBook`) and
+syncs the sources anew, `delete_resource_sync` removes it with `removeItemRequest`. A display name changed
+in Evolution that does not come from the server is written to the server in a login of its own
+(`modifyItemRequest`); the backend keeps the password of the last login in memory for that. Proxy accounts
+are left out.
+
 ### Sharing address books
 
 A personal address book is shared with *Sharing…* in its context menu (the same dialog). `modifyItemRequest`

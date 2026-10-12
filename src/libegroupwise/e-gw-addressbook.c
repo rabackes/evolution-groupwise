@@ -84,3 +84,47 @@ e_gw_connection_get_address_books_sync (EGwConnection *cnc,
 
 	return books;
 }
+
+gchar *
+e_gw_connection_create_address_book_sync (EGwConnection *cnc,
+					  const gchar *name,
+					  GCancellable *cancellable,
+					  GError **error)
+{
+	GString *xml;
+	gchar *id;
+
+	g_return_val_if_fail (E_IS_GW_CONNECTION (cnc), NULL);
+	g_return_val_if_fail (name != NULL, NULL);
+
+	xml = g_string_new ("<item xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xsi:type=\"AddressBook\">");
+	e_gw_xml_add_leaf (xml, "name", name);
+	g_string_append (xml, "</item>");
+	id = e_gw_connection_create_item_sync (cnc, xml->str, cancellable, error);
+	g_string_free (xml, TRUE);
+
+	return id;
+}
+
+gboolean
+e_gw_connection_rename_address_book_sync (EGwConnection *cnc,
+					  const gchar *id,
+					  const gchar *name,
+					  GCancellable *cancellable,
+					  GError **error)
+{
+	GString *updates;
+	gboolean success;
+
+	g_return_val_if_fail (E_IS_GW_CONNECTION (cnc), FALSE);
+	g_return_val_if_fail (id != NULL, FALSE);
+	g_return_val_if_fail (name != NULL, FALSE);
+
+	updates = g_string_new ("<update>");
+	e_gw_xml_add_leaf (updates, "name", name);
+	g_string_append (updates, "</update>");
+	success = e_gw_connection_modify_item_sync (cnc, id, updates->str, cancellable, error);
+	g_string_free (updates, TRUE);
+
+	return success;
+}
