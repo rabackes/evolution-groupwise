@@ -19,7 +19,8 @@
 #ifndef E_GROUPWISE_SHARE_TAB_H
 #define E_GROUPWISE_SHARE_TAB_H
 
-#include <glib.h>
+#include <libedataserver/libedataserver.h>
+#include <shell/e-shell-view.h>
 
 G_BEGIN_DECLS
 
@@ -29,6 +30,11 @@ void		e_groupwise_share_tab_start	(void);
 /* The properties opened next show that page at once */
 void		e_groupwise_share_tab_select_next
 						(void);
+
+/* The same for a GroupWise calendar, in a dialog of its own */
+void		e_groupwise_share_tab_run_for_calendar
+						(EShellView *shell_view,
+						 ESource *calendar);
 
 G_END_DECLS
 

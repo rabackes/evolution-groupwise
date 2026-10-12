@@ -10,6 +10,11 @@ evolution-groupwise (0.9.3) noble; urgency=medium
     and rights, and asks for name, description and position.
   * Sharing and accepting also work in proxy accounts, as needed for
     resources.
+  * Sharing calendars: "Sharing…" in the context menu of an own
+    subcalendar opens the same page in a dialog; a calendar notification
+    opens "Install Shared Calendar". A calendar shared to the user is
+    written as far as its owner granted it (add, edit, delete),
+    appointments without attendees only.
   * Folders shared to the user: the rights add and delete are checked
     with a clear message; GroupWise messages, which the POA does not
     hand out as RFC 822 there, are built from the item and its

@@ -115,6 +115,7 @@ figcaption { font-size: 8.5pt; color: #666; margin-top: 3pt; }
 				<li><a href="#kal-kategorien">5.5&nbsp;&nbsp;Kategorien</a></li>
 				<li><a href="#kal-eigenschaften">5.6&nbsp;&nbsp;Farbe und Eigenschaften</a></li>
 				<li><a href="#kal-reisezeit">5.7&nbsp;&nbsp;Vorbereitungs- und Reisezeit</a></li>
+				<li><a href="#kal-freigabe">5.8&nbsp;&nbsp;Kalender freigeben</a></li>
 			</ol></li>
 		<li><a href="#aufgaben">6&nbsp;&nbsp;Aufgaben und Notizen</a></li>
 		<li><a href="#adressbuecher">7&nbsp;&nbsp;Adressbücher</a></li>
@@ -841,7 +842,8 @@ Evolution die Nachrichtenliste dieses Ordners deshalb beim nächsten Start einma
 	<li><b>Freigegebene Kalender</b> – Kalender, die andere Benutzer für Sie freigegeben haben, mit dem
 		Namen des Besitzers in Klammern.</li>
 </ol>
-<p>Proxy-Kalender und freigegebene Kalender sind derzeit <b>nur lesbar</b>; für sie gibt es auch keine
+<p>Proxy-Kalender sind derzeit <b>nur lesbar</b>; in einem freigegebenen Kalender können Sie so viel,
+wie der Eigentümer Ihnen erlaubt hat (siehe <a href="#kal-freigabe">5.8</a>). Für beide gibt es keine
 Erinnerungen. Abonnierte Internet-Kalender, die GroupWise selbst abruft, werden nicht angezeigt – solche
 Kalender kann Evolution bei Bedarf direkt abonnieren.</p>
 <p>Evolution gleicht die Kalender alle 15 Minuten mit dem Server ab, sodass Änderungen aus dem
@@ -1004,6 +1006,50 @@ daher einen Moment später.</p>
 </ul>
 
 <!-- ============================================================ -->
+<h2 id="kal-freigabe">5.8&nbsp;&nbsp;Kalender freigeben</h2>
+<p>Einen Unterkalender, den Sie selbst angelegt haben, können Sie wie einen Mailordner
+(<a href="#mail-freigabe">4.9</a>) für andere GroupWise-Benutzer freigeben. Der Hauptkalender
+<b>Kalender</b> selbst lässt sich nicht freigeben – dafür gibt es den Proxy-Zugriff.</p>
+<p>Wählen Sie im Kontextmenü des Kalenders <span class="menu">Freigabe …</span>. Es öffnet sich der
+Dialog <b>Freigabe von „…“</b> mit denselben Elementen wie der Reiter <span class="menu">Freigabe</span>
+eines Mailordners: <b>Nicht freigegeben / Freigegeben für</b>, das Namensfeld mit dem Adressbuch-Knopf,
+die Freigabeliste mit Status und Zugriff, die zusätzlichen Rechte <b>Hinzufügen</b>, <b>Bearbeiten</b>
+und <b>Löschen</b> sowie der Knopf <span class="menu">Freigabe übernehmen</span>. Neue Benutzer erhalten
+die <b>Benachrichtigung über freigegebenen Kalender</b>, deren Betreff und Mitteilung Sie vor dem Senden
+anpassen können. Der Eintrag erscheint bei eigenen Unterkalendern und bei Kalendern, die andere für Sie
+freigegeben haben (dort zeigt der Dialog nur den Eigentümer und Ihre Rechte), auch in Proxy-Konten.</p>
+<h3>Eine Kalender-Freigabe annehmen</h3>
+<p>Die Nachricht <b>Benachrichtigung über freigegebenen Kalender: …</b> kommt in der Mailbox an. Ein
+Doppelklick darauf (oder <span class="menu">Nachricht → Freigegebenen Ordner installieren …</span>)
+öffnet den Dialog <b>Freigegebenen Kalender installieren</b> mit dem Absender, seiner Mitteilung, Ihren
+Rechten sowie Name und Beschreibung, unter denen der Kalender bei Ihnen erscheinen soll. Eine Position
+gibt es hier nicht zu wählen: Der Kalender kommt zu Ihren anderen Kalendern. Nach
+<span class="menu">Installieren</span> erscheint er nach wenigen Sekunden in der Kalenderansicht, mit
+dem Namen des Eigentümers in Klammern.</p>
+<h3>In einem freigegebenen Kalender arbeiten</h3>
+<table>
+	<tr><th style="width:35%">Recht</th><th>Was Sie damit können</th></tr>
+	<tr><td>Lesen (immer)</td><td>Die Termine sehen.</td></tr>
+	<tr><td>Hinzufügen</td><td>Neue Termine eintragen, auch durch Kopieren oder Verschieben aus einem
+		anderen Kalender.</td></tr>
+	<tr><td>Bearbeiten</td><td>Vorhandene Termine ändern.</td></tr>
+	<tr><td>Löschen</td><td>Termine löschen.</td></tr>
+</table>
+<p>Fehlt ein Recht, lehnt Evolution die Änderung mit einer Meldung ab, die das fehlende Recht nennt. Haben
+Sie nur das Leserecht, ist der Kalender schreibgeschützt. Ändert der Eigentümer Ihre Rechte, gilt das in
+Evolution nach dem nächsten Verbinden des Kalenders (spätestens nach einem Neustart).</p>
+<p>In einen freigegebenen Kalender gehören nur <b>Termine ohne Teilnehmer</b>; eine Besprechung legen Sie
+in Ihrem eigenen Kalender an. Kategorien, Erinnerungen sowie Vorbereitungs- und Reisezeit sind persönlich
+und werden für Termine fremder Kalender nicht gespeichert.</p>
+<div class="note"><b>Freigabe oder Proxy?</b> Beides zeigt Ihnen Termine eines anderen Benutzers, aber auf
+verschiedene Weise. Eine <b>Freigabe</b> betrifft genau einen Unterkalender, den der Eigentümer dafür
+angelegt hat; Sie sehen nur, was in diesem Kalender liegt, und nehmen die Freigabe einmal an. Der
+<b>Proxy-Zugriff</b> öffnet das Postfach des anderen Benutzers mit den Rechten, die er Ihnen gegeben hat:
+Sie sehen dessen ganzen Kalender samt Besprechungen und Einladungen (private Einträge nur mit eigenem
+Recht) und können, als Proxy-Konto eingerichtet, in seinem Namen Termine anlegen und beantworten. Für
+einen gemeinsamen Team- oder Urlaubskalender ist die Freigabe das Richtige, für die Vertretung einer
+Person der Proxy-Zugriff.</div>
+
 <h1 id="aufgaben">6&nbsp;&nbsp;Aufgaben und Notizen</h1>
 <p>Aufgaben und Notizen des GroupWise-Kalenders stehen in Evolution in der Aufgabenliste
 <b>Aufgaben</b> und der Notizliste <b>Notizen</b> des Kontos.</p>
@@ -1040,12 +1086,12 @@ Eigenschaften eines Adressbuchs können Sie das ändern.</p>
 <h1 id="grenzen">8&nbsp;&nbsp;Grenzen und Hinweise</h1>
 <table>
 	<tr><th style="width:35%">Thema</th><th>Stand</th></tr>
-	<tr><td>Kalender anderer Benutzer</td><td>Proxy-Kalender unter dem eigenen Konto und freigegebene
-		Kalender sind nur lesbar; die Kalender eines Proxy-Kontos sind nach den gewährten Rechten
-		beschreibbar.</td></tr>
-	<tr><td>Freigaben</td><td>Mailordner lassen sich freigeben und Freigaben anderer annehmen (4.9).
-		Kalender und Adressbücher freigeben geht noch nicht in Evolution; freigegebene Adressbücher werden
-		noch nicht angezeigt.</td></tr>
+	<tr><td>Kalender anderer Benutzer</td><td>Proxy-Kalender unter dem eigenen Konto sind nur lesbar; die
+		Kalender eines Proxy-Kontos und freigegebene Kalender sind nach den gewährten Rechten
+		beschreibbar. In einen freigegebenen Kalender gehören nur Termine ohne Teilnehmer.</td></tr>
+	<tr><td>Freigaben</td><td>Mailordner (4.9) und Kalender (5.8) lassen sich freigeben und Freigaben
+		anderer annehmen. Adressbücher freigeben geht noch nicht in Evolution; freigegebene Adressbücher
+		werden noch nicht angezeigt.</td></tr>
 	<tr><td>Proxy-Konten</td><td>Neue Nachrichten werden bei jedem Abgleich über die ganze Ordnerliste ermittelt, da der
 		POA in Proxy-Sitzungen keine Änderungsabfrage beantwortet. Mit der Kontooption „Den Server alle …
 		Sekunden nach Änderungen im Postfach fragen“ erscheinen sie trotzdem sofort.</td></tr>

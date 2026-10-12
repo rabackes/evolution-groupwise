@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: evolution-groupwise\n"
 "Report-Msgid-Bugs-To: rbackes@bond.de\n"
-"POT-Creation-Date: 2026-10-11 17:12+0200\n"
+"POT-Creation-Date: 2026-10-12 09:59+0200\n"
 "PO-Revision-Date: 2026-09-27 18:27+0200\n"
 "Last-Translator: Automatically generated\n"
 "Language-Team: none\n"
@@ -26,7 +26,7 @@ msgstr "Das Adressbuch ist nicht für GroupWise eingerichtet"
 #: src/addressbook/e-book-backend-groupwise.c:272
 #: src/addressbook/e-book-backend-groupwise.c:318
 #: src/addressbook/e-book-backend-groupwise.c:375
-#: src/calendar/e-cal-backend-groupwise.c:139
+#: src/calendar/e-cal-backend-groupwise.c:141
 msgid "Not connected"
 msgstr "Nicht verbunden"
 
@@ -53,31 +53,59 @@ msgstr "Ein Kontakt braucht einen Namen"
 msgid "Not a contact"
 msgstr "Kein Kontakt"
 
-#: src/calendar/e-cal-backend-groupwise.c:465
+#: src/calendar/e-cal-backend-groupwise.c:467
 msgid "The calendar is not set up for GroupWise"
 msgstr "Der Kalender ist nicht für GroupWise eingerichtet"
 
-#: src/calendar/e-cal-backend-groupwise.c:1253
+#: src/calendar/e-cal-backend-groupwise.c:1262
 msgid "accepted"
 msgstr "angenommen"
 
-#: src/calendar/e-cal-backend-groupwise.c:1256
+#: src/calendar/e-cal-backend-groupwise.c:1265
 msgid "declined"
 msgstr "abgelehnt"
 
-#: src/calendar/e-cal-backend-groupwise.c:1259
+#: src/calendar/e-cal-backend-groupwise.c:1268
 msgid "tentative"
 msgstr "vorläufig"
 
-#: src/calendar/e-cal-backend-groupwise.c:1262
+#: src/calendar/e-cal-backend-groupwise.c:1271
 msgid "delegated"
 msgstr "delegiert"
 
-#: src/calendar/e-cal-backend-groupwise.c:1265
+#: src/calendar/e-cal-backend-groupwise.c:1274
 msgid "no answer yet"
 msgstr "noch keine Antwort"
 
-#: src/calendar/e-cal-backend-groupwise.c:2595
+#: src/calendar/e-cal-backend-groupwise.c:2290
+msgid ""
+"The owner of this shared calendar did not grant you the right to add "
+"appointments to it."
+msgstr "Der Eigentümer dieses freigegebenen Kalenders hat Ihnen nicht das Recht gegeben, Termine hinzuzufügen."
+
+#: src/calendar/e-cal-backend-groupwise.c:2293
+msgid ""
+"The owner of this shared calendar did not grant you the right to delete "
+"appointments from it."
+msgstr "Der Eigentümer dieses freigegebenen Kalenders hat Ihnen nicht das Recht gegeben, Termine zu löschen."
+
+#: src/calendar/e-cal-backend-groupwise.c:2296
+msgid ""
+"The owner of this shared calendar did not grant you the right to change its "
+"appointments."
+msgstr "Der Eigentümer dieses freigegebenen Kalenders hat Ihnen nicht das Recht gegeben, Termine zu bearbeiten."
+
+#: src/calendar/e-cal-backend-groupwise.c:2370
+msgid ""
+"A shared calendar takes appointments without attendees only. Create the "
+"meeting in your own calendar."
+msgstr "In einen freigegebenen Kalender können nur Termine ohne Teilnehmer eingetragen werden. Legen Sie die Besprechung in Ihrem eigenen Kalender an."
+
+#: src/calendar/e-cal-backend-groupwise.c:2640
+msgid "The server did not delete the appointment from the shared calendar."
+msgstr "Der Server hat den Termin nicht aus dem freigegebenen Kalender gelöscht."
+
+#: src/calendar/e-cal-backend-groupwise.c:2682
 #, c-format
 msgid ""
 "“%s” is the preparation or travel time of an appointment. Move or delete the "
@@ -88,7 +116,7 @@ msgstr ""
 "löschen Sie den Termin selbst; die Reisezeit ändern oder entfernen Sie auf "
 "der Seite „Reisezeit“ des Termins."
 
-#: src/calendar/e-cal-backend-groupwise.c:2883
+#: src/calendar/e-cal-backend-groupwise.c:2970
 #, c-format
 msgid ""
 "“%s” is a meeting you organized in this calendar. Answer the invitation in "
@@ -123,20 +151,26 @@ msgstr "Das Element auf dem Server kann nicht gelesen werden"
 msgid ""
 "The folder “%s” is shared with you without the right to add: nothing can be "
 "moved or copied into it."
-msgstr "Der Ordner „%s“ ist für Sie ohne das Recht „Hinzufügen“ freigegeben: Es lässt sich nichts hinein verschieben oder kopieren."
+msgstr ""
+"Der Ordner „%s“ ist für Sie ohne das Recht „Hinzufügen“ freigegeben: Es "
+"lässt sich nichts hinein verschieben oder kopieren."
 
 #: src/camel/camel-groupwise-folder.c:153
 #, c-format
 msgid ""
 "The folder “%s” is shared with you without the right to delete: its messages "
 "can neither be deleted nor moved away."
-msgstr "Der Ordner „%s“ ist für Sie ohne das Recht „Löschen“ freigegeben: Seine Nachrichten lassen sich weder löschen noch verschieben."
+msgstr ""
+"Der Ordner „%s“ ist für Sie ohne das Recht „Löschen“ freigegeben: Seine "
+"Nachrichten lassen sich weder löschen noch verschieben."
 
 #: src/camel/camel-groupwise-folder.c:158
 #, c-format
 msgid ""
 "The folder “%s” is shared with you without the right to change its messages."
-msgstr "Der Ordner „%s“ ist für Sie ohne das Recht freigegeben, seine Nachrichten zu ändern."
+msgstr ""
+"Der Ordner „%s“ ist für Sie ohne das Recht freigegeben, seine Nachrichten zu "
+"ändern."
 
 #: src/camel/camel-groupwise-folder.c:175
 msgid "The folder has no store"
@@ -382,55 +416,55 @@ msgid "A folder name must not contain \"/\""
 msgstr "Ein Ordnername darf kein „/“ enthalten"
 
 #: src/camel/camel-groupwise-store-summary.c:387
-#: src/evolution/e-groupwise-share-accept.c:210
+#: src/evolution/e-groupwise-share-accept.c:219
 msgid "Mailbox"
 msgstr "Mailbox"
 
 #: src/camel/camel-groupwise-store-summary.c:388
 #: src/evolution/e-groupwise-junk-tab.c:528
-#: src/evolution/e-groupwise-share-accept.c:211
+#: src/evolution/e-groupwise-share-accept.c:220
 msgid "Junk Mail"
 msgstr "Junkmail"
 
 #: src/camel/camel-groupwise-store-summary.c:389
-#: src/evolution/e-groupwise-share-accept.c:212
+#: src/evolution/e-groupwise-share-accept.c:221
 msgid "Trash"
 msgstr "Papierkorb"
 
 #: src/camel/camel-groupwise-store-summary.c:390
-#: src/evolution/e-groupwise-share-accept.c:213
+#: src/evolution/e-groupwise-share-accept.c:222
 msgid "Sent Items"
 msgstr "Ausgangsnachrichten"
 
 #: src/camel/camel-groupwise-store-summary.c:391
-#: src/evolution/e-groupwise-share-accept.c:214
+#: src/evolution/e-groupwise-share-accept.c:223
 msgid "Work In Progress"
 msgstr "In Arbeit"
 
 #: src/camel/camel-groupwise-store-summary.c:392
-#: src/evolution/e-groupwise-share-accept.c:215
+#: src/evolution/e-groupwise-share-accept.c:224
 msgid "Cabinet"
 msgstr "Aktenschrank"
 
 #: src/camel/camel-groupwise-store-summary.c:393
 #: src/camel/camel-groupwise-store-summary.c:394
-#: src/evolution/e-groupwise-share-accept.c:216
+#: src/evolution/e-groupwise-share-accept.c:225
 msgid "Tasklist"
 msgstr "Jobliste"
 
 #: src/camel/camel-groupwise-store-summary.c:395
-#: src/evolution/e-groupwise-share-accept.c:217
-#: src/registry/module-groupwise-backend.c:261
+#: src/evolution/e-groupwise-share-accept.c:226
+#: src/registry/module-groupwise-backend.c:276
 msgid "Calendar"
 msgstr "Kalender"
 
 #: src/camel/camel-groupwise-store-summary.c:396
-#: src/evolution/e-groupwise-share-accept.c:218
+#: src/evolution/e-groupwise-share-accept.c:227
 msgid "Contacts"
 msgstr "Kontakte"
 
 #: src/camel/camel-groupwise-store-summary.c:397
-#: src/evolution/e-groupwise-share-accept.c:219
+#: src/evolution/e-groupwise-share-accept.c:228
 msgid "Documents"
 msgstr "Dokumente"
 
@@ -478,14 +512,14 @@ msgstr "Proxy-Zugriff gewähren"
 
 #: src/evolution/e-groupwise-access-tab.c:157
 #: src/evolution/e-groupwise-junk-tab.c:70
-#: src/evolution/e-groupwise-mail-ui.c:464
+#: src/evolution/e-groupwise-mail-ui.c:466
 #: src/evolution/e-groupwise-rule-editor.c:1336
 #: src/evolution/e-groupwise-rules-tab.c:351
 #: src/evolution/e-groupwise-sent-items.c:457
 #: src/evolution/e-groupwise-sent-items.c:508
 #: src/evolution/e-groupwise-settings-window.c:375
-#: src/evolution/e-groupwise-share-accept.c:337
-#: src/evolution/e-groupwise-share-tab.c:763
+#: src/evolution/e-groupwise-share-accept.c:346
+#: src/evolution/e-groupwise-share-tab.c:776
 #: src/evolution/e-groupwise-signatures-tab.c:228
 #: src/evolution/e-groupwise-travel-page.c:773
 msgid "_Cancel"
@@ -514,7 +548,7 @@ msgid "Reminder Notes"
 msgstr "Erinnerungsnotizen"
 
 #: src/evolution/e-groupwise-access-tab.c:219
-#: src/registry/module-groupwise-backend.c:261
+#: src/registry/module-groupwise-backend.c:276
 msgid "Tasks"
 msgstr "Aufgaben"
 
@@ -529,7 +563,7 @@ msgstr ""
 #: src/evolution/e-groupwise-access-tab.c:237
 #: src/evolution/e-groupwise-proxy-tab.c:167
 #: src/evolution/e-groupwise-rules-tab.c:404
-#: src/evolution/e-groupwise-share-tab.c:1045
+#: src/evolution/e-groupwise-share-tab.c:1065
 #: src/evolution/e-groupwise-signatures-tab.c:285
 msgid "Name"
 msgstr "Name"
@@ -544,12 +578,12 @@ msgid "A_dd User…"
 msgstr "Benutzer _hinzufügen …"
 
 #: src/evolution/e-groupwise-access-tab.c:259
-#: src/evolution/e-groupwise-share-tab.c:1068
+#: src/evolution/e-groupwise-share-tab.c:1088
 msgid "_Remove User"
 msgstr "Benutzer _entfernen"
 
 #: src/evolution/e-groupwise-access-tab.c:270
-#: src/evolution/e-groupwise-share-accept.c:177
+#: src/evolution/e-groupwise-share-accept.c:186
 #: src/evolution/e-groupwise-share-tab.c:72
 msgid "Read"
 msgstr "Lesen"
@@ -741,78 +775,78 @@ msgstr ""
 msgid "Trust List"
 msgstr "Vertrauensliste"
 
-#: src/evolution/e-groupwise-mail-ui.c:158
+#: src/evolution/e-groupwise-mail-ui.c:160
 msgid "restoring messages"
 msgstr "Nachrichten wiederherstellen"
 
-#: src/evolution/e-groupwise-mail-ui.c:409
+#: src/evolution/e-groupwise-mail-ui.c:411
 msgid "updating the junk mail lists"
 msgstr "Junk-Mail-Listen aktualisieren"
 
-#: src/evolution/e-groupwise-mail-ui.c:436
+#: src/evolution/e-groupwise-mail-ui.c:438
 msgid "Junk the Sender"
 msgstr "Sender als Junk einstufen"
 
-#: src/evolution/e-groupwise-mail-ui.c:436
+#: src/evolution/e-groupwise-mail-ui.c:438
 msgid ""
 "Future mail goes into the Junk Mail folder; this message goes there now."
 msgstr ""
 "Künftige Mail kommt in den Ordner Junk Mail; diese Nachricht kommt jetzt "
 "dorthin."
 
-#: src/evolution/e-groupwise-mail-ui.c:436
+#: src/evolution/e-groupwise-mail-ui.c:438
 msgid "_Junk"
 msgstr "Als _Junk einstufen"
 
-#: src/evolution/e-groupwise-mail-ui.c:437
+#: src/evolution/e-groupwise-mail-ui.c:439
 msgid "Block the Sender"
 msgstr "Sender blockieren"
 
-#: src/evolution/e-groupwise-mail-ui.c:437
+#: src/evolution/e-groupwise-mail-ui.c:439
 msgid ""
 "Future mail is not delivered; this message goes into the Junk Mail folder."
 msgstr ""
 "Künftige Mail wird nicht zugestellt; diese Nachricht kommt in den Ordner "
 "Junk Mail."
 
-#: src/evolution/e-groupwise-mail-ui.c:437
+#: src/evolution/e-groupwise-mail-ui.c:439
 msgid "_Block"
 msgstr "_Blockieren"
 
-#: src/evolution/e-groupwise-mail-ui.c:438
+#: src/evolution/e-groupwise-mail-ui.c:440
 msgid "Trust the Sender"
 msgstr "Sender als verbürgt einstufen"
 
-#: src/evolution/e-groupwise-mail-ui.c:438
+#: src/evolution/e-groupwise-mail-ui.c:440
 msgid ""
 "Mail from the sender is never junk; this message goes back into the Mailbox."
 msgstr ""
 "Mail vom Sender ist nie Junk; diese Nachricht kommt zurück in die Mailbox."
 
-#: src/evolution/e-groupwise-mail-ui.c:438
+#: src/evolution/e-groupwise-mail-ui.c:440
 msgid "_Trust"
 msgstr "Als _verbürgt einstufen"
 
-#: src/evolution/e-groupwise-mail-ui.c:478
+#: src/evolution/e-groupwise-mail-ui.c:480
 #, c-format
 msgid "Only the _address %s"
 msgstr "Nur die _Adresse %s"
 
-#: src/evolution/e-groupwise-mail-ui.c:480
+#: src/evolution/e-groupwise-mail-ui.c:482
 #, c-format
 msgid "Only the _addresses of the %u senders"
 msgstr "Nur die _Adressen der %u Sender"
 
-#: src/evolution/e-groupwise-mail-ui.c:484
+#: src/evolution/e-groupwise-mail-ui.c:486
 #, c-format
 msgid "The whole _domain %s (with its subdomains)"
 msgstr "Die ganze _Domain %s (mit ihren Subdomains)"
 
-#: src/evolution/e-groupwise-mail-ui.c:486
+#: src/evolution/e-groupwise-mail-ui.c:488
 msgid "Their whole _domains (with their subdomains)"
 msgstr "Ihre ganzen _Domains (mit ihren Subdomains)"
 
-#: src/evolution/e-groupwise-mail-ui.c:492
+#: src/evolution/e-groupwise-mail-ui.c:494
 msgid ""
 "This applies to Internet mail only; the lists are in the GroupWise Settings "
 "of the account."
@@ -820,21 +854,30 @@ msgstr ""
 "Das gilt nur für Internet-Mail; die Listen stehen in den GroupWise-"
 "Einstellungen des Kontos."
 
-#: src/evolution/e-groupwise-mail-ui.c:1182
+#: src/evolution/e-groupwise-mail-ui.c:1229
+#: src/evolution/e-groupwise-mail-ui.c:1310
+msgid "S_haring…"
+msgstr "_Freigabe …"
+
+#: src/evolution/e-groupwise-mail-ui.c:1231
+msgid "Share the calendar with other GroupWise users, or see who shares it"
+msgstr "Den Kalender für andere GroupWise-Benutzer freigeben oder sehen, wer ihn freigibt"
+
+#: src/evolution/e-groupwise-mail-ui.c:1261
 msgid "_Restore"
 msgstr "_Wiederherstellen"
 
-#: src/evolution/e-groupwise-mail-ui.c:1184
+#: src/evolution/e-groupwise-mail-ui.c:1263
 msgid "Put the selected messages back into the folders they were deleted from"
 msgstr ""
 "Die ausgewählten Nachrichten in die Ordner zurücklegen, aus denen sie "
 "gelöscht wurden"
 
-#: src/evolution/e-groupwise-mail-ui.c:1225
+#: src/evolution/e-groupwise-mail-ui.c:1304
 msgid "GroupWise _Settings…"
 msgstr "GroupWise-_Einstellungen …"
 
-#: src/evolution/e-groupwise-mail-ui.c:1227
+#: src/evolution/e-groupwise-mail-ui.c:1306
 msgid ""
 "Settings the GroupWise server keeps for the account: junk mail handling and "
 "more"
@@ -842,69 +885,65 @@ msgstr ""
 "Einstellungen, die der GroupWise-Server für das Konto hält: Junk-Mail-"
 "Verwaltung und mehr"
 
-#: src/evolution/e-groupwise-mail-ui.c:1231
-msgid "S_haring…"
-msgstr "_Freigabe …"
-
-#: src/evolution/e-groupwise-mail-ui.c:1233
+#: src/evolution/e-groupwise-mail-ui.c:1312
 msgid "Share the folder with other GroupWise users, or see who shares it"
 msgstr ""
 "Den Ordner für andere GroupWise-Benutzer freigeben oder sehen, wer ihn "
 "freigibt"
 
-#: src/evolution/e-groupwise-mail-ui.c:1235
+#: src/evolution/e-groupwise-mail-ui.c:1314
 msgid "GroupWise _Junk Mail"
 msgstr "GroupWise-_Junkmail"
 
-#: src/evolution/e-groupwise-mail-ui.c:1238
+#: src/evolution/e-groupwise-mail-ui.c:1317
 msgid "Junk Mail _Settings…"
 msgstr "Junkmail-_Einstellungen …"
 
-#: src/evolution/e-groupwise-mail-ui.c:1240
+#: src/evolution/e-groupwise-mail-ui.c:1319
 msgid "The junk mail handling of GroupWise: settings and lists"
 msgstr "Die Junkmail-Verwaltung von GroupWise: Einstellungen und Listen"
 
-#: src/evolution/e-groupwise-mail-ui.c:1244
+#: src/evolution/e-groupwise-mail-ui.c:1323
 msgid "_Junk the Sender…"
 msgstr "Sender als _Junk einstufen …"
 
-#: src/evolution/e-groupwise-mail-ui.c:1246
+#: src/evolution/e-groupwise-mail-ui.c:1325
 msgid "Put the sender or the sender's domain onto the junk list of GroupWise"
 msgstr "Den Sender oder seine Domain auf die Junk-Liste von GroupWise setzen"
 
-#: src/evolution/e-groupwise-mail-ui.c:1250
+#: src/evolution/e-groupwise-mail-ui.c:1329
 msgid "_Block the Sender…"
 msgstr "Sender _blockieren …"
 
-#: src/evolution/e-groupwise-mail-ui.c:1252
+#: src/evolution/e-groupwise-mail-ui.c:1331
 msgid "Put the sender or the sender's domain onto the block list of GroupWise"
 msgstr "Den Sender oder seine Domain auf die Blockliste von GroupWise setzen"
 
-#: src/evolution/e-groupwise-mail-ui.c:1256
+#: src/evolution/e-groupwise-mail-ui.c:1335
 msgid "_Trust the Sender…"
 msgstr "Sender als _verbürgt einstufen …"
 
-#: src/evolution/e-groupwise-mail-ui.c:1258
+#: src/evolution/e-groupwise-mail-ui.c:1337
 msgid "Put the sender or the sender's domain onto the trust list of GroupWise"
 msgstr ""
 "Den Sender oder seine Domain auf die Vertrauensliste von GroupWise setzen"
 
-#: src/evolution/e-groupwise-mail-ui.c:1262
+#: src/evolution/e-groupwise-mail-ui.c:1341
 msgid "Delivery _Status…"
 msgstr "_Zustellstatus …"
 
-#: src/evolution/e-groupwise-mail-ui.c:1264
+#: src/evolution/e-groupwise-mail-ui.c:1343
 msgid ""
 "What happened to the message at each recipient: delivered, opened, deleted …"
 msgstr ""
 "Was mit der Nachricht bei jedem Empfänger geschah: zugestellt, geöffnet, "
 "gelöscht …"
 
-#: src/evolution/e-groupwise-mail-ui.c:1268
+#: src/evolution/e-groupwise-mail-ui.c:1347
 msgid "Resen_d…"
 msgstr "_Neu senden …"
 
-#: src/evolution/e-groupwise-mail-ui.c:1270
+#: src/evolution/e-groupwise-mail-ui.c:1349
 msgid ""
 "Open the message to change it and send it anew; sending asks whether the "
 "original is retracted"
@@ -912,20 +951,20 @@ msgstr ""
 "Die Nachricht öffnen, um sie zu ändern und neu zu senden; beim Senden wird "
 "gefragt, ob das Original zurückgezogen wird"
 
-#: src/evolution/e-groupwise-mail-ui.c:1274
+#: src/evolution/e-groupwise-mail-ui.c:1353
 msgid "Re_tract…"
 msgstr "_Zurückziehen …"
 
-#: src/evolution/e-groupwise-mail-ui.c:1276
+#: src/evolution/e-groupwise-mail-ui.c:1355
 msgid "Take the selected messages back from the recipients' mailboxes"
 msgstr ""
 "Die ausgewählten Nachrichten aus den Postfächern der Empfänger zurückholen"
 
-#: src/evolution/e-groupwise-mail-ui.c:1295
+#: src/evolution/e-groupwise-mail-ui.c:1374
 msgid "Install Shared _Folder…"
 msgstr "Freigegebenen Ordner _installieren …"
 
-#: src/evolution/e-groupwise-mail-ui.c:1297
+#: src/evolution/e-groupwise-mail-ui.c:1376
 msgid ""
 "Accept the folder this notification offers: it is added to the folder list"
 msgstr ""
@@ -1096,7 +1135,7 @@ msgstr "BC"
 
 #: src/evolution/e-groupwise-rule-editor.c:98
 #: src/evolution/e-groupwise-sent-items.c:64
-#: src/evolution/e-groupwise-share-tab.c:152
+#: src/evolution/e-groupwise-share-tab.c:155
 msgid "Accepted"
 msgstr "Akzeptiert"
 
@@ -1107,7 +1146,7 @@ msgstr "Erledigt"
 
 #: src/evolution/e-groupwise-rule-editor.c:98
 #: src/evolution/e-groupwise-sent-items.c:60
-#: src/evolution/e-groupwise-share-tab.c:150
+#: src/evolution/e-groupwise-share-tab.c:153
 msgid "Opened"
 msgstr "Geöffnet"
 
@@ -1789,7 +1828,7 @@ msgid "Retracted"
 msgstr "Zurückgezogen"
 
 #: src/evolution/e-groupwise-sent-items.c:61
-#: src/evolution/e-groupwise-share-tab.c:154
+#: src/evolution/e-groupwise-share-tab.c:157
 msgid "Deleted"
 msgstr "Gelöscht"
 
@@ -1843,6 +1882,7 @@ msgid "Delivery Status"
 msgstr "Zustellstatus"
 
 #: src/evolution/e-groupwise-sent-items.c:287
+#: src/evolution/e-groupwise-share-tab.c:1434
 msgid "_Close"
 msgstr "S_chließen"
 
@@ -1949,67 +1989,80 @@ msgstr "Die Einstellungen werden vom Server gelesen …"
 msgid "accepting the shared folder"
 msgstr "Annehmen des freigegebenen Ordners"
 
-#: src/evolution/e-groupwise-share-accept.c:180
+#: src/evolution/e-groupwise-share-accept.c:189
 #: src/evolution/e-groupwise-share-tab.c:73
 msgid "Add"
 msgstr "Hinzufügen"
 
-#: src/evolution/e-groupwise-share-accept.c:182
+#: src/evolution/e-groupwise-share-accept.c:191
 #: src/evolution/e-groupwise-share-tab.c:74
 msgid "Edit"
 msgstr "Bearbeiten"
 
-#: src/evolution/e-groupwise-share-accept.c:184
+#: src/evolution/e-groupwise-share-accept.c:193
 #: src/evolution/e-groupwise-share-tab.c:75
 msgid "Delete"
 msgstr "Löschen"
 
-#: src/evolution/e-groupwise-share-accept.c:229
+#: src/evolution/e-groupwise-share-accept.c:238
 #, c-format
 msgid "%s Home"
 msgstr "%s Basisordner"
 
-#: src/evolution/e-groupwise-share-accept.c:335
+#: src/evolution/e-groupwise-share-accept.c:344
+msgid "Install Shared Calendar"
+msgstr "Freigegebenen Kalender installieren"
+
+#: src/evolution/e-groupwise-share-accept.c:344
 msgid "Install Shared Folder"
 msgstr "Freigegebenen Ordner installieren"
 
-#: src/evolution/e-groupwise-share-accept.c:337
+#: src/evolution/e-groupwise-share-accept.c:346
 msgid "_Install"
 msgstr "_Installieren"
 
-#: src/evolution/e-groupwise-share-accept.c:345
+#: src/evolution/e-groupwise-share-accept.c:355
+#, c-format
+msgid "%s shared the calendar “%s” with you."
+msgstr "%s hat den Kalender „%s“ für Sie freigegeben."
+
+#: src/evolution/e-groupwise-share-accept.c:358
 #, c-format
 msgid "%s shared the folder “%s” with you."
 msgstr "%s hat den Ordner „%s“ für Sie freigegeben."
 
-#: src/evolution/e-groupwise-share-accept.c:359
+#: src/evolution/e-groupwise-share-accept.c:372
 #, c-format
 msgid "Message from %s:"
 msgstr "Mitteilung von %s:"
 
-#: src/evolution/e-groupwise-share-accept.c:369
+#: src/evolution/e-groupwise-share-accept.c:382
 msgid "Your access rights:"
 msgstr "Ihre Zugriffsrechte:"
 
-#: src/evolution/e-groupwise-share-accept.c:374
+#: src/evolution/e-groupwise-share-accept.c:387
 msgid "_Name:"
 msgstr "_Name:"
 
-#: src/evolution/e-groupwise-share-accept.c:386
+#: src/evolution/e-groupwise-share-accept.c:399
 msgid "_Description:"
 msgstr "_Beschreibung:"
 
-#: src/evolution/e-groupwise-share-accept.c:402
+#: src/evolution/e-groupwise-share-accept.c:416
 msgid "_Position:"
 msgstr "_Position:"
 
-#: src/evolution/e-groupwise-share-accept.c:410
+#: src/evolution/e-groupwise-share-accept.c:424
 msgid ""
 "The new folder is put into the folder selected here; the topmost row puts it "
 "beside the Cabinet"
 msgstr ""
 "Der neue Ordner wird in dem hier markierten Ordner angelegt; die oberste "
 "Zeile legt ihn neben dem Aktenschrank an"
+
+#: src/evolution/e-groupwise-share-accept.c:485
+msgid "Shared address books cannot be installed here yet"
+msgstr "Freigegebene Adressbücher können hier noch nicht installiert werden"
 
 #: src/evolution/e-groupwise-share-tab.c:74
 msgid "_Edit"
@@ -2019,36 +2072,50 @@ msgstr "_Bearbeiten"
 msgid "_Delete"
 msgstr "_Löschen"
 
-#: src/evolution/e-groupwise-share-tab.c:148
+#: src/evolution/e-groupwise-share-tab.c:151
 msgid "Pending"
 msgstr "Ausstehend"
 
-#: src/evolution/e-groupwise-share-tab.c:156
+#: src/evolution/e-groupwise-share-tab.c:159
 msgid "Owner"
 msgstr "Eigentümer"
 
-#: src/evolution/e-groupwise-share-tab.c:160
+#: src/evolution/e-groupwise-share-tab.c:163
 msgid "New"
 msgstr "Neu"
 
-#: src/evolution/e-groupwise-share-tab.c:485 src/libegroupwise/e-gw-proxy.c:172
+#: src/evolution/e-groupwise-share-tab.c:488 src/libegroupwise/e-gw-proxy.c:172
 #, c-format
 msgid "No GroupWise user “%s”"
 msgstr "Kein GroupWise-Benutzer „%s“"
 
-#: src/evolution/e-groupwise-share-tab.c:724
+#: src/evolution/e-groupwise-share-tab.c:727
+msgid "sharing the calendar"
+msgstr "Freigeben des Kalenders"
+
+#: src/evolution/e-groupwise-share-tab.c:727
 msgid "sharing the folder"
 msgstr "Freigeben des Ordners"
 
-#: src/evolution/e-groupwise-share-tab.c:761
+#: src/evolution/e-groupwise-share-tab.c:773
+msgid "Shared Calendar Notification"
+msgstr "Benachrichtigung über freigegebenen Kalender"
+
+#: src/evolution/e-groupwise-share-tab.c:773
 msgid "Shared Folder Notification"
 msgstr "Benachrichtigung über freigegebenen Ordner"
 
-#: src/evolution/e-groupwise-share-tab.c:763
+#: src/evolution/e-groupwise-share-tab.c:776
 msgid "_Send"
 msgstr "_Senden"
 
-#: src/evolution/e-groupwise-share-tab.c:770
+#: src/evolution/e-groupwise-share-tab.c:784
+msgid ""
+"The new participants are sent a notification that you shared this calendar "
+"with them. You may add a message for them."
+msgstr "Die neuen Teilnehmer erhalten eine Benachrichtigung, dass Sie diesen Kalender für sie freigegeben haben. Sie können eine Mitteilung hinzufügen."
+
+#: src/evolution/e-groupwise-share-tab.c:786
 msgid ""
 "The new participants are sent a notification that you shared this folder "
 "with them. You may add a message for them."
@@ -2056,30 +2123,45 @@ msgstr ""
 "Die neuen Teilnehmer erhalten eine Benachrichtigung, dass Sie diesen Ordner "
 "für sie freigegeben haben. Sie können eine Mitteilung für sie hinzufügen."
 
-#: src/evolution/e-groupwise-share-tab.c:789
+#: src/evolution/e-groupwise-share-tab.c:805
 msgid "Participants:"
 msgstr "Teilnehmer:"
 
-#: src/evolution/e-groupwise-share-tab.c:799
+#: src/evolution/e-groupwise-share-tab.c:815
 #: src/evolution/e-groupwise-vacation-tab.c:187
 msgid "S_ubject:"
 msgstr "Be_treff:"
 
-#: src/evolution/e-groupwise-share-tab.c:806
+#: src/evolution/e-groupwise-share-tab.c:822
+#, c-format
+msgid "Shared calendar notification: %s"
+msgstr "Benachrichtigung über freigegebenen Kalender: %s"
+
+#: src/evolution/e-groupwise-share-tab.c:822
 #, c-format
 msgid "Shared folder notification: %s"
 msgstr "Benachrichtigung über freigegebenen Ordner: %s"
 
-#: src/evolution/e-groupwise-share-tab.c:814
+#: src/evolution/e-groupwise-share-tab.c:831
 #: src/evolution/e-groupwise-vacation-tab.c:165
 msgid "_Message:"
 msgstr "_Nachricht:"
 
-#: src/evolution/e-groupwise-share-tab.c:900
+#: src/evolution/e-groupwise-share-tab.c:918
+msgid "Apply the changes to the sharing of the calendar?"
+msgstr "Die Änderungen an der Freigabe des Kalenders übernehmen?"
+
+#: src/evolution/e-groupwise-share-tab.c:918
 msgid "Apply the changes to the sharing of the folder?"
 msgstr "Die Änderungen an der Freigabe des Ordners übernehmen?"
 
-#: src/evolution/e-groupwise-share-tab.c:902
+#: src/evolution/e-groupwise-share-tab.c:920
+msgid ""
+"You changed whom the calendar is shared with or what they may do, and did "
+"not apply that yet."
+msgstr "Sie haben geändert, für wen der Kalender freigegeben ist oder was die Benutzer dürfen, und das noch nicht übernommen."
+
+#: src/evolution/e-groupwise-share-tab.c:921
 msgid ""
 "You changed whom the folder is shared with or what they may do, and did not "
 "apply that yet."
@@ -2087,84 +2169,102 @@ msgstr ""
 "Sie haben geändert, für wen der Ordner freigegeben ist oder was die Benutzer "
 "dürfen, und das noch nicht übernommen."
 
-#: src/evolution/e-groupwise-share-tab.c:903
+#: src/evolution/e-groupwise-share-tab.c:922
 msgid "_Discard"
 msgstr "_Verwerfen"
 
-#: src/evolution/e-groupwise-share-tab.c:903
+#: src/evolution/e-groupwise-share-tab.c:922
 msgid "_Apply"
 msgstr "Ü_bernehmen"
 
-#: src/evolution/e-groupwise-share-tab.c:962
+#: src/evolution/e-groupwise-share-tab.c:981
+#, c-format
+msgid "%s shares this calendar with you."
+msgstr "%s gibt diesen Kalender für Sie frei."
+
+#: src/evolution/e-groupwise-share-tab.c:981
 #, c-format
 msgid "%s shares this folder with you."
 msgstr "%s gibt diesen Ordner für Sie frei."
 
-#: src/evolution/e-groupwise-share-tab.c:978
+#: src/evolution/e-groupwise-share-tab.c:998
 msgid "_Not shared"
 msgstr "_Nicht freigegeben"
 
-#: src/evolution/e-groupwise-share-tab.c:980
+#: src/evolution/e-groupwise-share-tab.c:1000
 msgid "_Shared with"
 msgstr "_Freigegeben für"
 
-#: src/evolution/e-groupwise-share-tab.c:992
+#: src/evolution/e-groupwise-share-tab.c:1012
 msgid "Users"
 msgstr "Benutzer"
 
-#: src/evolution/e-groupwise-share-tab.c:1011
+#: src/evolution/e-groupwise-share-tab.c:1031
 msgid "Na_me:"
 msgstr "Na_me:"
 
-#: src/evolution/e-groupwise-share-tab.c:1016
+#: src/evolution/e-groupwise-share-tab.c:1036
 msgid "The name or the e-mail address of a user of the GroupWise system"
 msgstr "Der Name oder die E-Mail-Adresse eines Benutzers des GroupWise-Systems"
 
-#: src/evolution/e-groupwise-share-tab.c:1021
+#: src/evolution/e-groupwise-share-tab.c:1041
 msgid "Choose users from the address books"
 msgstr "Benutzer aus den Adressbüchern auswählen"
 
-#: src/evolution/e-groupwise-share-tab.c:1026
+#: src/evolution/e-groupwise-share-tab.c:1046
 msgid "Add _User"
 msgstr "Benutzer _hinzufügen"
 
-#: src/evolution/e-groupwise-share-tab.c:1037
+#: src/evolution/e-groupwise-share-tab.c:1057
 msgid "Share _list:"
 msgstr "Freigabe_liste:"
 
-#: src/evolution/e-groupwise-share-tab.c:1050
+#: src/evolution/e-groupwise-share-tab.c:1070
 msgid "Status"
 msgstr "Status"
 
-#: src/evolution/e-groupwise-share-tab.c:1055
+#: src/evolution/e-groupwise-share-tab.c:1075
 msgid "Access"
 msgstr "Zugriff"
 
-#: src/evolution/e-groupwise-share-tab.c:1074
+#: src/evolution/e-groupwise-share-tab.c:1094
 msgid "Additional access"
 msgstr "Weiterer Zugriff"
 
-#: src/evolution/e-groupwise-share-tab.c:1087
+#: src/evolution/e-groupwise-share-tab.c:1107
 msgid "Share all su_bfolders"
 msgstr "Alle _Unterordner freigeben"
 
-#: src/evolution/e-groupwise-share-tab.c:1088
+#: src/evolution/e-groupwise-share-tab.c:1108
 msgid "The server takes this only together with new users"
 msgstr "Der Server übernimmt dies nur zusammen mit neuen Benutzern"
 
-#: src/evolution/e-groupwise-share-tab.c:1093
+#: src/evolution/e-groupwise-share-tab.c:1116
 msgid "A_pply Sharing"
 msgstr "Freigabe ü_bernehmen"
 
-#: src/evolution/e-groupwise-share-tab.c:1094
+#: src/evolution/e-groupwise-share-tab.c:1118
+msgid "Share the calendar as set here; new users are sent a notification"
+msgstr "Den Kalender wie hier eingestellt freigeben; neue Benutzer erhalten eine Benachrichtigung"
+
+#: src/evolution/e-groupwise-share-tab.c:1119
 msgid "Share the folder as set here; new users are sent a notification"
 msgstr ""
 "Den Ordner wie hier eingestellt freigeben; neue Benutzer erhalten eine "
 "Benachrichtigung"
 
-#: src/evolution/e-groupwise-share-tab.c:1186
+#: src/evolution/e-groupwise-share-tab.c:1237
+msgid "This calendar cannot be shared."
+msgstr "Dieser Kalender kann nicht freigegeben werden."
+
+#: src/evolution/e-groupwise-share-tab.c:1262
 msgid "Sharing"
 msgstr "Freigabe"
+
+#: src/evolution/e-groupwise-share-tab.c:1432
+#, c-format
+msgid "Sharing of “%s”"
+msgstr "Freigabe von „%s“"
 
 #: src/evolution/e-groupwise-signatures-tab.c:227
 #, c-format
@@ -2248,7 +2348,7 @@ msgstr ""
 "Evolution speichern"
 
 #: src/evolution/e-groupwise-ui-utils.c:110
-#: src/registry/module-groupwise-backend.c:521
+#: src/registry/module-groupwise-backend.c:544
 msgid "The account has no GroupWise settings"
 msgstr "Das Konto hat keine GroupWise-Einstellungen"
 
@@ -2450,16 +2550,16 @@ msgstr "%s kann nicht heruntergeladen werden"
 msgid "The server returned no time"
 msgstr "Der Server hat keine Uhrzeit geliefert"
 
-#: src/libegroupwise/e-gw-connection.c:1390
+#: src/libegroupwise/e-gw-connection.c:1405
 msgid "The server returned no folder ID"
 msgstr "Der Server hat keine Ordner-ID geliefert"
 
-#: src/libegroupwise/e-gw-connection.c:1472
-#: src/libegroupwise/e-gw-connection.c:1518
+#: src/libegroupwise/e-gw-connection.c:1487
+#: src/libegroupwise/e-gw-connection.c:1533
 msgid "The server returned no ID"
 msgstr "Der Server hat keine ID geliefert"
 
-#: src/libegroupwise/e-gw-connection.c:1654
+#: src/libegroupwise/e-gw-connection.c:1669
 msgid "The server started no free/busy search"
 msgstr "Der Server hat keine Frei/Belegt-Suche gestartet"
 
@@ -2467,11 +2567,11 @@ msgstr "Der Server hat keine Frei/Belegt-Suche gestartet"
 msgid "The folder does not exist"
 msgstr "Der Ordner existiert nicht"
 
-#: src/libegroupwise/e-gw-share.c:387
+#: src/libegroupwise/e-gw-share.c:395
 msgid "The message does not offer a shared folder"
 msgstr "Die Nachricht bietet keinen freigegebenen Ordner an"
 
-#: src/libegroupwise/e-gw-share.c:450
+#: src/libegroupwise/e-gw-share.c:459
 msgid "The server did not name the new folder"
 msgstr "Der Server hat den neuen Ordner nicht genannt"
 
@@ -2479,7 +2579,7 @@ msgstr "Der Server hat den neuen Ordner nicht genannt"
 msgid "Signature"
 msgstr "Signatur"
 
-#: src/registry/module-groupwise-backend.c:261
+#: src/registry/module-groupwise-backend.c:276
 msgid "Notes"
 msgstr "Notizen"
 

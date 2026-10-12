@@ -56,6 +56,7 @@
 #include "e-gw-category.h"
 #include "e-gw-calendar.h"
 #include "e-gw-folder.h"
+#include "e-gw-share.h"
 #include "e-gw-xml.h"
 #include "e-source-groupwise-folder.h"
 
@@ -89,6 +90,7 @@ struct _ECalBackendGroupwise {
 	gchar *folder_id;	/* the folder the source shows */
 	gchar *calendar_id;	/* the Calendar of the mailbox */
 	gchar *sent_folder_id;	/* NULL: its sent items are not listed */
+	guint share_rights;	/* EGwShareRights in a calendar shared to the user */
 	gchar *user_email;
 
 	GPtrArray *subcalendars;	/* IDs of the own subcalendars (ROLE_MAIN) */
@@ -490,6 +492,7 @@ ecb_groupwise_connect_sync (ECalMetaBackend *meta_backend,
 	if (cnc) {
 		GPtrArray *folders = e_gw_connection_get_folder_list_sync (cnc, NULL, TRUE, cancellable, NULL);
 		gboolean email_changed;
+		guint share_rights = E_GW_SHARE_READ;
 		guint ii;
 
 		g_clear_pointer (&cbgw->sent_folder_id, g_free);
@@ -506,6 +509,8 @@ ecb_groupwise_connect_sync (ECalMetaBackend *meta_backend,
 				cbgw->calendar_id = g_strdup (folder->id);
 			if (role == ROLE_MAIN && folder_role == E_GW_CALENDAR_ROLE_OWN)
 				g_ptr_array_add (cbgw->subcalendars, g_strdup (folder->id));
+			if (role == ROLE_SHARED && g_strcmp0 (folder->id, folder_id) == 0)
+				share_rights = folder->share_rights | E_GW_SHARE_READ;
 		}
 		if (folders)
 			g_ptr_array_unref (folders);
@@ -524,6 +529,7 @@ ecb_groupwise_connect_sync (ECalMetaBackend *meta_backend,
 
 		cbgw->cnc = cnc;
 		cbgw->role = role;
+		cbgw->share_rights = share_rights;
 		cbgw->proxy_session = e_gw_connection_get_proxy (cnc) != NULL;
 		g_free (cbgw->user_name);
 		cbgw->user_name = g_strdup (e_gw_connection_get_user_name (cnc));
@@ -536,9 +542,12 @@ ecb_groupwise_connect_sync (ECalMetaBackend *meta_backend,
 		cbgw->user_email = g_strdup (e_gw_connection_get_user_email (cnc));
 		g_rec_mutex_unlock (&cbgw->lock);
 
-		/* Proxy and shared calendars are only read (for now); those of a
-		 * proxy account as far as the other user granted it */
-		e_cal_backend_set_writable (E_CAL_BACKEND (cbgw), (role == ROLE_MAIN || role == ROLE_OWN) &&
+		/* Proxy calendars are only read (for now); those of a proxy account
+		 * as far as the other user granted it, a shared calendar when the
+		 * user may more than read there (what exactly, each change checks) */
+		e_cal_backend_set_writable (E_CAL_BACKEND (cbgw),
+			role == ROLE_SHARED ? (share_rights & ~E_GW_SHARE_READ) != 0 :
+			(role == ROLE_MAIN || role == ROLE_OWN) &&
 			(!e_gw_connection_get_proxy (cnc) || proxy_may_write (cbgw, cnc)));
 		/* What the last session had: proxy calendars leave it out
 		 * from the start, not only after the first listing here */
@@ -2061,7 +2070,7 @@ save_existing (ECalBackendGroupwise *cbgw,
 	}
 	/* The travel time is the user's: on the own copy of a meeting (a sent
 	 * one without has no place for it) */
-	if (success && !e_gw_xml_find (current, "travelAppointmentBacklink") &&
+	if (success && cbgw->role != ROLE_SHARED && !e_gw_xml_find (current, "travelAppointmentBacklink") &&
 	    (own_copy_id || g_strcmp0 (source, "sent") != 0)) {
 		if (own_copy_id) {
 			EGwResponse *own_response;
@@ -2078,7 +2087,8 @@ save_existing (ECalBackendGroupwise *cbgw,
 
 	/* The categories are the user's: on the own copy of a meeting (a
 	 * declined invitation is gone) */
-	if (success && e_gw_calendar_user_partstat (comp, cbgw->user_email) != I_CAL_PARTSTAT_DECLINED)
+	if (success && cbgw->role != ROLE_SHARED &&
+	    e_gw_calendar_user_partstat (comp, cbgw->user_email) != I_CAL_PARTSTAT_DECLINED)
 		success = save_categories (cbgw, cnc, own_copy_id ? own_copy_id : id, comp, cancellable, &local_error);
 
 	g_free (source);
@@ -2105,7 +2115,8 @@ created_item (ECalBackendGroupwise *cbgw,
 	const gchar *candidates[3];
 	gchar *in_folder = e_gw_item_id_in_container (sent_id,
 		sent && cbgw->sent_folder_id ? cbgw->sent_folder_id : cbgw->calendar_id);
-	gchar *in_sub = cbgw->role == ROLE_OWN && !sent ? e_gw_item_id_in_container (sent_id, cbgw->folder_id) : NULL;
+	gchar *in_sub = (cbgw->role == ROLE_OWN || cbgw->role == ROLE_SHARED) && !sent ?
+		e_gw_item_id_in_container (sent_id, cbgw->folder_id) : NULL;
 	gchar *found = NULL;
 	guint ii;
 
@@ -2262,6 +2273,34 @@ move_here (ECalBackendGroupwise *cbgw,
 	return is_move;
 }
 
+/* In a calendar another user shared: whether that user granted @right. The
+ * POA itself refuses only adding; changing and deleting it lets pass. */
+static gboolean
+check_share_right (ECalBackendGroupwise *cbgw,
+		   EGwShareRights right,
+		   GError **error)
+{
+	const gchar *message;
+
+	if (cbgw->role != ROLE_SHARED || (cbgw->share_rights & right) != 0)
+		return TRUE;
+
+	switch (right) {
+	case E_GW_SHARE_ADD:
+		message = _("The owner of this shared calendar did not grant you the right to add appointments to it.");
+		break;
+	case E_GW_SHARE_DELETE:
+		message = _("The owner of this shared calendar did not grant you the right to delete appointments from it.");
+		break;
+	default:
+		message = _("The owner of this shared calendar did not grant you the right to change its appointments.");
+		break;
+	}
+	g_set_error_literal (error, E_CLIENT_ERROR, E_CLIENT_ERROR_PERMISSION_DENIED, message);
+
+	return FALSE;
+}
+
 static gboolean
 ecb_groupwise_save_component_sync (ECalMetaBackend *meta_backend,
 				   gboolean overwrite_existing,
@@ -2284,6 +2323,9 @@ ecb_groupwise_save_component_sync (ECalMetaBackend *meta_backend,
 		g_propagate_error (error, e_cal_client_error_create (E_CAL_CLIENT_ERROR_INVALID_OBJECT, NULL));
 		return FALSE;
 	}
+
+	if (!check_share_right (cbgw, overwrite_existing && extra && *extra ? E_GW_SHARE_EDIT : E_GW_SHARE_ADD, error))
+		return FALSE;
 
 	cnc = ref_connection (cbgw, error);
 	if (!cnc)
@@ -2318,6 +2360,16 @@ ecb_groupwise_save_component_sync (ECalMetaBackend *meta_backend,
 		 * attendees': it goes to the own copy afterwards (with the user
 		 * among the attendees; else there is none) */
 		meeting = e_gw_calendar_is_meeting (to_send, user_email);
+		/* Another user's calendar holds what is put into it, nothing is
+		 * sent from there */
+		if (meeting && cbgw->role == ROLE_SHARED) {
+			g_object_unref (to_send);
+			g_free (user_email);
+			g_object_unref (cnc);
+			g_set_error_literal (error, E_CLIENT_ERROR, E_CLIENT_ERROR_NOT_SUPPORTED,
+				_("A shared calendar takes appointments without attendees only. Create the meeting in your own calendar."));
+			return FALSE;
+		}
 		if (meeting) {
 			e_cal_util_component_remove_x_property (to_send, E_GW_CALENDAR_X_TRAVEL_BEFORE);
 			e_cal_util_component_remove_x_property (to_send, E_GW_CALENDAR_X_TRAVEL_AFTER);
@@ -2328,7 +2380,7 @@ ecb_groupwise_save_component_sync (ECalMetaBackend *meta_backend,
 		xml = e_gw_calendar_item_xml (to_send, E_TIMEZONE_CACHE (cbgw), user_zone (), user_email, &local_error);
 		/* Into the subcalendar, as the GroupWise client does (every
 		 * appointment of a series) */
-		if (xml && cbgw->role == ROLE_OWN) {
+		if (xml && (cbgw->role == ROLE_OWN || cbgw->role == ROLE_SHARED)) {
 			const gchar *tag_end = strchr (xml, '>');
 			GString *with_container = g_string_new_len (xml, tag_end ? tag_end - xml + 1 : 0);
 
@@ -2337,7 +2389,11 @@ ecb_groupwise_save_component_sync (ECalMetaBackend *meta_backend,
 			g_free (xml);
 			xml = g_string_free (with_container, FALSE);
 		}
-		if (xml)
+		/* Sent into a folder of another user's, the appointment lands
+		 * in the user's own Calendar, with an error */
+		if (xml && cbgw->role == ROLE_SHARED)
+			sent_id = e_gw_connection_create_item_sync (cnc, xml, cancellable, &local_error);
+		else if (xml)
 			sent_id = e_gw_connection_send_item_sync (cnc, xml, cancellable, &local_error);
 		if (sent_id) {
 			gchar *uid = NULL;
@@ -2346,7 +2402,9 @@ ecb_groupwise_save_component_sync (ECalMetaBackend *meta_backend,
 			success = TRUE;
 			if (id && i_cal_component_isa (comp) == I_CAL_VTODO_COMPONENT && e_gw_calendar_is_completed (comp))
 				success = e_gw_connection_complete_sync (cnc, id, TRUE, cancellable, &local_error);
-			if (success && id && e_cal_util_component_has_property (comp, I_CAL_CATEGORIES_PROPERTY))
+			/* (categories are the user's own, not for another user's items) */
+			if (success && id && cbgw->role != ROLE_SHARED &&
+			    e_cal_util_component_has_property (comp, I_CAL_CATEGORIES_PROPERTY))
 				success = save_categories (cbgw, cnc, id, comp, cancellable, &local_error);
 			*out_new_uid = uid ? uid : g_strdup (i_cal_component_get_uid (comp));
 
@@ -2561,9 +2619,38 @@ ecb_groupwise_remove_component_sync (ECalMetaBackend *meta_backend,
 		g_debug ("%s was retracted", uid);
 	}
 
+	if (!check_share_right (cbgw, E_GW_SHARE_DELETE, error))
+		return FALSE;
+
 	cnc = ref_connection (cbgw, error);
 	if (!cnc)
 		return FALSE;
+
+	/* An appointment of another user's calendar: taken out of the folder
+	 * alone the POA keeps it, saying nothing */
+	if (cbgw->role == ROLE_SHARED) {
+		id = split_extra (extra, &own_copy_id);
+		success = e_gw_connection_remove_item_sync (cnc, id, cancellable, &local_error);
+		if (success) {
+			item = NULL;
+			response = get_item (cnc, id, &item, cancellable, NULL);
+			if (response && item) {
+				success = FALSE;
+				g_set_error_literal (&local_error, E_CLIENT_ERROR, E_CLIENT_ERROR_PERMISSION_DENIED,
+					_("The server did not delete the appointment from the shared calendar."));
+			}
+			e_gw_response_free (response);
+		} else if (g_error_matches (local_error, E_GW_ERROR, E_GW_ERROR_ITEM_NOT_FOUND)) {
+			g_clear_error (&local_error);
+			success = TRUE;
+		}
+		g_free (id);
+		g_free (own_copy_id);
+		g_object_unref (cnc);
+		propagate_error (error, local_error);
+
+		return success;
+	}
 
 	/* A retract takes the user's own copy of a meeting along */
 	id = split_extra (extra, &own_copy_id);

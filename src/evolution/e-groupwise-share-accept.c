@@ -162,6 +162,15 @@ accept_done_cb (GObject *source_object,
 	}
 	g_free (id);
 
+	if (data->offer->kind == E_GW_SHARE_KIND_CALENDAR) {
+		/* The registry lists the calendars of the account anew */
+		ESource *collection = e_source_registry_find_extension (data->registry, data->account, E_SOURCE_EXTENSION_COLLECTION);
+
+		if (collection) {
+			e_source_registry_refresh_backend (data->registry, e_source_get_uid (collection), NULL, NULL, NULL);
+			g_object_unref (collection);
+		}
+	}
 	camel_store_get_folder_info (camel_folder_get_parent_store (data->folder), NULL,
 		CAMEL_STORE_FOLDER_INFO_RECURSIVE | CAMEL_STORE_FOLDER_INFO_REFRESH, G_PRIORITY_DEFAULT, NULL, folder_info_cb, NULL);
 	/* The notification is gone */
@@ -320,7 +329,7 @@ run_dialog (AcceptData *data,
 {
 	GtkWidget *dialog, *box, *grid, *label, *name, *scrolled, *description, *view;
 	GtkTreeStore *store;
-	GtkTreeSelection *selection;
+	GtkTreeSelection *selection = NULL;
 	GtkTreePath *cabinet;
 	GtkTreeModel *model;
 	GtkTreeIter iter;
@@ -329,10 +338,10 @@ run_dialog (AcceptData *data,
 	EGwShareNotification *offer = data->offer;
 	const gchar *sender = offer->sender_name && *offer->sender_name ? offer->sender_name : offer->sender_email;
 	gchar *text;
-	gboolean accept;
+	gboolean accept, calendar = offer->kind == E_GW_SHARE_KIND_CALENDAR;
 	gint row = 0;
 
-	dialog = gtk_dialog_new_with_buttons (_("Install Shared Folder"),
+	dialog = gtk_dialog_new_with_buttons (calendar ? _("Install Shared Calendar") : _("Install Shared Folder"),
 		parent, GTK_DIALOG_MODAL | GTK_DIALOG_DESTROY_WITH_PARENT,
 		_("_Cancel"), GTK_RESPONSE_CANCEL, _("_Install"), GTK_RESPONSE_OK, NULL);
 	gtk_dialog_set_default_response (GTK_DIALOG (dialog), GTK_RESPONSE_OK);
@@ -341,8 +350,12 @@ run_dialog (AcceptData *data,
 	gtk_container_set_border_width (GTK_CONTAINER (box), 12);
 	gtk_box_set_spacing (GTK_BOX (box), 12);
 
-	/* Translators: the first %s is the name of a user, the second %s that of a folder */
-	text = g_strdup_printf (_("%s shared the folder “%s” with you."), sender ? sender : "", offer->folder_name ? offer->folder_name : "");
+	if (calendar)
+		/* Translators: the first %s is the name of a user, the second %s that of a calendar */
+		text = g_strdup_printf (_("%s shared the calendar “%s” with you."), sender ? sender : "", offer->folder_name ? offer->folder_name : "");
+	else
+		/* Translators: the first %s is the name of a user, the second %s that of a folder */
+		text = g_strdup_printf (_("%s shared the folder “%s” with you."), sender ? sender : "", offer->folder_name ? offer->folder_name : "");
 	label = left_label (text, FALSE);
 	gtk_label_set_line_wrap (GTK_LABEL (label), TRUE);
 	gtk_label_set_max_width_chars (GTK_LABEL (label), 60);
@@ -398,33 +411,36 @@ run_dialog (AcceptData *data,
 	gtk_container_add (GTK_CONTAINER (scrolled), description);
 	gtk_grid_attach (GTK_GRID (grid), scrolled, 1, row++, 1, 1);
 
-	/* Where the folder goes */
-	label = left_label (_("_Position:"), TRUE);
-	gtk_grid_attach (GTK_GRID (grid), label, 0, row, 1, 1);
-	store = gtk_tree_store_new (N_COLS, G_TYPE_STRING, G_TYPE_STRING, G_TYPE_BOOLEAN);
-	cabinet = fill_folders (store, data->folders);
-	view = gtk_tree_view_new_with_model (GTK_TREE_MODEL (store));
-	gtk_tree_view_set_headers_visible (GTK_TREE_VIEW (view), FALSE);
-	gtk_tree_view_insert_column_with_attributes (GTK_TREE_VIEW (view), -1, NULL, gtk_cell_renderer_text_new (),
-		"text", COL_NAME, "sensitive", COL_HOLDS, NULL);
-	gtk_widget_set_tooltip_text (view, _("The new folder is put into the folder selected here; the topmost row puts it beside the Cabinet"));
-	gtk_label_set_mnemonic_widget (GTK_LABEL (label), view);
-	selection = gtk_tree_view_get_selection (GTK_TREE_VIEW (view));
-	gtk_tree_selection_set_mode (selection, GTK_SELECTION_BROWSE);
-	gtk_tree_selection_set_select_function (selection, select_func, NULL, NULL);
-	if (cabinet) {
-		gtk_tree_view_expand_to_path (GTK_TREE_VIEW (view), cabinet);
-		gtk_tree_view_expand_row (GTK_TREE_VIEW (view), cabinet, FALSE);
-		gtk_tree_selection_select_path (selection, cabinet);
-		gtk_tree_path_free (cabinet);
+	if (!calendar) {
+		/* Where the folder goes; a calendar goes beside the others */
+		label = left_label (_("_Position:"), TRUE);
+		gtk_grid_attach (GTK_GRID (grid), label, 0, row, 1, 1);
+		store = gtk_tree_store_new (N_COLS, G_TYPE_STRING, G_TYPE_STRING, G_TYPE_BOOLEAN);
+		cabinet = fill_folders (store, data->folders);
+		view = gtk_tree_view_new_with_model (GTK_TREE_MODEL (store));
+		gtk_tree_view_set_headers_visible (GTK_TREE_VIEW (view), FALSE);
+		gtk_tree_view_insert_column_with_attributes (GTK_TREE_VIEW (view), -1, NULL, gtk_cell_renderer_text_new (),
+			"text", COL_NAME, "sensitive", COL_HOLDS, NULL);
+		gtk_widget_set_tooltip_text (view, _("The new folder is put into the folder selected here; the topmost row puts it beside the Cabinet"));
+		gtk_label_set_mnemonic_widget (GTK_LABEL (label), view);
+		selection = gtk_tree_view_get_selection (GTK_TREE_VIEW (view));
+		gtk_tree_selection_set_mode (selection, GTK_SELECTION_BROWSE);
+		gtk_tree_selection_set_select_function (selection, select_func, NULL, NULL);
+		if (cabinet) {
+			gtk_tree_view_expand_to_path (GTK_TREE_VIEW (view), cabinet);
+			gtk_tree_view_expand_row (GTK_TREE_VIEW (view), cabinet, FALSE);
+			gtk_tree_selection_select_path (selection, cabinet);
+			gtk_tree_path_free (cabinet);
+		}
+		scrolled = gtk_scrolled_window_new (NULL, NULL);
+		gtk_scrolled_window_set_shadow_type (GTK_SCROLLED_WINDOW (scrolled), GTK_SHADOW_IN);
+		gtk_scrolled_window_set_policy (GTK_SCROLLED_WINDOW (scrolled), GTK_POLICY_AUTOMATIC, GTK_POLICY_AUTOMATIC);
+		gtk_widget_set_size_request (scrolled, 380, 200);
+		gtk_widget_set_vexpand (scrolled, TRUE);
+		gtk_container_add (GTK_CONTAINER (scrolled), view);
+		gtk_grid_attach (GTK_GRID (grid), scrolled, 1, row++, 1, 1);
+		g_object_unref (store);
 	}
-	scrolled = gtk_scrolled_window_new (NULL, NULL);
-	gtk_scrolled_window_set_shadow_type (GTK_SCROLLED_WINDOW (scrolled), GTK_SHADOW_IN);
-	gtk_scrolled_window_set_policy (GTK_SCROLLED_WINDOW (scrolled), GTK_POLICY_AUTOMATIC, GTK_POLICY_AUTOMATIC);
-	gtk_widget_set_size_request (scrolled, 380, 200);
-	gtk_widget_set_vexpand (scrolled, TRUE);
-	gtk_container_add (GTK_CONTAINER (scrolled), view);
-	gtk_grid_attach (GTK_GRID (grid), scrolled, 1, row++, 1, 1);
 
 	gtk_widget_show_all (box);
 	gtk_widget_grab_focus (name);
@@ -434,10 +450,15 @@ run_dialog (AcceptData *data,
 		data->name = g_strstrip (g_strdup (gtk_entry_get_text (GTK_ENTRY (name))));
 		gtk_text_buffer_get_bounds (buffer, &start, &end);
 		data->description = g_strstrip (gtk_text_buffer_get_text (buffer, &start, &end, FALSE));
-		if (gtk_tree_selection_get_selected (selection, &model, &iter))
+		if (selection && gtk_tree_selection_get_selected (selection, &model, &iter))
 			gtk_tree_model_get (model, &iter, COL_ID, &data->container, -1);
+		for (guint ii = 0; calendar && !data->container && ii < data->folders->len; ii++) {
+			EGwFolder *folder = data->folders->pdata[ii];
+
+			if (folder->type == E_GW_FOLDER_TYPE_CALENDAR && folder->kind == E_GW_FOLDER_KIND_SYSTEM)
+				data->container = g_strdup (folder->id);
+		}
 	}
-	g_object_unref (store);
 	gtk_widget_destroy (dialog);
 
 	return accept;
@@ -458,6 +479,12 @@ load_thread (GTask *task,
 	data->cnc = e_groupwise_ui_connect_items_sync (data->registry, data->account, cancellable, &error);
 	if (data->cnc)
 		data->offer = e_gw_connection_get_share_notification_sync (data->cnc, data->uid, cancellable, &error);
+	/* (address books: not yet) */
+	if (data->offer && data->offer->kind == E_GW_SHARE_KIND_BOOK) {
+		g_set_error_literal (&error, G_IO_ERROR, G_IO_ERROR_NOT_SUPPORTED,
+			_("Shared address books cannot be installed here yet"));
+		g_clear_pointer (&data->offer, e_gw_share_notification_free);
+	}
 	if (data->offer)
 		data->folders = e_gw_connection_get_folder_list_sync (data->cnc, NULL, TRUE, cancellable, &error);
 

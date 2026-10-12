@@ -110,9 +110,17 @@ gboolean	e_gw_connection_modify_share_sync
 						 GCancellable *cancellable,
 						 GError **error);
 
+/* What a notification offers */
+typedef enum {
+	E_GW_SHARE_KIND_FOLDER,		/* a folder of mails */
+	E_GW_SHARE_KIND_CALENDAR,
+	E_GW_SHARE_KIND_BOOK		/* an address book */
+} EGwShareKind;
+
 /* The message telling the user that someone shared a folder */
 typedef struct {
 	gchar *id;
+	EGwShareKind kind;
 	gchar *folder_name;
 	gchar *subject;
 	gchar *sender_name;

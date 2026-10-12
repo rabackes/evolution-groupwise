@@ -1346,6 +1346,21 @@ e_gw_connection_remove_items_sync (EGwConnection *cnc,
 }
 
 gboolean
+e_gw_connection_remove_item_sync (EGwConnection *cnc,
+				  const gchar *id,
+				  GCancellable *cancellable,
+				  GError **error)
+{
+	GString *inner = g_string_new (NULL);
+
+	g_return_val_if_fail (id != NULL, FALSE);
+
+	e_gw_xml_add_leaf (inner, "id", id);
+
+	return simple_call (cnc, "removeItem", inner, cancellable, error);
+}
+
+gboolean
 e_gw_connection_purge_sync (EGwConnection *cnc,
 			    const gchar * const *ids,
 			    GCancellable *cancellable,

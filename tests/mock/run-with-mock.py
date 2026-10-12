@@ -582,6 +582,12 @@ class Handler(mock_poa.Handler):
                                "<message><part contentType='text/plain'>" + base64.b64encode("Bitte annehmen".encode()).decode()
                                + "</part></message><notification>SharedFolder</notification>"
                                "<description>Unterlagen</description><rights><read>1</read><add>1</add><edit>1</edit></rights></item>")
+        if action == "getItem" and base_id(re.search(r"<id>(.*?)</id>", body).group(1)) == "SN2@37":
+            # A calendar: only the item itself says so, listings call it SharedFolder
+            return mock_poa.ok(action, "<item type='SharedNotification'><id>SN2@37:" + mock_poa.FOLDERS["inbox"] + "</id>"
+                               "<name>Urlaub</name><subject>Benachrichtigung \u00fcber freigegebenen Kalender: Urlaub</subject>"
+                               "<distribution><from><displayName>Egon</displayName><email>egon@example.com</email></from></distribution>"
+                               "<notification>SharedCalendar</notification><rights><read>1</read></rights></item>")
         if action == "acceptShare":
             if clean(re.search(r"<id>(.*?)</id>", body).group(1)) != SHARE_OFFER or state["accepted_share"]:
                 return mock_poa.err(action, 59906, "")

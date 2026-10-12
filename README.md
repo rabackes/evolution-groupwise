@@ -14,7 +14,8 @@ login:
 - **Address books**: the GroupWise Address Book (read-only), Frequent Contacts and personal address books.
 - **Calendar, tasks, notes**: appointments (all-day, alarms, busy status), meetings with invitations,
   answers, changes and retraction done by GroupWise itself, free/busy lookup; own subcalendars as
-  calendars of their own, proxy calendars and calendars shared to the user (read only).
+  calendars of their own, proxy calendars (read only) and calendars shared to the user (as far as the
+  owner granted it); own subcalendars can be shared.
 - **Proxy accounts**: the mailboxes of users who granted the user proxy rights, as accounts of their
   own beside the user's (in grey), to read and to send in the other user's name.
 
@@ -125,8 +126,9 @@ certificate, for mail and for the address books and calendars of the account.
   GroupWise item: it stays the same appointment, a meeting is not sent again. Subscribed Internet
   calendars are left out.
 - Proxy calendars (the calendars of other users the user has proxy rights for) and calendars shared to
-  the user are calendars of their own as well, read only for now. A proxy calendar is read with a proxy
-  login into the other mailbox, with the user's own password.
+  the user are calendars of their own as well. A proxy calendar is read only for now and is read with a
+  proxy login into the other mailbox, with the user's own password. A shared calendar can be written as far
+  as its owner granted it (see “Sharing calendars”).
 - Free/busy comes from the busy search of the POA (internal users).
 
 ### Changes of the mailbox at once (events)
@@ -362,9 +364,24 @@ message (a double click, or the menu *Message*) shows sender, text and rights an
 parent folder, then accepts (`acceptShareRequest`). In such a folder the POA does not stream a GroupWise
 message as RFC 822; the provider then builds it from the item and its attachments.
 
+### Sharing calendars
+
+A subcalendar of the user is shared with *Sharing…* in its context menu: a dialog of its own with the same
+page as for mail folders (Evolution's calendar properties are a single page with OK/Cancel). The POA makes it
+a `SharedFolder` with another ID as well; the registry therefore keeps the calendar under a resource ID that
+does not depend on `@13`/`@35`, so colour, selection and cache stay. The notification says
+`<notification>SharedCalendar</notification>` in the item (listings call it `SharedFolder`); *Install Shared
+Calendar* mounts the calendar below the main Calendar and has the registry list the calendars anew.
+
+In a calendar shared to the user the rights from the folder list apply: new appointments go into the folder
+with `createItemRequest` (`sendItemRequest` puts them into the user's own Calendar, with error 53540), without
+attendees only; the backend checks changing and deleting itself, since over SOAP the POA refuses only adding.
+Deleting uses `removeItemRequest` without a container – taken out of the folder alone, the POA reports success
+and keeps the appointment.
+
 ### Not yet supported
 
-Sharing calendars and address books, shared address books, writing into other users' calendars, signed or encrypted messages (GroupWise builds the message for the recipients itself).
+Sharing address books, shared address books, writing into proxy calendars below the own account, signed or encrypted messages (GroupWise builds the message for the recipients itself).
 
 ## Tools
 

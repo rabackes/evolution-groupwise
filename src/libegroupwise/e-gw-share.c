@@ -370,6 +370,7 @@ e_gw_connection_get_share_notification_sync (EGwConnection *cnc,
 	EGwResponse *response;
 	xmlNode *item;
 	gchar *kind;
+	EGwShareKind share_kind;
 
 	g_return_val_if_fail (E_IS_GW_CONNECTION (cnc), NULL);
 	g_return_val_if_fail (id != NULL, NULL);
@@ -380,7 +381,14 @@ e_gw_connection_get_share_notification_sync (EGwConnection *cnc,
 
 	item = e_gw_xml_find (e_gw_response_get_node (response), "item");
 	kind = item ? e_gw_xml_dup_text (item, "notification") : NULL;
-	if (g_strcmp0 (kind, "SharedFolder") != 0) {
+	/* Listings call them all SharedFolder; the item itself tells */
+	if (g_strcmp0 (kind, "SharedFolder") == 0) {
+		share_kind = E_GW_SHARE_KIND_FOLDER;
+	} else if (g_strcmp0 (kind, "SharedCalendar") == 0) {
+		share_kind = E_GW_SHARE_KIND_CALENDAR;
+	} else if (g_strcmp0 (kind, "SharedAddressBook") == 0) {
+		share_kind = E_GW_SHARE_KIND_BOOK;
+	} else {
 		g_free (kind);
 		e_gw_response_free (response);
 		g_set_error_literal (error, E_GW_ERROR, E_GW_ERROR_ITEM_NOT_FOUND,
@@ -390,6 +398,7 @@ e_gw_connection_get_share_notification_sync (EGwConnection *cnc,
 	g_free (kind);
 
 	notification = g_new0 (EGwShareNotification, 1);
+	notification->kind = share_kind;
 	/* The Mailbox may list the message under the ID of a mail (@1); the
 	 * item itself has the one to accept with (@37) */
 	notification->id = e_gw_xml_dup_text (item, "id");

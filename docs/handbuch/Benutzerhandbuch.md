@@ -473,7 +473,7 @@ In der Kalenderansicht stehen unter dem Namen des Kontos, in dieser Reihenfolge:
 
 4. **Freigegebene Kalender** – Kalender, die andere Benutzer für Sie freigegeben haben, mit dem Namen des Besitzers in Klammern.
 
-Proxy-Kalender und freigegebene Kalender sind derzeit **nur lesbar**; für sie gibt es auch keine Erinnerungen. Abonnierte Internet-Kalender, die GroupWise selbst abruft, werden nicht angezeigt – solche Kalender kann Evolution bei Bedarf direkt abonnieren.
+Proxy-Kalender sind derzeit **nur lesbar**; in einem freigegebenen Kalender können Sie so viel, wie der Eigentümer Ihnen erlaubt hat (siehe [5.8](#kal-freigabe)). Für beide gibt es keine Erinnerungen. Abonnierte Internet-Kalender, die GroupWise selbst abruft, werden nicht angezeigt – solche Kalender kann Evolution bei Bedarf direkt abonnieren.
 
 Evolution gleicht die Kalender alle 15 Minuten mit dem Server ab, sodass Änderungen aus dem GroupWise-Client von selbst erscheinen. Schneller geht es mit der Kontooption „Den Server alle … Sekunden nach Änderungen im Postfach fragen“ (Kapitel 3, Kontooptionen): Dann erscheinen sie innerhalb des dort eingestellten Abstands, mit der Sofort-Meldung des Servers nach wenigen Sekunden. Das Intervall können Sie in den Eigenschaften eines Kalenders ändern.
 
@@ -549,6 +549,31 @@ Wie im GroupWise-Client kann ein Termin eine Vorbereitungs- bzw. Reisezeit davor
 
 - Löschen lassen sich die Termine „Before:“ und „After:“ nicht einzeln – Evolution meldet das. Die Reisezeit entfernen Sie auf der Registerkarte `Reisezeit` des Termins selbst. Bei den Terminen „Before:“ und „After:“ gibt es diese Registerkarte nicht.
 
+## 5.8 Kalender freigeben
+
+Einen Unterkalender, den Sie selbst angelegt haben, können Sie wie einen Mailordner ([4.9](#mail-freigabe)) für andere GroupWise-Benutzer freigeben. Der Hauptkalender **Kalender** selbst lässt sich nicht freigeben – dafür gibt es den Proxy-Zugriff.
+
+Wählen Sie im Kontextmenü des Kalenders `Freigabe …`. Es öffnet sich der Dialog **Freigabe von „…“** mit denselben Elementen wie der Reiter `Freigabe` eines Mailordners: **Nicht freigegeben / Freigegeben für**, das Namensfeld mit dem Adressbuch-Knopf, die Freigabeliste mit Status und Zugriff, die zusätzlichen Rechte **Hinzufügen**, **Bearbeiten** und **Löschen** sowie der Knopf `Freigabe übernehmen`. Neue Benutzer erhalten die **Benachrichtigung über freigegebenen Kalender**, deren Betreff und Mitteilung Sie vor dem Senden anpassen können. Der Eintrag erscheint bei eigenen Unterkalendern und bei Kalendern, die andere für Sie freigegeben haben (dort zeigt der Dialog nur den Eigentümer und Ihre Rechte), auch in Proxy-Konten.
+
+### Eine Kalender-Freigabe annehmen
+
+Die Nachricht **Benachrichtigung über freigegebenen Kalender: …** kommt in der Mailbox an. Ein Doppelklick darauf (oder `Nachricht → Freigegebenen Ordner installieren …`) öffnet den Dialog **Freigegebenen Kalender installieren** mit dem Absender, seiner Mitteilung, Ihren Rechten sowie Name und Beschreibung, unter denen der Kalender bei Ihnen erscheinen soll. Eine Position gibt es hier nicht zu wählen: Der Kalender kommt zu Ihren anderen Kalendern. Nach `Installieren` erscheint er nach wenigen Sekunden in der Kalenderansicht, mit dem Namen des Eigentümers in Klammern.
+
+### In einem freigegebenen Kalender arbeiten
+
+| Recht | Was Sie damit können |
+|---|---|
+| Lesen (immer) | Die Termine sehen. |
+| Hinzufügen | Neue Termine eintragen, auch durch Kopieren oder Verschieben aus einem anderen Kalender. |
+| Bearbeiten | Vorhandene Termine ändern. |
+| Löschen | Termine löschen. |
+
+Fehlt ein Recht, lehnt Evolution die Änderung mit einer Meldung ab, die das fehlende Recht nennt. Haben Sie nur das Leserecht, ist der Kalender schreibgeschützt. Ändert der Eigentümer Ihre Rechte, gilt das in Evolution nach dem nächsten Verbinden des Kalenders (spätestens nach einem Neustart).
+
+In einen freigegebenen Kalender gehören nur **Termine ohne Teilnehmer**; eine Besprechung legen Sie in Ihrem eigenen Kalender an. Kategorien, Erinnerungen sowie Vorbereitungs- und Reisezeit sind persönlich und werden für Termine fremder Kalender nicht gespeichert.
+
+> **Freigabe oder Proxy?** Beides zeigt Ihnen Termine eines anderen Benutzers, aber auf verschiedene Weise. Eine **Freigabe** betrifft genau einen Unterkalender, den der Eigentümer dafür angelegt hat; Sie sehen nur, was in diesem Kalender liegt, und nehmen die Freigabe einmal an. Der **Proxy-Zugriff** öffnet das Postfach des anderen Benutzers mit den Rechten, die er Ihnen gegeben hat: Sie sehen dessen ganzen Kalender samt Besprechungen und Einladungen (private Einträge nur mit eigenem Recht) und können, als Proxy-Konto eingerichtet, in seinem Namen Termine anlegen und beantworten. Für einen gemeinsamen Team- oder Urlaubskalender ist die Freigabe das Richtige, für die Vertretung einer Person der Proxy-Zugriff.
+
 # 6 Aufgaben und Notizen
 
 Aufgaben und Notizen des GroupWise-Kalenders stehen in Evolution in der Aufgabenliste **Aufgaben** und der Notizliste **Notizen** des Kontos.
@@ -575,8 +600,8 @@ Die Adressbücher werden lokal vorgehalten, damit die **Autovervollständigung**
 
 | Thema | Stand |
 |---|---|
-| Kalender anderer Benutzer | Proxy-Kalender unter dem eigenen Konto und freigegebene Kalender sind nur lesbar; die Kalender eines Proxy-Kontos sind nach den gewährten Rechten beschreibbar. |
-| Freigaben | Mailordner lassen sich freigeben und Freigaben anderer annehmen (4.9). Kalender und Adressbücher freigeben geht noch nicht in Evolution; freigegebene Adressbücher werden noch nicht angezeigt. |
+| Kalender anderer Benutzer | Proxy-Kalender unter dem eigenen Konto sind nur lesbar; die Kalender eines Proxy-Kontos und freigegebene Kalender sind nach den gewährten Rechten beschreibbar. In einen freigegebenen Kalender gehören nur Termine ohne Teilnehmer. |
+| Freigaben | Mailordner (4.9) und Kalender (5.8) lassen sich freigeben und Freigaben anderer annehmen. Adressbücher freigeben geht noch nicht in Evolution; freigegebene Adressbücher werden noch nicht angezeigt. |
 | Proxy-Konten | Neue Nachrichten werden bei jedem Abgleich über die ganze Ordnerliste ermittelt, da der POA in Proxy-Sitzungen keine Änderungsabfrage beantwortet. Mit der Kontooption „Den Server alle … Sekunden nach Änderungen im Postfach fragen“ erscheinen sie trotzdem sofort. |
 | Geklonte Rechner | Zwei Rechner mit derselben Maschinen-ID stören sich bei der Abfrage der Änderungen am selben Postfach gegenseitig (siehe Kontooptionen in Kapitel 3). |
 | Signierte oder verschlüsselte Nachrichten | können nicht über GroupWise gesendet werden; empfangene werden angezeigt. |

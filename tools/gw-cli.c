@@ -508,6 +508,8 @@ run_command (EGwConnection *cnc,
 
 		if (!offer)
 			return FALSE;
+		printf ("kind: %s\n", offer->kind == E_GW_SHARE_KIND_CALENDAR ? "calendar" :
+			offer->kind == E_GW_SHARE_KIND_BOOK ? "address book" : "folder");
 		printf ("folder: %s\nfrom: %s <%s>\nsubject: %s\nrights: 0x%x\ndescription: %s\nmessage: %s\n",
 			offer->folder_name ? offer->folder_name : "", offer->sender_name ? offer->sender_name : "",
 			offer->sender_email ? offer->sender_email : "", offer->subject ? offer->subject : "", offer->rights,

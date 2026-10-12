@@ -15,7 +15,8 @@ einer Anmeldung:
 - **Adressbücher**: GroupWise-Adressbuch (nur lesen), Häufige Kontakte und persönliche Adressbücher.
 - **Kalender, Aufgaben, Notizen**: Termine (ganztägig, Erinnerungen, Belegt-Status), Besprechungen mit
   Einladungen, Antworten, Änderungen und Zurückziehen durch GroupWise selbst, Frei/Belegt-Suche; eigene
-  Unterkalender als eigene Kalender, Proxy-Kalender und freigegebene Kalender (nur lesen).
+  Unterkalender als eigene Kalender, Proxy-Kalender (nur lesen) und freigegebene Kalender (nach den
+  gewährten Rechten); eigene Unterkalender lassen sich freigeben.
 - **Proxy-Konten**: die Postfächer von Benutzern, die einem Proxy-Rechte gegeben haben, als eigene
   Konten neben dem eigenen (in grauer Schrift), zum Lesen und Senden im Namen des anderen Benutzers.
 
@@ -132,8 +133,9 @@ Zertifikat, für die Mail und für Adressbücher und Kalender des Kontos.
   GroupWise-Element: Es bleibt derselbe Termin, eine Besprechung wird nicht erneut versendet.
   Abonnierte Internet-Kalender werden ausgelassen.
 - Proxy-Kalender (Kalender anderer Benutzer, für die man Proxy-Rechte hat) und für den Benutzer
-  freigegebene Kalender sind ebenfalls eigene Kalender, vorerst nur lesbar. Ein Proxy-Kalender wird über
-  eine Proxy-Anmeldung am anderen Postfach gelesen, mit dem eigenen Passwort.
+  freigegebene Kalender sind ebenfalls eigene Kalender. Ein Proxy-Kalender ist vorerst nur lesbar und wird
+  über eine Proxy-Anmeldung am anderen Postfach gelesen, mit dem eigenen Passwort. Ein freigegebener
+  Kalender ist so weit beschreibbar, wie der Eigentümer es erlaubt hat (siehe „Kalender freigeben“).
 - Frei/Belegt kommt aus der Belegt-Suche des POA (interne Benutzer).
 
 ### Änderungen im Postfach sofort (Events)
@@ -389,9 +391,25 @@ fragt Name, Beschreibung und übergeordneten Ordner ab und nimmt an (`acceptShar
 Ordner gibt der POA eine GroupWise-Nachricht nicht als RFC 822 heraus; der Provider setzt sie dann aus dem
 Item und seinen Anhängen zusammen.
 
+### Kalender freigeben
+
+Ein eigener Unterkalender wird über *Freigabe …* in seinem Kontextmenü freigegeben: ein eigener Dialog mit
+derselben Seite wie bei den Mailordnern (Evolutions Kalender-Eigenschaften sind eine einzelne Seite mit
+OK/Abbrechen). Der POA macht auch daraus einen `SharedFolder` mit anderer ID; die Registry führt den Kalender
+deshalb unter einer von `@13`/`@35` unabhängigen Ressourcen-ID weiter, damit Farbe, Auswahl und Cache
+erhalten bleiben. Die Benachrichtigung trägt im Item `<notification>SharedCalendar</notification>` (Listen
+nennen sie `SharedFolder`); *Freigegebenen Kalender installieren* hängt den Kalender unter den Hauptkalender
+und lässt die Registry die Kalender neu einlesen.
+
+In einem für den Benutzer freigegebenen Kalender gelten die Rechte aus der Ordnerliste: neue Termine gehen
+mit `createItemRequest` in den Ordner (`sendItemRequest` legt sie mit Fehler 53540 im eigenen Kalender ab),
+nur ohne Teilnehmer; Ändern und Löschen prüft das Backend selbst, denn der POA lehnt über SOAP nur das
+Hinzufügen ab. Gelöscht wird mit `removeItemRequest` ohne Container – aus dem Ordner allein entfernt, meldet
+der POA Erfolg und behält den Termin.
+
 ### Noch nicht unterstützt
 
-Kalender und Adressbücher freigeben, freigegebene Adressbücher, Schreiben in Kalender anderer Benutzer, signierte oder verschlüsselte Nachrichten (GroupWise baut die Nachricht für die Empfänger
+Adressbücher freigeben, freigegebene Adressbücher, Schreiben in Proxy-Kalender unter dem eigenen Konto, signierte oder verschlüsselte Nachrichten (GroupWise baut die Nachricht für die Empfänger
 selbst zusammen).
 
 ## Werkzeuge

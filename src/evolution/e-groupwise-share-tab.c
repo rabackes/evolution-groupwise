@@ -84,6 +84,8 @@ typedef struct {
 	ESource *account;
 	CamelStore *store;
 	gchar *full_name;
+	gchar *folder_id;		/* a calendar: its folder, in a dialog of its own */
+	gboolean calendar;
 	gboolean select;
 	GCancellable *cancellable;
 
@@ -134,6 +136,7 @@ share_tab_unref (ShareTab *tab)
 	g_clear_pointer (&tab->share, e_gw_share_free);
 	g_clear_pointer (&tab->removed, g_ptr_array_unref);
 	g_free (tab->full_name);
+	g_free (tab->folder_id);
 	g_free (tab);
 }
 
@@ -721,7 +724,7 @@ apply_done_cb (GObject *source_object,
 			update_sensitivity (tab);
 		} else {
 			e_alert_submit (E_ALERT_SINK (e_shell_view_get_shell_content (tab->shell_view)), "mail:async-error",
-				_("sharing the folder"), error ? error->message : "", NULL);
+				tab->calendar ? _("sharing the calendar") : _("sharing the folder"), error ? error->message : "", NULL);
 		}
 		g_clear_error (&error);
 		return;
@@ -739,8 +742,17 @@ apply_done_cb (GObject *source_object,
 		update_sensitivity (tab);
 	}
 
-	camel_store_get_folder_info (tab->store, NULL, CAMEL_STORE_FOLDER_INFO_RECURSIVE | CAMEL_STORE_FOLDER_INFO_REFRESH,
-		G_PRIORITY_DEFAULT, NULL, folder_info_cb, NULL);
+	if (tab->store) {
+		camel_store_get_folder_info (tab->store, NULL, CAMEL_STORE_FOLDER_INFO_RECURSIVE | CAMEL_STORE_FOLDER_INFO_REFRESH,
+			G_PRIORITY_DEFAULT, NULL, folder_info_cb, NULL);
+	} else {
+		/* Shared, the calendar has another ID: the registry learns it */
+		gchar *collection = e_source_dup_parent (tab->account);
+
+		if (collection)
+			e_source_registry_refresh_backend (tab->registry, collection, NULL, NULL, NULL);
+		g_free (collection);
+	}
 }
 
 /* Subject and text of the message to the new users; FALSE: do not share */
@@ -758,7 +770,8 @@ ask_notification (ShareTab *tab,
 	gboolean send;
 	guint ii;
 
-	dialog = gtk_dialog_new_with_buttons (_("Shared Folder Notification"), GTK_WINDOW (tab->dialog),
+	dialog = gtk_dialog_new_with_buttons (tab->calendar ? _("Shared Calendar Notification") : _("Shared Folder Notification"),
+		GTK_WINDOW (tab->dialog),
 		GTK_DIALOG_MODAL | GTK_DIALOG_DESTROY_WITH_PARENT,
 		_("_Cancel"), GTK_RESPONSE_CANCEL, _("_Send"), GTK_RESPONSE_OK, NULL);
 	gtk_dialog_set_default_response (GTK_DIALOG (dialog), GTK_RESPONSE_OK);
@@ -767,7 +780,10 @@ ask_notification (ShareTab *tab,
 	gtk_container_set_border_width (GTK_CONTAINER (box), 12);
 	gtk_box_set_spacing (GTK_BOX (box), 12);
 
-	label = gtk_label_new (_("The new participants are sent a notification that you shared this folder "
+	label = gtk_label_new (tab->calendar ?
+		_("The new participants are sent a notification that you shared this calendar "
+		"with them. You may add a message for them.") :
+		_("The new participants are sent a notification that you shared this folder "
 		"with them. You may add a message for them."));
 	gtk_label_set_line_wrap (GTK_LABEL (label), TRUE);
 	gtk_label_set_xalign (GTK_LABEL (label), 0.0);
@@ -803,7 +819,8 @@ ask_notification (ShareTab *tab,
 	/* As the GroupWise client presets it. The server puts the name of
 	 * the folder behind a subject that does not end with it. */
 	/* Translators: %s is the name of the folder */
-	preset = g_strdup_printf (_("Shared folder notification: %s"), tab->share->name ? tab->share->name : "");
+	preset = g_strdup_printf (tab->calendar ? _("Shared calendar notification: %s") : _("Shared folder notification: %s"),
+		tab->share->name ? tab->share->name : "");
 	gtk_entry_set_text (GTK_ENTRY (subject), preset);
 	g_free (preset);
 	gtk_entry_set_activates_default (GTK_ENTRY (subject), TRUE);
@@ -897,8 +914,10 @@ response_cb (GtkDialog *dialog,
 		return;
 
 	question = gtk_message_dialog_new (GTK_WINDOW (dialog), GTK_DIALOG_MODAL | GTK_DIALOG_DESTROY_WITH_PARENT,
-		GTK_MESSAGE_QUESTION, GTK_BUTTONS_NONE, "%s", _("Apply the changes to the sharing of the folder?"));
+		GTK_MESSAGE_QUESTION, GTK_BUTTONS_NONE, "%s",
+		tab->calendar ? _("Apply the changes to the sharing of the calendar?") : _("Apply the changes to the sharing of the folder?"));
 	gtk_message_dialog_format_secondary_text (GTK_MESSAGE_DIALOG (question), "%s",
+		tab->calendar ? _("You changed whom the calendar is shared with or what they may do, and did not apply that yet.") :
 		_("You changed whom the folder is shared with or what they may do, and did not apply that yet."));
 	gtk_dialog_add_buttons (GTK_DIALOG (question), _("_Discard"), GTK_RESPONSE_REJECT, _("_Apply"), GTK_RESPONSE_ACCEPT, NULL);
 	gtk_dialog_set_default_response (GTK_DIALOG (question), GTK_RESPONSE_ACCEPT);
@@ -959,7 +978,8 @@ build_page (ShareTab *tab,
 
 	if (!mine) {
 		const gchar *owner = tab->share->owner_name && *tab->share->owner_name ? tab->share->owner_name : tab->share->owner_email;
-		gchar *text = g_strdup_printf (_("%s shares this folder with you."), owner ? owner : "");
+		gchar *text = g_strdup_printf (tab->calendar ? _("%s shares this calendar with you.") : _("%s shares this folder with you."),
+			owner ? owner : "");
 
 		label = gtk_label_new (text);
 		gtk_label_set_xalign (GTK_LABEL (label), 0.0);
@@ -1088,10 +1108,15 @@ build_page (ShareTab *tab,
 	gtk_widget_set_tooltip_text (tab->tree_box, _("The server takes this only together with new users"));
 	gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (tab->tree_box), tab->share->share_tree);
 	gtk_grid_attach (GTK_GRID (grid), tab->tree_box, 0, row++, 3, 1);
+	/* A calendar has none */
+	if (tab->calendar)
+		gtk_widget_set_no_show_all (tab->tree_box, TRUE);
 
 	/* Closing the properties does not apply (it cannot be cancelled) */
 	tab->apply_button = gtk_button_new_with_mnemonic (_("A_pply Sharing"));
-	gtk_widget_set_tooltip_text (tab->apply_button, _("Share the folder as set here; new users are sent a notification"));
+	gtk_widget_set_tooltip_text (tab->apply_button, tab->calendar ?
+		_("Share the calendar as set here; new users are sent a notification") :
+		_("Share the folder as set here; new users are sent a notification"));
 	gtk_widget_set_halign (tab->apply_button, GTK_ALIGN_END);
 	g_signal_connect (tab->apply_button, "clicked", G_CALLBACK (apply_clicked_cb), tab);
 	gtk_box_pack_start (GTK_BOX (page), tab->apply_button, FALSE, FALSE, 0);
@@ -1110,6 +1135,20 @@ build_page (ShareTab *tab,
 
 /* ------------------------------------------------------------------ */
 /* Loading */
+
+/* Whether two IDs are of one folder: BASE@13 of a folder becomes BASE@35
+ * when it is shared */
+static gboolean
+same_folder (const gchar *id1,
+	     const gchar *id2)
+{
+	const gchar *at1 = strchr (id1, '@'), *at2 = strchr (id2, '@');
+
+	if (!at1 || !at2 || strchr (at1, ':') || strchr (at2, ':'))
+		return g_strcmp0 (id1, id2) == 0;
+
+	return at1 - id1 == at2 - id2 && strncmp (id1, id2, at1 - id1) == 0;
+}
 
 static void
 load_thread (GTask *task,
@@ -1135,10 +1174,20 @@ load_thread (GTask *task,
 	}
 
 	ids = e_groupwise_ui_folder_ids (folders);
-	id = g_hash_table_lookup (ids, tab->full_name);
+	id = tab->folder_id ? tab->folder_id : g_hash_table_lookup (ids, tab->full_name);
 	for (ii = 0; id && ii < folders->len; ii++) {
 		EGwFolder *folder = folders->pdata[ii];
 
+		if (tab->calendar) {
+			EGwCalendarRole role = e_gw_folder_get_calendar_role (folder, folders);
+
+			/* Shared, a calendar has another ID than before */
+			if (!same_folder (folder->id, id))
+				continue;
+			if (role == E_GW_CALENDAR_ROLE_OWN || role == E_GW_CALENDAR_ROLE_SHARED)
+				share = e_gw_connection_get_share_sync (cnc, folder->id, cancellable, &error);
+			break;
+		}
 		if (g_strcmp0 (folder->id, id) != 0)
 			continue;
 		/* A folder the user made, or one shared already; calendars
@@ -1175,6 +1224,28 @@ load_done_cb (GObject *source_object,
 	tab->share = g_task_propagate_pointer (G_TASK (result), &error);
 	if (error)
 		g_debug ("share tab: %s", error->message);
+	/* The dialog of a calendar says what is wrong */
+	if (tab->dialog && !tab->notebook) {
+		GtkWidget *box = gtk_dialog_get_content_area (GTK_DIALOG (tab->dialog));
+
+		GtkWidget *spinner = g_object_get_data (G_OBJECT (tab->dialog), "groupwise-share-spinner");
+
+		if (spinner)
+			gtk_widget_destroy (spinner);
+		g_object_set_data (G_OBJECT (tab->dialog), "groupwise-share-spinner", NULL);
+		if (!tab->share) {
+			GtkWidget *label = gtk_label_new (error ? error->message : _("This calendar cannot be shared."));
+
+			gtk_label_set_line_wrap (GTK_LABEL (label), TRUE);
+			gtk_label_set_max_width_chars (GTK_LABEL (label), 60);
+			gtk_widget_set_margin_start (label, 12);
+			gtk_widget_set_margin_end (label, 12);
+			gtk_widget_set_margin_top (label, 12);
+			gtk_widget_set_margin_bottom (label, 12);
+			gtk_widget_show (label);
+			gtk_box_pack_start (GTK_BOX (box), label, TRUE, TRUE, 0);
+		}
+	}
 	g_clear_error (&error);
 	/* A folder that cannot be shared has no page */
 	if (!tab->share || !tab->dialog)
@@ -1183,6 +1254,11 @@ load_done_cb (GObject *source_object,
 	tab->removed = g_ptr_array_new_with_free_func ((GDestroyNotify) e_gw_share_entry_free);
 	page = build_page (tab, e_shell_get_client_cache (
 		e_shell_window_get_shell (E_SHELL_WINDOW (e_shell_view_get_shell_window (tab->shell_view)))));
+	if (!tab->notebook) {
+		gtk_box_pack_start (GTK_BOX (gtk_dialog_get_content_area (GTK_DIALOG (tab->dialog))), page, TRUE, TRUE, 0);
+		g_signal_connect (tab->dialog, "response", G_CALLBACK (response_cb), tab);
+		return;
+	}
 	number = gtk_notebook_append_page (tab->notebook, page, gtk_label_new (_("Sharing")));
 	if (tab->select)
 		gtk_notebook_set_current_page (tab->notebook, number);
@@ -1303,6 +1379,90 @@ e_groupwise_share_tab_start (void)
 
 	g_type_class_unref (g_type_class_ref (GTK_TYPE_WIDGET));
 	g_signal_add_emission_hook (g_signal_lookup ("show", GTK_TYPE_WIDGET), 0, show_hook_cb, NULL, NULL);
+}
+
+/* The dialog is its own: it goes when it is answered, after the question
+ * about changes not applied (connected before this) */
+static void
+calendar_response_cb (GtkDialog *dialog,
+		      gint response,
+		      gpointer user_data)
+{
+	gtk_widget_destroy (GTK_WIDGET (dialog));
+}
+
+void
+e_groupwise_share_tab_run_for_calendar (EShellView *shell_view,
+					ESource *calendar)
+{
+	ESourceRegistry *registry;
+	ESource *account = NULL;
+	GtkWidget *dialog, *box, *spinner;
+	GList *sources, *link;
+	ShareTab *tab;
+	GTask *task;
+	gchar *parent, *title, *name, *folder_id = NULL;
+
+	g_return_if_fail (E_IS_SHELL_VIEW (shell_view));
+	g_return_if_fail (E_IS_SOURCE (calendar));
+
+	registry = e_shell_get_registry (e_shell_window_get_shell (E_SHELL_WINDOW (e_shell_view_get_shell_window (shell_view))));
+	if (e_source_has_extension (calendar, E_SOURCE_EXTENSION_GROUPWISE_FOLDER))
+		folder_id = e_source_groupwise_folder_dup_id (e_source_get_extension (calendar, E_SOURCE_EXTENSION_GROUPWISE_FOLDER));
+	/* The mail account of the same GroupWise account logs in */
+	parent = e_source_dup_parent (calendar);
+	sources = e_source_registry_list_sources (registry, E_SOURCE_EXTENSION_MAIL_ACCOUNT);
+	for (link = sources; link && !account && parent; link = g_list_next (link)) {
+		gchar *other = e_source_dup_parent (link->data);
+
+		if (g_strcmp0 (other, parent) == 0)
+			account = g_object_ref (link->data);
+		g_free (other);
+	}
+	g_list_free_full (sources, g_object_unref);
+	g_free (parent);
+	if (!account || !folder_id) {
+		g_clear_object (&account);
+		g_free (folder_id);
+		return;
+	}
+
+	name = e_source_dup_display_name (calendar);
+	/* Translators: the title of a dialog; %s is the name of a calendar */
+	title = g_strdup_printf (_("Sharing of “%s”"), name);
+	dialog = gtk_dialog_new_with_buttons (title, GTK_WINDOW (e_shell_view_get_shell_window (shell_view)),
+		GTK_DIALOG_DESTROY_WITH_PARENT, _("_Close"), GTK_RESPONSE_CLOSE, NULL);
+	g_free (title);
+	g_free (name);
+	box = gtk_dialog_get_content_area (GTK_DIALOG (dialog));
+	spinner = gtk_spinner_new ();
+	gtk_spinner_start (GTK_SPINNER (spinner));
+	gtk_widget_set_size_request (spinner, 32, 32);
+	gtk_widget_set_margin_top (spinner, 24);
+	gtk_widget_set_margin_bottom (spinner, 24);
+	gtk_widget_set_margin_start (spinner, 120);
+	gtk_widget_set_margin_end (spinner, 120);
+	gtk_box_pack_start (GTK_BOX (box), spinner, TRUE, TRUE, 0);
+	g_object_set_data (G_OBJECT (dialog), "groupwise-share-spinner", spinner);
+
+	tab = g_new0 (ShareTab, 1);
+	tab->ref_count = 1;
+	tab->dialog = dialog;
+	tab->shell_view = g_object_ref (shell_view);
+	tab->registry = g_object_ref (registry);
+	tab->account = account;
+	tab->folder_id = folder_id;
+	tab->calendar = TRUE;
+	tab->cancellable = g_cancellable_new ();
+	g_signal_connect (dialog, "destroy", G_CALLBACK (dialog_destroy_cb), tab);
+
+	task = g_task_new (NULL, tab->cancellable, load_done_cb, NULL);
+	g_task_set_task_data (task, share_tab_ref (tab), (GDestroyNotify) share_tab_unref);
+	g_task_run_in_thread (task, load_thread);
+	g_object_unref (task);
+
+	g_signal_connect_after (dialog, "response", G_CALLBACK (calendar_response_cb), NULL);
+	gtk_widget_show_all (dialog);
 }
 
 void

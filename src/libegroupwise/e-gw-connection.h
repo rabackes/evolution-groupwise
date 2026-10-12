@@ -238,6 +238,15 @@ gboolean	e_gw_connection_move_items_sync	(EGwConnection *cnc,
 						 GCancellable *cancellable,
 						 GError **error);
 
+/* removeItemRequest without a container: the item leaves every folder it
+ * is in. The way to delete an item of a folder another user shared: taken
+ * out of that folder alone (removeItems), the POA answers 0 and keeps it. */
+gboolean	e_gw_connection_remove_item_sync
+						(EGwConnection *cnc,
+						 const gchar *id,
+						 GCancellable *cancellable,
+						 GError **error);
+
 /* removeItemsRequest: takes the items out of @container; mailbox items go
  * to the Trash (as a link where they are still in other folders). */
 gboolean	e_gw_connection_remove_items_sync

@@ -39,6 +39,7 @@
 #include <shell/e-shell-view.h>
 
 #include "e-gw-junk.h"
+#include "e-source-groupwise-folder.h"
 #include "e-groupwise-calendar-events.h"
 #include "e-groupwise-defaults.h"
 #include "e-groupwise-delete-dialog.h"
@@ -60,6 +61,7 @@
 #define SETTINGS_ACTION "groupwise-account-settings"
 #define SHARE_ACTION "groupwise-folder-share"
 #define ACCEPT_SHARE_ACTION "groupwise-share-accept"
+#define CALENDAR_SHARE_ACTION "groupwise-calendar-share"
 #define JUNK_MENU "groupwise-junk-menu"
 #define JUNK_ACTION "groupwise-junk-sender"
 #define BLOCK_ACTION "groupwise-block-sender"
@@ -1158,6 +1160,83 @@ start_services (EShellView *shell_view)
 	e_groupwise_share_tab_start ();
 }
 
+/* ------------------------------------------------------------------ */
+/* The calendar view */
+
+/* The calendar selected in the list when it can be shared, or is shared to
+ * the user: a calendar the user made, not the Calendar itself */
+static ESource *
+ref_shareable_calendar (EShellView *shell_view)
+{
+	ESourceSelector *selector = NULL;
+	ESource *source;
+	gchar *role = NULL;
+
+	g_object_get (e_shell_view_get_shell_sidebar (shell_view), "selector", &selector, NULL);
+	source = selector ? e_source_selector_ref_primary_selection (selector) : NULL;
+	g_clear_object (&selector);
+
+	if (source && e_source_has_extension (source, E_SOURCE_EXTENSION_CALENDAR) &&
+	    e_source_has_extension (source, E_SOURCE_EXTENSION_GROUPWISE_FOLDER))
+		role = e_source_groupwise_folder_dup_role (e_source_get_extension (source, E_SOURCE_EXTENSION_GROUPWISE_FOLDER));
+	if (g_strcmp0 (role, E_GW_SOURCE_ROLE_OWN) != 0 && g_strcmp0 (role, E_GW_SOURCE_ROLE_SHARED) != 0)
+		g_clear_object (&source);
+	g_free (role);
+
+	return source;
+}
+
+static void
+action_calendar_share_cb (EUIAction *action,
+			  GVariant *parameter,
+			  gpointer user_data)
+{
+	EShellView *shell_view = user_data;
+	ESource *calendar = ref_shareable_calendar (shell_view);
+
+	if (calendar) {
+		e_groupwise_share_tab_run_for_calendar (shell_view, calendar);
+		g_object_unref (calendar);
+	}
+}
+
+static void
+calendar_update_actions_cb (EShellView *shell_view,
+			    gpointer user_data)
+{
+	EUIActionGroup *action_group = e_ui_manager_get_action_group (e_shell_view_get_ui_manager (shell_view), "calendars");
+	ESource *calendar = ref_shareable_calendar (shell_view);
+
+	set_visible (action_group, CALENDAR_SHARE_ACTION, calendar != NULL);
+	g_clear_object (&calendar);
+}
+
+static void
+setup_calendar_view (EShellView *shell_view)
+{
+	static const gchar *eui =
+		"<eui>"
+		  "<menu id='calendar-popup' is-popup='true'>"
+		    "<placeholder id='calendar-popup-actions'>"
+		      "<item action='" CALENDAR_SHARE_ACTION "'/>"
+		    "</placeholder>"
+		  "</menu>"
+		"</eui>";
+
+	static const EUIActionEntry entries[] = {
+		{ CALENDAR_SHARE_ACTION,
+		  NULL,
+		  N_("S_haring…"),
+		  NULL,
+		  N_("Share the calendar with other GroupWise users, or see who shares it"),
+		  action_calendar_share_cb, NULL, NULL, NULL }
+	};
+
+	e_ui_manager_add_actions_with_eui_data (e_shell_view_get_ui_manager (shell_view), "calendars", GETTEXT_PACKAGE,
+		entries, G_N_ELEMENTS (entries), shell_view, eui);
+	g_signal_connect (shell_view, "update-actions", G_CALLBACK (calendar_update_actions_cb), NULL);
+}
+
 static void
 e_groupwise_mail_ui_constructed (GObject *object)
 {
@@ -1309,6 +1388,8 @@ e_groupwise_mail_ui_constructed (GObject *object)
 	 * later, or never) */
 	start_services (shell_view);
 
+	if (shell_view_class && g_strcmp0 (shell_view_class->ui_manager_id, "org.gnome.evolution.calendars") == 0)
+		setup_calendar_view (shell_view);
 	if (!shell_view_class || g_strcmp0 (shell_view_class->ui_manager_id, "org.gnome.evolution.mail") != 0)
 		return;
 

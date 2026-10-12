@@ -119,12 +119,27 @@ static const struct {
 	{ E_SOURCE_EXTENSION_MEMO_LIST, "memos:" }
 };
 
+/* The ID a folder keeps whether the user shares it or not: sharing makes
+ * BASE@13 a BASE@35, and the source of a calendar is to stay the same */
+static gchar *
+stable_folder_id (const gchar *id)
+{
+	gchar *stable = g_strdup (id);
+
+	if (stable && g_str_has_suffix (stable, "@35"))
+		memcpy (stable + strlen (stable) - 2, "13", 2);
+
+	return stable;
+}
+
 /* The resource ID: the folder ID, with the kind for calendar folders */
 static gchar *
 child_resource_id (ESource *child)
 {
-	gchar *id = child_folder_id (child), *resource_id;
+	gchar *folder_id = child_folder_id (child), *id = stable_folder_id (folder_id), *resource_id;
 	guint ii;
+
+	g_free (folder_id);
 
 	if (id && e_source_has_extension (child, E_SOURCE_EXTENSION_MAIL_SIGNATURE)) {
 		resource_id = g_strconcat ("signature:", id, NULL);
@@ -293,7 +308,11 @@ set_folder_extension (ESource *child,
 	ESourceGroupwiseFolder *extension = e_source_get_extension (child, E_SOURCE_EXTENSION_GROUPWISE_FOLDER);
 	gchar *old_role = e_source_groupwise_folder_dup_role (extension);
 	gchar *old_proxy = e_source_groupwise_folder_dup_proxy (extension);
-	gboolean changed = g_strcmp0 (old_role, role_name (role)) != 0 || g_strcmp0 (old_proxy, proxy) != 0;
+	gchar *old_id = e_source_groupwise_folder_dup_id (extension);
+	gboolean changed = g_strcmp0 (old_role, role_name (role)) != 0 || g_strcmp0 (old_proxy, proxy) != 0 ||
+		g_strcmp0 (old_id, folder->id) != 0;
+
+	g_free (old_id);
 
 	e_source_groupwise_folder_set_id (extension, folder->id);
 	e_source_groupwise_folder_set_role (extension, role_name (role));
@@ -312,7 +331,8 @@ new_calendar (ECollectionBackend *backend,
 	      const gchar *proxy)
 {
 	ESource *collection = e_backend_get_source (E_BACKEND (backend));
-	gchar *resource_id = g_strconcat (calendar_kinds[kind].prefix, folder->id, NULL);
+	gchar *stable_id = stable_folder_id (folder->id);
+	gchar *resource_id = g_strconcat (calendar_kinds[kind].prefix, stable_id, NULL);
 	ESource *child = e_collection_backend_new_child (backend, resource_id);
 	ESourceBackend *extension;
 	gchar *color;
@@ -343,6 +363,7 @@ new_calendar (ECollectionBackend *backend,
 	e_source_webdav_set_ssl_trust (e_source_get_extension (child, E_SOURCE_EXTENSION_WEBDAV_BACKEND), "");
 	copy_authentication (collection, child);
 	g_free (resource_id);
+	g_free (stable_id);
 
 	return child;
 }
@@ -361,7 +382,8 @@ sync_calendar_source (ECollectionBackend *backend,
 	const gchar *proxy = role != E_GW_CALENDAR_ROLE_PROXY ? NULL :
 		proxies && folder->proxy_uuid && g_hash_table_contains (proxies, folder->proxy_uuid) ?
 		g_hash_table_lookup (proxies, folder->proxy_uuid) : folder->proxy_email;
-	gchar *resource_id = g_strconcat (calendar_kinds[kind].prefix, folder->id, NULL);
+	gchar *stable_id = stable_folder_id (folder->id);
+	gchar *resource_id = g_strconcat (calendar_kinds[kind].prefix, stable_id, NULL);
 	gchar *name = calendar_display_name (folder, role, kind);
 	ESource *child = g_hash_table_lookup (by_resource, resource_id);
 
@@ -401,6 +423,7 @@ sync_calendar_source (ECollectionBackend *backend,
 
 	g_free (name);
 	g_free (resource_id);
+	g_free (stable_id);
 }
 
 /* A calendar, a task list and a memo list on the Calendar; a calendar for

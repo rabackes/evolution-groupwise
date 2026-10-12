@@ -580,6 +580,17 @@ test_shares (void)
 	g_assert_cmpstr (offer->message, ==, "Bitte annehmen");
 	g_assert_cmpstr (offer->description, ==, "Unterlagen");
 	g_assert_cmpint (offer->rights, ==, E_GW_SHARE_READ | E_GW_SHARE_ADD | E_GW_SHARE_EDIT);
+	g_assert_cmpint (offer->kind, ==, E_GW_SHARE_KIND_FOLDER);
+	{
+		EGwShareNotification *calendar = e_gw_connection_get_share_notification_sync (cnc,
+			"SN2@37:7.domain1.po1.100.0.1.0.1@16", NULL, &error);
+
+		g_assert_no_error (error);
+		g_assert_cmpint (calendar->kind, ==, E_GW_SHARE_KIND_CALENDAR);
+		g_assert_cmpstr (calendar->folder_name, ==, "Urlaub");
+		g_assert_cmpint (calendar->rights, ==, E_GW_SHARE_READ);
+		e_gw_share_notification_free (calendar);
+	}
 
 	g_assert_null (e_gw_connection_get_share_notification_sync (cnc, MAIL1, NULL, &error));
 	g_assert_error (error, E_GW_ERROR, E_GW_ERROR_ITEM_NOT_FOUND);
