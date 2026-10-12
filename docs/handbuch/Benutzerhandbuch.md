@@ -770,6 +770,7 @@ Diese Übersicht stellt die Funktionen des GroupWise-Clients für Windows denen 
 
 | Funktion des GroupWise-Clients | Stand |
 |---|---|
+| Benutzerdefinierte Serie nach einzelnen Daten („Datumsangaben“) | fehlt; Evolution legt Serien nach einer Regel an (täglich, wöchentlich, monatlich, jährlich), mit Ausnahmen. |
 | Regel einer Serie ändern, Termine zu einer Serie hinzufügen | nicht möglich; die nicht mehr gewünschten Termine löschen und eine neue Serie anlegen ([5.2](#kal-termine)). |
 | Einladungen delegieren, neue Zeit vorschlagen | fehlt; eine delegierte Einladung wird als Status angezeigt. |
 | Sendeoptionen für Mail | Die Priorität wird übertragen, und „Lesebestätigung anfordern“ fordert die Rückmeldung beim Öffnen als Mail an ([4.2](#mail-lesebestaetigung)). Rückmeldung beim Löschen, verzögerte Zustellung, Verfallsdatum, „Antwort angefordert“, Klassifizierung und verborgener Betreff fehlen; den Status einer gesendeten Nachricht zeigt `Zustellstatus …`. |
