@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: evolution-groupwise\n"
 "Report-Msgid-Bugs-To: rbackes@bond.de\n"
-"POT-Creation-Date: 2026-10-12 16:07+0200\n"
+"POT-Creation-Date: 2026-10-12 16:27+0200\n"
 "PO-Revision-Date: 2026-09-27 18:27+0200\n"
 "Last-Translator: Automatically generated\n"
 "Language-Team: none\n"
@@ -545,7 +545,7 @@ msgstr "Proxy-Zugriff gewähren"
 #: src/evolution/e-groupwise-share-accept.c:314
 #: src/evolution/e-groupwise-share-tab.c:789
 #: src/evolution/e-groupwise-signatures-tab.c:228
-#: src/evolution/e-groupwise-travel-page.c:890
+#: src/evolution/e-groupwise-travel-page.c:1092
 msgid "_Cancel"
 msgstr "_Abbrechen"
 
@@ -2654,15 +2654,15 @@ msgstr "Als _Standard"
 msgid "Signatures"
 msgstr "Signaturen"
 
-#: src/evolution/e-groupwise-travel-page.c:326
+#: src/evolution/e-groupwise-travel-page.c:327
 msgid "hours"
 msgstr "Stunden"
 
-#: src/evolution/e-groupwise-travel-page.c:328
+#: src/evolution/e-groupwise-travel-page.c:329
 msgid "minutes"
 msgstr "Minuten"
 
-#: src/evolution/e-groupwise-travel-page.c:345
+#: src/evolution/e-groupwise-travel-page.c:346
 msgid ""
 "Time blocked in your calendar before and after the appointment, for example "
 "to prepare or to get there. It is only yours: attendees of a meeting do not "
@@ -2672,37 +2672,43 @@ msgstr ""
 "zur Vorbereitung oder für die Anreise. Sie gilt nur für Sie: Teilnehmer "
 "einer Besprechung erhalten sie nicht."
 
-#: src/evolution/e-groupwise-travel-page.c:361
+#: src/evolution/e-groupwise-travel-page.c:362
 msgid "_Before the appointment:"
 msgstr "_Vor dem Termin:"
 
-#: src/evolution/e-groupwise-travel-page.c:362
+#: src/evolution/e-groupwise-travel-page.c:363
 msgid "_After the appointment:"
 msgstr "_Nach dem Termin:"
 
-#: src/evolution/e-groupwise-travel-page.c:364
+#: src/evolution/e-groupwise-travel-page.c:365
 msgid "Travel times before/after the appointment are the _same"
 msgstr "Reisezeiten vor/nach Termin sind _gleich"
 
-#: src/evolution/e-groupwise-travel-page.c:883
+#: src/evolution/e-groupwise-travel-page.c:886
+msgid "Saving the Series"
+msgstr "Serie wird gespeichert"
+
+#: src/evolution/e-groupwise-travel-page.c:898
+msgid ""
+"The appointments of the series are written to GroupWise one by one.\n"
+"This can take a moment …"
+msgstr ""
+"Die Termine der Serie werden einzeln nach GroupWise geschrieben.\n"
+"Das kann einen Moment dauern …"
+
+#: src/evolution/e-groupwise-travel-page.c:1088
 msgid "The appointment overlaps with busy time in your calendar"
 msgstr "Der Termin überschneidet sich mit belegter Zeit in Ihrem Kalender"
 
-#: src/evolution/e-groupwise-travel-page.c:886
+#: src/evolution/e-groupwise-travel-page.c:1091
 msgid "The preparation and travel time of the appointment counts, too."
 msgstr "Die Vorbereitungs- und Reisezeit des Termins zählt dabei mit."
 
-#: src/evolution/e-groupwise-travel-page.c:888
-msgid ""
-"The following appointments of the series are checked as well: they matter "
-"when you save the change for this and future instances or for all."
-msgstr "Geprüft sind auch die folgenden Termine der Serie: Sie zählen, wenn Sie die Änderung für diese und zukünftige Instanzen oder für alle speichern."
-
-#: src/evolution/e-groupwise-travel-page.c:891
+#: src/evolution/e-groupwise-travel-page.c:1093
 msgid "_Save Anyway"
 msgstr "_Trotzdem speichern"
 
-#: src/evolution/e-groupwise-travel-page.c:1313
+#: src/evolution/e-groupwise-travel-page.c:1536
 msgid "_Travel Time"
 msgstr "_Reisezeit"
 
@@ -2963,6 +2969,13 @@ msgid "This calendar or address book cannot be deleted in GroupWise"
 msgstr ""
 "Dieser Kalender bzw. dieses Adressbuch kann in GroupWise nicht gelöscht "
 "werden"
+
+#~ msgid ""
+#~ "The following appointments of the series are checked as well: they matter "
+#~ "when you save the change for this and future instances or for all."
+#~ msgstr ""
+#~ "Geprüft sind auch die folgenden Termine der Serie: Sie zählen, wenn Sie "
+#~ "die Änderung für diese und zukünftige Instanzen oder für alle speichern."
 
 #~ msgid ""
 #~ "A series of GroupWise cannot be moved or copied into another calendar."

@@ -43,6 +43,7 @@
 #include <glib/gi18n-lib.h>
 
 #include <e-util/e-util.h>
+#include <calendar/gui/e-cal-dialogs.h>
 #include <calendar/gui/e-comp-editor.h>
 #include <calendar/gui/e-comp-editor-event.h>
 #include <calendar/gui/e-comp-editor-page.h>
@@ -737,19 +738,215 @@ conflict_instance_cb (ICalComponent *other,
 	return TRUE;
 }
 
+/* ------------------------------------------------------------------ */
+/* The question of a series, asked before its time: "this instance, this
+ * and future instances, all instances". Evolution asks it after the
+ * component is filled, when the check for busy time has to be over — but
+ * what collides depends on the answer. So the question is asked here, with
+ * Evolution's own dialog, and Evolution's question that follows is answered
+ * with the same choice when it shows. */
+
+static struct {
+	GtkWindow *parent;	/* the editor (not owned: compared only) */
+	ECalObjModType mod;
+	gint64 until;		/* monotonic time the answer is good until */
+} answered;
+
+static gboolean
+answer_response_idle_cb (gpointer user_data)
+{
+	GtkWidget *dialog = g_weak_ref_get (user_data);
+
+	if (dialog) {
+		gtk_dialog_response (GTK_DIALOG (dialog), GTK_RESPONSE_OK);
+		g_object_unref (dialog);
+	}
+
+	return G_SOURCE_REMOVE;
+}
+
+static void
+answer_weak_ref_free (gpointer data)
+{
+	g_weak_ref_clear (data);
+	g_free (data);
+}
+
+static void
+collect_radios_cb (GtkWidget *widget,
+		   gpointer user_data)
+{
+	if (GTK_IS_RADIO_BUTTON (widget))
+		g_ptr_array_add (user_data, widget);
+	else if (GTK_IS_CONTAINER (widget))
+		gtk_container_foreach (GTK_CONTAINER (widget), collect_radios_cb, user_data);
+}
+
+static gboolean
+answer_show_hook_cb (GSignalInvocationHint *hint,
+		     guint n_param_values,
+		     const GValue *param_values,
+		     gpointer user_data)
+{
+	GObject *object = n_param_values ? g_value_peek_pointer (&param_values[0]) : NULL;
+	const gchar *wanted;
+	GPtrArray *radios;
+	GWeakRef *ref;
+	guint ii;
+
+	if (!answered.parent || !object || !GTK_IS_MESSAGE_DIALOG (object) ||
+	    gtk_window_get_transient_for (GTK_WINDOW (object)) != answered.parent)
+		return TRUE;
+	if (g_get_monotonic_time () > answered.until) {
+		answered.parent = NULL;
+		return TRUE;
+	}
+
+	wanted = g_dgettext ("evolution", answered.mod == E_CAL_OBJ_MOD_THIS_AND_FUTURE ? "This and Future Instances" :
+		answered.mod == E_CAL_OBJ_MOD_ALL ? "All Instances" : "This Instance Only");
+	radios = g_ptr_array_new ();
+	gtk_container_foreach (GTK_CONTAINER (gtk_dialog_get_content_area (GTK_DIALOG (object))), collect_radios_cb, radios);
+	for (ii = 0; ii < radios->len; ii++) {
+		if (g_strcmp0 (gtk_button_get_label (radios->pdata[ii]), wanted) == 0) {
+			/* Evolution's question for the series: answered already */
+			gtk_toggle_button_set_active (radios->pdata[ii], TRUE);
+			ref = g_new0 (GWeakRef, 1);
+			g_weak_ref_init (ref, object);
+			g_idle_add_full (G_PRIORITY_DEFAULT, answer_response_idle_cb, ref, answer_weak_ref_free);
+			answered.parent = NULL;
+			break;
+		}
+	}
+	g_ptr_array_unref (radios);
+
+	return TRUE;
+}
+
+/* TRUE: go on, with the choice in @out_mod; Evolution's question to come
+ * is answered with it */
+static gboolean
+ask_series_scope (ECompEditor *comp_editor,
+		  ECalClient *target,
+		  ICalComponent *component,
+		  ECalObjModType *out_mod)
+{
+	static gboolean hooked;
+
+	if (!hooked) {
+		hooked = TRUE;
+		g_type_class_unref (g_type_class_ref (GTK_TYPE_WIDGET));
+		g_signal_add_emission_hook (g_signal_lookup ("show", GTK_TYPE_WIDGET), 0, answer_show_hook_cb, NULL, NULL);
+	}
+
+	answered.parent = NULL;
+	if (!e_cal_dialogs_recur_icalcomp (target, component, out_mod, GTK_WINDOW (comp_editor), FALSE))
+		return FALSE;
+
+	answered.parent = GTK_WINDOW (comp_editor);
+	answered.mod = *out_mod;
+	answered.until = g_get_monotonic_time () + 120 * G_USEC_PER_SEC;
+
+	return TRUE;
+}
+
+/* ------------------------------------------------------------------ */
+/* Saving a series takes its time: each appointment is written by itself.
+ * A small window says so while the editor waits. */
+
+typedef struct {
+	GWeakRef editor;
+	GtkWidget *window;
+	gboolean was_busy;
+	guint ticks;
+} SavingHint;
+
+static gboolean
+editor_is_busy (ECompEditor *comp_editor)
+{
+	ECompEditorPage *page = e_comp_editor_get_page (comp_editor, E_TYPE_COMP_EDITOR_PAGE_GENERAL);
+
+	/* (while it saves, Evolution makes its pages insensitive) */
+	return page && !gtk_widget_is_sensitive (GTK_WIDGET (page));
+}
+
+static gboolean
+saving_hint_tick_cb (gpointer user_data)
+{
+	SavingHint *hint = user_data;
+	ECompEditor *comp_editor = g_weak_ref_get (&hint->editor);
+	gboolean busy = comp_editor && editor_is_busy (comp_editor);
+	gboolean done;
+
+	hint->ticks++;
+	if (busy && !hint->was_busy) {
+		GtkWidget *box, *spinner, *label;
+
+		hint->was_busy = TRUE;
+		hint->window = gtk_window_new (GTK_WINDOW_TOPLEVEL);
+		gtk_window_set_title (GTK_WINDOW (hint->window), _("Saving the Series"));
+		gtk_window_set_transient_for (GTK_WINDOW (hint->window), GTK_WINDOW (comp_editor));
+		gtk_window_set_position (GTK_WINDOW (hint->window), GTK_WIN_POS_CENTER_ON_PARENT);
+		gtk_window_set_resizable (GTK_WINDOW (hint->window), FALSE);
+		gtk_window_set_deletable (GTK_WINDOW (hint->window), FALSE);
+		gtk_window_set_type_hint (GTK_WINDOW (hint->window), GDK_WINDOW_TYPE_HINT_DIALOG);
+		box = gtk_box_new (GTK_ORIENTATION_HORIZONTAL, 12);
+		gtk_container_set_border_width (GTK_CONTAINER (box), 18);
+		spinner = gtk_spinner_new ();
+		gtk_spinner_start (GTK_SPINNER (spinner));
+		gtk_widget_set_size_request (spinner, 24, 24);
+		gtk_box_pack_start (GTK_BOX (box), spinner, FALSE, FALSE, 0);
+		label = gtk_label_new (_("The appointments of the series are written to GroupWise one by one.\n"
+			"This can take a moment …"));
+		gtk_label_set_xalign (GTK_LABEL (label), 0.0);
+		gtk_box_pack_start (GTK_BOX (box), label, TRUE, TRUE, 0);
+		gtk_container_add (GTK_CONTAINER (hint->window), box);
+		gtk_widget_show_all (hint->window);
+	}
+
+	/* Over: the editor is gone (saved and closed), or usable again (an
+	 * error); or it never started saving */
+	done = !comp_editor || (hint->was_busy && !busy) || (!hint->was_busy && hint->ticks > 600) || hint->ticks > 6000;
+	if (done && comp_editor)
+		g_object_set_data (G_OBJECT (comp_editor), "groupwise-saving-hint", NULL);
+	g_clear_object (&comp_editor);
+	if (!done)
+		return G_SOURCE_CONTINUE;
+
+	if (hint->window)
+		gtk_widget_destroy (hint->window);
+	g_weak_ref_clear (&hint->editor);
+	g_free (hint);
+
+	return G_SOURCE_REMOVE;
+}
+
+static void
+watch_series_save (ECompEditor *comp_editor)
+{
+	SavingHint *hint;
+
+	if (g_object_get_data (G_OBJECT (comp_editor), "groupwise-saving-hint"))
+		return;
+	/* (one at a time: gone with the timer, at the latest after ten minutes) */
+	g_object_set_data (G_OBJECT (comp_editor), "groupwise-saving-hint", GINT_TO_POINTER (1));
+
+	hint = g_new0 (SavingHint, 1);
+	g_weak_ref_init (&hint->editor, comp_editor);
+	g_timeout_add (100, saving_hint_tick_cb, hint);
+}
+
 /* Saved: the time with the travel time must not collide unnoticed with
  * busy time of the user's calendars, as the GroupWise client warns */
 static gboolean
-travel_editor_fill_component_cb (ECompEditor *comp_editor,
-				 ICalComponent *component,
-				 gpointer user_data)
+check_busy_time (ECompEditor *comp_editor,
+		 ICalComponent *component)
 {
 	ICalComponent *original = e_comp_editor_get_component (comp_editor);
 	ECalClient *target = e_comp_editor_get_target_client (comp_editor);
 	EShell *shell = e_shell_get_default ();
 	ECalComponent *ecomp;
 	ConflictData data = { NULL, NULL, 0, 0, NULL, 0 };
-	gboolean following = FALSE;
+	ECalObjModType mod = E_CAL_OBJ_MOD_THIS;
 	GString *names = NULL;
 	GList *sources, *link;
 	GArray *ranges;
@@ -805,38 +1002,46 @@ travel_editor_fill_component_cb (ECompEditor *comp_editor,
 		if (range.start > 0 && range.end > range.start)
 			g_array_append_val (ranges, range);
 
-		/* An appointment of a series: whether the change is for this one
-		 * or for the following ones too the user says only after this.
-		 * The following ones are looked at as well, moved as this one is. */
+		/* An appointment of a series: first, whether the change is for
+		 * this one, for the following ones too, or for all — those are
+		 * looked at as well, moved as this one is */
 		if (range.end > range.start && original && target &&
 		    e_cal_util_component_has_property (component, I_CAL_RRULE_PROPERTY) &&
 		    e_cal_util_component_has_property (component, I_CAL_RECURRENCEID_PROPERTY)) {
 			ICalComponent *master = NULL;
 			ICalTime *old_start = i_cal_component_get_dtstart (original);
 
-			if (old_start && !i_cal_time_is_null_time (old_start) &&
+			if (!ask_series_scope (comp_editor, target, component, &mod)) {
+				g_clear_object (&old_start);
+				g_array_unref (ranges);
+				return FALSE;
+			}
+			if (mod != E_CAL_OBJ_MOD_THIS && old_start && !i_cal_time_is_null_time (old_start) &&
 			    e_cal_client_get_object_sync (target, i_cal_component_get_uid (component), NULL, &master, NULL, NULL) && master) {
 				GArray *later = g_array_new (FALSE, FALSE, sizeof (TimeRange));
 				ICalTime *to = i_cal_time_clone (old_start);
+				/* "All": the ones before this one too, from today on */
+				ICalTime *from = mod == E_CAL_OBJ_MOD_ALL ?
+					i_cal_time_new_current_with_zone (i_cal_timezone_get_utc_timezone ()) : i_cal_time_clone (old_start);
 				time_t old_time = instance_time (old_start);
 				guint ii;
 
 				i_cal_time_adjust (to, 366, 0, 0, 0);
-				e_cal_recur_generate_instances_sync (master, old_start, to, collect_range_cb, later,
+				e_cal_recur_generate_instances_sync (master, from, to, collect_range_cb, later,
 					e_comp_editor_lookup_timezone_cb, comp_editor, calendar_config_get_icaltimezone (), NULL, NULL);
 				for (ii = 0; ii < later->len; ii++) {
 					TimeRange *occurrence = &g_array_index (later, TimeRange, ii);
 					TimeRange moved;
 
-					if (occurrence->start <= old_time)
+					if (occurrence->start == old_time || (mod != E_CAL_OBJ_MOD_ALL && occurrence->start < old_time))
 						continue;
 					moved.start = occurrence->start + (range.start - old_time);
 					moved.end = moved.start + (range.end - range.start);
 					g_array_append_val (ranges, moved);
-					following = TRUE;
 				}
 				g_array_unref (later);
 				g_object_unref (to);
+				g_object_unref (from);
 			}
 			g_clear_object (&master);
 			g_clear_object (&old_start);
@@ -882,11 +1087,8 @@ travel_editor_fill_component_cb (ECompEditor *comp_editor,
 			GTK_MESSAGE_WARNING, GTK_BUTTONS_NONE, "%s",
 			_("The appointment overlaps with busy time in your calendar"));
 
-		gtk_message_dialog_format_secondary_text (GTK_MESSAGE_DIALOG (dialog), "%s\n\n%s%s%s", names->str,
-			_("The preparation and travel time of the appointment counts, too."),
-			following ? "\n" : "",
-			following ? _("The following appointments of the series are checked as well: they matter when you "
-				      "save the change for this and future instances or for all.") : "");
+		gtk_message_dialog_format_secondary_text (GTK_MESSAGE_DIALOG (dialog), "%s\n\n%s", names->str,
+			_("The preparation and travel time of the appointment counts, too."));
 		gtk_dialog_add_button (GTK_DIALOG (dialog), _("_Cancel"), GTK_RESPONSE_CANCEL);
 		gtk_dialog_add_button (GTK_DIALOG (dialog), _("_Save Anyway"), GTK_RESPONSE_ACCEPT);
 		gtk_dialog_set_default_response (GTK_DIALOG (dialog), GTK_RESPONSE_ACCEPT);
@@ -895,7 +1097,28 @@ travel_editor_fill_component_cb (ECompEditor *comp_editor,
 	}
 	g_string_free (names, TRUE);
 
+	/* (not saved: Evolution asks its question itself the next time) */
+	if (response != GTK_RESPONSE_ACCEPT)
+		answered.parent = NULL;
+
 	return response == GTK_RESPONSE_ACCEPT;
+}
+
+static gboolean
+travel_editor_fill_component_cb (ECompEditor *comp_editor,
+				 ICalComponent *component,
+				 gpointer user_data)
+{
+	gboolean proceed = check_busy_time (comp_editor, component);
+
+	/* A series of GroupWise takes long to save */
+	if (proceed && !e_comp_editor_get_updating (comp_editor) && target_is_groupwise (comp_editor) &&
+	    i_cal_component_isa (component) == I_CAL_VEVENT_COMPONENT &&
+	    (e_cal_util_component_has_property (component, I_CAL_RRULE_PROPERTY) ||
+	     e_cal_util_component_has_property (component, I_CAL_RECURRENCEID_PROPERTY)))
+		watch_series_save (comp_editor);
+
+	return proceed;
 }
 
 /* The GroupWise address books of the account of @target */
