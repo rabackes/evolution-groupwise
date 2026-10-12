@@ -29,6 +29,7 @@
 #include "e-gw-folder.h"
 #include "e-gw-proxy.h"
 #include "e-gw-rule.h"
+#include "e-gw-mailbox.h"
 #include "e-gw-share.h"
 #include "e-gw-vacation.h"
 #include "e-gw-xml.h"
@@ -66,6 +67,7 @@ static const gchar *summary =
 	"  access-grant EMAIL RIGHTS grant rights (hex, EGwProxyRights) to a user\n"
 	"  access-set ID OLD NEW     change the rights of an entry\n"
 	"  access-remove ID          take the access away\n"
+	"  size                      show the space the mailbox takes and its limit\n"
 	"  share FOLDER-ID           show how a folder is shared (rights: 1 read, 2 add, 4 edit, 8 delete)\n"
 	"  share-add FOLDER-ID EMAIL RIGHTS SUBJECT [MESSAGE [tree]]  share it with a user\n"
 	"  share-set FOLDER-ID EMAIL RIGHTS  change the rights of a user\n"
@@ -502,6 +504,15 @@ run_command (EGwConnection *cnc,
 		}
 		return e_gw_connection_modify_share_sync (cnc, share->id, NULL, set ? list : NULL, set ? NULL : list,
 			FALSE, NULL, NULL, NULL, NULL, error);
+	}
+	if (g_str_equal (cmd, "size")) {
+		EGwDiskUsage usage;
+
+		if (!e_gw_connection_get_disk_usage_sync (cnc, &usage, NULL, error))
+			return FALSE;
+		printf ("used: %" G_GINT64_FORMAT " MB\nlimit: %" G_GINT64_FORMAT " MB\nwarning from: %d %%\n",
+			usage.used, usage.max_size, usage.threshold);
+		return TRUE;
 	}
 	if (g_str_equal (cmd, "share-offer") && argc >= 3) {
 		g_autoptr(EGwShareNotification) offer = e_gw_connection_get_share_notification_sync (cnc, argv[2], NULL, error);

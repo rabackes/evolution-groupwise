@@ -23,6 +23,7 @@
 #include <libedataserver/libedataserver.h>
 
 #include "e-gw-connection.h"
+#include "e-gw-folder.h"
 
 G_BEGIN_DECLS
 
@@ -58,6 +59,11 @@ gboolean	e_groupwise_ui_is_proxy_store	(CamelService *service);
  * store builds them from @folders (EGwFolder, the whole list).
  * Returns: (transfer full) (element-type utf8 utf8) */
 GHashTable *	e_groupwise_ui_folder_ids	(GPtrArray *folders);
+
+/* The name of a folder as the folder list shows it: the system folders in
+ * the user's language (the POA names them in English), the root as
+ * "User Home" */
+gchar *		e_groupwise_ui_dup_folder_name	(const EGwFolder *folder);
 
 G_END_DECLS
 

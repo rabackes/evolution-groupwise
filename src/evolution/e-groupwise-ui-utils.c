@@ -196,3 +196,47 @@ e_groupwise_ui_folder_ids (GPtrArray *folders)
 
 	return ids;
 }
+
+/* The name of a folder as the folder list shows it: the system folders in
+ * the user's language (the POA names them in English) */
+gchar *
+e_groupwise_ui_dup_folder_name (const EGwFolder *folder)
+{
+	static const struct {
+		EGwFolderType type;
+		const gchar *name;
+	} system_folders[] = {
+		{ E_GW_FOLDER_TYPE_MAILBOX, N_("Mailbox") },
+		{ E_GW_FOLDER_TYPE_JUNK, N_("Junk Mail") },
+		{ E_GW_FOLDER_TYPE_TRASH, N_("Trash") },
+		{ E_GW_FOLDER_TYPE_SENT_ITEMS, N_("Sent Items") },
+		{ E_GW_FOLDER_TYPE_DRAFT, N_("Work In Progress") },
+		{ E_GW_FOLDER_TYPE_CABINET, N_("Cabinet") },
+		{ E_GW_FOLDER_TYPE_CHECKLIST, N_("Tasklist") },
+		{ E_GW_FOLDER_TYPE_CALENDAR, N_("Calendar") },
+		{ E_GW_FOLDER_TYPE_CONTACTS, N_("Contacts") },
+		{ E_GW_FOLDER_TYPE_DOCUMENTS, N_("Documents") }
+	};
+	const gchar *name = folder->name && *folder->name ? folder->name : folder->id;
+	guint ii;
+
+	if (folder->type == E_GW_FOLDER_TYPE_ROOT) {
+		/* "User One Home" */
+		if (g_str_has_suffix (name, " Home")) {
+			gchar *user = g_strndup (name, strlen (name) - strlen (" Home"));
+			/* Translators: the top of the folder list of a mailbox; %s is the name of its user */
+			gchar *text = g_strdup_printf (_("%s Home"), user);
+
+			g_free (user);
+			return text;
+		}
+		return g_strdup (name);
+	}
+
+	for (ii = 0; folder->kind == E_GW_FOLDER_KIND_SYSTEM && ii < G_N_ELEMENTS (system_folders); ii++) {
+		if (folder->type == system_folders[ii].type)
+			return g_strdup (_(system_folders[ii].name));
+	}
+
+	return g_strdup (name);
+}

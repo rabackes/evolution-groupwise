@@ -29,6 +29,7 @@
 #include "e-gw-junk.h"
 #include "e-gw-proxy.h"
 #include "e-gw-rule.h"
+#include "e-gw-mailbox.h"
 #include "e-gw-share.h"
 #include "e-gw-signature.h"
 #include "e-gw-vacation.h"
@@ -182,6 +183,28 @@ test_foreach_item (void)
 	g_assert_true (e_gw_connection_foreach_item_sync (cnc, "TW@86", "id", NULL, 100, count_item_cb, &count, NULL, &error));
 	g_assert_no_error (error);
 	g_assert_cmpuint (count, ==, 0);
+
+	g_object_unref (cnc);
+}
+
+static void
+test_mailbox (void)
+{
+	EGwConnection *cnc = logged_in ();
+	EGwDiskUsage usage = { 0 };
+	GError *error = NULL;
+
+	g_assert_true (e_gw_connection_get_disk_usage_sync (cnc, &usage, NULL, &error));
+	g_assert_no_error (error);
+	g_assert_cmpint (usage.used, ==, 3);
+	g_assert_cmpint (usage.max_size, ==, 100);
+	g_assert_cmpint (usage.threshold, ==, 80);
+
+	g_assert_false (e_gw_connection_modify_password_sync (cnc, "falsch", "neu", NULL, &error));
+	g_assert_error (error, E_GW_ERROR, E_GW_ERROR_WRONG_PASSWORD);
+	g_clear_error (&error);
+	g_assert_true (e_gw_connection_modify_password_sync (cnc, "alt", "neu", NULL, &error));
+	g_assert_no_error (error);
 
 	g_object_unref (cnc);
 }
@@ -1227,6 +1250,7 @@ main (int argc,
 	g_test_add_func ("/connection/empty-responses", test_empty_responses);
 	g_test_add_func ("/items/foreach", test_foreach_item);
 	g_test_add_func ("/addressbook/list", test_address_books);
+	g_test_add_func ("/connection/mailbox", test_mailbox);
 	g_test_add_func ("/folders/list", test_folder_list);
 	g_test_add_func ("/connection/proxy", test_proxy);
 	g_test_add_func ("/connection/proxy-access", test_proxy_access);

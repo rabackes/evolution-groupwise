@@ -17,6 +17,8 @@ add_library(egroupwise SHARED
 	e-gw-rule.h
 	e-gw-share.c
 	e-gw-share.h
+	e-gw-mailbox.c
+	e-gw-mailbox.h
 	e-gw-signature.c
 	e-gw-signature.h
 	e-gw-vacation.c

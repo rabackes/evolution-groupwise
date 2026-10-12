@@ -418,6 +418,15 @@ Adressbuch (`AddressBook`) an und gleicht die Quellen neu ab, `delete_resource_s
 eigenen Login auf den Server geschrieben (`modifyItemRequest`); das Passwort der letzten Anmeldung hält das
 Backend dafür im Speicher. Proxy-Konten bleiben außen vor.
 
+### Postfachgröße und Passwort
+
+Die Registerkarte *Postfach und Passwort* der GroupWise-Einstellungen zeigt `getDiskSpaceUsageRequest`
+(belegt, Grenze, Warnschwelle in MB) und die Zählungen aus der Ordnerliste (`<count>`, `<unreadCount>`; der
+POA zählt Mailbox, Kalender, „In Arbeit“ und Benutzerordner, keine Sichten wie die Ausgangsnachrichten).
+*Passwort ändern …* ruft `modifyPasswordRequest` (`<old>`, `<new>`; falsches altes Passwort: 53273) in einem
+eigenen Login, legt das neue Passwort für alle Konten dieser Anmeldung im Schlüsselbund ab und meldet die
+Collections damit neu an.
+
 ### Adressbücher freigeben
 
 Ein persönliches Adressbuch wird über *Freigabe …* in seinem Kontextmenü freigegeben (derselbe Dialog).

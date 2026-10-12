@@ -21,6 +21,7 @@ src/evolution/e-groupwise-defaults.c
 src/evolution/e-groupwise-delete-dialog.c
 src/evolution/e-groupwise-events-port.c
 src/evolution/e-groupwise-junk-tab.c
+src/evolution/e-groupwise-mailbox-tab.c
 src/evolution/e-groupwise-mail-ui.c
 src/evolution/e-groupwise-name-selector.c
 src/evolution/e-groupwise-new-item.c
@@ -46,6 +47,7 @@ src/libegroupwise/e-gw-connection.c
 src/libegroupwise/e-gw-events.c
 src/libegroupwise/e-gw-folder.c
 src/libegroupwise/e-gw-junk.c
+src/libegroupwise/e-gw-mailbox.c
 src/libegroupwise/e-gw-proxy.c
 src/libegroupwise/e-gw-rule.c
 src/libegroupwise/e-gw-share.c

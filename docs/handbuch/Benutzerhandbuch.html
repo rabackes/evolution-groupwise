@@ -342,7 +342,8 @@ Einstellungen beim Öffnen vom Server und schreibt Ihre Änderungen mit <span cl
 gelten dann für alle Programme, auch für den GroupWise-Client und GroupWise Web. Es hat die Registerkarten
 <b>Abwesenheit</b>, <b>Regeln</b> (siehe unten), <b>Junkmail</b> (siehe Abschnitt 4.5), <b>Signaturen</b>
 (siehe Abschnitt 4.2),
-<b>Proxy-Konten</b> (siehe Abschnitt 4.8) und <b>Proxy-Zugriff</b> (siehe unten). Im
+<b>Proxy-Konten</b> (siehe Abschnitt 4.8), <b>Proxy-Zugriff</b> und <b>Postfach und Passwort</b> (beide
+siehe unten). Im
 GroupWise-Client finden Sie dieselben Einstellungen im Menü <i>Werkzeuge</i>.</p>
 <p>Bei einem Proxy-Konto (Abschnitt 4.8) zeigt <span class="menu">GroupWise-Einstellungen …</span> die
 Abwesenheit und die Junk-Mail-Einstellungen des anderen Postfachs. Das setzt voraus, dass der andere
@@ -448,6 +449,32 @@ GroupWise-Clients: Sie legt fest, wer Ihr Postfach als Proxy öffnen darf und mi
 		ändern</i>.</li>
 </ul>
 <p>Mit <span class="menu">OK</span> überträgt Evolution die Änderungen an GroupWise.</p>
+
+<h2 id="postfach">Postfach und Passwort</h2>
+<p>Die Registerkarte <b>Postfach und Passwort</b> der GroupWise-Einstellungen zeigt das Postfach in Zahlen,
+wie <i>Werkzeuge → Mailbox-Größe überprüfen</i> im GroupWise-Client:</p>
+<ul>
+	<li><b>Speicherplatz</b>: wie viel das Postfach belegt und wie groß es werden darf, als Balken und in
+		Megabyte, dazu die Schwelle, ab der GroupWise Sie warnt. Hat das Postfach keine Größenbegrenzung,
+		steht dort nur der belegte Platz.</li>
+	<li><b>Inhalt</b>: die Zahl der Nachrichten in den Ordnern und der ungelesenen darunter, die Einträge
+		im Kalender, die Zahl der Ordner, Kalender und Adressbücher.</li>
+	<li>Eine <b>Liste der Ordner</b> mit Nachrichten und Ungelesenen, die vollsten zuerst; ein Klick auf
+		eine Spaltenüberschrift sortiert um. GroupWise zählt die Mailbox, den Kalender, „In Arbeit“ und
+		die von Ihnen angelegten Ordner; die Ausgangsnachrichten und andere Sichten auf das Postfach zählt
+		es nicht.</li>
+</ul>
+<p>Die Zahlen sind der Stand beim Öffnen des Fensters. Bei einem Proxy-Konto beschreiben sie das andere
+Postfach.</p>
+<p><span class="menu">Passwort ändern …</span> öffnet den Dialog <b>Passwort des Postfachs ändern</b>:
+altes Passwort, neues Passwort und dessen Wiederholung, dann <span class="menu">Ändern</span>. GroupWise
+ändert das Passwort sofort – unabhängig von <span class="menu">OK</span> oder
+<span class="menu">Abbrechen</span> des Einstellungsfensters. Evolution merkt sich das neue Passwort im
+Schlüsselbund, auch für Ihre Proxy-Konten; andere Programme und Geräte, die das Postfach nutzen (GroupWise
+Web, Mobilgeräte), brauchen es ebenfalls. Den Knopf gibt es nur bei Ihrem eigenen Konto.</p>
+<div class="note"><b>Passwörter aus einem Verzeichnisdienst:</b> Prüft Ihr GroupWise-System die Passwörter
+gegen einen Verzeichnisdienst (LDAP), ändern Sie das Passwort dort; GroupWise lehnt die Änderung hier dann
+ab, und der Dialog zeigt die Meldung des Servers.</div>
 
 <!-- ============================================================ -->
 <h1 id="mail">4&nbsp;&nbsp;E-Mail</h1>
@@ -1236,6 +1263,9 @@ Entwicklung fortgeschrieben.</p>
 		<td>ja, auch anlegen, umbenennen und löschen (<a href="#adressbuecher">Kapitel 7</a>)</td></tr>
 	<tr><td>Regeln einschließlich Abwesenheit; Regeln manuell ausführen</td>
 		<td>ja; besonders verschachtelte Regeln nur anzeigen (<a href="#regeln">Kapitel 3</a>)</td></tr>
+	<tr><td>Mailbox-Größe überprüfen; Passwort ändern</td>
+		<td>ja, Registerkarte „Postfach und Passwort“ (<a href="#postfach">Kapitel 3</a>); Löschen oder
+		Archivieren nach Größe gibt es dort nicht</td></tr>
 	<tr><td>Proxy: Rechte vergeben, als Proxy in einem anderen Postfach arbeiten</td>
 		<td>ja, als Proxy-Konten (<a href="#mail-proxy">4.8</a>)</td></tr>
 	<tr><td>Freigegebene Ordner, Kalender und Adressbücher: freigeben und annehmen</td>
@@ -1272,7 +1302,6 @@ Entwicklung fortgeschrieben.</p>
 	<tr><td>Besprechungen mit Teams, Zoom oder WebEx planen</td><td>fehlt.</td></tr>
 	<tr><td>S/MIME: signiert oder verschlüsselt senden</td><td>fehlt; empfangene Nachrichten werden angezeigt.</td></tr>
 	<tr><td>Telefonnachrichten senden</td><td>fehlt; empfangene werden mit Anrufer, Firma und Nummer angezeigt.</td></tr>
-	<tr><td>Passwort ändern, Postfachgröße anzeigen</td><td>fehlt.</td></tr>
 	<tr><td>Alternative Absenderadressen</td><td>fehlt.</td></tr>
 	<tr><td>Nachrichten als privat markieren; Kategorien an Kontakten</td><td>fehlt.</td></tr>
 	<tr><td>In einem freigegebenen Ordner ablegen (Posted Item), Eigentum übertragen</td><td>fehlt.</td></tr>

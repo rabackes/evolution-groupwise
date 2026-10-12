@@ -38,7 +38,8 @@ static const TabFunc all_tabs[] = {
 	e_groupwise_junk_tab,
 	e_groupwise_signatures_tab,
 	e_groupwise_proxy_tab,
-	e_groupwise_access_tab
+	e_groupwise_access_tab,
+	e_groupwise_mailbox_tab
 };
 
 typedef struct {

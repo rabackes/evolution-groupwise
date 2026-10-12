@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: evolution-groupwise\n"
 "Report-Msgid-Bugs-To: rbackes@bond.de\n"
-"POT-Creation-Date: 2026-10-12 12:32+0200\n"
+"POT-Creation-Date: 2026-10-12 12:40+0200\n"
 "PO-Revision-Date: 2026-09-27 18:27+0200\n"
 "Last-Translator: Automatically generated\n"
 "Language-Team: none\n"
@@ -425,55 +425,55 @@ msgid "A folder name must not contain \"/\""
 msgstr "Ein Ordnername darf kein „/“ enthalten"
 
 #: src/camel/camel-groupwise-store-summary.c:387
-#: src/evolution/e-groupwise-share-accept.c:230
+#: src/evolution/e-groupwise-ui-utils.c:209
 msgid "Mailbox"
 msgstr "Mailbox"
 
 #: src/camel/camel-groupwise-store-summary.c:388
 #: src/evolution/e-groupwise-junk-tab.c:528
-#: src/evolution/e-groupwise-share-accept.c:231
+#: src/evolution/e-groupwise-ui-utils.c:210
 msgid "Junk Mail"
 msgstr "Junkmail"
 
 #: src/camel/camel-groupwise-store-summary.c:389
-#: src/evolution/e-groupwise-share-accept.c:232
+#: src/evolution/e-groupwise-ui-utils.c:211
 msgid "Trash"
 msgstr "Papierkorb"
 
 #: src/camel/camel-groupwise-store-summary.c:390
-#: src/evolution/e-groupwise-share-accept.c:233
+#: src/evolution/e-groupwise-ui-utils.c:212
 msgid "Sent Items"
 msgstr "Ausgangsnachrichten"
 
 #: src/camel/camel-groupwise-store-summary.c:391
-#: src/evolution/e-groupwise-share-accept.c:234
+#: src/evolution/e-groupwise-ui-utils.c:213
 msgid "Work In Progress"
 msgstr "In Arbeit"
 
 #: src/camel/camel-groupwise-store-summary.c:392
-#: src/evolution/e-groupwise-share-accept.c:235
+#: src/evolution/e-groupwise-ui-utils.c:214
 msgid "Cabinet"
 msgstr "Aktenschrank"
 
 #: src/camel/camel-groupwise-store-summary.c:393
 #: src/camel/camel-groupwise-store-summary.c:394
-#: src/evolution/e-groupwise-share-accept.c:236
+#: src/evolution/e-groupwise-ui-utils.c:215
 msgid "Tasklist"
 msgstr "Jobliste"
 
 #: src/camel/camel-groupwise-store-summary.c:395
-#: src/evolution/e-groupwise-share-accept.c:237
+#: src/evolution/e-groupwise-ui-utils.c:216
 #: src/registry/module-groupwise-backend.c:342
 msgid "Calendar"
 msgstr "Kalender"
 
 #: src/camel/camel-groupwise-store-summary.c:396
-#: src/evolution/e-groupwise-share-accept.c:238
+#: src/evolution/e-groupwise-ui-utils.c:217
 msgid "Contacts"
 msgstr "Kontakte"
 
 #: src/camel/camel-groupwise-store-summary.c:397
-#: src/evolution/e-groupwise-share-accept.c:239
+#: src/evolution/e-groupwise-ui-utils.c:218
 msgid "Documents"
 msgstr "Dokumente"
 
@@ -521,13 +521,14 @@ msgstr "Proxy-Zugriff gewähren"
 
 #: src/evolution/e-groupwise-access-tab.c:157
 #: src/evolution/e-groupwise-junk-tab.c:70
+#: src/evolution/e-groupwise-mailbox-tab.c:302
 #: src/evolution/e-groupwise-mail-ui.c:471
 #: src/evolution/e-groupwise-rule-editor.c:1336
 #: src/evolution/e-groupwise-rules-tab.c:351
 #: src/evolution/e-groupwise-sent-items.c:457
 #: src/evolution/e-groupwise-sent-items.c:508
-#: src/evolution/e-groupwise-settings-window.c:375
-#: src/evolution/e-groupwise-share-accept.c:358
+#: src/evolution/e-groupwise-settings-window.c:376
+#: src/evolution/e-groupwise-share-accept.c:314
 #: src/evolution/e-groupwise-share-tab.c:789
 #: src/evolution/e-groupwise-signatures-tab.c:228
 #: src/evolution/e-groupwise-travel-page.c:773
@@ -783,6 +784,142 @@ msgstr ""
 #: src/evolution/e-groupwise-junk-tab.c:329
 msgid "Trust List"
 msgstr "Vertrauensliste"
+
+#: src/evolution/e-groupwise-mailbox-tab.c:177
+msgid "The old password is not right."
+msgstr "Das alte Passwort stimmt nicht."
+
+#: src/evolution/e-groupwise-mailbox-tab.c:199
+msgid "The password of the mailbox is changed"
+msgstr "Das Passwort des Postfachs ist geändert"
+
+#: src/evolution/e-groupwise-mailbox-tab.c:202
+msgid ""
+"Evolution remembers the new password. Other programs and devices using this "
+"mailbox need it as well."
+msgstr "Evolution merkt sich das neue Passwort. Andere Programme und Geräte, die dieses Postfach nutzen, brauchen es ebenfalls."
+
+#: src/evolution/e-groupwise-mailbox-tab.c:207
+#, c-format
+msgid "The password was not changed: %s"
+msgstr "Das Passwort wurde nicht geändert: %s"
+
+#: src/evolution/e-groupwise-mailbox-tab.c:267
+msgid "The new password and its repetition differ."
+msgstr "Das neue Passwort und seine Wiederholung stimmen nicht überein."
+
+#: src/evolution/e-groupwise-mailbox-tab.c:267
+msgid "Type the new password."
+msgstr "Geben Sie das neue Passwort ein."
+
+#: src/evolution/e-groupwise-mailbox-tab.c:300
+msgid "Change the Password of the Mailbox"
+msgstr "Passwort des Postfachs ändern"
+
+#: src/evolution/e-groupwise-mailbox-tab.c:302
+msgid "C_hange"
+msgstr "Ä_ndern"
+
+#: src/evolution/e-groupwise-mailbox-tab.c:308
+msgid ""
+"The password you log in to GroupWise with. Where your organization keeps the "
+"passwords in a directory, change it there; GroupWise then refuses the change "
+"here."
+msgstr "Das Passwort, mit dem Sie sich an GroupWise anmelden. Verwaltet Ihre Organisation die Passwörter in einem Verzeichnisdienst, ändern Sie es dort; GroupWise lehnt die Änderung hier dann ab."
+
+#: src/evolution/e-groupwise-mailbox-tab.c:323
+msgid "_Old password:"
+msgstr "_Altes Passwort:"
+
+#: src/evolution/e-groupwise-mailbox-tab.c:324
+msgid "_New password:"
+msgstr "_Neues Passwort:"
+
+#: src/evolution/e-groupwise-mailbox-tab.c:325
+msgid "New password _again:"
+msgstr "Neues Passwort _wiederholen:"
+
+#: src/evolution/e-groupwise-mailbox-tab.c:359
+msgid "Messages in the folders:"
+msgstr "Nachrichten in den Ordnern:"
+
+#: src/evolution/e-groupwise-mailbox-tab.c:360
+msgid "Unread:"
+msgstr "Ungelesen:"
+
+#: src/evolution/e-groupwise-mailbox-tab.c:361
+msgid "Entries in the Calendar:"
+msgstr "Einträge im Kalender:"
+
+#: src/evolution/e-groupwise-mailbox-tab.c:362
+msgid "Folders:"
+msgstr "Ordner:"
+
+#: src/evolution/e-groupwise-mailbox-tab.c:363
+msgid "Calendars:"
+msgstr "Kalender:"
+
+#: src/evolution/e-groupwise-mailbox-tab.c:364
+msgid "Address books:"
+msgstr "Adressbücher:"
+
+#: src/evolution/e-groupwise-mailbox-tab.c:376
+msgid "Space"
+msgstr "Speicherplatz"
+
+#: src/evolution/e-groupwise-mailbox-tab.c:386
+msgid "Content"
+msgstr "Inhalt"
+
+#: src/evolution/e-groupwise-mailbox-tab.c:412
+msgid "Folder"
+msgstr "Ordner"
+
+#: src/evolution/e-groupwise-mailbox-tab.c:419
+msgid "Messages"
+msgstr "Nachrichten"
+
+#: src/evolution/e-groupwise-mailbox-tab.c:425
+msgid "Unread"
+msgstr "Ungelesen"
+
+#: src/evolution/e-groupwise-mailbox-tab.c:438
+msgid ""
+"GroupWise counts the Mailbox, the Calendar, the Work In Progress folder and "
+"the folders you made; the Sent Items and other views onto the mailbox it "
+"does not count."
+msgstr "GroupWise zählt die Mailbox, den Kalender, den Ordner „In Arbeit“ und die von Ihnen angelegten Ordner; die Ausgangsnachrichten und andere Sichten auf das Postfach zählt es nicht."
+
+#: src/evolution/e-groupwise-mailbox-tab.c:446
+msgid "Change _Password…"
+msgstr "_Passwort ändern …"
+
+#: src/evolution/e-groupwise-mailbox-tab.c:447
+msgid "Change the password you log in to GroupWise with"
+msgstr "Das Passwort ändern, mit dem Sie sich an GroupWise anmelden"
+
+#: src/evolution/e-groupwise-mailbox-tab.c:552
+#, c-format
+msgid "%s MB of %s MB used (%d %%). GroupWise warns you from %d %%."
+msgstr "%s MB von %s MB belegt (%d %%). GroupWise warnt Sie ab %d %%."
+
+#: src/evolution/e-groupwise-mailbox-tab.c:556
+#, c-format
+msgid "%s MB of %s MB used (%d %%)."
+msgstr "%s MB von %s MB belegt (%d %%)."
+
+#: src/evolution/e-groupwise-mailbox-tab.c:560
+#, c-format
+msgid "%s MB used; the mailbox has no limit."
+msgstr "%s MB belegt; das Postfach hat keine Größenbegrenzung."
+
+#: src/evolution/e-groupwise-mailbox-tab.c:563
+msgid "The server does not tell the size of the mailbox."
+msgstr "Der Server nennt die Größe des Postfachs nicht."
+
+#: src/evolution/e-groupwise-mailbox-tab.c:637
+msgid "Mailbox and Password"
+msgstr "Postfach und Passwort"
 
 #: src/evolution/e-groupwise-mail-ui.c:165
 msgid "restoring messages"
@@ -1989,30 +2126,30 @@ msgstr "_Nicht zurückziehen"
 msgid "opening the message to resend it"
 msgstr "Öffnen der Nachricht zum Neusenden"
 
-#: src/evolution/e-groupwise-settings-window.c:160
+#: src/evolution/e-groupwise-settings-window.c:161
 #, c-format
 msgid "The settings cannot be read from the server: %s"
 msgstr "Die Einstellungen können nicht vom Server gelesen werden: %s"
 
-#: src/evolution/e-groupwise-settings-window.c:248
+#: src/evolution/e-groupwise-settings-window.c:249
 #, c-format
 msgid "The settings cannot be saved: %s"
 msgstr "Die Einstellungen können nicht gespeichert werden: %s"
 
-#: src/evolution/e-groupwise-settings-window.c:284
+#: src/evolution/e-groupwise-settings-window.c:285
 msgid "Saving the settings on the server…"
 msgstr "Die Einstellungen werden auf dem Server gespeichert …"
 
-#: src/evolution/e-groupwise-settings-window.c:340
+#: src/evolution/e-groupwise-settings-window.c:341
 #, c-format
 msgid "GroupWise Settings – %s"
 msgstr "GroupWise-Einstellungen – %s"
 
-#: src/evolution/e-groupwise-settings-window.c:378
+#: src/evolution/e-groupwise-settings-window.c:379
 msgid "_OK"
 msgstr "_OK"
 
-#: src/evolution/e-groupwise-settings-window.c:386
+#: src/evolution/e-groupwise-settings-window.c:387
 msgid "Reading the settings from the server…"
 msgstr "Die Einstellungen werden vom Server gelesen …"
 
@@ -2035,72 +2172,67 @@ msgstr "Bearbeiten"
 msgid "Delete"
 msgstr "Löschen"
 
-#: src/evolution/e-groupwise-share-accept.c:249
-#, c-format
-msgid "%s Home"
-msgstr "%s Basisordner"
-
-#: src/evolution/e-groupwise-share-accept.c:355
+#: src/evolution/e-groupwise-share-accept.c:311
 msgid "Install Shared Address Book"
 msgstr "Freigegebenes Adressbuch installieren"
 
-#: src/evolution/e-groupwise-share-accept.c:356
+#: src/evolution/e-groupwise-share-accept.c:312
 msgid "Install Shared Calendar"
 msgstr "Freigegebenen Kalender installieren"
 
-#: src/evolution/e-groupwise-share-accept.c:356
+#: src/evolution/e-groupwise-share-accept.c:312
 msgid "Install Shared Folder"
 msgstr "Freigegebenen Ordner installieren"
 
-#: src/evolution/e-groupwise-share-accept.c:358
+#: src/evolution/e-groupwise-share-accept.c:314
 msgid "_Install"
 msgstr "_Installieren"
 
-#: src/evolution/e-groupwise-share-accept.c:367
+#: src/evolution/e-groupwise-share-accept.c:323
 #, c-format
 msgid "%s shared the address book “%s” with you."
 msgstr "%s hat das Adressbuch „%s“ für Sie freigegeben."
 
-#: src/evolution/e-groupwise-share-accept.c:370
+#: src/evolution/e-groupwise-share-accept.c:326
 #, c-format
 msgid "%s shared the calendar “%s” with you."
 msgstr "%s hat den Kalender „%s“ für Sie freigegeben."
 
-#: src/evolution/e-groupwise-share-accept.c:373
+#: src/evolution/e-groupwise-share-accept.c:329
 #, c-format
 msgid "%s shared the folder “%s” with you."
 msgstr "%s hat den Ordner „%s“ für Sie freigegeben."
 
-#: src/evolution/e-groupwise-share-accept.c:387
+#: src/evolution/e-groupwise-share-accept.c:343
 #, c-format
 msgid "Message from %s:"
 msgstr "Mitteilung von %s:"
 
-#: src/evolution/e-groupwise-share-accept.c:397
+#: src/evolution/e-groupwise-share-accept.c:353
 msgid "Your access rights:"
 msgstr "Ihre Zugriffsrechte:"
 
-#: src/evolution/e-groupwise-share-accept.c:402
+#: src/evolution/e-groupwise-share-accept.c:358
 msgid "_Name:"
 msgstr "_Name:"
 
-#: src/evolution/e-groupwise-share-accept.c:414
+#: src/evolution/e-groupwise-share-accept.c:370
 msgid "_Description:"
 msgstr "_Beschreibung:"
 
-#: src/evolution/e-groupwise-share-accept.c:434
+#: src/evolution/e-groupwise-share-accept.c:390
 msgid "C_olor:"
 msgstr "_Farbe:"
 
-#: src/evolution/e-groupwise-share-accept.c:440
+#: src/evolution/e-groupwise-share-accept.c:396
 msgid "The color of the calendar, here and in GroupWise"
 msgstr "Die Farbe des Kalenders, hier und in GroupWise"
 
-#: src/evolution/e-groupwise-share-accept.c:447
+#: src/evolution/e-groupwise-share-accept.c:403
 msgid "_Position:"
 msgstr "_Position:"
 
-#: src/evolution/e-groupwise-share-accept.c:455
+#: src/evolution/e-groupwise-share-accept.c:411
 msgid ""
 "The new folder is put into the folder selected here; the topmost row puts it "
 "beside the Cabinet"
@@ -2476,6 +2608,11 @@ msgid "%s has not granted you the right to change settings, rules and folders"
 msgstr ""
 "%s hat Ihnen kein Recht gegeben, Einstellungen, Regeln und Ordner zu ändern"
 
+#: src/evolution/e-groupwise-ui-utils.c:228
+#, c-format
+msgid "%s Home"
+msgstr "%s Basisordner"
+
 #: src/evolution/e-groupwise-vacation-tab.c:125
 msgid ""
 "GroupWise answers mail with this text while the rule is on and the date "
@@ -2706,6 +2843,10 @@ msgid "This calendar or address book cannot be deleted in GroupWise"
 msgstr ""
 "Dieser Kalender bzw. dieses Adressbuch kann in GroupWise nicht gelöscht "
 "werden"
+
+#, fuzzy
+#~ msgid "Calendars and address books:"
+#~ msgstr "Freigeben des Adressbuchs"
 
 #~ msgid "Shared address books cannot be installed here yet"
 #~ msgstr "Freigegebene Adressbücher können hier noch nicht installiert werden"

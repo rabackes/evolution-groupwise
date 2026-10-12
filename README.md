@@ -390,6 +390,15 @@ in Evolution that does not come from the server is written to the server in a lo
 (`modifyItemRequest`); the backend keeps the password of the last login in memory for that. Proxy accounts
 are left out.
 
+### Mailbox size and password
+
+The page *Mailbox and Password* of the GroupWise settings shows `getDiskSpaceUsageRequest` (used, limit,
+warning threshold in MB) and the counts of the folder list (`<count>`, `<unreadCount>`; the POA counts the
+Mailbox, the Calendar, Work In Progress and user folders, no views such as the Sent Items). *Change
+Password…* calls `modifyPasswordRequest` (`<old>`, `<new>`; a wrong old password: 53273) in a login of its
+own, stores the new password in the keyring for all accounts of that login and authenticates their
+collections anew.
+
 ### Sharing address books
 
 A personal address book is shared with *Sharing…* in its context menu (the same dialog). `modifyItemRequest`

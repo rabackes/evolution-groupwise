@@ -67,6 +67,8 @@ const EGroupwiseSettingsTab *
 		e_groupwise_proxy_tab		(void);
 const EGroupwiseSettingsTab *
 		e_groupwise_access_tab		(void);
+const EGroupwiseSettingsTab *
+		e_groupwise_mailbox_tab		(void);
 
 /* Opens the window of the account (or brings an open one to the front),
  * showing the tab @tab (NULL: the first one) */

@@ -149,7 +149,7 @@ sudo systemd-machine-id-setup
 
 ## GroupWise-Einstellungen
 
-Einstellungen, die der GroupWise-Server selbst für Ihr Postfach hält, bearbeiten Sie im Fenster **GroupWise-Einstellungen**: Klicken Sie in der Ordnerliste mit der rechten Maustaste auf den Namen des GroupWise-Kontos und wählen Sie `GroupWise-Einstellungen …`. Das Fenster liest die Einstellungen beim Öffnen vom Server und schreibt Ihre Änderungen mit `OK` zurück; sie gelten dann für alle Programme, auch für den GroupWise-Client und GroupWise Web. Es hat die Registerkarten **Abwesenheit**, **Regeln** (siehe unten), **Junkmail** (siehe Abschnitt 4.5), **Signaturen** (siehe Abschnitt 4.2), **Proxy-Konten** (siehe Abschnitt 4.8) und **Proxy-Zugriff** (siehe unten). Im GroupWise-Client finden Sie dieselben Einstellungen im Menü *Werkzeuge*.
+Einstellungen, die der GroupWise-Server selbst für Ihr Postfach hält, bearbeiten Sie im Fenster **GroupWise-Einstellungen**: Klicken Sie in der Ordnerliste mit der rechten Maustaste auf den Namen des GroupWise-Kontos und wählen Sie `GroupWise-Einstellungen …`. Das Fenster liest die Einstellungen beim Öffnen vom Server und schreibt Ihre Änderungen mit `OK` zurück; sie gelten dann für alle Programme, auch für den GroupWise-Client und GroupWise Web. Es hat die Registerkarten **Abwesenheit**, **Regeln** (siehe unten), **Junkmail** (siehe Abschnitt 4.5), **Signaturen** (siehe Abschnitt 4.2), **Proxy-Konten** (siehe Abschnitt 4.8), **Proxy-Zugriff** und **Postfach und Passwort** (beide siehe unten). Im GroupWise-Client finden Sie dieselben Einstellungen im Menü *Werkzeuge*.
 
 Bei einem Proxy-Konto (Abschnitt 4.8) zeigt `GroupWise-Einstellungen …` die Abwesenheit und die Junk-Mail-Einstellungen des anderen Postfachs. Das setzt voraus, dass der andere Benutzer Ihnen das Proxy-Recht „Einstellungen, Regeln und Ordner ändern“ gegeben hat; sonst meldet das Fenster dies. Die Registerkarten „Proxy-Konten“ und „Proxy-Zugriff“ gibt es dort nicht.
 
@@ -220,6 +220,22 @@ Die Registerkarte **Proxy-Zugriff** entspricht dem Proxy-Zugriff in den Sicherhe
 - Für den ausgewählten Benutzer setzen Sie darunter die Rechte: **Lesen** und **Schreiben** für Mail/Telefon, Termine, Erinnerungsnotizen und Aufgaben (Schreiben schließt Lesen ein), dazu *Meine Alarme abonnieren*, *Meine Benachrichtigungen abonnieren*, *Optionen, Regeln und Ordner ändern*, *Als privat markierte Objekte lesen* und *Sicherheitsoptionen ändern*.
 
 Mit `OK` überträgt Evolution die Änderungen an GroupWise.
+
+## Postfach und Passwort
+
+Die Registerkarte **Postfach und Passwort** der GroupWise-Einstellungen zeigt das Postfach in Zahlen, wie *Werkzeuge → Mailbox-Größe überprüfen* im GroupWise-Client:
+
+- **Speicherplatz**: wie viel das Postfach belegt und wie groß es werden darf, als Balken und in Megabyte, dazu die Schwelle, ab der GroupWise Sie warnt. Hat das Postfach keine Größenbegrenzung, steht dort nur der belegte Platz.
+
+- **Inhalt**: die Zahl der Nachrichten in den Ordnern und der ungelesenen darunter, die Einträge im Kalender, die Zahl der Ordner, Kalender und Adressbücher.
+
+- Eine **Liste der Ordner** mit Nachrichten und Ungelesenen, die vollsten zuerst; ein Klick auf eine Spaltenüberschrift sortiert um. GroupWise zählt die Mailbox, den Kalender, „In Arbeit“ und die von Ihnen angelegten Ordner; die Ausgangsnachrichten und andere Sichten auf das Postfach zählt es nicht.
+
+Die Zahlen sind der Stand beim Öffnen des Fensters. Bei einem Proxy-Konto beschreiben sie das andere Postfach.
+
+`Passwort ändern …` öffnet den Dialog **Passwort des Postfachs ändern**: altes Passwort, neues Passwort und dessen Wiederholung, dann `Ändern`. GroupWise ändert das Passwort sofort – unabhängig von `OK` oder `Abbrechen` des Einstellungsfensters. Evolution merkt sich das neue Passwort im Schlüsselbund, auch für Ihre Proxy-Konten; andere Programme und Geräte, die das Postfach nutzen (GroupWise Web, Mobilgeräte), brauchen es ebenfalls. Den Knopf gibt es nur bei Ihrem eigenen Konto.
+
+> **Passwörter aus einem Verzeichnisdienst:** Prüft Ihr GroupWise-System die Passwörter gegen einen Verzeichnisdienst (LDAP), ändern Sie das Passwort dort; GroupWise lehnt die Änderung hier dann ab, und der Dialog zeigt die Meldung des Servers.
 
 # 4 E-Mail
 
@@ -702,6 +718,7 @@ Diese Übersicht stellt die Funktionen des GroupWise-Clients für Windows denen 
 | Aufgaben (auch zugewiesene) und Erinnerungsnotizen | ja ([Kapitel 6](#aufgaben)) |
 | GroupWise-Adressbuch, Häufige Kontakte, persönliche Adressbücher; Namensergänzung und Adressauswahl | ja, auch anlegen, umbenennen und löschen ([Kapitel 7](#adressbuecher)) |
 | Regeln einschließlich Abwesenheit; Regeln manuell ausführen | ja; besonders verschachtelte Regeln nur anzeigen ([Kapitel 3](#regeln)) |
+| Mailbox-Größe überprüfen; Passwort ändern | ja, Registerkarte „Postfach und Passwort“ ([Kapitel 3](#postfach)); Löschen oder Archivieren nach Größe gibt es dort nicht |
 | Proxy: Rechte vergeben, als Proxy in einem anderen Postfach arbeiten | ja, als Proxy-Konten ([4.8](#mail-proxy)) |
 | Freigegebene Ordner, Kalender und Adressbücher: freigeben und annehmen | ja ([4.9](#mail-freigabe), [5.8](#kal-freigabe), [Kapitel 7](#adr-freigabe)) |
 | Caching-Modus | entspricht dem Offline-Betrieb von Evolution ([4.7](#mail-offline)) |
@@ -722,7 +739,6 @@ Diese Übersicht stellt die Funktionen des GroupWise-Clients für Windows denen 
 | Besprechungen mit Teams, Zoom oder WebEx planen | fehlt. |
 | S/MIME: signiert oder verschlüsselt senden | fehlt; empfangene Nachrichten werden angezeigt. |
 | Telefonnachrichten senden | fehlt; empfangene werden mit Anrufer, Firma und Nummer angezeigt. |
-| Passwort ändern, Postfachgröße anzeigen | fehlt. |
 | Alternative Absenderadressen | fehlt. |
 | Nachrichten als privat markieren; Kategorien an Kontakten | fehlt. |
 | In einem freigegebenen Ordner ablegen (Posted Item), Eigentum übertragen | fehlt. |

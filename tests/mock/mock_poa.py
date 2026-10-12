@@ -173,6 +173,12 @@ class Handler(BaseHTTPRequestHandler):
                       "<proxy><displayName>M\u00fcller, Anna</displayName><email>anna.mueller@example.com</email><uuid>U1</uuid><id>U1@38</id></proxy>"
                       "<proxy><displayName>Weber, Max</displayName><email>max.weber@example.com</email><uuid>U2</uuid><id>U2@38</id></proxy>"
                       "</proxies>")
+        if action == "getDiskSpaceUsage":
+            return ok(action, "<diskUsage inMB='1'><maxSize>100</maxSize><threshold>80</threshold><used>3</used></diskUsage>")
+        if action == "modifyPassword":
+            if "<old>alt</old>" not in body:
+                return err(action, 53273, "")
+            return ok(action, "")
         if action == "getAddressBookList":
             return ok(action, "<books>"
                       "<book><id>GroupWiseSystemAddressBook@52</id><name>GroupWise Address Book</name></book>"
