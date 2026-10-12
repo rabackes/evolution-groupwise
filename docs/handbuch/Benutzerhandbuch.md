@@ -708,15 +708,16 @@ Diese Übersicht stellt die Funktionen des GroupWise-Clients für Windows denen 
 | Archiv | Das GroupWise-Archiv hat ein eigenes, nicht offengelegtes Format und lässt sich nur mit dem GroupWise-Client lesen. |
 | Besprechungen mit Teams, Zoom oder WebEx planen | fehlt. |
 | S/MIME: signiert oder verschlüsselt senden | fehlt; empfangene Nachrichten werden angezeigt. |
+| Telefonnachrichten senden | fehlt; empfangene werden mit Anrufer, Firma und Nummer angezeigt. |
 | Passwort ändern, Postfachgröße anzeigen | fehlt. |
 | Alternative Absenderadressen | fehlt. |
 | Nachrichten als privat markieren; Kategorien an Kontakten | fehlt. |
 | In einem freigegebenen Ordner ablegen (Posted Item), Eigentum übertragen | fehlt. |
 | Alarme und Benachrichtigungen eines anderen Benutzers erhalten | Das Recht lässt sich vergeben; Evolution nutzt es nicht. |
-| Mehrbenutzer-Kalender | keine eigene Spaltenansicht; mehrere Proxy-Kalender lassen sich nebeneinander einblenden. |
+| Mehrbenutzer-Kalender | keine eigene Spaltenansicht; stattdessen lassen sich mehrere Kalender überlagert einblenden. |
 | In GroupWise abonnierte Internet-Kalender | werden ausgelassen; Evolution kann solche Kalender selbst abonnieren. |
 | Teilaufgaben in der Jobliste | fehlt. |
 
 ## Nicht vorgesehen
 
-Funktionen, die eng an den Windows-Client gebunden oder selten in Gebrauch sind: Leitwegnachrichten, Abstimmungen, Erwähnungen, Schnellantwort, Haftnotizen, Telefonnachrichten senden, Serienbrief, Dokumentenverwaltung und Filr-Anlagen, die Startseite mit Panels, der Remote-Modus, Newsgroups, SMS, Messenger sowie Reparatur und Sicherung des Postfachs.
+Funktionen, die eng an den Windows-Client gebunden oder selten in Gebrauch sind: Leitwegnachrichten, Abstimmungen, Erwähnungen, Schnellantwort, Haftnotizen, Serienbrief, Dokumentenverwaltung und Filr-Anlagen, die Startseite mit Panels, der Remote-Modus, Newsgroups, SMS, Messenger sowie Reparatur und Sicherung des Postfachs.
