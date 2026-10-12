@@ -1428,9 +1428,27 @@ setup_calendar_view (EShellView *shell_view)
 		  action_source_rename_cb, NULL, NULL, NULL }
 	};
 
+	/* Entries of Evolution a series shows, where Evolution's catalogue
+	 * has no translation for them (3.56 has none into German) */
+	static const struct {
+		const gchar *action, *label;
+	} untranslated[] = {
+		{ "event-delete-occurrence", N_("Delete This _Occurrence…") },
+		{ "event-delete-occurrence-all", N_("Delete All Occ_urrences…") }
+	};
+	guint ii;
+
 	e_ui_manager_add_actions_with_eui_data (e_shell_view_get_ui_manager (shell_view), "calendars", GETTEXT_PACKAGE,
 		entries, G_N_ELEMENTS (entries), shell_view, eui);
 	g_signal_connect (shell_view, "update-actions", G_CALLBACK (calendar_update_actions_cb), NULL);
+
+	for (ii = 0; ii < G_N_ELEMENTS (untranslated); ii++) {
+		EUIAction *action = e_ui_manager_get_action (e_shell_view_get_ui_manager (shell_view), untranslated[ii].action);
+		const gchar *theirs = g_dgettext ("evolution", untranslated[ii].label);
+
+		if (action && theirs == untranslated[ii].label && _(untranslated[ii].label) != untranslated[ii].label)
+			e_ui_action_set_label (action, _(untranslated[ii].label));
+	}
 }
 
 static void

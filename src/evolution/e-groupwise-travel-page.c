@@ -670,6 +670,73 @@ describe_conflict (ICalComponent *other,
 	return text;
 }
 
+typedef struct {
+	time_t start, end;
+} TimeRange;
+
+/* How many occurrences of a series are looked at */
+#define MAX_CHECKED_OCCURRENCES 30
+
+static time_t
+instance_time (ICalTime *tt)
+{
+	ICalTimezone *zone = i_cal_time_get_timezone (tt);
+
+	return i_cal_time_as_timet_with_zone (tt, zone ? zone : calendar_config_get_icaltimezone ());
+}
+
+static gboolean
+collect_range_cb (ICalComponent *icomp,
+		  ICalTime *instance_start,
+		  ICalTime *instance_end,
+		  gpointer user_data,
+		  GCancellable *cancellable,
+		  GError **error)
+{
+	GArray *ranges = user_data;
+	TimeRange range = { instance_time (instance_start), instance_time (instance_end) };
+
+	if (range.end > range.start)
+		g_array_append_val (ranges, range);
+
+	return ranges->len < MAX_CHECKED_OCCURRENCES;
+}
+
+typedef struct {
+	ICalComponent *component;
+	const gchar *user_email;
+	time_t start, end;	/* with the travel time */
+	GString *names;
+	guint count;
+} ConflictData;
+
+/* One occurrence of something in a calendar, within the time asked for */
+static gboolean
+conflict_instance_cb (ICalComponent *other,
+		      ICalTime *instance_start,
+		      ICalTime *instance_end,
+		      gpointer user_data,
+		      GCancellable *cancellable,
+		      GError **error)
+{
+	ConflictData *data = user_data;
+	time_t other_start = instance_time (instance_start), other_end = instance_time (instance_end);
+
+	if (!is_conflict (data->component, other, data->user_email) || other_start >= data->end || other_end <= data->start)
+		return TRUE;
+
+	if (!data->names)
+		data->names = g_string_new (NULL);
+	if (++data->count <= MAX_NAMED_CONFLICTS) {
+		gchar *text = describe_conflict (other, other_start, other_end);
+
+		g_string_append_printf (data->names, "%s%s", data->names->len ? "\n" : "", text);
+		g_free (text);
+	}
+
+	return TRUE;
+}
+
 /* Saved: the time with the travel time must not collide unnoticed with
  * busy time of the user's calendars, as the GroupWise client warns */
 static gboolean
@@ -681,10 +748,10 @@ travel_editor_fill_component_cb (ECompEditor *comp_editor,
 	ECalClient *target = e_comp_editor_get_target_client (comp_editor);
 	EShell *shell = e_shell_get_default ();
 	ECalComponent *ecomp;
+	ConflictData data = { NULL, NULL, 0, 0, NULL, 0 };
 	GString *names = NULL;
 	GList *sources, *link;
-	time_t start = 0, end = 0;
-	gchar *sexp, *iso_start, *iso_end;
+	GArray *ranges;
 	guint count = 0;
 	gint response;
 
@@ -706,57 +773,60 @@ travel_editor_fill_component_cb (ECompEditor *comp_editor,
 	    same_x (original, component, X_TRAVEL_BEFORE) && same_x (original, component, X_TRAVEL_AFTER))
 		return TRUE;
 
-	ecomp = e_cal_component_new_from_icalcomponent (i_cal_component_clone (component));
-	if (!ecomp)
-		return TRUE;
-	e_cal_util_get_component_occur_times (ecomp, &start, &end, e_comp_editor_lookup_timezone_cb, comp_editor,
-		calendar_config_get_icaltimezone (), I_CAL_VEVENT_COMPONENT);
-	g_object_unref (ecomp);
-	if (start <= 0 || end <= start)
-		return TRUE;
-	start -= x_seconds (component, X_TRAVEL_BEFORE);
-	end += x_seconds (component, X_TRAVEL_AFTER);
+	/* When it takes place: once, or — a series changed as a whole — each
+	 * time from now on (the first ones) */
+	ranges = g_array_new (FALSE, FALSE, sizeof (TimeRange));
+	if (e_cal_util_component_has_property (component, I_CAL_RRULE_PROPERTY) &&
+	    !e_cal_util_component_has_property (component, I_CAL_RECURRENCEID_PROPERTY)) {
+		ICalTime *from = i_cal_time_new_current_with_zone (i_cal_timezone_get_utc_timezone ());
+		ICalTime *to = i_cal_time_clone (from);
 
-	iso_start = isodate_from_time_t (start);
-	iso_end = isodate_from_time_t (end);
-	sexp = g_strdup_printf ("(occur-in-time-range? (make-time \"%s\") (make-time \"%s\"))", iso_start, iso_end);
-	g_free (iso_start);
-	g_free (iso_end);
+		i_cal_time_adjust (to, 366, 0, 0, 0);
+		e_cal_recur_generate_instances_sync (component, from, to, collect_range_cb, ranges,
+			e_comp_editor_lookup_timezone_cb, comp_editor, calendar_config_get_icaltimezone (), NULL, NULL);
+		g_object_unref (from);
+		g_object_unref (to);
+	} else {
+		TimeRange range = { 0, 0 };
 
+		ecomp = e_cal_component_new_from_icalcomponent (i_cal_component_clone (component));
+		if (ecomp) {
+			e_cal_util_get_component_occur_times (ecomp, &range.start, &range.end, e_comp_editor_lookup_timezone_cb,
+				comp_editor, calendar_config_get_icaltimezone (), I_CAL_VEVENT_COMPONENT);
+			g_object_unref (ecomp);
+		}
+		if (range.start > 0 && range.end > range.start)
+			g_array_append_val (ranges, range);
+	}
+	if (!ranges->len) {
+		g_array_unref (ranges);
+		return TRUE;
+	}
+
+	data.component = component;
+	data.user_email = e_comp_editor_get_cal_email_address (comp_editor);
 	sources = own_calendar_sources (e_shell_get_registry (shell), e_client_get_source (E_CLIENT (target)));
 	for (link = sources; link; link = g_list_next (link)) {
 		EClient *client = e_client_cache_get_client_sync (e_shell_get_client_cache (shell), link->data,
 			E_SOURCE_EXTENSION_CALENDAR, 5, NULL, NULL);
-		GSList *comps = NULL, *item;
+		guint ii;
 
 		if (!client)
 			continue;
-		if (e_cal_client_get_object_list_as_comps_sync (E_CAL_CLIENT (client), sexp, &comps, NULL, NULL)) {
-			for (item = comps; item; item = g_slist_next (item)) {
-				ICalComponent *other = e_cal_component_get_icalcomponent (item->data);
-				time_t other_start = 0, other_end = 0;
+		/* The occurrences of what is in the calendar, each with its own time */
+		for (ii = 0; ii < ranges->len; ii++) {
+			TimeRange *range = &g_array_index (ranges, TimeRange, ii);
 
-				if (!is_conflict (component, other, e_comp_editor_get_cal_email_address (comp_editor)))
-					continue;
-				e_cal_util_get_component_occur_times (item->data, &other_start, &other_end,
-					e_cal_client_tzlookup_cb, client, calendar_config_get_icaltimezone (), I_CAL_VEVENT_COMPONENT);
-				if (other_start >= end || other_end <= start)
-					continue;
-				if (!names)
-					names = g_string_new (NULL);
-				if (++count <= MAX_NAMED_CONFLICTS) {
-					gchar *text = describe_conflict (other, other_start, other_end);
-
-					g_string_append_printf (names, "%s%s", names->len ? "\n" : "", text);
-					g_free (text);
-				}
-			}
-			g_slist_free_full (comps, g_object_unref);
+			data.start = range->start - x_seconds (component, X_TRAVEL_BEFORE);
+			data.end = range->end + x_seconds (component, X_TRAVEL_AFTER);
+			e_cal_client_generate_instances_sync (E_CAL_CLIENT (client), data.start, data.end, NULL, conflict_instance_cb, &data);
 		}
 		g_object_unref (client);
 	}
 	g_list_free_full (sources, g_object_unref);
-	g_free (sexp);
+	g_array_unref (ranges);
+	names = data.names;
+	count = data.count;
 
 	if (!names)
 		return TRUE;

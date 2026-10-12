@@ -3514,9 +3514,10 @@ ecb_groupwise_get_backend_property (ECalBackend *cal_backend,
 			E_CAL_STATIC_CAPABILITY_NO_PROCEDURE_ALARMS,
 			E_CAL_STATIC_CAPABILITY_TASK_NO_ALARM,
 			E_CAL_STATIC_CAPABILITY_TASK_DATE_ONLY,
-			/* The instances of a series are items of their own */
-			E_CAL_STATIC_CAPABILITY_REMOVE_ONLY_THIS,
-			E_CAL_STATIC_CAPABILITY_NO_THISANDFUTURE,
+			/* A series: this appointment, this and the following
+			 * ones, or all (not "this and the earlier ones"); a
+			 * single appointment cannot be made a series later,
+			 * GroupWise makes the appointments when it creates one */
 			E_CAL_STATIC_CAPABILITY_NO_THISANDPRIOR,
 			E_CAL_STATIC_CAPABILITY_NO_CONV_TO_RECUR,
 			e_cal_meta_backend_get_capabilities (E_CAL_META_BACKEND (cal_backend)),

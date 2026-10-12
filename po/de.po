@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: evolution-groupwise\n"
 "Report-Msgid-Bugs-To: rbackes@bond.de\n"
-"POT-Creation-Date: 2026-10-12 14:41+0200\n"
+"POT-Creation-Date: 2026-10-12 14:59+0200\n"
 "PO-Revision-Date: 2026-09-27 18:27+0200\n"
 "Last-Translator: Automatically generated\n"
 "Language-Team: none\n"
@@ -107,11 +107,17 @@ msgid ""
 "rule cannot be changed to other days, and no appointments can be added. "
 "Delete the appointments no longer wanted and create a new series for the "
 "others."
-msgstr "GroupWise legt die Termine einer Serie beim Anlegen der Serie an: Die Regel lässt sich nicht auf andere Tage ändern, und es lassen sich keine Termine hinzufügen. Löschen Sie die nicht mehr gewünschten Termine und legen Sie für die anderen eine neue Serie an."
+msgstr ""
+"GroupWise legt die Termine einer Serie beim Anlegen der Serie an: Die Regel "
+"lässt sich nicht auf andere Tage ändern, und es lassen sich keine Termine "
+"hinzufügen. Löschen Sie die nicht mehr gewünschten Termine und legen Sie für "
+"die anderen eine neue Serie an."
 
 #: src/calendar/e-cal-backend-groupwise.c:2692
 msgid "A series of GroupWise cannot be moved or copied into another calendar."
-msgstr "Eine GroupWise-Serie kann nicht in einen anderen Kalender verschoben oder kopiert werden."
+msgstr ""
+"Eine GroupWise-Serie kann nicht in einen anderen Kalender verschoben oder "
+"kopiert werden."
 
 #: src/calendar/e-cal-backend-groupwise.c:2738
 msgid ""
@@ -545,7 +551,7 @@ msgstr "Proxy-Zugriff gewähren"
 #: src/evolution/e-groupwise-share-accept.c:314
 #: src/evolution/e-groupwise-share-tab.c:789
 #: src/evolution/e-groupwise-signatures-tab.c:228
-#: src/evolution/e-groupwise-travel-page.c:773
+#: src/evolution/e-groupwise-travel-page.c:843
 msgid "_Cancel"
 msgstr "_Abbrechen"
 
@@ -1039,7 +1045,7 @@ msgstr ""
 
 #: src/evolution/e-groupwise-mail-ui.c:1386
 #: src/evolution/e-groupwise-mail-ui.c:1419
-#: src/evolution/e-groupwise-mail-ui.c:1506
+#: src/evolution/e-groupwise-mail-ui.c:1524
 msgid "S_haring…"
 msgstr "_Freigabe …"
 
@@ -1068,21 +1074,29 @@ msgstr ""
 msgid "Rename the calendar, in GroupWise as well"
 msgstr "Den Kalender umbenennen, auch in GroupWise"
 
-#: src/evolution/e-groupwise-mail-ui.c:1457
+#: src/evolution/e-groupwise-mail-ui.c:1436
+msgid "Delete This _Occurrence…"
+msgstr "Diese _Wiederholung löschen …"
+
+#: src/evolution/e-groupwise-mail-ui.c:1437
+msgid "Delete All Occ_urrences…"
+msgstr "_Alle Wiederholungen löschen …"
+
+#: src/evolution/e-groupwise-mail-ui.c:1475
 msgid "_Restore"
 msgstr "_Wiederherstellen"
 
-#: src/evolution/e-groupwise-mail-ui.c:1459
+#: src/evolution/e-groupwise-mail-ui.c:1477
 msgid "Put the selected messages back into the folders they were deleted from"
 msgstr ""
 "Die ausgewählten Nachrichten in die Ordner zurücklegen, aus denen sie "
 "gelöscht wurden"
 
-#: src/evolution/e-groupwise-mail-ui.c:1500
+#: src/evolution/e-groupwise-mail-ui.c:1518
 msgid "GroupWise _Settings…"
 msgstr "GroupWise-_Einstellungen …"
 
-#: src/evolution/e-groupwise-mail-ui.c:1502
+#: src/evolution/e-groupwise-mail-ui.c:1520
 msgid ""
 "Settings the GroupWise server keeps for the account: junk mail handling and "
 "more"
@@ -1090,65 +1104,65 @@ msgstr ""
 "Einstellungen, die der GroupWise-Server für das Konto hält: Junk-Mail-"
 "Verwaltung und mehr"
 
-#: src/evolution/e-groupwise-mail-ui.c:1508
+#: src/evolution/e-groupwise-mail-ui.c:1526
 msgid "Share the folder with other GroupWise users, or see who shares it"
 msgstr ""
 "Den Ordner für andere GroupWise-Benutzer freigeben oder sehen, wer ihn "
 "freigibt"
 
-#: src/evolution/e-groupwise-mail-ui.c:1510
+#: src/evolution/e-groupwise-mail-ui.c:1528
 msgid "GroupWise _Junk Mail"
 msgstr "GroupWise-_Junkmail"
 
-#: src/evolution/e-groupwise-mail-ui.c:1513
+#: src/evolution/e-groupwise-mail-ui.c:1531
 msgid "Junk Mail _Settings…"
 msgstr "Junkmail-_Einstellungen …"
 
-#: src/evolution/e-groupwise-mail-ui.c:1515
+#: src/evolution/e-groupwise-mail-ui.c:1533
 msgid "The junk mail handling of GroupWise: settings and lists"
 msgstr "Die Junkmail-Verwaltung von GroupWise: Einstellungen und Listen"
 
-#: src/evolution/e-groupwise-mail-ui.c:1519
+#: src/evolution/e-groupwise-mail-ui.c:1537
 msgid "_Junk the Sender…"
 msgstr "Sender als _Junk einstufen …"
 
-#: src/evolution/e-groupwise-mail-ui.c:1521
+#: src/evolution/e-groupwise-mail-ui.c:1539
 msgid "Put the sender or the sender's domain onto the junk list of GroupWise"
 msgstr "Den Sender oder seine Domain auf die Junk-Liste von GroupWise setzen"
 
-#: src/evolution/e-groupwise-mail-ui.c:1525
+#: src/evolution/e-groupwise-mail-ui.c:1543
 msgid "_Block the Sender…"
 msgstr "Sender _blockieren …"
 
-#: src/evolution/e-groupwise-mail-ui.c:1527
+#: src/evolution/e-groupwise-mail-ui.c:1545
 msgid "Put the sender or the sender's domain onto the block list of GroupWise"
 msgstr "Den Sender oder seine Domain auf die Blockliste von GroupWise setzen"
 
-#: src/evolution/e-groupwise-mail-ui.c:1531
+#: src/evolution/e-groupwise-mail-ui.c:1549
 msgid "_Trust the Sender…"
 msgstr "Sender als _verbürgt einstufen …"
 
-#: src/evolution/e-groupwise-mail-ui.c:1533
+#: src/evolution/e-groupwise-mail-ui.c:1551
 msgid "Put the sender or the sender's domain onto the trust list of GroupWise"
 msgstr ""
 "Den Sender oder seine Domain auf die Vertrauensliste von GroupWise setzen"
 
-#: src/evolution/e-groupwise-mail-ui.c:1537
+#: src/evolution/e-groupwise-mail-ui.c:1555
 msgid "Delivery _Status…"
 msgstr "_Zustellstatus …"
 
-#: src/evolution/e-groupwise-mail-ui.c:1539
+#: src/evolution/e-groupwise-mail-ui.c:1557
 msgid ""
 "What happened to the message at each recipient: delivered, opened, deleted …"
 msgstr ""
 "Was mit der Nachricht bei jedem Empfänger geschah: zugestellt, geöffnet, "
 "gelöscht …"
 
-#: src/evolution/e-groupwise-mail-ui.c:1543
+#: src/evolution/e-groupwise-mail-ui.c:1561
 msgid "Resen_d…"
 msgstr "_Neu senden …"
 
-#: src/evolution/e-groupwise-mail-ui.c:1545
+#: src/evolution/e-groupwise-mail-ui.c:1563
 msgid ""
 "Open the message to change it and send it anew; sending asks whether the "
 "original is retracted"
@@ -1156,20 +1170,20 @@ msgstr ""
 "Die Nachricht öffnen, um sie zu ändern und neu zu senden; beim Senden wird "
 "gefragt, ob das Original zurückgezogen wird"
 
-#: src/evolution/e-groupwise-mail-ui.c:1549
+#: src/evolution/e-groupwise-mail-ui.c:1567
 msgid "Re_tract…"
 msgstr "_Zurückziehen …"
 
-#: src/evolution/e-groupwise-mail-ui.c:1551
+#: src/evolution/e-groupwise-mail-ui.c:1569
 msgid "Take the selected messages back from the recipients' mailboxes"
 msgstr ""
 "Die ausgewählten Nachrichten aus den Postfächern der Empfänger zurückholen"
 
-#: src/evolution/e-groupwise-mail-ui.c:1570
+#: src/evolution/e-groupwise-mail-ui.c:1588
 msgid "Install Shared _Folder…"
 msgstr "Freigegebenen Ordner _installieren …"
 
-#: src/evolution/e-groupwise-mail-ui.c:1572
+#: src/evolution/e-groupwise-mail-ui.c:1590
 msgid ""
 "Accept the folder this notification offers: it is added to the folder list"
 msgstr ""
@@ -2676,19 +2690,19 @@ msgstr "_Nach dem Termin:"
 msgid "Travel times before/after the appointment are the _same"
 msgstr "Reisezeiten vor/nach Termin sind _gleich"
 
-#: src/evolution/e-groupwise-travel-page.c:769
+#: src/evolution/e-groupwise-travel-page.c:839
 msgid "The appointment overlaps with busy time in your calendar"
 msgstr "Der Termin überschneidet sich mit belegter Zeit in Ihrem Kalender"
 
-#: src/evolution/e-groupwise-travel-page.c:772
+#: src/evolution/e-groupwise-travel-page.c:842
 msgid "The preparation and travel time of the appointment counts, too."
 msgstr "Die Vorbereitungs- und Reisezeit des Termins zählt dabei mit."
 
-#: src/evolution/e-groupwise-travel-page.c:774
+#: src/evolution/e-groupwise-travel-page.c:844
 msgid "_Save Anyway"
 msgstr "_Trotzdem speichern"
 
-#: src/evolution/e-groupwise-travel-page.c:1065
+#: src/evolution/e-groupwise-travel-page.c:1135
 msgid "_Travel Time"
 msgstr "_Reisezeit"
 
