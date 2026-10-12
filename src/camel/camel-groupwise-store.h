@@ -48,6 +48,13 @@ CamelGroupwiseLabels *
 		camel_groupwise_store_get_labels
 						(CamelGroupwiseStore *store);
 
+/* A session of its own as proxy of @proxy (an e-mail address), with the
+ * login of the account; the caller logs it out */
+EGwConnection *	camel_groupwise_store_open_proxy_connection_sync
+						(CamelGroupwiseStore *store,
+						 const gchar *proxy,
+						 GCancellable *cancellable,
+						 GError **error);
 /* Read-only by the settings, or a proxy login without the right to write mail */
 gboolean	camel_groupwise_store_get_read_only
 						(CamelGroupwiseStore *store);

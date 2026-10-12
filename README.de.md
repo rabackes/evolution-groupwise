@@ -19,6 +19,8 @@ einer Anmeldung:
   gewährten Rechten); eigene Unterkalender lassen sich freigeben.
 - **Proxy-Konten**: die Postfächer von Benutzern, die einem Proxy-Rechte gegeben haben, als eigene
   Konten neben dem eigenen (in grauer Schrift), zum Lesen und Senden im Namen des anderen Benutzers.
+- **Absender**: Alle Benutzer und Ressourcen, für die man Proxy ist, stehen im Feld „Von“ des eigenen
+  Kontos zur Auswahl; die Nachricht geht dann über eine Proxy-Anmeldung aus deren Postfach hinaus.
 
 ## Bauen
 

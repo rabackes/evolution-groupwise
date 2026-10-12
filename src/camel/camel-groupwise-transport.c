@@ -19,6 +19,7 @@
 #include <glib/gi18n-lib.h>
 
 #include "e-gw-connection.h"
+#include "e-gw-proxy.h"
 #include "e-gw-xml.h"
 
 #include "camel-groupwise-mime.h"
@@ -195,6 +196,49 @@ embed_item (const gchar *item_id,
 	return attachment;
 }
 
+/* The mailbox to send from when the sender of the message is not the user
+ * of the account but one he is proxy of (a user or a resource, an alias of
+ * the identity): the address to log in as its proxy, else NULL */
+static gchar *
+dup_proxy_sender (CamelGroupwiseStore *store,
+		  EGwConnection *cnc,
+		  CamelAddress *from,
+		  GCancellable *cancellable)
+{
+	CamelSettings *settings;
+	GHashTable *proxies;
+	GHashTableIter iter;
+	gpointer value;
+	const gchar *own = e_gw_connection_get_user_email (cnc), *email = NULL;
+	gchar *proxy, *found = NULL;
+
+	if (!from || !CAMEL_IS_INTERNET_ADDRESS (from) ||
+	    !camel_internet_address_get (CAMEL_INTERNET_ADDRESS (from), 0, NULL, &email) ||
+	    !email || !*email || (own && g_ascii_strcasecmp (email, own) == 0))
+		return NULL;
+
+	/* A proxy account sends from its mailbox */
+	settings = camel_service_ref_settings (CAMEL_SERVICE (store));
+	proxy = camel_groupwise_settings_dup_proxy (CAMEL_GROUPWISE_SETTINGS (settings));
+	g_object_unref (settings);
+	if (proxy) {
+		g_free (proxy);
+		return NULL;
+	}
+
+	proxies = e_gw_connection_get_proxy_list_sync (cnc, cancellable, NULL);
+	if (!proxies)
+		return NULL;
+	g_hash_table_iter_init (&iter, proxies);
+	while (!found && g_hash_table_iter_next (&iter, NULL, &value)) {
+		if (value && g_ascii_strcasecmp (value, email) == 0)
+			found = g_strdup (value);
+	}
+	g_hash_table_destroy (proxies);
+
+	return found;
+}
+
 static gboolean
 groupwise_transport_send_to_sync (CamelTransport *transport,
 				  CamelMimeMessage *message,
@@ -209,7 +253,7 @@ groupwise_transport_send_to_sync (CamelTransport *transport,
 	EGwResponse *response;
 	GError *local_error = NULL;
 	gboolean read_only;
-	gchar *item;
+	gchar *item, *sender;
 
 	store = transport_ref_store (CAMEL_SERVICE (transport), error);
 	if (!store)
@@ -228,17 +272,48 @@ groupwise_transport_send_to_sync (CamelTransport *transport,
 		return FALSE;
 	}
 
+	/* Another mailbox chosen as the sender: through a session as its proxy */
+	sender = dup_proxy_sender (store, cnc, from, cancellable);
+	if (sender) {
+		EGwConnection *proxy_cnc = camel_groupwise_store_open_proxy_connection_sync (store, sender, cancellable, &local_error);
+
+		if (proxy_cnc && !(e_gw_connection_get_proxy_rights (proxy_cnc) & E_GW_PROXY_MAIL_WRITE)) {
+			g_set_error (&local_error, CAMEL_SERVICE_ERROR, CAMEL_SERVICE_ERROR_UNAVAILABLE,
+				_("%s has not granted you the right to write mail"), sender);
+			e_gw_connection_logout_sync (proxy_cnc, cancellable);
+			g_clear_object (&proxy_cnc);
+		}
+		if (!proxy_cnc) {
+			g_set_error (error, CAMEL_SERVICE_ERROR, CAMEL_SERVICE_ERROR_UNAVAILABLE,
+				_("Sending as %s failed: %s"), sender, local_error->message);
+			g_clear_error (&local_error);
+			g_free (sender);
+			g_object_unref (cnc);
+			g_object_unref (store);
+			return FALSE;
+		}
+		g_debug ("send: as proxy of %s", sender);
+		g_object_unref (cnc);
+		cnc = proxy_cnc;
+	}
+
 	item = camel_groupwise_item_from_message (message, recipients, FALSE, embed_item, cnc, cancellable, error);
 	if (!item) {
+		if (sender)
+			e_gw_connection_logout_sync (cnc, cancellable);
+		g_free (sender);
 		g_object_unref (cnc);
 		g_object_unref (store);
 		return FALSE;
 	}
 
-	/* The sender is the logged-in user, or for a proxy account the user
+	/* The sender is the logged-in user, or in a proxy session the user
 	 * of the mailbox (the POA notes the proxy); the POA keeps the copy in
 	 * Sent Items of that mailbox */
 	response = e_gw_connection_call_sync (cnc, "sendItem", item, cancellable, &local_error);
+	if (sender)
+		e_gw_connection_logout_sync (cnc, cancellable);
+	g_free (sender);
 	if (response) {
 		e_gw_response_free (response);
 		if (out_sent_message_saved)

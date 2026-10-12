@@ -18,6 +18,8 @@ login:
   owner granted it); own subcalendars can be shared.
 - **Proxy accounts**: the mailboxes of users who granted the user proxy rights, as accounts of their
   own beside the user's (in grey), to read and to send in the other user's name.
+- **Senders**: every user and resource the user is proxy of can be chosen in "From" of the user's own
+  account; such a message goes out of that mailbox through a proxy session.
 
 ## Building
 

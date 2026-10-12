@@ -446,6 +446,16 @@ Ein Proxy-Konto heißt „*Name* (Proxy)“ und ist ein eigenständiges Konto: S
 
 - Proxy-Konten aus älteren Versionen (0.3, 0.4) führt die Registerkarte mit dem Vermerk „Konto wird mit OK neu eingerichtet“; mit `OK` werden sie in der neuen Form angelegt.
 
+### Aus einem anderen Postfach senden, ohne Proxy-Konto
+
+Zum Senden brauchen Sie kein Proxy-Konto: Alle Benutzer und Ressourcen, die Ihnen Proxy-Rechte gegeben haben, stehen beim Schreiben einer Nachricht im Feld `Von` Ihres eigenen Kontos zur Auswahl, wie im GroupWise-Client. Wählen Sie dort den gewünschten Absender; die Nachricht geht dann über eine Proxy-Anmeldung aus dessen Postfach hinaus und liegt danach in dessen Ausgangsnachrichten. Voraussetzung ist das Proxy-Recht zum Schreiben von Mail, sonst meldet Evolution beim Senden, dass das Recht fehlt.
+
+- Die Liste wird bei jeder Anmeldung des Kontos mit der Proxy-Liste von GroupWise abgeglichen: neue Einträge kommen hinzu, zurückgenommene verschwinden.
+
+- Die Einträge stehen in den Kontoeinstellungen unter `Identität` bei den `Aliasen`. Aliase, die Sie dort selbst eingetragen haben, bleiben erhalten; einen von GroupWise stammenden Eintrag zu löschen, hilft nicht, er kommt bei der nächsten Anmeldung wieder.
+
+- Die weiteren (sekundären) Internet-Adressen eines Postfachs, die der GroupWise-Client zusätzlich anbietet, stehen nicht zur Auswahl.
+
 Die Kalender anderer Benutzer, die Sie im GroupWise-Client als Proxy-Kalender hinzugefügt haben, erscheinen unter Ihrem eigenen Konto (siehe Abschnitt 5.1) – außer für Benutzer, für die Sie ein Proxy-Konto eingerichtet haben: deren Kalender stehen dann nur beim Proxy-Konto.
 
 ## 4.9 Ordner freigeben
@@ -779,7 +789,8 @@ Diese Übersicht stellt die Funktionen des GroupWise-Clients für Windows denen 
 | Archiv | Das GroupWise-Archiv hat ein eigenes, nicht offengelegtes Format und lässt sich nur mit dem GroupWise-Client lesen. |
 | Besprechungen mit Teams, Zoom oder WebEx planen | fehlt. |
 | S/MIME: signiert oder verschlüsselt senden | fehlt; empfangene Nachrichten werden angezeigt. |
-| Alternative Absenderadressen | fehlt. |
+| Absender wählen („Von“): Postfächer, für die man Proxy ist (Benutzer und Ressourcen) | vorhanden: im Feld „Von“ des eigenen Kontos, siehe Abschnitt 4.8. |
+| Alternative (sekundäre) Absenderadressen eines Postfachs | fehlt. |
 | Nachrichten als privat markieren; Kategorien an Kontakten | fehlt. |
 | In einem freigegebenen Ordner ablegen (Posted Item), Eigentum übertragen | fehlt. |
 | Alarme und Benachrichtigungen eines anderen Benutzers erhalten | Das Recht lässt sich vergeben; Evolution nutzt es nicht. |

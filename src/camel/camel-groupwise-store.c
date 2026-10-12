@@ -390,6 +390,53 @@ groupwise_store_disconnect_sync (CamelService *service,
 	return TRUE;
 }
 
+EGwConnection *
+camel_groupwise_store_open_proxy_connection_sync (CamelGroupwiseStore *store,
+						  const gchar *proxy,
+						  GCancellable *cancellable,
+						  GError **error)
+{
+	CamelService *service;
+	CamelNetworkSettings *settings;
+	CamelNetworkSecurityMethod method;
+	EGwConnection *cnc;
+	GError *local_error = NULL;
+	const gchar *password;
+	gchar *host, *user;
+	guint16 port;
+
+	g_return_val_if_fail (CAMEL_IS_GROUPWISE_STORE (store), NULL);
+	g_return_val_if_fail (proxy && *proxy, NULL);
+
+	service = CAMEL_SERVICE (store);
+	password = camel_service_get_password (service);
+	if (!password || !*password) {
+		g_set_error_literal (error, CAMEL_SERVICE_ERROR, CAMEL_SERVICE_ERROR_NOT_CONNECTED,
+			_("The GroupWise account is not connected"));
+		return NULL;
+	}
+
+	settings = CAMEL_NETWORK_SETTINGS (camel_service_ref_settings (service));
+	host = camel_network_settings_dup_host (settings);
+	user = camel_network_settings_dup_user (settings);
+	port = camel_network_settings_get_port (settings);
+	method = camel_network_settings_get_security_method (settings);
+	g_object_unref (settings);
+
+	cnc = e_gw_connection_new (host, port, method != CAMEL_NETWORK_SECURITY_METHOD_NONE);
+	e_gw_connection_set_certificate_func (cnc, groupwise_store_accept_certificate, service, NULL);
+	e_gw_connection_set_proxy (cnc, proxy);
+	if (!e_gw_connection_login_sync (cnc, user, password, cancellable, &local_error)) {
+		propagate_gw_error (error, local_error);
+		g_clear_object (&cnc);
+	}
+
+	g_free (host);
+	g_free (user);
+
+	return cnc;
+}
+
 static CamelAuthenticationResult
 groupwise_store_authenticate_sync (CamelService *service,
 				   const gchar *mechanism,

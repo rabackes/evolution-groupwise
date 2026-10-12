@@ -794,6 +794,23 @@ Konto gehört eine Absenderidentität mit Namen und Adresse des anderen Benutzer
 	<li>Proxy-Konten aus älteren Versionen (0.3, 0.4) führt die Registerkarte mit dem Vermerk „Konto wird mit
 		OK neu eingerichtet“; mit <span class="menu">OK</span> werden sie in der neuen Form angelegt.</li>
 </ul>
+<h3 id="mail-absender">Aus einem anderen Postfach senden, ohne Proxy-Konto</h3>
+<p>Zum Senden brauchen Sie kein Proxy-Konto: Alle Benutzer und Ressourcen, die Ihnen Proxy-Rechte gegeben
+haben, stehen beim Schreiben einer Nachricht im Feld <span class="menu">Von</span> Ihres eigenen Kontos
+zur Auswahl, wie im GroupWise-Client. Wählen Sie dort den gewünschten Absender; die Nachricht geht dann
+über eine Proxy-Anmeldung aus dessen Postfach hinaus und liegt danach in dessen Ausgangsnachrichten.
+Voraussetzung ist das Proxy-Recht zum Schreiben von Mail, sonst meldet Evolution beim Senden, dass
+das Recht fehlt.</p>
+<ul>
+	<li>Die Liste wird bei jeder Anmeldung des Kontos mit der Proxy-Liste von GroupWise abgeglichen: neue
+		Einträge kommen hinzu, zurückgenommene verschwinden.</li>
+	<li>Die Einträge stehen in den Kontoeinstellungen unter <span class="menu">Identität</span> bei den
+		<span class="menu">Aliasen</span>. Aliase, die Sie dort selbst eingetragen haben, bleiben erhalten;
+		einen von GroupWise stammenden Eintrag zu löschen, hilft nicht, er kommt bei der nächsten
+		Anmeldung wieder.</li>
+	<li>Die weiteren (sekundären) Internet-Adressen eines Postfachs, die der GroupWise-Client zusätzlich
+		anbietet, stehen nicht zur Auswahl.</li>
+</ul>
 <p>Die Kalender anderer Benutzer, die Sie im GroupWise-Client als Proxy-Kalender hinzugefügt haben,
 erscheinen unter Ihrem eigenen Konto (siehe Abschnitt 5.1) – außer für Benutzer, für die Sie ein
 Proxy-Konto eingerichtet haben: deren Kalender stehen dann nur beim Proxy-Konto.</p>
@@ -1402,7 +1419,9 @@ fortgeschrieben.</p>
 		GroupWise-Client lesen.</td></tr>
 	<tr><td>Besprechungen mit Teams, Zoom oder WebEx planen</td><td>fehlt.</td></tr>
 	<tr><td>S/MIME: signiert oder verschlüsselt senden</td><td>fehlt; empfangene Nachrichten werden angezeigt.</td></tr>
-	<tr><td>Alternative Absenderadressen</td><td>fehlt.</td></tr>
+	<tr><td>Absender wählen („Von“): Postfächer, für die man Proxy ist (Benutzer und Ressourcen)</td>
+		<td>vorhanden: im Feld „Von“ des eigenen Kontos, siehe Abschnitt 4.8.</td></tr>
+	<tr><td>Alternative (sekundäre) Absenderadressen eines Postfachs</td><td>fehlt.</td></tr>
 	<tr><td>Nachrichten als privat markieren; Kategorien an Kontakten</td><td>fehlt.</td></tr>
 	<tr><td>In einem freigegebenen Ordner ablegen (Posted Item), Eigentum übertragen</td><td>fehlt.</td></tr>
 	<tr><td>Alarme und Benachrichtigungen eines anderen Benutzers erhalten</td>

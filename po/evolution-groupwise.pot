@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: evolution-groupwise\n"
 "Report-Msgid-Bugs-To: rbackes@bond.de\n"
-"POT-Creation-Date: 2026-10-12 16:35+0200\n"
+"POT-Creation-Date: 2026-10-12 17:11+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -176,8 +176,8 @@ msgstr ""
 
 #: src/camel/camel-groupwise-folder.c:2018
 #: src/camel/camel-groupwise-folder.c:2145
-#: src/camel/camel-groupwise-store.c:674
-#: src/camel/camel-groupwise-transport.c:220
+#: src/camel/camel-groupwise-store.c:721
+#: src/camel/camel-groupwise-transport.c:264
 msgid "The account is read-only"
 msgstr ""
 
@@ -346,7 +346,7 @@ msgid "You must be working online to complete this operation"
 msgstr ""
 
 #: src/camel/camel-groupwise-store.c:337
-#: src/camel/camel-groupwise-transport.c:125
+#: src/camel/camel-groupwise-transport.c:126
 #, c-format
 msgid "GroupWise server %s"
 msgstr ""
@@ -361,38 +361,43 @@ msgstr ""
 msgid "GroupWise mail for %s on %s"
 msgstr ""
 
-#: src/camel/camel-groupwise-store.c:454
+#: src/camel/camel-groupwise-store.c:415
+#: src/registry/module-groupwise-backend.c:667
+msgid "The GroupWise account is not connected"
+msgstr ""
+
+#: src/camel/camel-groupwise-store.c:501
 #, c-format
 msgid "%s has not granted you the right to read mail"
 msgstr ""
 
-#: src/camel/camel-groupwise-store.c:536 src/camel/camel-groupwise-store.c:568
-#: src/camel/camel-groupwise-store.c:689 src/camel/camel-groupwise-store.c:750
-#: src/camel/camel-groupwise-store.c:840
+#: src/camel/camel-groupwise-store.c:583 src/camel/camel-groupwise-store.c:615
+#: src/camel/camel-groupwise-store.c:736 src/camel/camel-groupwise-store.c:797
+#: src/camel/camel-groupwise-store.c:887
 #, c-format
 msgid "No such folder: %s"
 msgstr ""
 
-#: src/camel/camel-groupwise-store.c:596
+#: src/camel/camel-groupwise-store.c:643
 msgid "The mailbox has no Mailbox folder"
 msgstr ""
 
-#: src/camel/camel-groupwise-store.c:617
+#: src/camel/camel-groupwise-store.c:664
 msgid "The mailbox has no Trash folder"
 msgstr ""
 
-#: src/camel/camel-groupwise-store.c:641
+#: src/camel/camel-groupwise-store.c:688
 msgid ""
 "The mailbox has no Junk Mail folder; switch on the junk mail handling of "
 "GroupWise"
 msgstr ""
 
-#: src/camel/camel-groupwise-store.c:695
+#: src/camel/camel-groupwise-store.c:742
 #, c-format
 msgid "%s is a system folder of GroupWise"
 msgstr ""
 
-#: src/camel/camel-groupwise-store.c:744
+#: src/camel/camel-groupwise-store.c:791
 msgid "A folder name must not contain \"/\""
 msgstr ""
 
@@ -435,7 +440,7 @@ msgstr ""
 
 #: src/camel/camel-groupwise-store-summary.c:401
 #: src/evolution/e-groupwise-ui-utils.c:216
-#: src/registry/module-groupwise-backend.c:342
+#: src/registry/module-groupwise-backend.c:343
 msgid "Calendar"
 msgstr ""
 
@@ -449,20 +454,30 @@ msgstr ""
 msgid "Documents"
 msgstr ""
 
-#: src/camel/camel-groupwise-transport.c:89
+#: src/camel/camel-groupwise-transport.c:90
 msgid "No session"
 msgstr ""
 
-#: src/camel/camel-groupwise-transport.c:112
+#: src/camel/camel-groupwise-transport.c:113
 msgid "The GroupWise account for sending was not found"
 msgstr ""
 
-#: src/camel/camel-groupwise-transport.c:126
+#: src/camel/camel-groupwise-transport.c:127
 #, c-format
 msgid "GroupWise mail delivery via %s"
 msgstr ""
 
-#: src/camel/camel-groupwise-transport.c:248
+#: src/camel/camel-groupwise-transport.c:282
+#, c-format
+msgid "%s has not granted you the right to write mail"
+msgstr ""
+
+#: src/camel/camel-groupwise-transport.c:288
+#, c-format
+msgid "Sending as %s failed: %s"
+msgstr ""
+
+#: src/camel/camel-groupwise-transport.c:323
 #, c-format
 msgid "Sending through GroupWise failed: %s"
 msgstr ""
@@ -531,7 +546,7 @@ msgid "Reminder Notes"
 msgstr ""
 
 #: src/evolution/e-groupwise-access-tab.c:219
-#: src/registry/module-groupwise-backend.c:342
+#: src/registry/module-groupwise-backend.c:343
 msgid "Tasks"
 msgstr ""
 
@@ -2561,7 +2576,7 @@ msgid ""
 msgstr ""
 
 #: src/evolution/e-groupwise-ui-utils.c:110
-#: src/registry/module-groupwise-backend.c:901
+#: src/registry/module-groupwise-backend.c:902
 msgid "The account has no GroupWise settings"
 msgstr ""
 
@@ -2779,22 +2794,18 @@ msgstr ""
 msgid "Signature"
 msgstr ""
 
-#: src/registry/module-groupwise-backend.c:342
+#: src/registry/module-groupwise-backend.c:343
 msgid "Notes"
 msgstr ""
 
-#: src/registry/module-groupwise-backend.c:666
-msgid "The GroupWise account is not connected"
-msgstr ""
-
-#: src/registry/module-groupwise-backend.c:702
+#: src/registry/module-groupwise-backend.c:703
 msgid "GroupWise can make calendars and address books, with a name"
 msgstr ""
 
-#: src/registry/module-groupwise-backend.c:727
+#: src/registry/module-groupwise-backend.c:728
 msgid "The mailbox has no Calendar"
 msgstr ""
 
-#: src/registry/module-groupwise-backend.c:758
+#: src/registry/module-groupwise-backend.c:759
 msgid "This calendar or address book cannot be deleted in GroupWise"
 msgstr ""

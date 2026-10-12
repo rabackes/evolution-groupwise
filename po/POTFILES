@@ -56,5 +56,6 @@ src/libegroupwise/e-gw-share.c
 src/libegroupwise/e-gw-signature.c
 src/libegroupwise/e-gw-vacation.c
 src/libegroupwise/e-gw-xml.c
+src/registry/gw-senders.c
 src/registry/gw-signatures.c
 src/registry/module-groupwise-backend.c

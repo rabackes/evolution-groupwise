@@ -41,6 +41,7 @@
 #include "e-gw-folder.h"
 #include "e-gw-backend-utils.h"
 #include "e-source-groupwise-folder.h"
+#include "gw-senders.h"
 #include "gw-signatures.h"
 
 typedef ECollectionBackend EGwCollectionBackend;
@@ -916,6 +917,10 @@ gw_collection_authenticate_sync (EBackend *backend,
 	/* The signatures with the mail */
 	if (e_collection_backend_get_part_enabled (collection_backend, E_COLLECTION_BACKEND_PART_MAIL))
 		gw_collection_sync_signatures (collection_backend, cnc, proxy, cancellable);
+
+	/* The mailboxes the user is proxy of as senders of the own account */
+	if (!proxy && e_collection_backend_get_part_enabled (collection_backend, E_COLLECTION_BACKEND_PART_MAIL))
+		gw_collection_sync_senders (collection_backend, cnc, cancellable);
 
 	e_gw_connection_logout_sync (cnc, cancellable);
 	g_object_unref (cnc);
