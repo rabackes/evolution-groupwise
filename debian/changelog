@@ -1,3 +1,31 @@
+evolution-groupwise (0.10.0) noble; urgency=medium
+
+  * Calendars and address books are made, renamed and deleted from
+    Evolution: its dialogs for a new calendar or address book offer the
+    GroupWise account, "Rename…" is in the context menus, deleting asks
+    first.
+  * Recurring appointments: a series that carries its rule shows as one
+    recurring event, with exceptions for appointments that are gone,
+    moved or changed by themselves. Changes and deletions are for this
+    appointment, this and the following ones, or all; the days excluded
+    from a new series are kept.
+  * The busy-time warning asks first which appointments of a series a
+    change is for and checks those; a window says that a series is being
+    saved.
+  * GroupWise settings: the page "Mailbox and Password" with the size of
+    the mailbox, what the folders hold, and the change of the password.
+  * The folder list shows the unread messages of every folder, not of
+    the Mailbox alone.
+  * Phone messages can be written: File > New > Phone Message.
+  * The composer's "Request Read Receipt" asks GroupWise to mail the
+    sender when a recipient opens the message.
+  * After a change only the calendar concerned is read anew; an
+    appointment still being written (Work In Progress) no longer shows
+    in the calendar; in the editor the end follows a changed start.
+  * Manual: a comparison with the GroupWise client (chapter 10).
+
+ -- Rainer Backes <rbackes@bond.de>  Mon, 12 Oct 2026 18:00:00 +0200
+
 evolution-groupwise (0.9.3) noble; urgency=medium
 
   * Sharing mail folders: the page "Sharing" of the folder properties

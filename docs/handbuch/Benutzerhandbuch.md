@@ -13,7 +13,7 @@ Benutzerhandbuch
 
 GroupWise-Postfächer in Evolution: E-Mail, Adressbücher, Kalender, Aufgaben und Notizen über die SOAP-Schnittstelle des GroupWise Post Office Agent.
 
-Version 0.9.3 · Oktober 2026 bond Software Entwicklung GmbH Lizenz: GNU Lesser General Public License 2.1 oder neuer
+Version 0.10.0 · Oktober 2026 bond Software Entwicklung GmbH Lizenz: GNU Lesser General Public License 2.1 oder neuer
 
 # 1 Überblick
 
@@ -72,14 +72,14 @@ In diesem Handbuch stehen die Bezeichnungen von Evolution; wo es der Klarheit di
 Für openSUSE und Fedora gibt es RPM-Pakete, für Debian und Ubuntu ein .deb-Paket. Installieren Sie das Paket mit der Paketverwaltung Ihres Systems, zum Beispiel unter openSUSE:
 
 ```
-sudo zypper install ./evolution-groupwise-0.9.3-0.x86_64.rpm \
-                    ./evolution-groupwise-lang-0.9.3-0.noarch.rpm
+sudo zypper install ./evolution-groupwise-0.10.0-0.x86_64.rpm \
+                    ./evolution-groupwise-lang-0.10.0-0.noarch.rpm
 ```
 
 oder unter Debian/Ubuntu:
 
 ```
-sudo apt install ./evolution-groupwise_0.9.3_amd64.deb
+sudo apt install ./evolution-groupwise_0.10.0_amd64.deb
 ```
 
 Das Paket `evolution-groupwise-lang` enthält die deutsche Übersetzung (zurzeit; weitere Sprachen folgen). Starten Sie danach Evolution und die Hintergrunddienste neu, am einfachsten durch Ab- und Anmelden oder mit:
@@ -736,7 +736,7 @@ gw-cli items ORDNER-ID 20
 
 # 10 Vergleich mit dem GroupWise-Client
 
-Diese Übersicht stellt die Funktionen des GroupWise-Clients für Windows denen von Evolution mit evolution-groupwise gegenüber. Sie folgt dem Aufbau des *GroupWise Client User Guide* (GroupWise 26, April 2026) und gibt den **Stand vom 12.10.2026** (nach Version 0.9.3) wieder; sie wird mit der Entwicklung fortgeschrieben.
+Diese Übersicht stellt die Funktionen des GroupWise-Clients für Windows denen von Evolution mit evolution-groupwise gegenüber. Sie folgt dem Aufbau des *GroupWise Client User Guide* (GroupWise 26, April 2026) und gibt den Stand von **Version 0.10.0** wieder; sie wird mit jeder Version fortgeschrieben.
 
 ## Vorhanden
 
