@@ -622,7 +622,7 @@ Ein Doppelklick auf die Nachricht **Benachrichtigung über freigegebenes Adressb
 | Geklonte Rechner | Zwei Rechner mit derselben Maschinen-ID stören sich bei der Abfrage der Änderungen am selben Postfach gegenseitig (siehe Kontooptionen in Kapitel 3). |
 | Signierte oder verschlüsselte Nachrichten | können nicht über GroupWise gesendet werden; empfangene werden angezeigt. |
 | Suchergebnisordner | zeigen über SOAP nur einen Teil der Treffer (siehe 4.6). |
-| Serientermine | erscheinen als einzelne Termine, da GroupWise keine Regel speichert. |
+| Serientermine | erscheinen als einzelne Termine: Über die Schnittstelle des Servers kommen die Termine einer Serie einzeln an, ohne die Serienregel, die der GroupWise-Client kennt. |
 | Abonnierte Internet-Kalender | werden ausgelassen. |
 | Ziehen auf die Kalenderliste | in Evolution nicht zuverlässig; Kontextmenü oder Editor verwenden. |
 | Wiederherstellen im Papierkorb | erst ab Evolution 3.56. |
@@ -665,3 +665,58 @@ gw-cli login          # Anmeldung und Benutzerdaten
 gw-cli folders        # Ordnerliste, mit der Rolle der Kalender
 gw-cli items ORDNER-ID 20
 ```
+
+# 10 Vergleich mit dem GroupWise-Client
+
+Diese Übersicht stellt die Funktionen des GroupWise-Clients für Windows denen von Evolution mit evolution-groupwise gegenüber. Sie folgt dem Aufbau des *GroupWise Client User Guide* (GroupWise 26, April 2026) und gibt den Stand von **Version 0.9.3** wieder; sie wird mit jeder Version fortgeschrieben.
+
+## Vorhanden
+
+| Bereich im GroupWise-Client | In Evolution |
+|---|---|
+| Ordnerliste und Systemordner; Ordner anlegen, umbenennen, verschieben, löschen | ja, in der Reihenfolge des Clients ([4.1](#mail-ordner)) |
+| Mail lesen, schreiben, antworten, weiterleiten; Anlagen, Entwürfe | ja; die Empfänger erhalten eine echte GroupWise-Nachricht ([4.2](#mail-senden)) |
+| Gesendete Objekte: Zustellstatus, Zurückziehen, Erneut senden | ja ([4.2](#mail-senden)) |
+| Signaturen | ja, mit GroupWise abgeglichen |
+| Kategorien; Folgenachricht und Jobliste | ja, als Beschriftungen bzw. Kategorien ([4.4](#mail-beschriftungen)) |
+| Junk-Mail: Listen, Sperren, Vertrauen, Einstellungen | ja ([4.5](#mail-junk)) |
+| Papierkorb: Wiederherstellen, Leeren | ja ([4.3](#mail-papierkorb)) |
+| Suchergebnisordner | werden angezeigt, mit einem Teil der Treffer; angelegt werden sie im Client ([4.6](#mail-suche)) |
+| Termine und Besprechungen: planen, annehmen, ablehnen, ändern, absagen; Internet-Einladungen | ja ([5.3](#kal-besprechungen)) |
+| Belegt-Suche, Alarme, Zeitzonen, Ressourcen, Vorbereitungs- und Reisezeit | ja ([5.7](#kal-reisezeit)) |
+| Persönliche Kalender (Unterkalender), Farben, Termine zwischen Kalendern verschieben | ja; angelegt werden Kalender im Client ([5.1](#kal-liste)) |
+| Aufgaben (auch zugewiesene) und Erinnerungsnotizen | ja ([Kapitel 6](#aufgaben)) |
+| GroupWise-Adressbuch, Häufige Kontakte, persönliche Adressbücher; Namensergänzung und Adressauswahl | ja; angelegt werden Adressbücher im Client ([Kapitel 7](#adressbuecher)) |
+| Regeln einschließlich Abwesenheit; Regeln manuell ausführen | ja; besonders verschachtelte Regeln nur anzeigen ([Kapitel 3](#regeln)) |
+| Proxy: Rechte vergeben, als Proxy in einem anderen Postfach arbeiten | ja, als Proxy-Konten ([4.8](#mail-proxy)) |
+| Freigegebene Ordner, Kalender und Adressbücher: freigeben und annehmen | ja ([4.9](#mail-freigabe), [5.8](#kal-freigabe), [Kapitel 7](#adr-freigabe)) |
+| Caching-Modus | entspricht dem Offline-Betrieb von Evolution ([4.7](#mail-offline)) |
+| Notify: Benachrichtigung über neue Nachrichten | Evolution selbst; auf Wunsch meldet der Server Änderungen sofort (Kapitel 3, Kontooptionen) |
+| Drucken, POP3- und IMAP-Konten, RSS, LDAP-Adressbuch, Internet-Kalender abonnieren | Funktionen von Evolution, unabhängig von GroupWise |
+| Nachrichten als Datei sichern | Evolution: `Datei → Als Datei speichern …` (mbox-Format) oder die Nachricht in einen Dateiordner ziehen |
+
+## Nicht oder nur eingeschränkt vorhanden
+
+| Funktion des GroupWise-Clients | Stand |
+|---|---|
+| Serientermine als Serie bearbeiten | Jeder Termin einer Serie ist ein einzelner Termin; die ganze Serie oder ihre Regel lässt sich nicht in einem Schritt ändern. |
+| Einladungen delegieren, neue Zeit vorschlagen | fehlt; eine delegierte Einladung wird als Status angezeigt. |
+| Sendeoptionen für Mail | Die Priorität wird übertragen. Benachrichtigung beim Öffnen oder Löschen, verzögerte Zustellung, Verfallsdatum, „Antwort angefordert“, Klassifizierung und verborgener Betreff fehlen; den Status einer gesendeten Nachricht zeigt `Zustellstatus …`. |
+| Suchen im ganzen Postfach auf dem Server (Volltext) | Evolution durchsucht, was es lokal kennt: die Nachrichtenlisten und bereits geladene Nachrichten. |
+| Kalender und Adressbücher anlegen, umbenennen, löschen | nur im GroupWise-Client; sie erscheinen danach von selbst in Evolution. |
+| Proxy-Kalender unter dem eigenen Konto beschreiben | nur lesbar; zum Schreiben dient das Proxy-Konto. |
+| Archiv | Das GroupWise-Archiv hat ein eigenes, nicht offengelegtes Format und lässt sich nur mit dem GroupWise-Client lesen. |
+| Besprechungen mit Teams, Zoom oder WebEx planen | fehlt. |
+| S/MIME: signiert oder verschlüsselt senden | fehlt; empfangene Nachrichten werden angezeigt. |
+| Passwort ändern, Postfachgröße anzeigen | fehlt. |
+| Alternative Absenderadressen | fehlt. |
+| Nachrichten als privat markieren; Kategorien an Kontakten | fehlt. |
+| In einem freigegebenen Ordner ablegen (Posted Item), Eigentum übertragen | fehlt. |
+| Alarme und Benachrichtigungen eines anderen Benutzers erhalten | Das Recht lässt sich vergeben; Evolution nutzt es nicht. |
+| Mehrbenutzer-Kalender | keine eigene Spaltenansicht; mehrere Proxy-Kalender lassen sich nebeneinander einblenden. |
+| In GroupWise abonnierte Internet-Kalender | werden ausgelassen; Evolution kann solche Kalender selbst abonnieren. |
+| Teilaufgaben in der Jobliste | fehlt. |
+
+## Nicht vorgesehen
+
+Funktionen, die eng an den Windows-Client gebunden oder selten in Gebrauch sind: Leitwegnachrichten, Abstimmungen, Erwähnungen, Schnellantwort, Haftnotizen, Telefonnachrichten senden, Serienbrief, Dokumentenverwaltung und Filr-Anlagen, die Startseite mit Panels, der Remote-Modus, Newsgroups, SMS, Messenger sowie Reparatur und Sicherung des Postfachs.

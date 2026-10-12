@@ -121,6 +121,7 @@ figcaption { font-size: 8.5pt; color: #666; margin-top: 3pt; }
 		<li><a href="#adressbuecher">7&nbsp;&nbsp;Adressbücher</a></li>
 		<li><a href="#grenzen">8&nbsp;&nbsp;Grenzen und Hinweise</a></li>
 		<li><a href="#fehlersuche">9&nbsp;&nbsp;Fehlersuche</a></li>
+		<li><a href="#vergleich">10&nbsp;&nbsp;Vergleich mit dem GroupWise-Client</a></li>
 	</ol>
 </nav>
 
@@ -1129,7 +1130,8 @@ Kontaktansicht. Ein nur zum Lesen freigegebenes Adressbuch ist in Evolution schr
 	<tr><td>Signierte oder verschlüsselte Nachrichten</td><td>können nicht über GroupWise gesendet werden;
 		empfangene werden angezeigt.</td></tr>
 	<tr><td>Suchergebnisordner</td><td>zeigen über SOAP nur einen Teil der Treffer (siehe 4.6).</td></tr>
-	<tr><td>Serientermine</td><td>erscheinen als einzelne Termine, da GroupWise keine Regel speichert.</td></tr>
+	<tr><td>Serientermine</td><td>erscheinen als einzelne Termine: Über die Schnittstelle des Servers kommen
+		die Termine einer Serie einzeln an, ohne die Serienregel, die der GroupWise-Client kennt.</td></tr>
 	<tr><td>Abonnierte Internet-Kalender</td><td>werden ausgelassen.</td></tr>
 	<tr><td>Ziehen auf die Kalenderliste</td><td>in Evolution nicht zuverlässig; Kontextmenü oder Editor
 		verwenden.</td></tr>
@@ -1170,5 +1172,93 @@ spricht direkt mit dem POA und hilft bei der Fehlersuche:</p>
 gw-cli login          # Anmeldung und Benutzerdaten
 gw-cli folders        # Ordnerliste, mit der Rolle der Kalender
 gw-cli items ORDNER-ID 20</pre>
+<!-- ============================================================ -->
+<h1 id="vergleich">10&nbsp;&nbsp;Vergleich mit dem GroupWise-Client</h1>
+<p>Diese Übersicht stellt die Funktionen des GroupWise-Clients für Windows denen von Evolution mit
+evolution-groupwise gegenüber. Sie folgt dem Aufbau des <i>GroupWise Client User Guide</i> (GroupWise 26,
+April 2026) und gibt den Stand von <b>Version 0.9.3</b> wieder; sie wird mit jeder Version fortgeschrieben.</p>
+
+<h2>Vorhanden</h2>
+<table>
+	<tr><th style="width:42%">Bereich im GroupWise-Client</th><th>In Evolution</th></tr>
+	<tr><td>Ordnerliste und Systemordner; Ordner anlegen, umbenennen, verschieben, löschen</td>
+		<td>ja, in der Reihenfolge des Clients (<a href="#mail-ordner">4.1</a>)</td></tr>
+	<tr><td>Mail lesen, schreiben, antworten, weiterleiten; Anlagen, Entwürfe</td>
+		<td>ja; die Empfänger erhalten eine echte GroupWise-Nachricht (<a href="#mail-senden">4.2</a>)</td></tr>
+	<tr><td>Gesendete Objekte: Zustellstatus, Zurückziehen, Erneut senden</td>
+		<td>ja (<a href="#mail-senden">4.2</a>)</td></tr>
+	<tr><td>Signaturen</td><td>ja, mit GroupWise abgeglichen</td></tr>
+	<tr><td>Kategorien; Folgenachricht und Jobliste</td>
+		<td>ja, als Beschriftungen bzw. Kategorien (<a href="#mail-beschriftungen">4.4</a>)</td></tr>
+	<tr><td>Junk-Mail: Listen, Sperren, Vertrauen, Einstellungen</td><td>ja (<a href="#mail-junk">4.5</a>)</td></tr>
+	<tr><td>Papierkorb: Wiederherstellen, Leeren</td><td>ja (<a href="#mail-papierkorb">4.3</a>)</td></tr>
+	<tr><td>Suchergebnisordner</td>
+		<td>werden angezeigt, mit einem Teil der Treffer; angelegt werden sie im Client (<a href="#mail-suche">4.6</a>)</td></tr>
+	<tr><td>Termine und Besprechungen: planen, annehmen, ablehnen, ändern, absagen; Internet-Einladungen</td>
+		<td>ja (<a href="#kal-besprechungen">5.3</a>)</td></tr>
+	<tr><td>Belegt-Suche, Alarme, Zeitzonen, Ressourcen, Vorbereitungs- und Reisezeit</td>
+		<td>ja (<a href="#kal-reisezeit">5.7</a>)</td></tr>
+	<tr><td>Persönliche Kalender (Unterkalender), Farben, Termine zwischen Kalendern verschieben</td>
+		<td>ja; angelegt werden Kalender im Client (<a href="#kal-liste">5.1</a>)</td></tr>
+	<tr><td>Aufgaben (auch zugewiesene) und Erinnerungsnotizen</td><td>ja (<a href="#aufgaben">Kapitel 6</a>)</td></tr>
+	<tr><td>GroupWise-Adressbuch, Häufige Kontakte, persönliche Adressbücher; Namensergänzung und Adressauswahl</td>
+		<td>ja; angelegt werden Adressbücher im Client (<a href="#adressbuecher">Kapitel 7</a>)</td></tr>
+	<tr><td>Regeln einschließlich Abwesenheit; Regeln manuell ausführen</td>
+		<td>ja; besonders verschachtelte Regeln nur anzeigen (<a href="#regeln">Kapitel 3</a>)</td></tr>
+	<tr><td>Proxy: Rechte vergeben, als Proxy in einem anderen Postfach arbeiten</td>
+		<td>ja, als Proxy-Konten (<a href="#mail-proxy">4.8</a>)</td></tr>
+	<tr><td>Freigegebene Ordner, Kalender und Adressbücher: freigeben und annehmen</td>
+		<td>ja (<a href="#mail-freigabe">4.9</a>, <a href="#kal-freigabe">5.8</a>, <a href="#adr-freigabe">Kapitel 7</a>)</td></tr>
+	<tr><td>Caching-Modus</td><td>entspricht dem Offline-Betrieb von Evolution (<a href="#mail-offline">4.7</a>)</td></tr>
+	<tr><td>Notify: Benachrichtigung über neue Nachrichten</td>
+		<td>Evolution selbst; auf Wunsch meldet der Server Änderungen sofort (Kapitel 3, Kontooptionen)</td></tr>
+	<tr><td>Drucken, POP3- und IMAP-Konten, RSS, LDAP-Adressbuch, Internet-Kalender abonnieren</td>
+		<td>Funktionen von Evolution, unabhängig von GroupWise</td></tr>
+	<tr><td>Nachrichten als Datei sichern</td>
+		<td>Evolution: <span class="menu">Datei → Als Datei speichern …</span> (mbox-Format) oder die Nachricht in einen
+		Dateiordner ziehen</td></tr>
+</table>
+
+<h2>Nicht oder nur eingeschränkt vorhanden</h2>
+<table>
+	<tr><th style="width:42%">Funktion des GroupWise-Clients</th><th>Stand</th></tr>
+	<tr><td>Serientermine als Serie bearbeiten</td>
+		<td>Jeder Termin einer Serie ist ein einzelner Termin; die ganze Serie oder ihre Regel lässt sich
+		nicht in einem Schritt ändern.</td></tr>
+	<tr><td>Einladungen delegieren, neue Zeit vorschlagen</td>
+		<td>fehlt; eine delegierte Einladung wird als Status angezeigt.</td></tr>
+	<tr><td>Sendeoptionen für Mail</td>
+		<td>Die Priorität wird übertragen. Benachrichtigung beim Öffnen oder Löschen, verzögerte Zustellung,
+		Verfallsdatum, „Antwort angefordert“, Klassifizierung und verborgener Betreff fehlen; den Status
+		einer gesendeten Nachricht zeigt <span class="menu">Zustellstatus …</span>.</td></tr>
+	<tr><td>Suchen im ganzen Postfach auf dem Server (Volltext)</td>
+		<td>Evolution durchsucht, was es lokal kennt: die Nachrichtenlisten und bereits geladene Nachrichten.</td></tr>
+	<tr><td>Kalender und Adressbücher anlegen, umbenennen, löschen</td>
+		<td>nur im GroupWise-Client; sie erscheinen danach von selbst in Evolution.</td></tr>
+	<tr><td>Proxy-Kalender unter dem eigenen Konto beschreiben</td>
+		<td>nur lesbar; zum Schreiben dient das Proxy-Konto.</td></tr>
+	<tr><td>Archiv</td>
+		<td>Das GroupWise-Archiv hat ein eigenes, nicht offengelegtes Format und lässt sich nur mit dem
+		GroupWise-Client lesen.</td></tr>
+	<tr><td>Besprechungen mit Teams, Zoom oder WebEx planen</td><td>fehlt.</td></tr>
+	<tr><td>S/MIME: signiert oder verschlüsselt senden</td><td>fehlt; empfangene Nachrichten werden angezeigt.</td></tr>
+	<tr><td>Passwort ändern, Postfachgröße anzeigen</td><td>fehlt.</td></tr>
+	<tr><td>Alternative Absenderadressen</td><td>fehlt.</td></tr>
+	<tr><td>Nachrichten als privat markieren; Kategorien an Kontakten</td><td>fehlt.</td></tr>
+	<tr><td>In einem freigegebenen Ordner ablegen (Posted Item), Eigentum übertragen</td><td>fehlt.</td></tr>
+	<tr><td>Alarme und Benachrichtigungen eines anderen Benutzers erhalten</td>
+		<td>Das Recht lässt sich vergeben; Evolution nutzt es nicht.</td></tr>
+	<tr><td>Mehrbenutzer-Kalender</td>
+		<td>keine eigene Spaltenansicht; mehrere Proxy-Kalender lassen sich nebeneinander einblenden.</td></tr>
+	<tr><td>In GroupWise abonnierte Internet-Kalender</td>
+		<td>werden ausgelassen; Evolution kann solche Kalender selbst abonnieren.</td></tr>
+	<tr><td>Teilaufgaben in der Jobliste</td><td>fehlt.</td></tr>
+</table>
+
+<h2>Nicht vorgesehen</h2>
+<p>Funktionen, die eng an den Windows-Client gebunden oder selten in Gebrauch sind: Leitwegnachrichten,
+Abstimmungen, Erwähnungen, Schnellantwort, Haftnotizen, Telefonnachrichten senden, Serienbrief,
+Dokumentenverwaltung und Filr-Anlagen, die Startseite mit Panels, der Remote-Modus, Newsgroups, SMS,
+Messenger sowie Reparatur und Sicherung des Postfachs.</p>
 </body>
 </html>
