@@ -825,6 +825,18 @@ list_item_cb (xmlNode *item,
 	if (e_gw_xml_get_bool (item, "status/deleted"))
 		return TRUE;
 
+	/* An appointment being written (saved unfinished, or left by an
+	 * editor of GroupWise Web) is in the Work In Progress folder, though
+	 * the POA lists it with the Calendar: it is no appointment yet */
+	{
+		gchar *source = e_gw_xml_dup_text (item, "source");
+		gboolean draft = g_strcmp0 (source, "draft") == 0;
+
+		g_free (source);
+		if (draft)
+			return TRUE;
+	}
+
 	comp = e_gw_calendar_component_from_item (item, user_zone (), data->user_email);
 	if (!comp)
 		return TRUE;
