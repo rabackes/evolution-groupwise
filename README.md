@@ -170,7 +170,7 @@ there and sends `<notify xmlns='urn:novell:schemas:ns:events'><userid/><key/></n
 record, once, until `getEvents` is called with `notify` again (always, with the port). One listener per
 port and process for all accounts (`GSocketService`); a line with the store's key starts the question at
 once (not more often than every other second). The POA must reach the machine: a firewall or NAT in
-between, and nothing arrives — the store notices records it was to be told and was not (twice in a row)
+between, and nothing arrives — the store notices records it was to be told and was not (three times in a row, with no message of the server arriving in the session at all)
 and sets `groupwise-events-port-unreachable` on itself; `e-groupwise-events-port.c` asks the user then
 and opens the port with `firewall-cmd --permanent --add-port` and `--add-port` (polkit asks for the
 password). Measured: told about 0.6 s after delivery, the message in the folder after 2 s.

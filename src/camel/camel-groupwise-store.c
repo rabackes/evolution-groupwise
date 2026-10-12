@@ -1126,10 +1126,27 @@ events_refresh_folders (CamelGroupwiseStore *store,
 typedef struct {
 	GSocketService *service;
 	GPtrArray *stores;	/* GWeakRef */
+	gboolean told;		/* the POA got through to the port */
 } EventsListener;
 
 static GMutex listeners_lock;
 static GHashTable *listeners;	/* port -> EventsListener */
+
+/* Whether the POA told one of the accounts on @port in this session: then
+ * the port is open, whatever it does not tell later */
+static gboolean
+events_port_was_told (guint port)
+{
+	EventsListener *listener;
+	gboolean told;
+
+	g_mutex_lock (&listeners_lock);
+	listener = listeners ? g_hash_table_lookup (listeners, GUINT_TO_POINTER (port)) : NULL;
+	told = listener && listener->told;
+	g_mutex_unlock (&listeners_lock);
+
+	return told;
+}
 
 static void	events_ask_full		(CamelGroupwiseStore *store,
 					 gboolean wanted,
@@ -1192,6 +1209,8 @@ events_notified_cb (GObject *source_object,
 			else
 				g_clear_object (&store);
 		}
+		if (listener && stores->len)
+			listener->told = TRUE;
 		g_mutex_unlock (&listeners_lock);
 
 		g_debug ("events: told on port %u, %u accounts", port, stores->len);
@@ -1398,9 +1417,11 @@ events_thread (GTask *task,
 		if (store->events_configured)
 			events = e_gw_connection_get_events_sync (cnc, store->events_key, TRUE, port != 0, cancellable, &error);
 		if (events) {
-			/* Records the POA was to tell and did not, twice in a row:
-			 * it does not reach the port (a firewall, most likely).
-			 * Evolution's side asks the user about it. */
+			/* Records the POA was to tell and did not, three times in
+			 * a row, and it never got through in this session: it
+			 * does not reach the port (a firewall, most likely).
+			 * Evolution's side asks the user about it. (The POA leaves
+			 * out a record now and then although the port is open.) */
 			/* (Not in the first minutes after the configuration changed:
 			 * the POA takes that long until it tells what is delivered
 			 * and what the GroupWise clients do.) */
@@ -1411,7 +1432,7 @@ events_thread (GTask *task,
 				  g_get_monotonic_time () - store->events_set_up > EVENTS_SETTLE_SECONDS * G_USEC_PER_SEC))
 				store->events_missed++;
 			g_object_set_data (G_OBJECT (store), CAMEL_GROUPWISE_STORE_PORT_UNREACHABLE,
-				GUINT_TO_POINTER (port && store->events_missed >= 2 ? port : 0));
+				GUINT_TO_POINTER (port && store->events_missed >= 3 && !events_port_was_told (port) ? port : 0));
 			store->events_armed = port != 0;
 
 			if (events->len) {

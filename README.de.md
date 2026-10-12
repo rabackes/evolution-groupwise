@@ -180,7 +180,7 @@ dorthin eine Verbindung auf und schickt für den ersten neuen Datensatz einmal
 aufgerufen wird (mit Port immer). Ein Lauscher je Port und Prozess für alle Konten (`GSocketService`); eine
 Zeile mit dem Schlüssel des Stores löst die Abfrage sofort aus (höchstens alle zwei Sekunden). Der POA muss
 den Rechner erreichen: mit Firewall oder NAT dazwischen kommt nichts an – der Store bemerkt Datensätze, die
-ihm hätten gemeldet werden sollen (zweimal hintereinander), und setzt an sich
+ihm hätten gemeldet werden sollen (dreimal hintereinander, ohne dass in der Sitzung je eine Meldung des Servers ankam), und setzt an sich
 `groupwise-events-port-unreachable`; `e-groupwise-events-port.c` fragt dann den Benutzer und öffnet den Port
 mit `firewall-cmd --permanent --add-port` und `--add-port` (polkit fragt nach dem Passwort). Gemessen:
 gemeldet etwa 0,6 s nach der Zustellung, die Nachricht nach 2 s im Ordner.
