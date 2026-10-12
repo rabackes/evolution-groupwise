@@ -379,9 +379,20 @@ attendees only; the backend checks changing and deleting itself, since over SOAP
 Deleting uses `removeItemRequest` without a container – taken out of the folder alone, the POA reports success
 and keeps the appointment.
 
+### Sharing address books
+
+A personal address book is shared with *Sharing…* in its context menu (the same dialog). `modifyItemRequest`
+with `<acl>` on the book ID (`@53`, it does not change); how a book is shared only
+`getAddressBookListRequest` with a view tells (`default acl rights owner isSharedToMe isSharedByMe`:
+`SharedBook` with `<acl>` or `<rights>` and `<owner>`) – `getFolderRequest` does not know the book ID. The POA
+stores read or read and edit only, enforces it (59161) and does not change the rights of an entry later
+(answers 0, no effect). The notification has the ID suffix `@62`, the sub type `NGW.SHARED.PAB.NOTIFY` and
+`<notification>SharedAddressBook</notification>` in the item; `acceptShareRequest` names no new ID for a
+book. A book shared for reading only is read-only in the backend.
+
 ### Not yet supported
 
-Sharing address books, shared address books, writing into proxy calendars below the own account, signed or encrypted messages (GroupWise builds the message for the recipients itself).
+Writing into proxy calendars below the own account, signed or encrypted messages (GroupWise builds the message for the recipients itself).
 
 ## Tools
 

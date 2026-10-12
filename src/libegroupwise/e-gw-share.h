@@ -59,7 +59,9 @@ EGwShareEntry *	e_gw_share_entry_new		(const gchar *display_name,
 EGwShareEntry *	e_gw_share_entry_copy		(const EGwShareEntry *entry);
 void		e_gw_share_entry_free		(EGwShareEntry *entry);
 
-/* How a folder is shared (getFolderRequest) */
+/* How a folder is shared (getFolderRequest), or an address book (BASE@53,
+ * from the list of the books). An address book knows the rights read and
+ * edit only, set when a user is added: changing them later does nothing. */
 typedef struct {
 	gchar *id;			/* the ID of the folder as it is now: sharing
 					 * a folder changes its ID */
@@ -148,7 +150,8 @@ EGwShareNotification *
 
 /* Accepts the share: the folder appears below @container (NULL: the Cabinet)
  * as @name (NULL: its name at the owner). The notification is gone after it.
- * Returns the ID of the new folder. */
+ * Returns the ID of the new folder; "" for an address book, of which the
+ * server tells none. */
 gchar *		e_gw_connection_accept_share_sync
 						(EGwConnection *cnc,
 						 const gchar *notification_id,

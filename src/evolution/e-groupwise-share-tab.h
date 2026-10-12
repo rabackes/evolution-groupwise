@@ -36,6 +36,11 @@ void		e_groupwise_share_tab_run_for_calendar
 						(EShellView *shell_view,
 						 ESource *calendar);
 
+/* And for a personal GroupWise address book */
+void		e_groupwise_share_tab_run_for_book
+						(EShellView *shell_view,
+						 ESource *book);
+
 G_END_DECLS
 
 #endif /* E_GROUPWISE_SHARE_TAB_H */

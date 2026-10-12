@@ -196,7 +196,7 @@ test_address_books (void)
 
 	books = e_gw_connection_get_address_books_sync (cnc, NULL, &error);
 	g_assert_no_error (error);
-	g_assert_cmpuint (books->len, ==, 5);
+	g_assert_cmpuint (books->len, ==, 7);
 
 	book = books->pdata[0];
 	g_assert_cmpstr (book->id, ==, E_GW_SYSTEM_ADDRESS_BOOK_ID);
@@ -208,6 +208,36 @@ test_address_books (void)
 	g_assert_true (book->is_personal);
 	g_assert_false (book->is_frequent_contacts);
 	g_assert_true (((EGwAddressBook *) books->pdata[2])->is_frequent_contacts);
+
+	/* Books shared to the user and by the user */
+	{
+		EGwAddressBook *team = books->pdata[5], *club = books->pdata[6];
+		EGwShare *share;
+
+		g_assert_cmpstr (team->id, ==, "AB5@53");
+		g_assert_true (team->is_shared_to_me);
+		g_assert_cmpint (team->share_rights, ==, E_GW_SHARE_READ);
+		g_assert_cmpstr (team->owner_name, ==, "Egon");
+		g_assert_true (club->is_shared_by_me);
+		g_assert_false (club->is_shared_to_me);
+
+		share = e_gw_connection_get_share_sync (cnc, "AB6@53", NULL, &error);
+		g_assert_no_error (error);
+		g_assert_true (share->shared_by_me);
+		g_assert_cmpuint (share->entries->len, ==, 1);
+		g_assert_cmpint (((EGwShareEntry *) share->entries->pdata[0])->rights, ==, E_GW_SHARE_READ | E_GW_SHARE_EDIT);
+		g_assert_cmpint (((EGwShareEntry *) share->entries->pdata[0])->status, ==, E_GW_SHARE_STATUS_PENDING);
+		e_gw_share_free (share);
+
+		share = e_gw_connection_get_share_sync (cnc, "AB5@53", NULL, &error);
+		g_assert_no_error (error);
+		g_assert_true (share->shared_to_me);
+		g_assert_cmpstr (share->owner_name, ==, "Egon");
+		g_assert_cmpint (e_gw_share_get_my_rights (share), ==, E_GW_SHARE_READ);
+		e_gw_share_free (share);
+
+		g_assert_true (e_gw_share_is_notification_id ("SN3@62:7.domain1.po1.100.0.1.0.1@16"));
+	}
 
 	g_ptr_array_unref (books);
 	g_object_unref (cnc);

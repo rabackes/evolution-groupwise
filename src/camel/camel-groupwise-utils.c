@@ -33,8 +33,9 @@ camel_groupwise_item_dup_id (xmlNode *item)
 	g_free (raw);
 
 	/* The notification of a shared folder under the ID it has in views
-	 * that do not tell its type: BASE@37:CONTAINER -> BASE@1:CONTAINER */
-	if (at && g_str_has_prefix (at, "@37:")) {
+	 * that do not tell its type: BASE@37:CONTAINER -> BASE@1:CONTAINER
+	 * (@62 for an address book) */
+	if (at && (g_str_has_prefix (at, "@37:") || g_str_has_prefix (at, "@62:"))) {
 		gchar *mail = g_strdup_printf ("%.*s@1%s", (gint) (at - id), id, at + 3);
 
 		g_free (id);

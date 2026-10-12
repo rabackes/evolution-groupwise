@@ -16,6 +16,7 @@
  * License for more details.
  */
 
+#include "e-gw-share.h"
 #include "e-gw-addressbook.h"
 #include "e-gw-xml.h"
 
@@ -28,7 +29,14 @@ e_gw_address_book_free (EGwAddressBook *book)
 	g_free (book->id);
 	g_free (book->name);
 	g_free (book->description);
+	g_free (book->owner_name);
 	g_free (book);
+}
+
+gboolean
+e_gw_address_book_is_id (const gchar *id)
+{
+	return id && g_str_has_suffix (id, "@53");
 }
 
 GPtrArray *
@@ -40,7 +48,9 @@ e_gw_connection_get_address_books_sync (EGwConnection *cnc,
 	GPtrArray *books;
 	xmlNode *node;
 
-	response = e_gw_connection_call_sync (cnc, "getAddressBookList", NULL, cancellable, error);
+	/* (without the view the list does not say which books are shared) */
+	response = e_gw_connection_call_sync (cnc, "getAddressBookList",
+		"<view>" E_GW_ADDRESS_BOOK_SHARE_VIEW "</view>", cancellable, error);
 	if (!response)
 		return NULL;
 
@@ -57,6 +67,12 @@ e_gw_connection_get_address_books_sync (EGwConnection *cnc,
 		book->is_personal = e_gw_xml_get_bool (node, "isPersonal");
 		book->is_frequent_contacts = e_gw_xml_get_bool (node, "isFrequentContacts");
 		book->is_system = g_strcmp0 (book->id, E_GW_SYSTEM_ADDRESS_BOOK_ID) == 0;
+		book->is_shared_to_me = e_gw_xml_get_bool (node, "isSharedToMe");
+		book->is_shared_by_me = e_gw_xml_get_bool (node, "isSharedByMe");
+		if (book->is_shared_to_me) {
+			book->share_rights = e_gw_share_rights_from_node (node) | E_GW_SHARE_READ;
+			book->owner_name = e_gw_xml_dup_text (node, "owner/displayName");
+		}
 
 		if (book->id)
 			g_ptr_array_add (books, book);

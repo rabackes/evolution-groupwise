@@ -173,8 +173,8 @@ accept_done_cb (GObject *source_object,
 	}
 	g_free (id);
 
-	if (data->offer->kind == E_GW_SHARE_KIND_CALENDAR) {
-		/* The registry lists the calendars of the account anew */
+	if (data->offer->kind != E_GW_SHARE_KIND_FOLDER) {
+		/* The registry lists the calendars and address books of the account anew */
 		ESource *collection = e_source_registry_find_extension (data->registry, data->account, E_SOURCE_EXTENSION_COLLECTION);
 
 		if (collection) {
@@ -349,10 +349,11 @@ run_dialog (AcceptData *data,
 	EGwShareNotification *offer = data->offer;
 	const gchar *sender = offer->sender_name && *offer->sender_name ? offer->sender_name : offer->sender_email;
 	gchar *text;
-	gboolean accept, calendar = offer->kind == E_GW_SHARE_KIND_CALENDAR;
+	gboolean accept, calendar = offer->kind == E_GW_SHARE_KIND_CALENDAR, book = offer->kind == E_GW_SHARE_KIND_BOOK;
 	gint row = 0;
 
-	dialog = gtk_dialog_new_with_buttons (calendar ? _("Install Shared Calendar") : _("Install Shared Folder"),
+	dialog = gtk_dialog_new_with_buttons (book ? _("Install Shared Address Book") :
+		calendar ? _("Install Shared Calendar") : _("Install Shared Folder"),
 		parent, GTK_DIALOG_MODAL | GTK_DIALOG_DESTROY_WITH_PARENT,
 		_("_Cancel"), GTK_RESPONSE_CANCEL, _("_Install"), GTK_RESPONSE_OK, NULL);
 	gtk_dialog_set_default_response (GTK_DIALOG (dialog), GTK_RESPONSE_OK);
@@ -361,7 +362,10 @@ run_dialog (AcceptData *data,
 	gtk_container_set_border_width (GTK_CONTAINER (box), 12);
 	gtk_box_set_spacing (GTK_BOX (box), 12);
 
-	if (calendar)
+	if (book)
+		/* Translators: the first %s is the name of a user, the second %s that of an address book */
+		text = g_strdup_printf (_("%s shared the address book “%s” with you."), sender ? sender : "", offer->folder_name ? offer->folder_name : "");
+	else if (calendar)
 		/* Translators: the first %s is the name of a user, the second %s that of a calendar */
 		text = g_strdup_printf (_("%s shared the calendar “%s” with you."), sender ? sender : "", offer->folder_name ? offer->folder_name : "");
 	else
@@ -438,7 +442,7 @@ run_dialog (AcceptData *data,
 		gtk_grid_attach (GTK_GRID (grid), color, 1, row++, 1, 1);
 	}
 
-	if (!calendar) {
+	if (!calendar && !book) {
 		/* Where the folder goes; a calendar goes beside the others */
 		label = left_label (_("_Position:"), TRUE);
 		gtk_grid_attach (GTK_GRID (grid), label, 0, row, 1, 1);
@@ -514,12 +518,6 @@ load_thread (GTask *task,
 	data->cnc = e_groupwise_ui_connect_items_sync (data->registry, data->account, cancellable, &error);
 	if (data->cnc)
 		data->offer = e_gw_connection_get_share_notification_sync (data->cnc, data->uid, cancellable, &error);
-	/* (address books: not yet) */
-	if (data->offer && data->offer->kind == E_GW_SHARE_KIND_BOOK) {
-		g_set_error_literal (&error, G_IO_ERROR, G_IO_ERROR_NOT_SUPPORTED,
-			_("Shared address books cannot be installed here yet"));
-		g_clear_pointer (&data->offer, e_gw_share_notification_free);
-	}
 	if (data->offer)
 		data->folders = e_gw_connection_get_folder_list_sync (data->cnc, NULL, TRUE, cancellable, &error);
 

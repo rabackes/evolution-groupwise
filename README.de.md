@@ -407,9 +407,20 @@ nur ohne Teilnehmer; Ändern und Löschen prüft das Backend selbst, denn der PO
 Hinzufügen ab. Gelöscht wird mit `removeItemRequest` ohne Container – aus dem Ordner allein entfernt, meldet
 der POA Erfolg und behält den Termin.
 
+### Adressbücher freigeben
+
+Ein persönliches Adressbuch wird über *Freigabe …* in seinem Kontextmenü freigegeben (derselbe Dialog).
+`modifyItemRequest` mit `<acl>` auf die Buch-ID (`@53`, sie ändert sich nicht); wie ein Buch freigegeben ist,
+sagt nur `getAddressBookListRequest` mit einer Sicht (`default acl rights owner isSharedToMe isSharedByMe`:
+`SharedBook` mit `<acl>` bzw. `<rights>` und `<owner>`) – `getFolderRequest` kennt die Buch-ID nicht. Der POA
+speichert nur Lesen oder Lesen und Bearbeiten, setzt das durch (59161) und ändert die Rechte eines Eintrags
+nachträglich nicht (Antwort 0, keine Wirkung). Die Benachrichtigung hat die ID-Endung `@62`, den Subtyp
+`NGW.SHARED.PAB.NOTIFY` und im Item `<notification>SharedAddressBook</notification>`; `acceptShareRequest`
+nennt für ein Buch keine neue ID. Ein nur zum Lesen freigegebenes Buch ist im Backend schreibgeschützt.
+
 ### Noch nicht unterstützt
 
-Adressbücher freigeben, freigegebene Adressbücher, Schreiben in Proxy-Kalender unter dem eigenen Konto, signierte oder verschlüsselte Nachrichten (GroupWise baut die Nachricht für die Empfänger
+Schreiben in Proxy-Kalender unter dem eigenen Konto, signierte oder verschlüsselte Nachrichten (GroupWise baut die Nachricht für die Empfänger
 selbst zusammen).
 
 ## Werkzeuge

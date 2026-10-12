@@ -180,6 +180,17 @@ class Handler(BaseHTTPRequestHandler):
                       "<book><id>AB2@5</id><name>Frequent Contacts</name><isPersonal>1</isPersonal><isFrequentContacts>1</isFrequentContacts></book>"
                       "<book><id>AB3@5</id><name>Kunden</name><isPersonal>1</isPersonal></book>"
                       "<book><id>AB4@5</id><name>Kunden</name><isPersonal>1</isPersonal></book>"
+                      # Only with a view the list tells how a book is shared
+                      + ("<book type='SharedBook'><id>AB5@53</id><name>Team (Egon)</name><isPersonal>1</isPersonal>"
+                         "<rights><read>1</read></rights><owner><displayName>Egon</displayName><email>egon@example.com</email></owner>"
+                         "<isSharedToMe>1</isSharedToMe></book>"
+                         "<book type='SharedBook'><id>AB6@53</id><name>Verein</name><isPersonal>1</isPersonal>"
+                         "<acl><entry><displayName>User Two</displayName><email>two@example.com</email>"
+                         "<rights><read>1</read><edit>1</edit></rights><status>pending</status></entry></acl>"
+                         "<isSharedByMe>1</isSharedByMe></book>"
+                         if "isSharedToMe" in body else
+                         "<book><id>AB5@53</id><name>Team (Egon)</name><isPersonal>1</isPersonal></book>"
+                         "<book><id>AB6@53</id><name>Verein</name><isPersonal>1</isPersonal></book>") +
                       "</books>")
         if action == "getItems" and re.search(r"<field>@type</field><value>(Task|Note)</value>", body):
             kind = re.search(r"<field>@type</field><value>(\w+)</value>", body).group(1)

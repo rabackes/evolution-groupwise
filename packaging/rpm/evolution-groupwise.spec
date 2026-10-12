@@ -114,6 +114,9 @@ line tool.
   opens the same page in a dialog; a calendar notification opens "Install
   Shared Calendar". A calendar shared to the user is written as far as its
   owner granted it (add, edit, delete), appointments without attendees only.
+- Sharing address books: "Sharing…" in the context menu of a personal
+  address book; a notification opens "Install Shared Address Book". A book
+  shared for reading only is read-only.
 - Folders shared to the user: the rights add and delete are checked with a
   clear message; GroupWise messages, which the POA does not hand out as RFC
   822 there, are built from the item and its attachments.

@@ -62,6 +62,7 @@
 #define SHARE_ACTION "groupwise-folder-share"
 #define ACCEPT_SHARE_ACTION "groupwise-share-accept"
 #define CALENDAR_SHARE_ACTION "groupwise-calendar-share"
+#define BOOK_SHARE_ACTION "groupwise-book-share"
 #define JUNK_MENU "groupwise-junk-menu"
 #define JUNK_ACTION "groupwise-junk-sender"
 #define BLOCK_ACTION "groupwise-block-sender"
@@ -1211,6 +1212,84 @@ calendar_update_actions_cb (EShellView *shell_view,
 	g_clear_object (&calendar);
 }
 
+/* ------------------------------------------------------------------ */
+/* The contacts view */
+
+/* The personal GroupWise address book selected in the list (the system
+ * address book is none of the user's) */
+static ESource *
+ref_shareable_book (EShellView *shell_view)
+{
+	ESourceSelector *selector = NULL;
+	ESource *source;
+	gchar *id = NULL;
+
+	g_object_get (e_shell_view_get_shell_sidebar (shell_view), "selector", &selector, NULL);
+	source = selector ? e_source_selector_ref_primary_selection (selector) : NULL;
+	g_clear_object (&selector);
+
+	if (source && e_source_has_extension (source, E_SOURCE_EXTENSION_ADDRESS_BOOK) &&
+	    e_source_has_extension (source, E_SOURCE_EXTENSION_GROUPWISE_FOLDER))
+		id = e_source_groupwise_folder_dup_id (e_source_get_extension (source, E_SOURCE_EXTENSION_GROUPWISE_FOLDER));
+	/* BASE@53; the system address book is …@52 */
+	if (!id || !g_str_has_suffix (id, "@53"))
+		g_clear_object (&source);
+	g_free (id);
+
+	return source;
+}
+
+static void
+action_book_share_cb (EUIAction *action,
+		      GVariant *parameter,
+		      gpointer user_data)
+{
+	EShellView *shell_view = user_data;
+	ESource *book = ref_shareable_book (shell_view);
+
+	if (book) {
+		e_groupwise_share_tab_run_for_book (shell_view, book);
+		g_object_unref (book);
+	}
+}
+
+static void
+book_update_actions_cb (EShellView *shell_view,
+			gpointer user_data)
+{
+	EUIActionGroup *action_group = e_ui_manager_get_action_group (e_shell_view_get_ui_manager (shell_view), "contacts");
+	ESource *book = ref_shareable_book (shell_view);
+
+	set_visible (action_group, BOOK_SHARE_ACTION, book != NULL);
+	g_clear_object (&book);
+}
+
+static void
+setup_contacts_view (EShellView *shell_view)
+{
+	static const gchar *eui =
+		"<eui>"
+		  "<menu id='address-book-popup' is-popup='true'>"
+		    "<placeholder id='address-book-popup-actions'>"
+		      "<item action='" BOOK_SHARE_ACTION "'/>"
+		    "</placeholder>"
+		  "</menu>"
+		"</eui>";
+
+	static const EUIActionEntry entries[] = {
+		{ BOOK_SHARE_ACTION,
+		  NULL,
+		  N_("S_haring…"),
+		  NULL,
+		  N_("Share the address book with other GroupWise users, or see who shares it"),
+		  action_book_share_cb, NULL, NULL, NULL }
+	};
+
+	e_ui_manager_add_actions_with_eui_data (e_shell_view_get_ui_manager (shell_view), "contacts", GETTEXT_PACKAGE,
+		entries, G_N_ELEMENTS (entries), shell_view, eui);
+	g_signal_connect (shell_view, "update-actions", G_CALLBACK (book_update_actions_cb), NULL);
+}
+
 static void
 setup_calendar_view (EShellView *shell_view)
 {
@@ -1390,6 +1469,8 @@ e_groupwise_mail_ui_constructed (GObject *object)
 
 	if (shell_view_class && g_strcmp0 (shell_view_class->ui_manager_id, "org.gnome.evolution.calendars") == 0)
 		setup_calendar_view (shell_view);
+	if (shell_view_class && g_strcmp0 (shell_view_class->ui_manager_id, "org.gnome.evolution.contacts") == 0)
+		setup_contacts_view (shell_view);
 	if (!shell_view_class || g_strcmp0 (shell_view_class->ui_manager_id, "org.gnome.evolution.mail") != 0)
 		return;
 

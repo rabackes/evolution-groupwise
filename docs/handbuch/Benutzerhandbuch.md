@@ -594,14 +594,30 @@ In der Kontaktansicht stehen unter dem Namen des Kontos:
 
 - **Häufige Kontakte** und Ihre **persönlichen Adressbücher** – lesen und schreiben: Kontakte anlegen, ändern und löschen wird zu GroupWise übertragen.
 
+- **Freigegebene Adressbücher** – Adressbücher, die andere Benutzer für Sie freigegeben haben, mit dem Namen des Eigentümers in Klammern; nur lesbar oder beschreibbar, je nach Freigabe.
+
 Die Adressbücher werden lokal vorgehalten, damit die **Autovervollständigung** beim Schreiben schnell ist und offline funktioniert. Sie ist für die GroupWise-Adressbücher eingeschaltet; in den Eigenschaften eines Adressbuchs können Sie das ändern.
+
+## Adressbücher freigeben
+
+Ein persönliches Adressbuch geben Sie über `Freigabe …` in seinem Kontextmenü frei. Der Dialog **Freigabe von „…“** entspricht dem der Kalender ([5.8](#kal-freigabe)) und dem Reiter der Mailordner ([4.9](#mail-freigabe)), mit zwei Besonderheiten des Servers:
+
+- Ein Adressbuch kennt nur **Lesen** oder **Lesen und Bearbeiten**; „Bearbeiten“ umfasst das Anlegen, Ändern und Löschen von Kontakten.
+
+- Das Recht wird beim Hinzufügen eines Benutzers festgelegt und lässt sich danach **nicht mehr ändern**. Um es zu ändern, entfernen Sie den Benutzer, wählen `Freigabe übernehmen` und fügen ihn neu hinzu; er erhält dann eine neue Benachrichtigung und muss sie erneut annehmen.
+
+Neue Benutzer erhalten die **Benachrichtigung über freigegebenes Adressbuch**. Entziehen Sie die Freigabe, verschwindet das Adressbuch beim Empfänger. Das GroupWise-Adressbuch und „Häufige Kontakte“ lassen sich nicht freigeben.
+
+### Eine Adressbuch-Freigabe annehmen
+
+Ein Doppelklick auf die Nachricht **Benachrichtigung über freigegebenes Adressbuch: …** in der Mailbox (oder `Nachricht → Freigegebenen Ordner installieren …`) öffnet den Dialog **Freigegebenes Adressbuch installieren** mit Absender, Mitteilung, Ihren Rechten sowie Name und Beschreibung. Vorbelegt ist der Name des Adressbuchs mit dem Eigentümer in Klammern. Nach `Installieren` erscheint das Adressbuch nach wenigen Sekunden in der Kontaktansicht. Ein nur zum Lesen freigegebenes Adressbuch ist in Evolution schreibgeschützt.
 
 # 8 Grenzen und Hinweise
 
 | Thema | Stand |
 |---|---|
 | Kalender anderer Benutzer | Proxy-Kalender unter dem eigenen Konto sind nur lesbar; die Kalender eines Proxy-Kontos und freigegebene Kalender sind nach den gewährten Rechten beschreibbar. In einen freigegebenen Kalender gehören nur Termine ohne Teilnehmer. |
-| Freigaben | Mailordner (4.9) und Kalender (5.8) lassen sich freigeben und Freigaben anderer annehmen. Adressbücher freigeben geht noch nicht in Evolution; freigegebene Adressbücher werden noch nicht angezeigt. |
+| Freigaben | Mailordner (4.9), Kalender (5.8) und Adressbücher (Kapitel 7) lassen sich freigeben und Freigaben anderer annehmen. Bei Adressbüchern kennt der Server nur Lesen oder Lesen und Bearbeiten, und das Recht eines Benutzers lässt sich nachträglich nicht ändern. |
 | Proxy-Konten | Neue Nachrichten werden bei jedem Abgleich über die ganze Ordnerliste ermittelt, da der POA in Proxy-Sitzungen keine Änderungsabfrage beantwortet. Mit der Kontooption „Den Server alle … Sekunden nach Änderungen im Postfach fragen“ erscheinen sie trotzdem sofort. |
 | Geklonte Rechner | Zwei Rechner mit derselben Maschinen-ID stören sich bei der Abfrage der Änderungen am selben Postfach gegenseitig (siehe Kontooptionen in Kapitel 3). |
 | Signierte oder verschlüsselte Nachrichten | können nicht über GroupWise gesendet werden; empfangene werden angezeigt. |

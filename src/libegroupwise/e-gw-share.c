@@ -28,6 +28,7 @@
 
 #include <glib/gi18n-lib.h>
 
+#include "e-gw-addressbook.h"
 #include "e-gw-share.h"
 #include "e-gw-xml.h"
 
@@ -151,14 +152,32 @@ e_gw_connection_get_share_sync (EGwConnection *cnc,
 	g_return_val_if_fail (E_IS_GW_CONNECTION (cnc), NULL);
 	g_return_val_if_fail (folder_id != NULL, NULL);
 
-	inner = g_string_new (NULL);
-	e_gw_xml_add_leaf (inner, "id", folder_id);
-	response = e_gw_connection_call_sync (cnc, "getFolder", inner->str, cancellable, error);
-	g_string_free (inner, TRUE);
-	if (!response)
-		return NULL;
+	if (e_gw_address_book_is_id (folder_id)) {
+		/* An address book is no folder: the list of the books tells */
+		response = e_gw_connection_call_sync (cnc, "getAddressBookList",
+			"<view>" E_GW_ADDRESS_BOOK_SHARE_VIEW "</view>", cancellable, error);
+		if (!response)
+			return NULL;
+		folder = NULL;
+		node = e_gw_xml_find (e_gw_response_get_node (response), "books");
+		for (node = e_gw_xml_first_child (node, "book"); node && !folder; node = e_gw_xml_next_sibling (node, "book")) {
+			gchar *raw = e_gw_xml_dup_text (node, "id"), *id = raw ? e_gw_clean_id (raw) : NULL;
 
-	folder = e_gw_xml_find (e_gw_response_get_node (response), "folder");
+			if (g_strcmp0 (id, folder_id) == 0)
+				folder = node;
+			g_free (id);
+			g_free (raw);
+		}
+	} else {
+		inner = g_string_new (NULL);
+		e_gw_xml_add_leaf (inner, "id", folder_id);
+		response = e_gw_connection_call_sync (cnc, "getFolder", inner->str, cancellable, error);
+		g_string_free (inner, TRUE);
+		if (!response)
+			return NULL;
+
+		folder = e_gw_xml_find (e_gw_response_get_node (response), "folder");
+	}
 	if (!folder) {
 		e_gw_response_free (response);
 		g_set_error_literal (error, E_GW_ERROR, E_GW_ERROR_ITEM_NOT_FOUND, _("The folder does not exist"));
@@ -185,6 +204,14 @@ e_gw_connection_get_share_sync (EGwConnection *cnc,
 	share->entries = g_ptr_array_new_with_free_func ((GDestroyNotify) e_gw_share_entry_free);
 
 	node = e_gw_xml_find (folder, "acl");
+	/* A book shared to the user has the user's rights beside the list */
+	if (!node && share->shared_to_me && e_gw_xml_find (folder, "rights")) {
+		EGwShareEntry *entry = g_new0 (EGwShareEntry, 1);
+
+		entry->rights = e_gw_share_rights_from_node (folder);
+		entry->status = E_GW_SHARE_STATUS_ACCEPTED;
+		g_ptr_array_add (share->entries, entry);
+	}
 	for (node = e_gw_xml_first_child (node, "entry"); node; node = e_gw_xml_next_sibling (node, "entry")) {
 		EGwShareEntry *entry = g_new0 (EGwShareEntry, 1);
 		gchar *status = e_gw_xml_dup_text (node, "status");
@@ -326,8 +353,8 @@ e_gw_share_is_notification_id (const gchar *id)
 {
 	const gchar *at = id ? strchr (id, '@') : NULL;
 
-	/* BASE@37 or BASE@37:CONTAINER */
-	return at && g_str_has_prefix (at, "@37") && (at[3] == '\0' || at[3] == ':');
+	/* BASE@37 or BASE@37:CONTAINER; @62 for an address book */
+	return at && (g_str_has_prefix (at, "@37") || g_str_has_prefix (at, "@62")) && (at[3] == '\0' || at[3] == ':');
 }
 
 /* The text of the message of an item, base64 in its first text part */
@@ -454,10 +481,10 @@ e_gw_connection_accept_share_sync (EGwConnection *cnc,
 
 	id = e_gw_xml_dup_text (e_gw_response_get_node (response), "id");
 	e_gw_response_free (response);
+	/* (an address book is accepted without an answer but "done") */
 	if (!id || !*id) {
 		g_free (id);
-		g_set_error_literal (error, E_GW_ERROR, E_GW_ERROR_XML, _("The server did not name the new folder"));
-		return NULL;
+		return g_strdup ("");
 	}
 	clean = e_gw_clean_id (id);
 	g_free (id);

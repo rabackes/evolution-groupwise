@@ -43,6 +43,7 @@
 #include <shell/e-shell-view.h>
 #include <shell/e-shell-window.h>
 
+#include "e-gw-addressbook.h"
 #include "e-gw-folder.h"
 #include "e-gw-proxy.h"
 #include "e-gw-share.h"
@@ -86,6 +87,7 @@ typedef struct {
 	gchar *full_name;
 	gchar *folder_id;		/* a calendar: its folder, in a dialog of its own */
 	gboolean calendar;
+	gboolean book;			/* an address book: likewise, by its ID */
 	gboolean select;
 	GCancellable *cancellable;
 
@@ -323,6 +325,16 @@ update_sensitivity (ShareTab *tab)
 	gtk_widget_set_sensitive (tab->entry, mine);
 	gtk_widget_set_sensitive (tab->add_button, mine && !tab->resolving);
 	gtk_widget_set_sensitive (tab->remove_button, mine && selected);
+	/* The rights in an address book are set when it is shared with a user;
+	 * the server does not change them later */
+	if (tab->book && selected) {
+		gint status = -1;
+
+		gtk_tree_model_get (GTK_TREE_MODEL (tab->model), &iter, COL_STATUS, &status, -1);
+		gtk_widget_set_sensitive (tab->rights_box, mine && status < 0);
+		gtk_widget_set_tooltip_text (tab->rights_box, mine && status >= 0 ?
+			_("The rights in an address book cannot be changed later: remove the user, apply, and add the user anew") : NULL);
+	} else
 	gtk_widget_set_sensitive (tab->rights_box, mine && selected);
 	/* The server takes it only along with new users */
 	gtk_widget_set_sensitive (tab->tree_box, mine && !tab->share->share_tree && has_new_users (tab));
@@ -724,7 +736,7 @@ apply_done_cb (GObject *source_object,
 			update_sensitivity (tab);
 		} else {
 			e_alert_submit (E_ALERT_SINK (e_shell_view_get_shell_content (tab->shell_view)), "mail:async-error",
-				tab->calendar ? _("sharing the calendar") : _("sharing the folder"), error ? error->message : "", NULL);
+				tab->book ? _("sharing the address book") : tab->calendar ? _("sharing the calendar") : _("sharing the folder"), error ? error->message : "", NULL);
 		}
 		g_clear_error (&error);
 		return;
@@ -770,7 +782,8 @@ ask_notification (ShareTab *tab,
 	gboolean send;
 	guint ii;
 
-	dialog = gtk_dialog_new_with_buttons (tab->calendar ? _("Shared Calendar Notification") : _("Shared Folder Notification"),
+	dialog = gtk_dialog_new_with_buttons (tab->book ? _("Shared Address Book Notification") :
+		tab->calendar ? _("Shared Calendar Notification") : _("Shared Folder Notification"),
 		GTK_WINDOW (tab->dialog),
 		GTK_DIALOG_MODAL | GTK_DIALOG_DESTROY_WITH_PARENT,
 		_("_Cancel"), GTK_RESPONSE_CANCEL, _("_Send"), GTK_RESPONSE_OK, NULL);
@@ -780,7 +793,9 @@ ask_notification (ShareTab *tab,
 	gtk_container_set_border_width (GTK_CONTAINER (box), 12);
 	gtk_box_set_spacing (GTK_BOX (box), 12);
 
-	label = gtk_label_new (tab->calendar ?
+	label = gtk_label_new (tab->book ?
+		_("The new participants are sent a notification that you shared this address book "
+		"with them. You may add a message for them.") : tab->calendar ?
 		_("The new participants are sent a notification that you shared this calendar "
 		"with them. You may add a message for them.") :
 		_("The new participants are sent a notification that you shared this folder "
@@ -819,7 +834,8 @@ ask_notification (ShareTab *tab,
 	/* As the GroupWise client presets it. The server puts the name of
 	 * the folder behind a subject that does not end with it. */
 	/* Translators: %s is the name of the folder */
-	preset = g_strdup_printf (tab->calendar ? _("Shared calendar notification: %s") : _("Shared folder notification: %s"),
+	preset = g_strdup_printf (tab->book ? _("Shared address book notification: %s") :
+		tab->calendar ? _("Shared calendar notification: %s") : _("Shared folder notification: %s"),
 		tab->share->name ? tab->share->name : "");
 	gtk_entry_set_text (GTK_ENTRY (subject), preset);
 	g_free (preset);
@@ -915,8 +931,10 @@ response_cb (GtkDialog *dialog,
 
 	question = gtk_message_dialog_new (GTK_WINDOW (dialog), GTK_DIALOG_MODAL | GTK_DIALOG_DESTROY_WITH_PARENT,
 		GTK_MESSAGE_QUESTION, GTK_BUTTONS_NONE, "%s",
+		tab->book ? _("Apply the changes to the sharing of the address book?") :
 		tab->calendar ? _("Apply the changes to the sharing of the calendar?") : _("Apply the changes to the sharing of the folder?"));
 	gtk_message_dialog_format_secondary_text (GTK_MESSAGE_DIALOG (question), "%s",
+		tab->book ? _("You changed whom the address book is shared with or what they may do, and did not apply that yet.") :
 		tab->calendar ? _("You changed whom the calendar is shared with or what they may do, and did not apply that yet.") :
 		_("You changed whom the folder is shared with or what they may do, and did not apply that yet."));
 	gtk_dialog_add_buttons (GTK_DIALOG (question), _("_Discard"), GTK_RESPONSE_REJECT, _("_Apply"), GTK_RESPONSE_ACCEPT, NULL);
@@ -943,7 +961,9 @@ fill_model (ShareTab *tab)
 		EGwShareEntry *entry = tab->share->entries->pdata[ii];
 
 		gtk_list_store_insert_with_values (tab->model, NULL, -1,
-			COL_NAME, entry->display_name && *entry->display_name ? entry->display_name : entry->email,
+			COL_NAME, entry->display_name && *entry->display_name ? entry->display_name :
+				/* Translators: the user, in a list of users */
+				entry->email && *entry->email ? entry->email : _("You"),
 			COL_EMAIL, entry->email, COL_UUID, entry->uuid, COL_STATUS, (gint) entry->status,
 			COL_RIGHTS, (guint) (entry->rights | E_GW_SHARE_READ), COL_OLD_RIGHTS, (guint) (entry->rights | E_GW_SHARE_READ), -1);
 	}
@@ -978,7 +998,8 @@ build_page (ShareTab *tab,
 
 	if (!mine) {
 		const gchar *owner = tab->share->owner_name && *tab->share->owner_name ? tab->share->owner_name : tab->share->owner_email;
-		gchar *text = g_strdup_printf (tab->calendar ? _("%s shares this calendar with you.") : _("%s shares this folder with you."),
+		gchar *text = g_strdup_printf (tab->book ? _("%s shares this address book with you.") :
+			tab->calendar ? _("%s shares this calendar with you.") : _("%s shares this folder with you."),
 			owner ? owner : "");
 
 		label = gtk_label_new (text);
@@ -1098,6 +1119,9 @@ build_page (ShareTab *tab,
 	for (ii = 0; ii < G_N_ELEMENTS (rights_boxes); ii++) {
 		if (!rights_boxes[ii].check)
 			continue;
+		/* An address book knows reading and editing (which is all the rest) */
+		if (tab->book && rights_boxes[ii].right != E_GW_SHARE_EDIT)
+			continue;
 		tab->boxes[ii] = gtk_check_button_new_with_mnemonic (_(rights_boxes[ii].check));
 		g_signal_connect (tab->boxes[ii], "toggled", G_CALLBACK (box_toggled_cb), tab);
 		gtk_box_pack_start (GTK_BOX (box), tab->boxes[ii], FALSE, FALSE, 0);
@@ -1109,12 +1133,13 @@ build_page (ShareTab *tab,
 	gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (tab->tree_box), tab->share->share_tree);
 	gtk_grid_attach (GTK_GRID (grid), tab->tree_box, 0, row++, 3, 1);
 	/* A calendar has none */
-	if (tab->calendar)
+	if (tab->calendar || tab->book)
 		gtk_widget_set_no_show_all (tab->tree_box, TRUE);
 
 	/* Closing the properties does not apply (it cannot be cancelled) */
 	tab->apply_button = gtk_button_new_with_mnemonic (_("A_pply Sharing"));
-	gtk_widget_set_tooltip_text (tab->apply_button, tab->calendar ?
+	gtk_widget_set_tooltip_text (tab->apply_button, tab->book ?
+		_("Share the address book as set here; new users are sent a notification") : tab->calendar ?
 		_("Share the calendar as set here; new users are sent a notification") :
 		_("Share the folder as set here; new users are sent a notification"));
 	gtk_widget_set_halign (tab->apply_button, GTK_ALIGN_END);
@@ -1178,6 +1203,8 @@ load_thread (GTask *task,
 	for (ii = 0; id && ii < folders->len; ii++) {
 		EGwFolder *folder = folders->pdata[ii];
 
+		if (tab->book)
+			break;
 		if (tab->calendar) {
 			EGwCalendarRole role = e_gw_folder_get_calendar_role (folder, folders);
 
@@ -1200,6 +1227,20 @@ load_thread (GTask *task,
 	}
 	g_hash_table_destroy (ids);
 	g_ptr_array_unref (folders);
+
+	if (tab->book && !error) {
+		GPtrArray *books = e_gw_connection_get_address_books_sync (cnc, cancellable, &error);
+
+		for (ii = 0; books && ii < books->len; ii++) {
+			EGwAddressBook *book = books->pdata[ii];
+
+			/* A book of the user's, or one shared to the user */
+			if (g_strcmp0 (book->id, tab->folder_id) == 0 && book->is_personal && !book->is_system &&
+			    !book->is_frequent_contacts)
+				share = e_gw_connection_get_share_sync (cnc, book->id, cancellable, &error);
+		}
+		g_clear_pointer (&books, g_ptr_array_unref);
+	}
 
 	if (error) {
 		g_clear_object (&cnc);
@@ -1234,7 +1275,8 @@ load_done_cb (GObject *source_object,
 			gtk_widget_destroy (spinner);
 		g_object_set_data (G_OBJECT (tab->dialog), "groupwise-share-spinner", NULL);
 		if (!tab->share) {
-			GtkWidget *label = gtk_label_new (error ? error->message : _("This calendar cannot be shared."));
+			GtkWidget *label = gtk_label_new (error ? error->message :
+				tab->book ? _("This address book cannot be shared.") : _("This calendar cannot be shared."));
 
 			gtk_label_set_line_wrap (GTK_LABEL (label), TRUE);
 			gtk_label_set_max_width_chars (GTK_LABEL (label), 60);
@@ -1391,9 +1433,10 @@ calendar_response_cb (GtkDialog *dialog,
 	gtk_widget_destroy (GTK_WIDGET (dialog));
 }
 
-void
-e_groupwise_share_tab_run_for_calendar (EShellView *shell_view,
-					ESource *calendar)
+static void
+run_for_source (EShellView *shell_view,
+		ESource *calendar,
+		gboolean is_book)
 {
 	ESourceRegistry *registry;
 	ESource *account = NULL;
@@ -1452,7 +1495,8 @@ e_groupwise_share_tab_run_for_calendar (EShellView *shell_view,
 	tab->registry = g_object_ref (registry);
 	tab->account = account;
 	tab->folder_id = folder_id;
-	tab->calendar = TRUE;
+	tab->calendar = !is_book;
+	tab->book = is_book;
 	tab->cancellable = g_cancellable_new ();
 	g_signal_connect (dialog, "destroy", G_CALLBACK (dialog_destroy_cb), tab);
 
@@ -1463,6 +1507,20 @@ e_groupwise_share_tab_run_for_calendar (EShellView *shell_view,
 
 	g_signal_connect_after (dialog, "response", G_CALLBACK (calendar_response_cb), NULL);
 	gtk_widget_show_all (dialog);
+}
+
+void
+e_groupwise_share_tab_run_for_calendar (EShellView *shell_view,
+					ESource *calendar)
+{
+	run_for_source (shell_view, calendar, FALSE);
+}
+
+void
+e_groupwise_share_tab_run_for_book (EShellView *shell_view,
+				    ESource *book)
+{
+	run_for_source (shell_view, book, TRUE);
 }
 
 void

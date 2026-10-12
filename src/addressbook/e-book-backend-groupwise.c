@@ -29,6 +29,7 @@
 #include "e-gw-addressbook.h"
 #include "e-gw-backend-utils.h"
 #include "e-gw-contact.h"
+#include "e-gw-share.h"
 #include "e-gw-xml.h"
 #include "e-source-groupwise-folder.h"
 
@@ -86,6 +87,31 @@ propagate_error (GError **error,
 	g_error_free (gw_error);
 }
 
+/* A book another user shared for reading only */
+static gboolean
+shared_read_only (EGwConnection *cnc,
+		  const gchar *book_id,
+		  GCancellable *cancellable)
+{
+	GPtrArray *books;
+	gboolean read_only = FALSE;
+	guint ii;
+
+	if (g_strcmp0 (book_id, E_GW_SYSTEM_ADDRESS_BOOK_ID) == 0)
+		return FALSE;
+
+	books = e_gw_connection_get_address_books_sync (cnc, cancellable, NULL);
+	for (ii = 0; books && ii < books->len; ii++) {
+		EGwAddressBook *book = books->pdata[ii];
+
+		if (g_strcmp0 (book->id, book_id) == 0)
+			read_only = book->is_shared_to_me && !(book->share_rights & E_GW_SHARE_EDIT);
+	}
+	g_clear_pointer (&books, g_ptr_array_unref);
+
+	return read_only;
+}
+
 static gboolean
 ebb_groupwise_connect_sync (EBookMetaBackend *meta_backend,
 			    const ENamedParameters *credentials,
@@ -133,7 +159,7 @@ ebb_groupwise_connect_sync (EBookMetaBackend *meta_backend,
 		g_free (bbgw->book_id);
 		bbgw->book_id = book_id;
 		bbgw->is_system = g_strcmp0 (book_id, E_GW_SYSTEM_ADDRESS_BOOK_ID) == 0;
-		e_book_backend_set_writable (E_BOOK_BACKEND (bbgw), !bbgw->is_system);
+		e_book_backend_set_writable (E_BOOK_BACKEND (bbgw), !bbgw->is_system && !shared_read_only (cnc, book_id, cancellable));
 	} else {
 		g_free (book_id);
 	}

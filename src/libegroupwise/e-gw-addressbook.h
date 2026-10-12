@@ -32,7 +32,18 @@ typedef struct {
 	gboolean is_personal;		/* the user's own, writable */
 	gboolean is_frequent_contacts;
 	gboolean is_system;		/* the GroupWise Address Book of the system */
+	gboolean is_shared_to_me;	/* another user's, shared to the user */
+	gboolean is_shared_by_me;
+	guint share_rights;		/* shared to the user: EGwShareRights (read, or
+					 * read and edit: a book knows no others) */
+	gchar *owner_name;		/* of a book shared to the user */
 } EGwAddressBook;
+
+/* The view that makes the list tell how the books are shared */
+#define E_GW_ADDRESS_BOOK_SHARE_VIEW "default acl rights owner isSharedToMe isSharedByMe"
+
+/* Whether @id is the ID of an address book (BASE@53) */
+gboolean	e_gw_address_book_is_id		(const gchar *id);
 
 void		e_gw_address_book_free		(EGwAddressBook *book);
 
