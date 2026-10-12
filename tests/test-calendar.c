@@ -1236,6 +1236,34 @@ test_series_all_day (void)
 	g_ptr_array_add (instances, series_instance ("B2", "2027-10-22T22:00:00Z", "2027-10-23T22:00:00Z", "Geburtstag", rule, TRUE));
 	g_ptr_array_add (instances, series_instance ("B3", "2028-10-22T22:00:00Z", "2028-10-23T22:00:00Z", "Geburtstag", rule, TRUE));
 
+	/* (a rule counting more than there are appointments counts those) */
+	{
+		GPtrArray *counted = g_ptr_array_new_with_free_func ((GDestroyNotify) e_gw_series_instance_free);
+		ICalComponent *series, *first;
+		ICalProperty *rrule;
+		ICalRecurrence *counting;
+		gchar *u = NULL, *r = NULL, *e = NULL;
+
+		g_ptr_array_add (counted, series_instance ("C1", "2026-10-23T10:00:00Z", "2026-10-23T11:00:00Z", "Serie", "FREQ=DAILY;COUNT=6;INTERVAL=1", FALSE));
+		g_ptr_array_add (counted, series_instance ("C2", "2026-10-24T10:00:00Z", "2026-10-24T11:00:00Z", "Serie", "FREQ=DAILY;COUNT=6;INTERVAL=1", FALSE));
+		g_ptr_array_add (counted, series_instance ("C3", "2026-10-25T11:00:00Z", "2026-10-25T12:00:00Z", "Serie", "FREQ=DAILY;COUNT=6;INTERVAL=1", FALSE));
+		series = e_gw_series_build (counted, berlin (), &u, &r, &e);
+		g_assert_nonnull (series);
+		first = nth_event (series, 0);
+		g_assert_cmpuint (count_properties (first, I_CAL_EXDATE_PROPERTY), ==, 0);
+		rrule = i_cal_component_get_first_property (first, I_CAL_RRULE_PROPERTY);
+		counting = i_cal_property_get_rrule (rrule);
+		g_assert_cmpint (i_cal_recurrence_get_count (counting), ==, 3);
+		g_object_unref (counting);
+		g_object_unref (rrule);
+		g_object_unref (first);
+		g_object_unref (series);
+		g_ptr_array_unref (counted);
+		g_free (u);
+		g_free (r);
+		g_free (e);
+	}
+
 	vcalendar = e_gw_series_build (instances, berlin (), &uid, &revision, &extra);
 	g_assert_nonnull (vcalendar);
 	g_assert_cmpuint (count_components (vcalendar), ==, 1);

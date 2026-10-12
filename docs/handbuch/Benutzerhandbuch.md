@@ -521,6 +521,10 @@ Evolution gleicht die Kalender alle 15 Minuten mit dem Server ab, sodass Änderu
 
 - Termine mit Ort, Beschreibung, Status (belegt, vorläufig, frei, abwesend) und Erinnerung werden in beide Richtungen übertragen. Zeiten stehen in Ihrer Zeitzone.
 
+- **Beginn und Ende im Termin-Editor**: Ändern Sie bei einem GroupWise-Termin den Beginn, wandert das Ende mit – der Termin behält seine Länge, wie im GroupWise-Client. Ändern Sie das Ende, bleibt der Beginn stehen. (Evolution selbst lässt das Ende stehen und ändert so die Länge.)
+
+- Einen Termin zu bearbeiten ändert nichts daran, in welchem Kalender er liegt – gleich, welcher Kalender in der Liste links gerade ausgewählt ist. Verschoben wird er nur, wenn Sie im Editor das Feld **Kalender** ändern.
+
 - **Ganztägige Termine** reichen wie in GroupWise über ganze Tage.
 
 - **Erinnerungen**: GroupWise kennt eine Erinnerung je Termin, vor Beginn. Evolution zeigt sie für den Hauptkalender und Ihre Unterkalender an.
@@ -533,7 +537,7 @@ Evolution gleicht die Kalender alle 15 Minuten mit dem Server ab, sodass Änderu
 
    - *Diese und zukünftige Instanzen* löschen beendet die Serie an dieser Stelle: Die früheren Termine – die ja stattgefunden haben – bleiben erhalten. Beim Ändern trennt Evolution die Serie: Die folgenden Termine werden gelöscht und als neue Serie angelegt.
 
-- Beim Ändern stellt Evolution die Frage beim Speichern; zum Löschen stehen im Kontextmenü eines Serientermins `Diese Wiederholung löschen …`, `Dieses und alle zukünftigen Vorkommen löschen …` und `Alle Wiederholungen löschen …`. Die Warnung vor einer Überschneidung mit belegter Zeit ([5.7](#kal-reisezeit)) prüft bei einer Serie jeden ihrer nächsten Termine einzeln. Jede Änderung wird Termin für Termin nach GroupWise geschrieben; bei langen Serien dauert das einen Moment. **Nicht möglich** ist, einer Serie Termine hinzuzufügen oder ihre Regel auf andere Tage zu ändern (GroupWise legt die Termine einer Serie beim Anlegen an) – löschen Sie dann die nicht mehr gewünschten Termine und legen Sie eine neue Serie an – sowie eine Serie als Ganzes in einen anderen Kalender zu verschieben oder zu kopieren. Evolution meldet das jeweils. Alte Serien, die GroupWise ohne Regel führt (angelegt mit sehr alten Versionen), erscheinen weiterhin als einzelne Termine. Eine neue Serie (täglich, wöchentlich, monatlich, jährlich) legen Sie in Evolution wie gewohnt mit einer Wiederholung an.
+- Beim Ändern stellt Evolution die Frage beim Speichern; zum Löschen stehen im Kontextmenü eines Serientermins `Diese Wiederholung löschen …`, `Dieses und alle zukünftigen Vorkommen löschen …` und `Alle Wiederholungen löschen …`. Die Warnung vor einer Überschneidung mit belegter Zeit ([5.7](#kal-reisezeit)) prüft bei einer Serie jeden ihrer nächsten Termine einzeln. Jede Änderung wird Termin für Termin nach GroupWise geschrieben; bei langen Serien dauert das einen Moment. **Nicht möglich** ist, einer Serie Termine hinzuzufügen oder ihre Regel auf andere Tage zu ändern (GroupWise legt die Termine einer Serie beim Anlegen an) – löschen Sie dann die nicht mehr gewünschten Termine und legen Sie eine neue Serie an; Evolution meldet das. Kopieren oder verschieben Sie eine Serie in einen anderen Kalender, wird sie dort als neue Serie angelegt. Alte Serien, die GroupWise ohne Regel führt (angelegt mit sehr alten Versionen), erscheinen weiterhin als einzelne Termine. Eine neue Serie (täglich, wöchentlich, monatlich, jährlich) legen Sie in Evolution wie gewohnt mit einer Wiederholung an.
 
 - Ein neuer Termin in einem Unterkalender wird direkt in diesem Unterkalender angelegt, bei Serien jeder einzelne Termin.
 
@@ -686,7 +690,7 @@ Ein Doppelklick auf die Nachricht **Benachrichtigung über freigegebenes Adressb
 | Geklonte Rechner | Zwei Rechner mit derselben Maschinen-ID stören sich bei der Abfrage der Änderungen am selben Postfach gegenseitig (siehe Kontooptionen in Kapitel 3). |
 | Signierte oder verschlüsselte Nachrichten | können nicht über GroupWise gesendet werden; empfangene werden angezeigt. |
 | Suchergebnisordner | zeigen über SOAP nur einen Teil der Treffer (siehe 4.6). |
-| Serientermine | erscheinen als Serie mit ihrer Regel und lassen sich für einen, alle oder die folgenden Termine ändern und löschen (5.2). Termine hinzufügen, die Regel auf andere Tage ändern und eine Serie in einen anderen Kalender verschieben geht nicht. Sehr alte Serien ohne Regel erscheinen als einzelne Termine. |
+| Serientermine | erscheinen als Serie mit ihrer Regel und lassen sich für einen, alle oder die folgenden Termine ändern und löschen (5.2). Termine hinzufügen und die Regel auf andere Tage ändern geht nicht. Sehr alte Serien ohne Regel erscheinen als einzelne Termine. |
 | Abonnierte Internet-Kalender | werden ausgelassen. |
 | Ziehen auf die Kalenderliste | in Evolution nicht zuverlässig; Kontextmenü oder Editor verwenden. |
 | Wiederherstellen im Papierkorb | erst ab Evolution 3.56. |

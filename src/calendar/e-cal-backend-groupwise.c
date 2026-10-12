@@ -2685,12 +2685,14 @@ ecb_groupwise_save_component_sync (ECalMetaBackend *meta_backend,
 	if (!check_share_right (cbgw, overwrite_existing && extra && *extra ? E_GW_SHARE_EDIT : E_GW_SHARE_ADD, error))
 		return FALSE;
 
-	/* A series of GroupWise cannot be moved or copied into another
-	 * calendar as a whole (its appointments are made when it is created) */
-	if (!(overwrite_existing && extra && *extra) && e_cal_util_component_has_x_property (comp, E_GW_CALENDAR_X_RRULE)) {
-		g_set_error_literal (error, E_CLIENT_ERROR, E_CLIENT_ERROR_NOT_SUPPORTED,
-			_("A series of GroupWise cannot be moved or copied into another calendar."));
-		return FALSE;
+	/* A series stored anew — the part from one appointment on when "this
+	 * and the following" were changed, or one copied or moved into
+	 * another calendar — is created as a new series; what the old one
+	 * was is not its business */
+	if (!(overwrite_existing && extra && *extra)) {
+		e_cal_util_component_remove_x_property (comp, E_GW_CALENDAR_X_RRULE);
+		e_cal_util_component_remove_x_property (comp, E_GW_CALENDAR_X_SERIES_START);
+		e_cal_util_component_remove_x_property (comp, E_GW_CALENDAR_X_RECURRENCE_KEY);
 	}
 
 	cnc = ref_connection (cbgw, error);

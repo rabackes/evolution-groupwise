@@ -787,9 +787,15 @@ travel_editor_fill_component_cb (ECompEditor *comp_editor,
 		g_object_unref (from);
 		g_object_unref (to);
 	} else {
+		/* One appointment — also one of a series, which still has the
+		 * rule here: its own time, not all the times of the series */
+		ICalComponent *single = i_cal_component_clone (component);
 		TimeRange range = { 0, 0 };
 
-		ecomp = e_cal_component_new_from_icalcomponent (i_cal_component_clone (component));
+		e_cal_util_component_remove_property_by_kind (single, I_CAL_RRULE_PROPERTY, TRUE);
+		e_cal_util_component_remove_property_by_kind (single, I_CAL_RDATE_PROPERTY, TRUE);
+		e_cal_util_component_remove_property_by_kind (single, I_CAL_EXDATE_PROPERTY, TRUE);
+		ecomp = e_cal_component_new_from_icalcomponent (single);
 		if (ecomp) {
 			e_cal_util_get_component_occur_times (ecomp, &range.start, &range.end, e_comp_editor_lookup_timezone_cb,
 				comp_editor, calendar_config_get_icaltimezone (), I_CAL_VEVENT_COMPONENT);
@@ -1125,6 +1131,137 @@ travel_editor_busy_changed_cb (EGroupwiseTravelEditor *editor)
 		editor->busy_chosen = TRUE;
 }
 
+/* ------------------------------------------------------------------ */
+/* Changing the start moves the end along: the appointment keeps its
+ * length, as in the GroupWise client (Evolution keeps the end where it is
+ * and moves it only when the start gets past it). Changing the end leaves
+ * the start alone. */
+
+typedef struct {
+	gboolean known;
+	gboolean is_date;
+	time_t start, end;
+} LastTimes;
+
+static gboolean
+part_time (ECompEditor *comp_editor,
+	   ICalPropertyKind kind,
+	   time_t *out_time,
+	   gboolean *out_is_date)
+{
+	ECompEditorPropertyPart *part = e_comp_editor_get_property_part (comp_editor, kind);
+	ICalTime *tt = part && E_IS_COMP_EDITOR_PROPERTY_PART_DATETIME (part) ?
+		e_comp_editor_property_part_datetime_get_value (E_COMP_EDITOR_PROPERTY_PART_DATETIME (part)) : NULL;
+	gboolean valid = tt && !i_cal_time_is_null_time (tt) && i_cal_time_is_valid_time (tt);
+
+	if (valid) {
+		/* (as the clock shows it: both are in one zone in the editor) */
+		*out_time = i_cal_time_as_timet (tt);
+		if (out_is_date)
+			*out_is_date = i_cal_time_is_date (tt);
+	}
+	g_clear_object (&tt);
+
+	return valid;
+}
+
+static LastTimes *
+last_times (ECompEditor *comp_editor)
+{
+	LastTimes *last = g_object_get_data (G_OBJECT (comp_editor), "groupwise-last-times");
+
+	if (!last) {
+		last = g_new0 (LastTimes, 1);
+		g_object_set_data_full (G_OBJECT (comp_editor), "groupwise-last-times", last, g_free);
+	}
+
+	return last;
+}
+
+static void
+remember_times (ECompEditor *comp_editor)
+{
+	LastTimes *last = last_times (comp_editor);
+	time_t start = 0, end = 0;
+	gboolean is_date = FALSE;
+
+	last->known = part_time (comp_editor, I_CAL_DTSTART_PROPERTY, &start, &is_date) &&
+		part_time (comp_editor, I_CAL_DTEND_PROPERTY, &end, NULL);
+	last->start = start;
+	last->end = end;
+	last->is_date = is_date;
+}
+
+static void
+travel_editor_end_changed_cb (ECompEditor *comp_editor)
+{
+	remember_times (comp_editor);
+}
+
+static void
+travel_editor_start_changed_cb (ECompEditor *comp_editor,
+				EDateEdit *date_edit)
+{
+	LastTimes *last = last_times (comp_editor);
+	ECompEditorPropertyPart *end_part = e_comp_editor_get_property_part (comp_editor, I_CAL_DTEND_PROPERTY);
+	time_t start = 0;
+	gboolean is_date = FALSE;
+
+	/* While it is being typed the value is not finished (Evolution waits as well) */
+	if (E_IS_DATE_EDIT (date_edit) && e_date_edit_has_focus (date_edit))
+		return;
+	if (e_comp_editor_get_updating (comp_editor) || !last->known || !end_part ||
+	    !E_IS_COMP_EDITOR_PROPERTY_PART_DATETIME (end_part) || !target_is_groupwise (comp_editor) ||
+	    !part_time (comp_editor, I_CAL_DTSTART_PROPERTY, &start, &is_date) || is_date != last->is_date) {
+		remember_times (comp_editor);
+		return;
+	}
+
+	if (start != last->start && last->end > last->start) {
+		ICalTime *end = e_comp_editor_property_part_datetime_get_value (E_COMP_EDITOR_PROPERTY_PART_DATETIME (end_part));
+
+		if (end && !i_cal_time_is_null_time (end)) {
+			/* From where the end was before this change (Evolution
+			 * may have moved it already) */
+			gint64 shift = (gint64) (last->end + (start - last->start)) - (gint64) i_cal_time_as_timet (end);
+
+			if (is_date)
+				i_cal_time_adjust (end, (gint) (shift / 86400), 0, 0, 0);
+			else
+				i_cal_time_adjust (end, 0, 0, 0, (gint) shift);
+			e_comp_editor_set_updating (comp_editor, TRUE);
+			e_comp_editor_property_part_datetime_set_value (E_COMP_EDITOR_PROPERTY_PART_DATETIME (end_part), end);
+			e_comp_editor_set_updating (comp_editor, FALSE);
+		}
+		g_clear_object (&end);
+	}
+	remember_times (comp_editor);
+}
+
+/* Once the editor has its fields */
+static void
+travel_editor_watch_times (ECompEditor *comp_editor)
+{
+	ECompEditorPropertyPart *start_part, *end_part;
+	GtkWidget *start_edit, *end_edit;
+
+	if (g_object_get_data (G_OBJECT (comp_editor), "groupwise-times-watched"))
+		return;
+	start_part = e_comp_editor_get_property_part (comp_editor, I_CAL_DTSTART_PROPERTY);
+	end_part = e_comp_editor_get_property_part (comp_editor, I_CAL_DTEND_PROPERTY);
+	start_edit = start_part ? e_comp_editor_property_part_get_edit_widget (start_part) : NULL;
+	end_edit = end_part ? e_comp_editor_property_part_get_edit_widget (end_part) : NULL;
+	if (!start_edit || !end_edit || !E_IS_DATE_EDIT (start_edit) || !E_IS_DATE_EDIT (end_edit))
+		return;
+
+	g_object_set_data (G_OBJECT (comp_editor), "groupwise-times-watched", GINT_TO_POINTER (1));
+	g_signal_connect_object (start_edit, "changed", G_CALLBACK (travel_editor_start_changed_cb), comp_editor,
+		G_CONNECT_SWAPPED | G_CONNECT_AFTER);
+	g_signal_connect_object (end_edit, "changed", G_CALLBACK (travel_editor_end_changed_cb), comp_editor,
+		G_CONNECT_SWAPPED | G_CONNECT_AFTER);
+	remember_times (comp_editor);
+}
+
 static void
 travel_editor_constructed (GObject *object)
 {
@@ -1191,6 +1328,10 @@ travel_editor_constructed (GObject *object)
 		G_CALLBACK (travel_editor_ensure_self), object, G_CONNECT_SWAPPED);
 	g_signal_connect_object (comp_editor, "fill-component",
 		G_CALLBACK (travel_editor_fill_component_cb), object, 0);
+
+	travel_editor_watch_times (comp_editor);
+	g_signal_connect_object (comp_editor, "realize",
+		G_CALLBACK (travel_editor_watch_times), NULL, G_CONNECT_AFTER);
 
 	/* A new all-day appointment is free, as in the GroupWise client */
 	if (e_comp_editor_get_action (comp_editor, "all-day-event") && e_comp_editor_get_action (comp_editor, "show-time-busy")) {

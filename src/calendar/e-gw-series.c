@@ -413,16 +413,20 @@ e_gw_series_build (GPtrArray *instances,
 	g_object_unref (master_start);
 	g_object_unref (master_end);
 
-	/* The rule ends with the last appointment: occurrences after it are
-	 * excluded, or — too many, or without end — the rule is cut there */
-	if (!finite || (gint) occurrences->len - 1 - last_matched > MAX_TRAILING) {
-		ICalTime *until = i_cal_time_clone (occurrences->pdata[last_matched]);
+	/* The rule ends with the last appointment there is: a rule that
+	 * counts gets the number up to it (the POA keeps the number asked
+	 * for, also when it made one appointment less), another one an end */
+	if ((gint) occurrences->len - 1 > last_matched || !finite) {
+		if (i_cal_recurrence_get_count (rule) > 0) {
+			i_cal_recurrence_set_count (rule, last_matched + 1);
+		} else {
+			ICalTime *until = i_cal_time_clone (occurrences->pdata[last_matched]);
 
-		if (!all_day)
-			i_cal_time_convert_to_zone_inplace (until, i_cal_timezone_get_utc_timezone ());
-		i_cal_recurrence_set_count (rule, 0);
-		i_cal_recurrence_set_until (rule, until);
-		g_object_unref (until);
+			if (!all_day)
+				i_cal_time_convert_to_zone_inplace (until, i_cal_timezone_get_utc_timezone ());
+			i_cal_recurrence_set_until (rule, until);
+			g_object_unref (until);
+		}
 		g_ptr_array_set_size (occurrences, last_matched + 1);
 	}
 	i_cal_component_take_property (master, i_cal_property_new_rrule (rule));

@@ -924,6 +924,12 @@ eingestellten Abstands, mit der Sofort-Meldung des Servers nach wenigen Sekunden
 <ul>
 	<li>Termine mit Ort, Beschreibung, Status (belegt, vorläufig, frei, abwesend) und Erinnerung werden in
 		beide Richtungen übertragen. Zeiten stehen in Ihrer Zeitzone.</li>
+	<li><b>Beginn und Ende im Termin-Editor</b>: Ändern Sie bei einem GroupWise-Termin den Beginn,
+		wandert das Ende mit – der Termin behält seine Länge, wie im GroupWise-Client. Ändern Sie das Ende,
+		bleibt der Beginn stehen. (Evolution selbst lässt das Ende stehen und ändert so die Länge.)</li>
+	<li>Einen Termin zu bearbeiten ändert nichts daran, in welchem Kalender er liegt – gleich, welcher
+		Kalender in der Liste links gerade ausgewählt ist. Verschoben wird er nur, wenn Sie im Editor das
+		Feld <b>Kalender</b> ändern.</li>
 	<li><b>Ganztägige Termine</b> reichen wie in GroupWise über ganze Tage.</li>
 	<li><b>Erinnerungen</b>: GroupWise kennt eine Erinnerung je Termin, vor Beginn. Evolution zeigt sie für
 		den Hauptkalender und Ihre Unterkalender an.</li>
@@ -960,8 +966,9 @@ eingestellten Abstands, mit der Sofort-Meldung des Servers nach wenigen Sekunden
 		Jede Änderung wird Termin für Termin nach GroupWise geschrieben; bei langen Serien dauert das
 		einen Moment. <b>Nicht möglich</b> ist, einer Serie Termine hinzuzufügen oder ihre Regel auf andere
 		Tage zu ändern (GroupWise legt die Termine einer Serie beim Anlegen an) – löschen Sie dann die
-		nicht mehr gewünschten Termine und legen Sie eine neue Serie an – sowie eine Serie als Ganzes in
-		einen anderen Kalender zu verschieben oder zu kopieren. Evolution meldet das jeweils.<br>
+		nicht mehr gewünschten Termine und legen Sie eine neue Serie an; Evolution meldet das. Kopieren
+		oder verschieben Sie eine Serie in einen anderen Kalender, wird sie dort als neue Serie
+		angelegt.<br>
 		Alte Serien, die GroupWise ohne Regel führt (angelegt mit sehr alten Versionen), erscheinen
 		weiterhin als einzelne Termine. Eine neue Serie (täglich, wöchentlich, monatlich, jährlich) legen
 		Sie in Evolution wie gewohnt mit einer Wiederholung an.</li>
@@ -1264,9 +1271,8 @@ Kontaktansicht. Ein nur zum Lesen freigegebenes Adressbuch ist in Evolution schr
 		empfangene werden angezeigt.</td></tr>
 	<tr><td>Suchergebnisordner</td><td>zeigen über SOAP nur einen Teil der Treffer (siehe 4.6).</td></tr>
 	<tr><td>Serientermine</td><td>erscheinen als Serie mit ihrer Regel und lassen sich für einen, alle oder
-		die folgenden Termine ändern und löschen (5.2). Termine hinzufügen, die Regel auf andere Tage ändern
-		und eine Serie in einen anderen Kalender verschieben geht nicht. Sehr alte Serien ohne Regel
-		erscheinen als einzelne Termine.</td></tr>
+		die folgenden Termine ändern und löschen (5.2). Termine hinzufügen und die Regel auf andere Tage
+		ändern geht nicht. Sehr alte Serien ohne Regel erscheinen als einzelne Termine.</td></tr>
 	<tr><td>Abonnierte Internet-Kalender</td><td>werden ausgelassen.</td></tr>
 	<tr><td>Ziehen auf die Kalenderliste</td><td>in Evolution nicht zuverlässig; Kontextmenü oder Editor
 		verwenden.</td></tr>

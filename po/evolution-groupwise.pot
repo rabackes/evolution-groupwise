@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: evolution-groupwise\n"
 "Report-Msgid-Bugs-To: rbackes@bond.de\n"
-"POT-Creation-Date: 2026-10-12 14:59+0200\n"
+"POT-Creation-Date: 2026-10-12 15:38+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -101,21 +101,17 @@ msgid ""
 "others."
 msgstr ""
 
-#: src/calendar/e-cal-backend-groupwise.c:2692
-msgid "A series of GroupWise cannot be moved or copied into another calendar."
-msgstr ""
-
-#: src/calendar/e-cal-backend-groupwise.c:2738
+#: src/calendar/e-cal-backend-groupwise.c:2740
 msgid ""
 "A shared calendar takes appointments without attendees only. Create the "
 "meeting in your own calendar."
 msgstr ""
 
-#: src/calendar/e-cal-backend-groupwise.c:3035
+#: src/calendar/e-cal-backend-groupwise.c:3037
 msgid "The server did not delete the appointment from the shared calendar."
 msgstr ""
 
-#: src/calendar/e-cal-backend-groupwise.c:3077
+#: src/calendar/e-cal-backend-groupwise.c:3079
 #, c-format
 msgid ""
 "“%s” is the preparation or travel time of an appointment. Move or delete the "
@@ -123,7 +119,7 @@ msgid ""
 "“Travel Time” of the appointment."
 msgstr ""
 
-#: src/calendar/e-cal-backend-groupwise.c:3384
+#: src/calendar/e-cal-backend-groupwise.c:3386
 #, c-format
 msgid ""
 "“%s” is a meeting you organized in this calendar. Answer the invitation in "
@@ -508,7 +504,7 @@ msgstr ""
 #: src/evolution/e-groupwise-share-accept.c:314
 #: src/evolution/e-groupwise-share-tab.c:789
 #: src/evolution/e-groupwise-signatures-tab.c:228
-#: src/evolution/e-groupwise-travel-page.c:843
+#: src/evolution/e-groupwise-travel-page.c:849
 msgid "_Cancel"
 msgstr ""
 
@@ -2533,19 +2529,19 @@ msgstr ""
 msgid "Travel times before/after the appointment are the _same"
 msgstr ""
 
-#: src/evolution/e-groupwise-travel-page.c:839
+#: src/evolution/e-groupwise-travel-page.c:845
 msgid "The appointment overlaps with busy time in your calendar"
 msgstr ""
 
-#: src/evolution/e-groupwise-travel-page.c:842
+#: src/evolution/e-groupwise-travel-page.c:848
 msgid "The preparation and travel time of the appointment counts, too."
 msgstr ""
 
-#: src/evolution/e-groupwise-travel-page.c:844
+#: src/evolution/e-groupwise-travel-page.c:850
 msgid "_Save Anyway"
 msgstr ""
 
-#: src/evolution/e-groupwise-travel-page.c:1135
+#: src/evolution/e-groupwise-travel-page.c:1272
 msgid "_Travel Time"
 msgstr ""
 

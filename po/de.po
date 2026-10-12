@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: evolution-groupwise\n"
 "Report-Msgid-Bugs-To: rbackes@bond.de\n"
-"POT-Creation-Date: 2026-10-12 14:59+0200\n"
+"POT-Creation-Date: 2026-10-12 15:32+0200\n"
 "PO-Revision-Date: 2026-09-27 18:27+0200\n"
 "Last-Translator: Automatically generated\n"
 "Language-Team: none\n"
@@ -113,13 +113,7 @@ msgstr ""
 "hinzufügen. Löschen Sie die nicht mehr gewünschten Termine und legen Sie für "
 "die anderen eine neue Serie an."
 
-#: src/calendar/e-cal-backend-groupwise.c:2692
-msgid "A series of GroupWise cannot be moved or copied into another calendar."
-msgstr ""
-"Eine GroupWise-Serie kann nicht in einen anderen Kalender verschoben oder "
-"kopiert werden."
-
-#: src/calendar/e-cal-backend-groupwise.c:2738
+#: src/calendar/e-cal-backend-groupwise.c:2740
 msgid ""
 "A shared calendar takes appointments without attendees only. Create the "
 "meeting in your own calendar."
@@ -127,12 +121,12 @@ msgstr ""
 "In einen freigegebenen Kalender können nur Termine ohne Teilnehmer "
 "eingetragen werden. Legen Sie die Besprechung in Ihrem eigenen Kalender an."
 
-#: src/calendar/e-cal-backend-groupwise.c:3035
+#: src/calendar/e-cal-backend-groupwise.c:3037
 msgid "The server did not delete the appointment from the shared calendar."
 msgstr ""
 "Der Server hat den Termin nicht aus dem freigegebenen Kalender gelöscht."
 
-#: src/calendar/e-cal-backend-groupwise.c:3077
+#: src/calendar/e-cal-backend-groupwise.c:3079
 #, c-format
 msgid ""
 "“%s” is the preparation or travel time of an appointment. Move or delete the "
@@ -143,7 +137,7 @@ msgstr ""
 "löschen Sie den Termin selbst; die Reisezeit ändern oder entfernen Sie auf "
 "der Seite „Reisezeit“ des Termins."
 
-#: src/calendar/e-cal-backend-groupwise.c:3384
+#: src/calendar/e-cal-backend-groupwise.c:3386
 #, c-format
 msgid ""
 "“%s” is a meeting you organized in this calendar. Answer the invitation in "
@@ -551,7 +545,7 @@ msgstr "Proxy-Zugriff gewähren"
 #: src/evolution/e-groupwise-share-accept.c:314
 #: src/evolution/e-groupwise-share-tab.c:789
 #: src/evolution/e-groupwise-signatures-tab.c:228
-#: src/evolution/e-groupwise-travel-page.c:843
+#: src/evolution/e-groupwise-travel-page.c:849
 msgid "_Cancel"
 msgstr "_Abbrechen"
 
@@ -2690,19 +2684,19 @@ msgstr "_Nach dem Termin:"
 msgid "Travel times before/after the appointment are the _same"
 msgstr "Reisezeiten vor/nach Termin sind _gleich"
 
-#: src/evolution/e-groupwise-travel-page.c:839
+#: src/evolution/e-groupwise-travel-page.c:845
 msgid "The appointment overlaps with busy time in your calendar"
 msgstr "Der Termin überschneidet sich mit belegter Zeit in Ihrem Kalender"
 
-#: src/evolution/e-groupwise-travel-page.c:842
+#: src/evolution/e-groupwise-travel-page.c:848
 msgid "The preparation and travel time of the appointment counts, too."
 msgstr "Die Vorbereitungs- und Reisezeit des Termins zählt dabei mit."
 
-#: src/evolution/e-groupwise-travel-page.c:844
+#: src/evolution/e-groupwise-travel-page.c:850
 msgid "_Save Anyway"
 msgstr "_Trotzdem speichern"
 
-#: src/evolution/e-groupwise-travel-page.c:1135
+#: src/evolution/e-groupwise-travel-page.c:1272
 msgid "_Travel Time"
 msgstr "_Reisezeit"
 
@@ -2963,6 +2957,12 @@ msgid "This calendar or address book cannot be deleted in GroupWise"
 msgstr ""
 "Dieser Kalender bzw. dieses Adressbuch kann in GroupWise nicht gelöscht "
 "werden"
+
+#~ msgid ""
+#~ "A series of GroupWise cannot be moved or copied into another calendar."
+#~ msgstr ""
+#~ "Eine GroupWise-Serie kann nicht in einen anderen Kalender verschoben oder "
+#~ "kopiert werden."
 
 #~ msgid ""
 #~ "The appointments of a series cannot be changed here yet. Change them in "
