@@ -118,19 +118,19 @@ send_thread (GTask *task,
 	SendData *data = task_data;
 	EGwConnection *cnc;
 	GError *error = NULL;
-	gchar *id = NULL;
+	gboolean sent = FALSE;
 
 	cnc = e_groupwise_ui_connect_items_sync (data->registry, data->account, cancellable, &error);
 	if (cnc) {
-		id = e_gw_connection_send_phone_message_sync (cnc, (const gchar * const *) data->names->pdata,
+		sent = e_gw_connection_send_phone_message_sync (cnc, (const gchar * const *) data->names->pdata,
 			(const gchar * const *) data->emails->pdata, data->caller, data->company, data->phone,
 			data->flags, data->text, cancellable, &error);
 		e_gw_connection_logout_sync (cnc, NULL);
 		g_object_unref (cnc);
 	}
 
-	if (id)
-		g_task_return_pointer (task, id, g_free);
+	if (sent)
+		g_task_return_boolean (task, TRUE);
 	else
 		g_task_return_error (task, error);
 }
@@ -143,10 +143,8 @@ send_done_cb (GObject *source_object,
 	/* The dialog lives until this: it cannot be closed while sending */
 	PhoneDialog *pd = user_data;
 	GError *error = NULL;
-	gchar *id = g_task_propagate_pointer (G_TASK (result), &error);
 
-	if (id) {
-		g_free (id);
+	if (g_task_propagate_boolean (G_TASK (result), &error)) {
 		gtk_widget_destroy (pd->dialog);
 	} else {
 		gchar *text = g_strdup_printf (_("The phone message was not sent: %s"), error ? error->message : "");

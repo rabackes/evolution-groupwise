@@ -62,8 +62,8 @@ typedef enum {
 /* Sends a phone message (sendItemRequest of a PhoneMessage) to the users
  * @emails (their names in @names, same order; a name may be NULL). The
  * subject is, as the GroupWise client makes it, the caller and the number.
- * Returns the ID of the sent item. */
-gchar *		e_gw_connection_send_phone_message_sync
+ * (The POA names the sent item only when the user is among the recipients.) */
+gboolean	e_gw_connection_send_phone_message_sync
 						(EGwConnection *cnc,
 						 const gchar * const *names,
 						 const gchar * const *emails,

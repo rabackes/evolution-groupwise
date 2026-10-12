@@ -82,7 +82,7 @@ e_gw_connection_modify_password_sync (EGwConnection *cnc,
 	return TRUE;
 }
 
-gchar *
+gboolean
 e_gw_connection_send_phone_message_sync (EGwConnection *cnc,
 					 const gchar * const *names,
 					 const gchar * const *emails,
@@ -106,12 +106,13 @@ e_gw_connection_send_phone_message_sync (EGwConnection *cnc,
 		{ E_GW_PHONE_CAME_TO_SEE_YOU, "cameToSeeYou" },
 		{ E_GW_PHONE_URGENT, "urgent" }
 	};
+	EGwResponse *response;
 	GString *xml;
-	gchar *subject, *id;
+	gchar *subject;
 	guint ii;
 
-	g_return_val_if_fail (E_IS_GW_CONNECTION (cnc), NULL);
-	g_return_val_if_fail (emails != NULL && emails[0] != NULL, NULL);
+	g_return_val_if_fail (E_IS_GW_CONNECTION (cnc), FALSE);
+	g_return_val_if_fail (emails != NULL && emails[0] != NULL, FALSE);
 
 	xml = g_string_new ("<item xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xsi:type=\"PhoneMessage\">");
 	subject = g_strstrip (g_strconcat (caller ? caller : "", " ", phone ? phone : "", NULL));
@@ -147,8 +148,12 @@ e_gw_connection_send_phone_message_sync (EGwConnection *cnc,
 	}
 	g_string_append (xml, "</flags></item>");
 
-	id = e_gw_connection_send_item_sync (cnc, xml->str, cancellable, error);
+	/* The answer carries no ID unless the user is a recipient */
+	response = e_gw_connection_call_sync (cnc, "sendItem", xml->str, cancellable, error);
 	g_string_free (xml, TRUE);
+	if (!response)
+		return FALSE;
+	e_gw_response_free (response);
 
-	return id;
+	return TRUE;
 }

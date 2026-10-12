@@ -209,13 +209,11 @@ test_mailbox (void)
 	/* A phone message: the caller and the number are its subject */
 	{
 		const gchar *names[] = { "User Two", NULL, NULL }, *emails[] = { "two@example.com", "three@example.com", NULL };
-		gchar *id, *sent;
+		gchar *sent;
 
-		id = e_gw_connection_send_phone_message_sync (cnc, names, emails, "Erika Mustermann", "Beispiel & Co", "030 1234567",
-			E_GW_PHONE_CALLED | E_GW_PHONE_URGENT, "Bitte R\xc3\xbc" "ckruf", NULL, &error);
+		g_assert_true (e_gw_connection_send_phone_message_sync (cnc, names, emails, "Erika Mustermann", "Beispiel & Co",
+			"030 1234567", E_GW_PHONE_CALLED | E_GW_PHONE_URGENT, "Bitte R\xc3\xbc" "ckruf", NULL, &error));
 		g_assert_no_error (error);
-		g_assert_nonnull (id);
-		g_free (id);
 		sent = mock_get ("/_test/last-send");
 		g_assert_nonnull (strstr (sent, "xsi:type=\"PhoneMessage\""));
 		g_assert_nonnull (strstr (sent, "<subject>Erika Mustermann 030 1234567</subject>"));

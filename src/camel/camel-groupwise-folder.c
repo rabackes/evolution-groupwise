@@ -2437,6 +2437,11 @@ add_phone_fields (CamelFolder *folder,
 
 	camel_medium_set_content (CAMEL_MEDIUM (message), CAMEL_DATA_WRAPPER (multipart));
 	g_object_unref (multipart);
+	/* The encoding of a message that was one text is the second part's
+	 * now: left on the message, it would encode the parts as a whole */
+	camel_mime_part_set_encoding (CAMEL_MIME_PART (message), CAMEL_TRANSFER_ENCODING_DEFAULT);
+	camel_medium_remove_header (CAMEL_MEDIUM (message), "Content-Transfer-Encoding");
+	camel_medium_remove_header (CAMEL_MEDIUM (message), "Content-Disposition");
 	camel_medium_remove_header (CAMEL_MEDIUM (message), CAMEL_GROUPWISE_ITEM_ID_HEADER);
 
 	camel_data_cache_remove (gw_folder->cache, CACHE_PATH, message_uid, NULL);
