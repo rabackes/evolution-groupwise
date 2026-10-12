@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: evolution-groupwise\n"
 "Report-Msgid-Bugs-To: rbackes@bond.de\n"
-"POT-Creation-Date: 2026-10-12 13:16+0200\n"
+"POT-Creation-Date: 2026-10-12 14:03+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -25,7 +25,7 @@ msgstr ""
 #: src/addressbook/e-book-backend-groupwise.c:298
 #: src/addressbook/e-book-backend-groupwise.c:344
 #: src/addressbook/e-book-backend-groupwise.c:401
-#: src/calendar/e-cal-backend-groupwise.c:141
+#: src/calendar/e-cal-backend-groupwise.c:142
 msgid "Not connected"
 msgstr ""
 
@@ -51,59 +51,73 @@ msgstr ""
 msgid "Not a contact"
 msgstr ""
 
-#: src/calendar/e-cal-backend-groupwise.c:467
+#: src/calendar/e-cal-backend-groupwise.c:468
 msgid "The calendar is not set up for GroupWise"
 msgstr ""
 
-#: src/calendar/e-cal-backend-groupwise.c:1262
+#: src/calendar/e-cal-backend-groupwise.c:1263
 msgid "accepted"
 msgstr ""
 
-#: src/calendar/e-cal-backend-groupwise.c:1265
+#: src/calendar/e-cal-backend-groupwise.c:1266
 msgid "declined"
 msgstr ""
 
-#: src/calendar/e-cal-backend-groupwise.c:1268
+#: src/calendar/e-cal-backend-groupwise.c:1269
 msgid "tentative"
 msgstr ""
 
-#: src/calendar/e-cal-backend-groupwise.c:1271
+#: src/calendar/e-cal-backend-groupwise.c:1272
 msgid "delegated"
 msgstr ""
 
-#: src/calendar/e-cal-backend-groupwise.c:1274
+#: src/calendar/e-cal-backend-groupwise.c:1275
 msgid "no answer yet"
 msgstr ""
 
-#: src/calendar/e-cal-backend-groupwise.c:2290
+#: src/calendar/e-cal-backend-groupwise.c:2463
 msgid ""
 "The owner of this shared calendar did not grant you the right to add "
 "appointments to it."
 msgstr ""
 
-#: src/calendar/e-cal-backend-groupwise.c:2293
+#: src/calendar/e-cal-backend-groupwise.c:2466
 msgid ""
 "The owner of this shared calendar did not grant you the right to delete "
 "appointments from it."
 msgstr ""
 
-#: src/calendar/e-cal-backend-groupwise.c:2296
+#: src/calendar/e-cal-backend-groupwise.c:2469
 msgid ""
 "The owner of this shared calendar did not grant you the right to change its "
 "appointments."
 msgstr ""
 
-#: src/calendar/e-cal-backend-groupwise.c:2370
+#: src/calendar/e-cal-backend-groupwise.c:2506
+msgid ""
+"The appointments of a series cannot be changed here yet. Change them in the "
+"GroupWise client."
+msgstr ""
+
+#: src/calendar/e-cal-backend-groupwise.c:2513
+msgid "A series cannot be moved or copied into another calendar here yet."
+msgstr ""
+
+#: src/calendar/e-cal-backend-groupwise.c:2557
 msgid ""
 "A shared calendar takes appointments without attendees only. Create the "
 "meeting in your own calendar."
 msgstr ""
 
-#: src/calendar/e-cal-backend-groupwise.c:2640
+#: src/calendar/e-cal-backend-groupwise.c:2786
+msgid "A series cannot be deleted here yet. Delete it in the GroupWise client."
+msgstr ""
+
+#: src/calendar/e-cal-backend-groupwise.c:2834
 msgid "The server did not delete the appointment from the shared calendar."
 msgstr ""
 
-#: src/calendar/e-cal-backend-groupwise.c:2682
+#: src/calendar/e-cal-backend-groupwise.c:2876
 #, c-format
 msgid ""
 "“%s” is the preparation or travel time of an appointment. Move or delete the "
@@ -111,30 +125,30 @@ msgid ""
 "“Travel Time” of the appointment."
 msgstr ""
 
-#: src/calendar/e-cal-backend-groupwise.c:2970
+#: src/calendar/e-cal-backend-groupwise.c:3164
 #, c-format
 msgid ""
 "“%s” is a meeting you organized in this calendar. Answer the invitation in "
 "the calendar of the account that received it."
 msgstr ""
 
-#: src/calendar/e-gw-calendar.c:1108
+#: src/calendar/e-gw-calendar.c:1112
 msgid "An appointment needs a start"
 msgstr ""
 
-#: src/calendar/e-gw-calendar.c:1231
+#: src/calendar/e-gw-calendar.c:1235
 msgid "Only appointments, tasks and memos can be stored in GroupWise"
 msgstr ""
 
-#: src/calendar/e-gw-calendar.c:1396
+#: src/calendar/e-gw-calendar.c:1400
 msgid "GroupWise does not support this kind of recurrence"
 msgstr ""
 
-#: src/calendar/e-gw-calendar.c:1608
+#: src/calendar/e-gw-calendar.c:1612
 msgid "The item on the server is of another kind"
 msgstr ""
 
-#: src/calendar/e-gw-calendar.c:1623
+#: src/calendar/e-gw-calendar.c:1627
 msgid "Cannot read the item on the server"
 msgstr ""
 
@@ -264,7 +278,7 @@ msgid ""
 "message for the recipients itself. Send it without signature and encryption."
 msgstr ""
 
-#: src/camel/camel-groupwise-mime.c:439
+#: src/camel/camel-groupwise-mime.c:445
 msgid "The message has no recipients"
 msgstr ""
 

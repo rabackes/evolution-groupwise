@@ -2,6 +2,8 @@
 add_library(gw-calendar STATIC
 	e-gw-calendar.c
 	e-gw-calendar.h
+	e-gw-series.c
+	e-gw-series.h
 )
 set_target_properties(gw-calendar PROPERTIES POSITION_INDEPENDENT_CODE ON)
 target_include_directories(gw-calendar PUBLIC "${CMAKE_CURRENT_SOURCE_DIR}")

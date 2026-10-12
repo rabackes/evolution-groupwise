@@ -2,6 +2,7 @@ src/addressbook/e-book-backend-groupwise.c
 src/addressbook/e-gw-contact.c
 src/calendar/e-cal-backend-groupwise.c
 src/calendar/e-gw-calendar.c
+src/calendar/e-gw-series.c
 src/camel/camel-groupwise-folder.c
 src/camel/camel-groupwise-labels.c
 src/camel/camel-groupwise-message-info.c

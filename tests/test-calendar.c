@@ -22,6 +22,7 @@
 #include <libxml/parser.h>
 
 #include "e-gw-calendar.h"
+#include "e-gw-series.h"
 
 #define XSI "xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\""
 
@@ -1088,6 +1089,179 @@ test_updates_refused (void)
 	g_object_unref (comp);
 }
 
+/* An appointment of a daily series over the end of summer time (25 Oct
+ * 2026): 12:00 local each day */
+static EGwSeriesInstance *
+series_instance (const gchar *base,
+		 const gchar *start,
+		 const gchar *end,
+		 const gchar *subject,
+		 const gchar *rule,
+		 gboolean all_day)
+{
+	gchar *xml = g_strdup_printf (
+		"<item " XSI " xsi:type=\"Appointment\">"
+		"<id>%s@4:A.dom.po1.100.0.1.0.1@19</id><modified>2026-10-12T09:39:55Z</modified>"
+		"<container>A.dom.po1.100.0.1.0.1@19</container><source>personal</source><subject>%s</subject>"
+		"<rrule><frequency>Daily</frequency><value>%s</value></rrule><recurrenceKey>4711</recurrenceKey>"
+		"<dtStart>2026-10-23T10:00:00Z</dtStart><iCalId>2026-10-12T09:39:55Z_%s@example.com</iCalId>"
+		"<startDate>%s</startDate><endDate>%s</endDate><acceptLevel>Busy</acceptLevel>"
+		"<allDayEvent>%d</allDayEvent>" TIMEZONE "</item>", base, subject, rule, base, start, end, all_day ? 1 : 0);
+	ICalComponent *comp = component_of (xml, "karl@example.com");
+	gchar *extra = g_strconcat (base, "@4:A.dom.po1.100.0.1.0.1@19", NULL);
+	EGwSeriesInstance *instance = e_gw_series_instance_new (comp, "rev1", extra);
+
+	g_object_unref (comp);
+	g_free (extra);
+	g_free (xml);
+
+	return instance;
+}
+
+static guint
+count_components (ICalComponent *vcalendar)
+{
+	return i_cal_component_count_components (vcalendar, I_CAL_VEVENT_COMPONENT);
+}
+
+static ICalComponent *
+nth_event (ICalComponent *vcalendar,
+	   guint index)
+{
+	ICalComponent *comp = i_cal_component_get_first_component (vcalendar, I_CAL_VEVENT_COMPONENT);
+
+	while (comp && index--) {
+		g_object_unref (comp);
+		comp = i_cal_component_get_next_component (vcalendar, I_CAL_VEVENT_COMPONENT);
+	}
+	g_assert_nonnull (comp);
+
+	return comp;
+}
+
+static void
+test_series (void)
+{
+	const gchar *rule = "FREQ=DAILY;COUNT=5;INTERVAL=1";
+	GPtrArray *instances = g_ptr_array_new_with_free_func ((GDestroyNotify) e_gw_series_instance_free), *pairs;
+	ICalComponent *vcalendar, *master, *detached;
+	ICalProperty *prop;
+	ICalRecurrence *recurrence;
+	gchar *uid = NULL, *revision = NULL, *extra = NULL, *key = NULL, *text;
+
+	/* One appointment is none */
+	g_ptr_array_add (instances, series_instance ("I1", "2026-10-23T10:00:00Z", "2026-10-23T11:00:00Z", "Serie", rule, FALSE));
+	g_assert_null (e_gw_series_build (instances, berlin (), &uid, &revision, &extra));
+
+	/* 23, 24 Oct at 12:00 summer time; the 25th is gone; the 26th (winter
+	 * time: 11:00 UTC) moved by an hour and renamed; the 27th as the rule says.
+	 * Given in another order than they are in. */
+	g_ptr_array_add (instances, series_instance ("I5", "2026-10-27T11:00:00Z", "2026-10-27T12:00:00Z", "Serie", rule, FALSE));
+	g_ptr_array_add (instances, series_instance ("I4", "2026-10-26T12:00:00Z", "2026-10-26T13:00:00Z", "Serie verlegt", rule, FALSE));
+	g_ptr_array_add (instances, series_instance ("I2", "2026-10-24T10:00:00Z", "2026-10-24T11:00:00Z", "Serie", rule, FALSE));
+
+	vcalendar = e_gw_series_build (instances, berlin (), &uid, &revision, &extra);
+	g_assert_nonnull (vcalendar);
+	g_assert_cmpstr (uid, ==, "gw-series-4711");
+	g_assert_nonnull (revision);
+	g_assert_cmpuint (i_cal_component_count_components (vcalendar, I_CAL_VTIMEZONE_COMPONENT), ==, 1);
+	g_assert_cmpuint (count_components (vcalendar), ==, 2);
+
+	/* The master: the start of the series in local time, the rule, the
+	 * 25th excluded, no item of its own */
+	master = nth_event (vcalendar, 0);
+	g_assert_cmpstr (i_cal_component_get_uid (master), ==, uid);
+	g_assert_cmpstr (i_cal_component_get_summary (master), ==, "Serie");
+	assert_time (master, I_CAL_DTSTART_PROPERTY, "20261023T120000");
+	assert_time (master, I_CAL_DTEND_PROPERTY, "20261023T130000");
+	prop = i_cal_component_get_first_property (master, I_CAL_RRULE_PROPERTY);
+	g_assert_nonnull (prop);
+	recurrence = i_cal_property_get_rrule (prop);
+	g_assert_cmpint (i_cal_recurrence_get_freq (recurrence), ==, I_CAL_DAILY_RECURRENCE);
+	g_assert_cmpint (i_cal_recurrence_get_count (recurrence), ==, 5);
+	g_object_unref (recurrence);
+	g_object_unref (prop);
+	g_assert_cmpuint (count_properties (master, I_CAL_EXDATE_PROPERTY), ==, 1);
+	assert_time (master, I_CAL_EXDATE_PROPERTY, "20261025T120000");
+	g_assert_null (x_property (master, E_GW_CALENDAR_X_ITEM_ID));
+	g_assert_cmpuint (count_properties (master, I_CAL_RECURRENCEID_PROPERTY), ==, 0);
+	g_object_unref (master);
+
+	/* The moved one stands for the occurrence of its day */
+	detached = nth_event (vcalendar, 1);
+	g_assert_cmpstr (i_cal_component_get_uid (detached), ==, uid);
+	g_assert_cmpstr (i_cal_component_get_summary (detached), ==, "Serie verlegt");
+	assert_time (detached, I_CAL_RECURRENCEID_PROPERTY, "20261026T120000");
+	assert_time (detached, I_CAL_DTSTART_PROPERTY, "20261026T130000");
+	text = x_property (detached, E_GW_CALENDAR_X_ITEM_ID);
+	g_assert_cmpstr (text, ==, "I4@4:A.dom.po1.100.0.1.0.1@19");
+	g_free (text);
+	g_object_unref (detached);
+
+	/* Which item is which occurrence */
+	g_assert_true (e_gw_series_is_extra (extra));
+	g_assert_false (e_gw_series_is_extra ("I1@4:A.dom.po1.100.0.1.0.1@19"));
+	pairs = e_gw_series_split_extra (extra, &key);
+	g_assert_cmpstr (key, ==, "4711");
+	g_assert_cmpuint (pairs->len, ==, 4);
+	g_assert_cmpstr (((gchar **) pairs->pdata[0])[0], ==, "20261023T120000");
+	g_assert_cmpstr (((gchar **) pairs->pdata[0])[1], ==, "I1@4:A.dom.po1.100.0.1.0.1@19");
+	g_assert_cmpstr (((gchar **) pairs->pdata[2])[0], ==, "20261026T120000");
+	g_assert_cmpstr (((gchar **) pairs->pdata[2])[1], ==, "I4@4:A.dom.po1.100.0.1.0.1@19");
+	g_assert_cmpstr (((gchar **) pairs->pdata[3])[0], ==, "20261027T120000");
+	g_ptr_array_unref (pairs);
+
+	g_object_unref (vcalendar);
+	g_ptr_array_unref (instances);
+	g_free (uid);
+	g_free (revision);
+	g_free (extra);
+	g_free (key);
+}
+
+/* A yearly series without end (a birthday): the rule ends with the last
+ * appointment there is */
+static void
+test_series_all_day (void)
+{
+	const gchar *rule = "FREQ=YEARLY";
+	GPtrArray *instances = g_ptr_array_new_with_free_func ((GDestroyNotify) e_gw_series_instance_free);
+	ICalComponent *vcalendar, *master;
+	ICalProperty *prop;
+	ICalRecurrence *recurrence;
+	ICalTime *until;
+	gchar *uid = NULL, *revision = NULL, *extra = NULL;
+
+	g_ptr_array_add (instances, series_instance ("B1", "2026-10-22T22:00:00Z", "2026-10-23T22:00:00Z", "Geburtstag", rule, TRUE));
+	g_ptr_array_add (instances, series_instance ("B2", "2027-10-22T22:00:00Z", "2027-10-23T22:00:00Z", "Geburtstag", rule, TRUE));
+	g_ptr_array_add (instances, series_instance ("B3", "2028-10-22T22:00:00Z", "2028-10-23T22:00:00Z", "Geburtstag", rule, TRUE));
+
+	vcalendar = e_gw_series_build (instances, berlin (), &uid, &revision, &extra);
+	g_assert_nonnull (vcalendar);
+	g_assert_cmpuint (count_components (vcalendar), ==, 1);
+	master = nth_event (vcalendar, 0);
+	assert_time (master, I_CAL_DTSTART_PROPERTY, "20261023");
+	assert_time (master, I_CAL_DTEND_PROPERTY, "20261024");
+	g_assert_cmpuint (count_properties (master, I_CAL_EXDATE_PROPERTY), ==, 0);
+	prop = i_cal_component_get_first_property (master, I_CAL_RRULE_PROPERTY);
+	recurrence = i_cal_property_get_rrule (prop);
+	g_assert_cmpint (i_cal_recurrence_get_freq (recurrence), ==, I_CAL_YEARLY_RECURRENCE);
+	until = i_cal_recurrence_get_until (recurrence);
+	g_assert_cmpint (i_cal_time_get_year (until), ==, 2028);
+	g_assert_cmpint (i_cal_time_get_month (until), ==, 10);
+	g_assert_cmpint (i_cal_time_get_day (until), ==, 23);
+	g_object_unref (until);
+	g_object_unref (recurrence);
+	g_object_unref (prop);
+	g_object_unref (master);
+
+	g_object_unref (vcalendar);
+	g_ptr_array_unref (instances);
+	g_free (uid);
+	g_free (revision);
+	g_free (extra);
+}
+
 int
 main (int argc,
       char **argv)
@@ -1110,6 +1284,8 @@ main (int argc,
 	g_test_add_func ("/calendar/write-recurrence", test_write_recurrence);
 	g_test_add_func ("/calendar/write-task-and-note", test_write_task_and_note);
 	g_test_add_func ("/calendar/updates-unchanged", test_updates_unchanged);
+	g_test_add_func ("/calendar/series", test_series);
+	g_test_add_func ("/calendar/series-all-day", test_series_all_day);
 	g_test_add_func ("/calendar/updates", test_updates);
 	g_test_add_func ("/calendar/travel-time", test_travel_time);
 	g_test_add_func ("/calendar/updates-refused", test_updates_refused);

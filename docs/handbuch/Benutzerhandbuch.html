@@ -927,10 +927,18 @@ eingestellten Abstands, mit der Sofort-Meldung des Servers nach wenigen Sekunden
 	<li><b>Ganztägige Termine</b> reichen wie in GroupWise über ganze Tage.</li>
 	<li><b>Erinnerungen</b>: GroupWise kennt eine Erinnerung je Termin, vor Beginn. Evolution zeigt sie für
 		den Hauptkalender und Ihre Unterkalender an.</li>
-	<li><b>Serien</b>: GroupWise speichert keine Wiederholungsregel, sondern legt jeden Termin einer Serie
-		einzeln an. Evolution zeigt sie daher als einzelne Termine; Änderungen und Löschen betreffen den
-		jeweiligen Termin. Eine neue Serie (täglich, wöchentlich, monatlich, jährlich) legen Sie in Evolution
-		wie gewohnt mit einer Wiederholung an.</li>
+	<li><b>Serien</b>: GroupWise legt jeden Termin einer Serie einzeln an; die Termine tragen aber die
+		Wiederholungsregel und gehören erkennbar zusammen. Evolution zeigt eine solche Serie als
+		<b>einen sich wiederholenden Termin</b> mit seiner Regel (im Termin-Editor unter
+		<span class="menu">Wiederholung</span>). Ein Termin der Serie, der in GroupWise gelöscht wurde,
+		erscheint als Ausnahme; einer, der verlegt oder einzeln geändert wurde, als abweichender
+		Einzeltermin der Serie. Maßgeblich sind immer die Termine, die es in GroupWise wirklich gibt: Die
+		Serie endet in Evolution mit ihrem letzten vorhandenen Termin.<br>
+		<b>Ändern und Löschen</b> einer solchen Serie ist in Evolution <b>noch nicht möglich</b> (in
+		Arbeit); Evolution meldet das. Nehmen Sie dafür vorerst den GroupWise-Client.<br>
+		Alte Serien, die GroupWise ohne Regel führt (angelegt mit sehr alten Versionen), erscheinen
+		weiterhin als einzelne Termine. Eine neue Serie (täglich, wöchentlich, monatlich, jährlich) legen
+		Sie in Evolution wie gewohnt mit einer Wiederholung an.</li>
 	<li>Ein neuer Termin in einem Unterkalender wird direkt in diesem Unterkalender angelegt, bei Serien
 		jeder einzelne Termin.</li>
 </ul>
@@ -1227,8 +1235,8 @@ Kontaktansicht. Ein nur zum Lesen freigegebenes Adressbuch ist in Evolution schr
 	<tr><td>Signierte oder verschlüsselte Nachrichten</td><td>können nicht über GroupWise gesendet werden;
 		empfangene werden angezeigt.</td></tr>
 	<tr><td>Suchergebnisordner</td><td>zeigen über SOAP nur einen Teil der Treffer (siehe 4.6).</td></tr>
-	<tr><td>Serientermine</td><td>erscheinen als einzelne Termine: Über die Schnittstelle des Servers kommen
-		die Termine einer Serie einzeln an, ohne die Serienregel, die der GroupWise-Client kennt.</td></tr>
+	<tr><td>Serientermine</td><td>erscheinen als Serie mit ihrer Regel (5.2), lassen sich in Evolution aber
+		noch nicht ändern oder löschen. Sehr alte Serien ohne Regel erscheinen als einzelne Termine.</td></tr>
 	<tr><td>Abonnierte Internet-Kalender</td><td>werden ausgelassen.</td></tr>
 	<tr><td>Ziehen auf die Kalenderliste</td><td>in Evolution nicht zuverlässig; Kontextmenü oder Editor
 		verwenden.</td></tr>
@@ -1326,8 +1334,8 @@ Entwicklung fortgeschrieben.</p>
 <table>
 	<tr><th style="width:42%">Funktion des GroupWise-Clients</th><th>Stand</th></tr>
 	<tr><td>Serientermine als Serie bearbeiten</td>
-		<td>Jeder Termin einer Serie ist ein einzelner Termin; die ganze Serie oder ihre Regel lässt sich
-		nicht in einem Schritt ändern.</td></tr>
+		<td>Serien werden als Serie mit Regel angezeigt (<a href="#kal-termine">5.2</a>); „dieser Termin /
+		alle Termine / ab diesem Termin“ ändern und löschen ist in Arbeit.</td></tr>
 	<tr><td>Einladungen delegieren, neue Zeit vorschlagen</td>
 		<td>fehlt; eine delegierte Einladung wird als Status angezeigt.</td></tr>
 	<tr><td>Sendeoptionen für Mail</td>

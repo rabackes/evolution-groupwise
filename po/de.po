@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: evolution-groupwise\n"
 "Report-Msgid-Bugs-To: rbackes@bond.de\n"
-"POT-Creation-Date: 2026-10-12 13:16+0200\n"
+"POT-Creation-Date: 2026-10-12 14:03+0200\n"
 "PO-Revision-Date: 2026-09-27 18:27+0200\n"
 "Last-Translator: Automatically generated\n"
 "Language-Team: none\n"
@@ -26,7 +26,7 @@ msgstr "Das Adressbuch ist nicht für GroupWise eingerichtet"
 #: src/addressbook/e-book-backend-groupwise.c:298
 #: src/addressbook/e-book-backend-groupwise.c:344
 #: src/addressbook/e-book-backend-groupwise.c:401
-#: src/calendar/e-cal-backend-groupwise.c:141
+#: src/calendar/e-cal-backend-groupwise.c:142
 msgid "Not connected"
 msgstr "Nicht verbunden"
 
@@ -53,31 +53,31 @@ msgstr "Ein Kontakt braucht einen Namen"
 msgid "Not a contact"
 msgstr "Kein Kontakt"
 
-#: src/calendar/e-cal-backend-groupwise.c:467
+#: src/calendar/e-cal-backend-groupwise.c:468
 msgid "The calendar is not set up for GroupWise"
 msgstr "Der Kalender ist nicht für GroupWise eingerichtet"
 
-#: src/calendar/e-cal-backend-groupwise.c:1262
+#: src/calendar/e-cal-backend-groupwise.c:1263
 msgid "accepted"
 msgstr "angenommen"
 
-#: src/calendar/e-cal-backend-groupwise.c:1265
+#: src/calendar/e-cal-backend-groupwise.c:1266
 msgid "declined"
 msgstr "abgelehnt"
 
-#: src/calendar/e-cal-backend-groupwise.c:1268
+#: src/calendar/e-cal-backend-groupwise.c:1269
 msgid "tentative"
 msgstr "vorläufig"
 
-#: src/calendar/e-cal-backend-groupwise.c:1271
+#: src/calendar/e-cal-backend-groupwise.c:1272
 msgid "delegated"
 msgstr "delegiert"
 
-#: src/calendar/e-cal-backend-groupwise.c:1274
+#: src/calendar/e-cal-backend-groupwise.c:1275
 msgid "no answer yet"
 msgstr "noch keine Antwort"
 
-#: src/calendar/e-cal-backend-groupwise.c:2290
+#: src/calendar/e-cal-backend-groupwise.c:2463
 msgid ""
 "The owner of this shared calendar did not grant you the right to add "
 "appointments to it."
@@ -85,7 +85,7 @@ msgstr ""
 "Der Eigentümer dieses freigegebenen Kalenders hat Ihnen nicht das Recht "
 "gegeben, Termine hinzuzufügen."
 
-#: src/calendar/e-cal-backend-groupwise.c:2293
+#: src/calendar/e-cal-backend-groupwise.c:2466
 msgid ""
 "The owner of this shared calendar did not grant you the right to delete "
 "appointments from it."
@@ -93,7 +93,7 @@ msgstr ""
 "Der Eigentümer dieses freigegebenen Kalenders hat Ihnen nicht das Recht "
 "gegeben, Termine zu löschen."
 
-#: src/calendar/e-cal-backend-groupwise.c:2296
+#: src/calendar/e-cal-backend-groupwise.c:2469
 msgid ""
 "The owner of this shared calendar did not grant you the right to change its "
 "appointments."
@@ -101,7 +101,17 @@ msgstr ""
 "Der Eigentümer dieses freigegebenen Kalenders hat Ihnen nicht das Recht "
 "gegeben, Termine zu bearbeiten."
 
-#: src/calendar/e-cal-backend-groupwise.c:2370
+#: src/calendar/e-cal-backend-groupwise.c:2506
+msgid ""
+"The appointments of a series cannot be changed here yet. Change them in the "
+"GroupWise client."
+msgstr "Die Termine einer Serie können hier noch nicht geändert werden. Ändern Sie sie im GroupWise-Client."
+
+#: src/calendar/e-cal-backend-groupwise.c:2513
+msgid "A series cannot be moved or copied into another calendar here yet."
+msgstr "Eine Serie kann hier noch nicht in einen anderen Kalender verschoben oder kopiert werden."
+
+#: src/calendar/e-cal-backend-groupwise.c:2557
 msgid ""
 "A shared calendar takes appointments without attendees only. Create the "
 "meeting in your own calendar."
@@ -109,12 +119,16 @@ msgstr ""
 "In einen freigegebenen Kalender können nur Termine ohne Teilnehmer "
 "eingetragen werden. Legen Sie die Besprechung in Ihrem eigenen Kalender an."
 
-#: src/calendar/e-cal-backend-groupwise.c:2640
+#: src/calendar/e-cal-backend-groupwise.c:2786
+msgid "A series cannot be deleted here yet. Delete it in the GroupWise client."
+msgstr "Eine Serie kann hier noch nicht gelöscht werden. Löschen Sie sie im GroupWise-Client."
+
+#: src/calendar/e-cal-backend-groupwise.c:2834
 msgid "The server did not delete the appointment from the shared calendar."
 msgstr ""
 "Der Server hat den Termin nicht aus dem freigegebenen Kalender gelöscht."
 
-#: src/calendar/e-cal-backend-groupwise.c:2682
+#: src/calendar/e-cal-backend-groupwise.c:2876
 #, c-format
 msgid ""
 "“%s” is the preparation or travel time of an appointment. Move or delete the "
@@ -125,7 +139,7 @@ msgstr ""
 "löschen Sie den Termin selbst; die Reisezeit ändern oder entfernen Sie auf "
 "der Seite „Reisezeit“ des Termins."
 
-#: src/calendar/e-cal-backend-groupwise.c:2970
+#: src/calendar/e-cal-backend-groupwise.c:3164
 #, c-format
 msgid ""
 "“%s” is a meeting you organized in this calendar. Answer the invitation in "
@@ -134,24 +148,24 @@ msgstr ""
 "„%s“ ist eine Besprechung, die Sie in diesem Kalender organisiert haben. "
 "Beantworten Sie die Einladung im Kalender des Kontos, das sie erhalten hat."
 
-#: src/calendar/e-gw-calendar.c:1108
+#: src/calendar/e-gw-calendar.c:1112
 msgid "An appointment needs a start"
 msgstr "Ein Termin braucht einen Beginn"
 
-#: src/calendar/e-gw-calendar.c:1231
+#: src/calendar/e-gw-calendar.c:1235
 msgid "Only appointments, tasks and memos can be stored in GroupWise"
 msgstr ""
 "In GroupWise können nur Termine, Aufgaben und Notizen gespeichert werden"
 
-#: src/calendar/e-gw-calendar.c:1396
+#: src/calendar/e-gw-calendar.c:1400
 msgid "GroupWise does not support this kind of recurrence"
 msgstr "GroupWise unterstützt diese Art der Wiederholung nicht"
 
-#: src/calendar/e-gw-calendar.c:1608
+#: src/calendar/e-gw-calendar.c:1612
 msgid "The item on the server is of another kind"
 msgstr "Das Element auf dem Server ist von anderer Art"
 
-#: src/calendar/e-gw-calendar.c:1623
+#: src/calendar/e-gw-calendar.c:1627
 msgid "Cannot read the item on the server"
 msgstr "Das Element auf dem Server kann nicht gelesen werden"
 
@@ -294,7 +308,7 @@ msgstr ""
 "Server baut die Nachricht für die Empfänger selbst zusammen. Senden Sie sie "
 "ohne Signatur und Verschlüsselung."
 
-#: src/camel/camel-groupwise-mime.c:439
+#: src/camel/camel-groupwise-mime.c:445
 msgid "The message has no recipients"
 msgstr "Die Nachricht hat keine Empfänger"
 

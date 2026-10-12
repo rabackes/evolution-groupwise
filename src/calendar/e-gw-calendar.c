@@ -673,6 +673,10 @@ e_gw_calendar_component_from_item (xmlNode *item,
 	set_x (comp, E_GW_CALENDAR_X_SOURCE, e_gw_xml_dup_text (item, "source"));
 	set_x (comp, E_GW_CALENDAR_X_ICAL_ID, e_gw_xml_dup_text (item, "iCalId"));
 	set_x (comp, E_GW_CALENDAR_X_RECURRENCE_KEY, e_gw_xml_dup_text (item, "recurrenceKey"));
+	if (e_gw_xml_find (item, "recurrenceKey")) {
+		set_x (comp, E_GW_CALENDAR_X_RRULE, e_gw_xml_dup_text (item, "rrule/value"));
+		set_x (comp, E_GW_CALENDAR_X_SERIES_START, e_gw_xml_dup_text (item, "dtStart"));
+	}
 
 	text = e_gw_xml_dup_text (item, "created");
 	tt = parse_time (text);

@@ -29,6 +29,11 @@ G_BEGIN_DECLS
 #define E_GW_CALENDAR_X_SOURCE		"X-GW-SOURCE"
 #define E_GW_CALENDAR_X_ICAL_ID		"X-GW-ICALID"
 #define E_GW_CALENDAR_X_RECURRENCE_KEY	"X-GW-RECURRENCE-KEY"
+/* An instance of a series that has its rule: the rule as in iCalendar
+ * ("FREQ=DAILY;COUNT=5;INTERVAL=1") and the start of the series (UTC, as
+ * the POA gives it). Old series have the key alone. */
+#define E_GW_CALENDAR_X_RRULE		"X-GW-RRULE"
+#define E_GW_CALENDAR_X_SERIES_START	"X-GW-SERIES-START"
 #define E_GW_CALENDAR_X_TASK_PRIORITY	"X-GW-TASK-PRIORITY"
 #define E_GW_CALENDAR_X_BUSY_STATUS	"X-MICROSOFT-CDO-BUSYSTATUS"
 /* Preparation and travel time of an appointment, in seconds (the POA keeps
