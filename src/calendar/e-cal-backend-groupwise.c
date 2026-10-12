@@ -1689,6 +1689,16 @@ ecb_groupwise_load_component_sync (ECalMetaBackend *meta_backend,
 			g_free (one_revision);
 		}
 		*out_component = e_gw_series_build (instances, user_zone (), &series_uid, &revision, out_extra);
+		/* One appointment left of the series: that one, under the UID
+		 * asked for (the next listing has it as the single one it is) */
+		if (!*out_component && instances->len == 1) {
+			EGwSeriesInstance *last = instances->pdata[0];
+
+			if (uid && *uid)
+				i_cal_component_set_uid (last->comp, uid);
+			*out_component = e_gw_calendar_wrap (last->comp, user_zone ());
+			*out_extra = g_strdup (last->extra);
+		}
 		g_ptr_array_unref (instances);
 		g_ptr_array_unref (pairs);
 		g_free (series_uid);
@@ -2486,6 +2496,169 @@ check_share_right (ECalBackendGroupwise *cbgw,
 	return FALSE;
 }
 
+static gboolean	ecb_groupwise_remove_component_sync
+					(ECalMetaBackend *meta_backend,
+					 EConflictResolution conflict_resolution,
+					 const gchar *uid,
+					 const gchar *extra,
+					 const gchar *object,
+					 ECalOperationFlags opflags,
+					 GCancellable *cancellable,
+					 GError **error);
+
+/* The appointments of a series that @comp means: the one of its
+ * RECURRENCE-ID, else all (extras, see e_gw_series_split_extra()) */
+static GPtrArray *
+dup_series_extras (const gchar *series_extra,
+		   ICalComponent *comp)
+{
+	GPtrArray *pairs = e_gw_series_split_extra (series_extra, NULL);
+	GPtrArray *extras = g_ptr_array_new_with_free_func (g_free);
+	ICalProperty *prop = comp ? i_cal_component_get_first_property (comp, I_CAL_RECURRENCEID_PROPERTY) : NULL;
+	ICalTime *rid = prop ? i_cal_property_get_recurrenceid (prop) : NULL;
+	guint ii;
+
+	for (ii = 0; ii < pairs->len; ii++) {
+		gchar **pair = pairs->pdata[ii];
+		ICalTime *occurrence = rid ? i_cal_time_new_from_string (pair[0]) : NULL;
+
+		if (!rid || (occurrence && i_cal_time_compare_date_only (occurrence, rid) == 0))
+			g_ptr_array_add (extras, g_strdup (pair[1]));
+		g_clear_object (&occurrence);
+	}
+	g_clear_object (&rid);
+	g_clear_object (&prop);
+	g_ptr_array_unref (pairs);
+
+	return extras;
+}
+
+/* The master and the detached instances of what is to be stored */
+static ICalComponent *
+split_instances (const GSList *instances,
+		 GPtrArray **out_detached)
+{
+	ICalComponent *master = NULL;
+	const GSList *link;
+
+	*out_detached = g_ptr_array_new ();
+	for (link = instances; link; link = g_slist_next (link)) {
+		ICalComponent *comp = e_cal_component_get_icalcomponent (link->data);
+
+		if (e_cal_component_is_instance (link->data))
+			g_ptr_array_add (*out_detached, comp);
+		else if (!master)
+			master = comp;
+	}
+
+	return master;
+}
+
+/*
+ * A series changed in Evolution: "this appointment", "all appointments" or
+ * "this and the following ones" all arrive as the recurring event as it is
+ * to be. Each appointment of the series is compared with what the event
+ * says for its occurrence now and before (the cache has the old one): one
+ * that changed is written as a single appointment is, one whose occurrence
+ * is gone (excluded, or past a new end of the rule) is deleted. Deleting
+ * from some appointment on thus keeps those before it.
+ *
+ * Occurrences cannot be added: GroupWise makes the appointments of a series
+ * when it is created.
+ */
+static gboolean
+save_series (ECalBackendGroupwise *cbgw,
+	     EGwConnection *cnc,
+	     const GSList *instances,
+	     const gchar *extra,
+	     ECalOperationFlags opflags,
+	     gchar **out_new_uid,
+	     gchar **out_new_extra,
+	     GCancellable *cancellable,
+	     GError **error)
+{
+	ECalMetaBackend *meta_backend = E_CAL_META_BACKEND (cbgw);
+	ECalCache *cache = e_cal_meta_backend_ref_cache (meta_backend);
+	GPtrArray *detached = NULL, *old_detached = NULL, *pairs, *targets, *old_targets = NULL;
+	GSList *old_instances = NULL;
+	ICalComponent *master = split_instances (instances, &detached), *old_master = NULL;
+	GString *new_extra;
+	gchar *key = NULL;
+	const gchar *uid = master ? i_cal_component_get_uid (master) : NULL;
+	gboolean success = TRUE;
+	guint ii, added = 0, changed = 0, removed = 0;
+
+	if (!master || !uid) {
+		g_ptr_array_unref (detached);
+		g_clear_object (&cache);
+		g_propagate_error (error, e_cal_client_error_create (E_CAL_CLIENT_ERROR_INVALID_OBJECT, NULL));
+		return FALSE;
+	}
+
+	pairs = e_gw_series_split_extra (extra, &key);
+	targets = e_gw_series_targets (master, detached, pairs, user_zone (), &added);
+	if (added) {
+		g_set_error_literal (error, E_CLIENT_ERROR, E_CLIENT_ERROR_NOT_SUPPORTED,
+			_("GroupWise makes the appointments of a series when the series is created: its rule cannot be "
+			  "changed to other days, and no appointments can be added. Delete the appointments no longer "
+			  "wanted and create a new series for the others."));
+		success = FALSE;
+	}
+
+	/* What the series was */
+	if (success && cache && e_cal_cache_get_components_by_uid (cache, uid, &old_instances, cancellable, NULL))
+		old_master = split_instances (old_instances, &old_detached);
+	if (old_master)
+		old_targets = e_gw_series_targets (old_master, old_detached, pairs, user_zone (), NULL);
+
+	new_extra = g_string_new ("series:");
+	g_string_append (new_extra, key);
+	for (ii = 0; success && ii < targets->len; ii++) {
+		EGwSeriesTarget *target = targets->pdata[ii];
+		EGwSeriesTarget *before = old_targets && ii < old_targets->len ? old_targets->pdata[ii] : NULL;
+
+		if (!target->comp) {
+			g_debug ("series %s: %s is gone", uid, target->extra);
+			success = ecb_groupwise_remove_component_sync (meta_backend, E_CONFLICT_RESOLUTION_KEEP_LOCAL, uid,
+				target->extra, NULL, opflags, cancellable, error);
+			removed++;
+			continue;
+		}
+		if (!before || !e_gw_series_same (before->comp, target->comp, user_zone ())) {
+			g_debug ("series %s: %s changed", uid, target->extra);
+			success = save_existing (cbgw, cnc, target->extra, target->comp, cancellable, error);
+			changed++;
+		}
+		if (success) {
+			gchar *escaped = e_gw_series_escape_extra (target->extra);
+
+			g_string_append_printf (new_extra, "\n%s\t%s", ((gchar **) pairs->pdata[ii])[0], escaped);
+			g_free (escaped);
+		}
+	}
+	g_debug ("series %s: %u appointments changed, %u deleted", uid, changed, removed);
+
+	if (success) {
+		*out_new_uid = g_strdup (uid);
+		*out_new_extra = g_string_free (new_extra, FALSE);
+	} else {
+		g_string_free (new_extra, TRUE);
+		/* What was done so far shows */
+		e_cal_meta_backend_schedule_refresh (meta_backend);
+	}
+
+	g_clear_pointer (&old_targets, g_ptr_array_unref);
+	g_clear_pointer (&old_detached, g_ptr_array_unref);
+	g_slist_free_full (old_instances, g_object_unref);
+	g_ptr_array_unref (targets);
+	g_ptr_array_unref (pairs);
+	g_ptr_array_unref (detached);
+	g_clear_object (&cache);
+	g_free (key);
+
+	return success;
+}
+
 static gboolean
 ecb_groupwise_save_component_sync (ECalMetaBackend *meta_backend,
 				   gboolean overwrite_existing,
@@ -2512,17 +2685,11 @@ ecb_groupwise_save_component_sync (ECalMetaBackend *meta_backend,
 	if (!check_share_right (cbgw, overwrite_existing && extra && *extra ? E_GW_SHARE_EDIT : E_GW_SHARE_ADD, error))
 		return FALSE;
 
-	/* (first step: series are shown; changing them comes next) */
-	if (overwrite_existing && e_gw_series_is_extra (extra)) {
+	/* A series of GroupWise cannot be moved or copied into another
+	 * calendar as a whole (its appointments are made when it is created) */
+	if (!(overwrite_existing && extra && *extra) && e_cal_util_component_has_x_property (comp, E_GW_CALENDAR_X_RRULE)) {
 		g_set_error_literal (error, E_CLIENT_ERROR, E_CLIENT_ERROR_NOT_SUPPORTED,
-			_("The appointments of a series cannot be changed here yet. Change them in the GroupWise client."));
-		return FALSE;
-	}
-	/* ... nor moved or copied into another calendar: the original could
-	 * not be taken away */
-	if (!overwrite_existing && e_cal_util_component_has_x_property (comp, E_GW_CALENDAR_X_RRULE)) {
-		g_set_error_literal (error, E_CLIENT_ERROR, E_CLIENT_ERROR_NOT_SUPPORTED,
-			_("A series cannot be moved or copied into another calendar here yet."));
+			_("A series of GroupWise cannot be moved or copied into another calendar."));
 		return FALSE;
 	}
 
@@ -2530,7 +2697,9 @@ ecb_groupwise_save_component_sync (ECalMetaBackend *meta_backend,
 	if (!cnc)
 		return FALSE;
 
-	if (overwrite_existing && extra && *extra) {
+	if (overwrite_existing && e_gw_series_is_extra (extra)) {
+		success = save_series (cbgw, cnc, instances, extra, opflags, out_new_uid, out_new_extra, cancellable, error);
+	} else if (overwrite_existing && extra && *extra) {
 		success = save_existing (cbgw, cnc, extra, comp, cancellable, error);
 		if (success) {
 			/* Loaded again: a sent appointment may have a new ID now */
@@ -2709,20 +2878,30 @@ retract_meeting (ECalBackendGroupwise *cbgw,
 
 	/* The removal that follows waits for this */
 	g_mutex_lock (&cancel_lock);
-	id = split_extra (extra, NULL);
-	response = get_item (cnc, id, &item, cancellable, NULL);
-	source = item ? e_gw_xml_dup_text (item, "source") : NULL;
-	e_gw_response_free (response);
-	if (g_strcmp0 (source, "sent") == 0) {
-		g_debug ("retract %s%s", id, comment && *comment ? " with a comment" : "");
-		success = e_gw_connection_retract_sync (cnc, id, comment && *comment ? comment : NULL, cancellable, error);
-		if (success)
-			note_cancelled (uid);
+	{
+		/* (of a series: the appointment meant, or all) */
+		GPtrArray *extras = e_gw_series_is_extra (extra) ? dup_series_extras (extra, comp) : NULL;
+		guint ii, count = extras ? extras->len : 1;
+
+		for (ii = 0; success && ii < count; ii++) {
+			id = split_extra (extras ? extras->pdata[ii] : extra, NULL);
+			item = NULL;
+			response = get_item (cnc, id, &item, cancellable, NULL);
+			source = item ? e_gw_xml_dup_text (item, "source") : NULL;
+			e_gw_response_free (response);
+			if (g_strcmp0 (source, "sent") == 0) {
+				g_debug ("retract %s%s", id, comment && *comment ? " with a comment" : "");
+				success = e_gw_connection_retract_sync (cnc, id, comment && *comment ? comment : NULL, cancellable, error);
+				if (success)
+					note_cancelled (uid);
+			}
+			g_free (source);
+			g_free (id);
+		}
+		g_clear_pointer (&extras, g_ptr_array_unref);
 	}
 	g_mutex_unlock (&cancel_lock);
 
-	g_free (source);
-	g_free (id);
 	g_free (extra);
 
 	return success;
@@ -2792,11 +2971,21 @@ ecb_groupwise_remove_component_sync (ECalMetaBackend *meta_backend,
 	if (!extra || !*extra)
 		return TRUE;
 
-	/* (first step: series are shown; deleting them comes next) */
+	/* A series: all its appointments, each as a single one is deleted */
 	if (e_gw_series_is_extra (extra)) {
-		g_set_error_literal (error, E_CLIENT_ERROR, E_CLIENT_ERROR_NOT_SUPPORTED,
-			_("A series cannot be deleted here yet. Delete it in the GroupWise client."));
-		return FALSE;
+		GPtrArray *pairs = e_gw_series_split_extra (extra, NULL);
+		gboolean all = TRUE;
+		guint ii;
+
+		g_debug ("series %s: all %u appointments go", uid ? uid : "?", pairs->len);
+		for (ii = 0; all && ii < pairs->len; ii++)
+			all = ecb_groupwise_remove_component_sync (meta_backend, conflict_resolution, uid,
+				((gchar **) pairs->pdata[ii])[1], object, opflags, cancellable, error);
+		g_ptr_array_unref (pairs);
+		if (!all)
+			e_cal_meta_backend_schedule_refresh (meta_backend);
+
+		return all;
 	}
 
 	/* Moved into another calendar of the account: gone from this one only */
@@ -3139,6 +3328,7 @@ receive_answer (ECalBackendGroupwise *cbgw,
 		ECalCache *cache,
 		ICalComponent *comp,
 		ICalPropertyMethod method,
+		const gchar *item_extra,	/* an appointment of a series; NULL: what the cache has */
 		GCancellable *cancellable,
 		GError **error)
 {
@@ -3155,10 +3345,28 @@ receive_answer (ECalBackendGroupwise *cbgw,
 	user_email = dup_user_email (cbgw);
 	partstat = user_partstat (comp, user_email);
 	g_debug ("receive %s method %d for %s: answer %d", uid ? uid : "?", method, user_email ? user_email : "?", partstat);
-	if (!uid || !user_email || !e_cal_cache_get_component_extra (cache, uid, NULL, &extra, cancellable, NULL) || !extra) {
+	if (item_extra)
+		extra = g_strdup (item_extra);
+	if (!uid || !user_email || (!extra && !e_cal_cache_get_component_extra (cache, uid, NULL, &extra, cancellable, NULL)) || !extra) {
 		g_free (user_email);
 		g_free (extra);
 		return FALSE;
+	}
+
+	/* A series: the answer for the appointment meant, or for all of them */
+	if (!item_extra && e_gw_series_is_extra (extra)) {
+		GPtrArray *extras = dup_series_extras (extra, comp);
+		gboolean handled = FALSE;
+		guint ii;
+
+		for (ii = 0; ii < extras->len && !(error && *error); ii++)
+			handled = receive_answer (cbgw, cnc, cache, comp, method, extras->pdata[ii], cancellable, error) || handled;
+		g_ptr_array_unref (extras);
+		if (handled)
+			e_cal_meta_backend_schedule_refresh (E_CAL_META_BACKEND (cbgw));
+		g_free (user_email);
+		g_free (extra);
+		return handled;
 	}
 
 	id = split_extra (extra, NULL);
@@ -3207,8 +3415,9 @@ receive_answer (ECalBackendGroupwise *cbgw,
 	g_object_unref (answer);
 	e_gw_response_free (response);
 
-	/* The cache follows at once: the reply after the request finds it answered */
-	if (success) {
+	/* The cache follows at once: the reply after the request finds it answered
+	 * (a series is listed anew instead) */
+	if (success && !item_extra) {
 		info = e_cal_meta_backend_info_new (uid, NULL, NULL, extra);
 		changed = g_slist_prepend (NULL, info);
 		if (partstat == I_CAL_PARTSTAT_DECLINED)
@@ -3255,14 +3464,14 @@ ecb_groupwise_receive_objects_sync (ECalBackendSync *sync_backend,
 	if (cnc && i_cal_component_isa (toplevel) == I_CAL_VCALENDAR_COMPONENT) {
 		for (sub = i_cal_component_get_first_component (toplevel, kind); sub && success;
 		     g_object_unref (sub), sub = i_cal_component_get_next_component (toplevel, kind)) {
-			if (receive_answer (cbgw, cnc, cache, sub, method, cancellable, &local_error)) {
+			if (receive_answer (cbgw, cnc, cache, sub, method, NULL, cancellable, &local_error)) {
 				handled = TRUE;
 				success = !local_error;
 			}
 		}
 		g_clear_object (&sub);
 	} else if (cnc && i_cal_component_isa (toplevel) == kind) {
-		handled = receive_answer (cbgw, cnc, cache, toplevel, method, cancellable, &local_error);
+		handled = receive_answer (cbgw, cnc, cache, toplevel, method, NULL, cancellable, &local_error);
 	}
 
 	g_clear_object (&cnc);

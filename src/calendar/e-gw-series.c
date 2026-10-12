@@ -523,3 +523,220 @@ e_gw_series_split_extra (const gchar *extra,
 
 	return instances;
 }
+
+void
+e_gw_series_target_free (EGwSeriesTarget *target)
+{
+	if (!target)
+		return;
+
+	g_free (target->extra);
+	g_clear_object (&target->comp);
+	g_free (target);
+}
+
+static gint64
+comp_seconds (ICalComponent *comp,
+	      ICalTimezone *zone)
+{
+	ICalTime *start = i_cal_component_get_dtstart (comp), *end = i_cal_component_get_dtend (comp);
+	gint64 seconds = 0;
+
+	if (start && end && !i_cal_time_is_null_time (start) && !i_cal_time_is_null_time (end))
+		seconds = i_cal_time_is_date (start) ?
+			(gint64) (i_cal_time_as_timet (end) - i_cal_time_as_timet (start)) :
+			time_key (end, zone) - time_key (start, zone);
+	g_clear_object (&start);
+	g_clear_object (&end);
+
+	return seconds;
+}
+
+gboolean
+e_gw_series_same (ICalComponent *one,
+		  ICalComponent *two,
+		  ICalTimezone *zone)
+{
+	static const ICalPropertyKind series_kinds[] = {
+		I_CAL_RRULE_PROPERTY, I_CAL_EXDATE_PROPERTY, I_CAL_RDATE_PROPERTY, I_CAL_EXRULE_PROPERTY
+	};
+	ICalComponent *clones[2];
+	ICalTime *start_one, *start_two;
+	gchar *signatures[2];
+	gboolean same;
+	guint ii, jj;
+
+	if (!one || !two)
+		return one == two;
+
+	start_one = i_cal_component_get_dtstart (one);
+	start_two = i_cal_component_get_dtstart (two);
+	same = start_one && start_two && i_cal_time_is_date (start_one) == i_cal_time_is_date (start_two) &&
+		time_key (start_one, zone) == time_key (start_two, zone) &&
+		comp_seconds (one, zone) == comp_seconds (two, zone);
+	g_clear_object (&start_one);
+	g_clear_object (&start_two);
+	if (!same)
+		return FALSE;
+
+	clones[0] = i_cal_component_clone (one);
+	clones[1] = i_cal_component_clone (two);
+	for (ii = 0; ii < 2; ii++) {
+		for (jj = 0; jj < G_N_ELEMENTS (series_kinds); jj++)
+			e_cal_util_component_remove_property_by_kind (clones[ii], series_kinds[jj], TRUE);
+		signatures[ii] = dup_signature (clones[ii], 0);
+		g_object_unref (clones[ii]);
+	}
+	same = strcmp (signatures[0], signatures[1]) == 0;
+	g_free (signatures[0]);
+	g_free (signatures[1]);
+
+	return same;
+}
+
+/* The master as the appointment of one of its occurrences */
+static ICalComponent *
+master_at (ICalComponent *master,
+	   ICalTime *occurrence,
+	   ICalTimezone *zone)
+{
+	static const ICalPropertyKind series_kinds[] = {
+		I_CAL_RRULE_PROPERTY, I_CAL_EXDATE_PROPERTY, I_CAL_RDATE_PROPERTY, I_CAL_EXRULE_PROPERTY,
+		I_CAL_DTSTART_PROPERTY, I_CAL_DTEND_PROPERTY, I_CAL_DURATION_PROPERTY
+	};
+	ICalComponent *comp = i_cal_component_clone (master);
+	ICalTime *start = i_cal_time_clone (occurrence), *end = i_cal_time_clone (occurrence);
+	gint64 seconds = comp_seconds (master, zone);
+	guint ii;
+
+	for (ii = 0; ii < G_N_ELEMENTS (series_kinds); ii++)
+		e_cal_util_component_remove_property_by_kind (comp, series_kinds[ii], TRUE);
+	if (i_cal_time_is_date (start)) {
+		i_cal_time_adjust (end, (gint) (seconds / 86400), 0, 0, 0);
+	} else {
+		if (zone && !i_cal_time_get_timezone (start)) {
+			i_cal_time_set_timezone (start, zone);
+			i_cal_time_set_timezone (end, zone);
+		}
+		/* (the length in real time: over a change of the clock too) */
+		i_cal_time_adjust (end, 0, 0, 0, (gint) seconds);
+	}
+	i_cal_component_set_dtstart (comp, start);
+	i_cal_component_set_dtend (comp, end);
+	g_object_unref (start);
+	g_object_unref (end);
+
+	return comp;
+}
+
+GPtrArray *
+e_gw_series_targets (ICalComponent *master,
+		     GPtrArray *detached,
+		     GPtrArray *pairs,
+		     ICalTimezone *zone,
+		     guint *out_added)
+{
+	GPtrArray *targets, *occurrences;
+	GHashTable *excluded, *used_days;
+	ICalProperty *prop;
+	ICalRecurrence *rule = NULL;
+	ICalRecurIterator *iterator = NULL;
+	ICalTime *start, *tt;
+	guint ii, jj, added = 0;
+
+	g_return_val_if_fail (master != NULL, NULL);
+	g_return_val_if_fail (pairs != NULL, NULL);
+
+	targets = g_ptr_array_new_with_free_func ((GDestroyNotify) e_gw_series_target_free);
+	occurrences = g_ptr_array_new_with_free_func (g_object_unref);
+	excluded = g_hash_table_new (g_int64_hash, g_int64_equal);
+	used_days = g_hash_table_new_full (g_int64_hash, g_int64_equal, g_free, NULL);
+
+	start = i_cal_component_get_dtstart (master);
+	if (start && !i_cal_time_is_date (start) && zone && !i_cal_time_get_timezone (start))
+		i_cal_time_set_timezone (start, zone);
+
+	for (prop = i_cal_component_get_first_property (master, I_CAL_EXDATE_PROPERTY); prop;
+	     g_object_unref (prop), prop = i_cal_component_get_next_property (master, I_CAL_EXDATE_PROPERTY)) {
+		ICalTime *exdate = i_cal_property_get_exdate (prop);
+		gint64 *key = g_new (gint64, 1);
+
+		*key = exdate ? day_of (exdate) : 0;
+		g_hash_table_add (excluded, key);
+		g_clear_object (&exdate);
+	}
+
+	/* The occurrences: the rule from the start; without a rule (the user
+	 * took it away) only the start */
+	prop = i_cal_component_get_first_property (master, I_CAL_RRULE_PROPERTY);
+	if (prop) {
+		rule = i_cal_property_get_rrule (prop);
+		g_object_unref (prop);
+	}
+	if (rule && start)
+		iterator = i_cal_recur_iterator_new (rule, start);
+	if (iterator) {
+		while ((tt = i_cal_recur_iterator_next (iterator)) != NULL) {
+			if (i_cal_time_is_null_time (tt) || occurrences->len >= MAX_OCCURRENCES) {
+				g_object_unref (tt);
+				break;
+			}
+			if (!i_cal_time_is_date (tt) && zone && !i_cal_time_get_timezone (tt))
+				i_cal_time_set_timezone (tt, zone);
+			g_ptr_array_add (occurrences, tt);
+		}
+	} else if (start) {
+		g_ptr_array_add (occurrences, i_cal_time_clone (start));
+	}
+
+	for (ii = 0; ii < pairs->len; ii++) {
+		gchar **pair = pairs->pdata[ii];
+		EGwSeriesTarget *target = g_new0 (EGwSeriesTarget, 1);
+		ICalTime *old = i_cal_time_new_from_string (pair[0]);
+		gint64 day = old ? day_of (old) : 0, *day_key;
+
+		target->extra = g_strdup (pair[1]);
+		day_key = g_new (gint64, 1);
+		*day_key = day;
+		g_hash_table_add (used_days, day_key);
+
+		/* Its own component, when it has one */
+		for (jj = 0; detached && jj < detached->len && !target->comp; jj++) {
+			ICalProperty *rid_prop = i_cal_component_get_first_property (detached->pdata[jj], I_CAL_RECURRENCEID_PROPERTY);
+			ICalTime *rid = rid_prop ? i_cal_property_get_recurrenceid (rid_prop) : NULL;
+
+			if (rid && day_of (rid) == day) {
+				target->comp = i_cal_component_clone (detached->pdata[jj]);
+				e_cal_util_component_remove_property_by_kind (target->comp, I_CAL_RECURRENCEID_PROPERTY, TRUE);
+			}
+			g_clear_object (&rid);
+			g_clear_object (&rid_prop);
+		}
+		/* Else what the master says for its day, if it still has it */
+		for (jj = 0; jj < occurrences->len && !target->comp && !g_hash_table_contains (excluded, &day); jj++) {
+			if (day_of (occurrences->pdata[jj]) == day)
+				target->comp = master_at (master, occurrences->pdata[jj], zone);
+		}
+		g_clear_object (&old);
+		g_ptr_array_add (targets, target);
+	}
+
+	/* Occurrences that are no appointment yet */
+	for (jj = 0; jj < occurrences->len; jj++) {
+		gint64 day = day_of (occurrences->pdata[jj]);
+
+		if (!g_hash_table_contains (excluded, &day) && !g_hash_table_contains (used_days, &day))
+			added++;
+	}
+	if (out_added)
+		*out_added = added;
+
+	g_clear_object (&iterator);
+	g_clear_object (&rule);
+	g_clear_object (&start);
+	g_hash_table_destroy (excluded);
+	g_hash_table_destroy (used_days);
+	g_ptr_array_unref (occurrences);
+
+	return targets;
+}

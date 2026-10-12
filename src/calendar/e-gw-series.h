@@ -72,6 +72,39 @@ GPtrArray *	e_gw_series_split_extra		(const gchar *extra,
 /* The extra of an appointment as it stands in a line of the series' */
 gchar *		e_gw_series_escape_extra	(const gchar *extra);
 
+/* What an appointment of a series is to be: its extra and the component
+ * for it (NULL: the appointment is gone from the series) */
+typedef struct {
+	gchar *extra;
+	ICalComponent *comp;
+} EGwSeriesTarget;
+
+void		e_gw_series_target_free		(EGwSeriesTarget *target);
+
+/*
+ * The appointments of a series as the recurring event (@master with the
+ * rule, @detached: its detached instances, ICalComponent) says them: for
+ * each appointment of @pairs (see e_gw_series_split_extra()) the component
+ * of its occurrence — the detached instance for it, else the master at that
+ * day — or none when the rule no longer has the occurrence (excluded, or
+ * past a new end). An appointment keeps its occurrence by the day, so the
+ * time of a whole series can change.
+ *
+ * @out_added counts occurrences the event has that are no appointment yet.
+ * Returns: (element-type EGwSeriesTarget), in the order of @pairs
+ */
+GPtrArray *	e_gw_series_targets		(ICalComponent *master,
+						 GPtrArray *detached,
+						 GPtrArray *pairs,
+						 ICalTimezone *zone,
+						 guint *out_added);
+
+/* Whether two components of an appointment say the same: time, length and
+ * everything else but what a component has of its own (stamps, IDs) */
+gboolean	e_gw_series_same		(ICalComponent *one,
+						 ICalComponent *two,
+						 ICalTimezone *zone);
+
 G_END_DECLS
 
 #endif /* E_GW_SERIES_H */

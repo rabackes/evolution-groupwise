@@ -1262,6 +1262,110 @@ test_series_all_day (void)
 	g_free (extra);
 }
 
+/* What each appointment of a series is to be after the recurring event
+ * was changed */
+static void
+test_series_targets (void)
+{
+	const gchar *rule = "FREQ=DAILY;COUNT=5;INTERVAL=1";
+	GPtrArray *instances = g_ptr_array_new_with_free_func ((GDestroyNotify) e_gw_series_instance_free);
+	GPtrArray *pairs, *detached, *targets, *before;
+	ICalComponent *vcalendar, *master, *moved, *changed;
+	ICalProperty *prop;
+	ICalRecurrence *recurrence;
+	ICalTime *tt;
+	gchar *uid = NULL, *revision = NULL, *extra = NULL;
+	guint added = 99;
+
+	g_ptr_array_add (instances, series_instance ("I1", "2026-10-23T10:00:00Z", "2026-10-23T11:00:00Z", "Serie", rule, FALSE));
+	g_ptr_array_add (instances, series_instance ("I2", "2026-10-24T10:00:00Z", "2026-10-24T11:00:00Z", "Serie", rule, FALSE));
+	g_ptr_array_add (instances, series_instance ("I3", "2026-10-25T11:00:00Z", "2026-10-25T12:00:00Z", "Serie", rule, FALSE));
+	g_ptr_array_add (instances, series_instance ("I4", "2026-10-26T12:00:00Z", "2026-10-26T13:00:00Z", "Serie verlegt", rule, FALSE));
+	g_ptr_array_add (instances, series_instance ("I5", "2026-10-27T11:00:00Z", "2026-10-27T12:00:00Z", "Serie", rule, FALSE));
+	vcalendar = e_gw_series_build (instances, berlin (), &uid, &revision, &extra);
+	g_assert_nonnull (vcalendar);
+	pairs = e_gw_series_split_extra (extra, NULL);
+	master = nth_event (vcalendar, 0);
+	moved = nth_event (vcalendar, 1);
+	detached = g_ptr_array_new ();
+	g_ptr_array_add (detached, moved);
+
+	/* As it is: every appointment is what it was */
+	before = e_gw_series_targets (master, detached, pairs, berlin (), &added);
+	g_assert_cmpuint (added, ==, 0);
+	g_assert_cmpuint (before->len, ==, 5);
+	g_assert_cmpstr (((EGwSeriesTarget *) before->pdata[0])->extra, ==, "I1@4:A.dom.po1.100.0.1.0.1@19");
+	g_assert_cmpstr (i_cal_component_get_summary (((EGwSeriesTarget *) before->pdata[3])->comp), ==, "Serie verlegt");
+	assert_time (((EGwSeriesTarget *) before->pdata[2])->comp, I_CAL_DTSTART_PROPERTY, "20261025T120000");
+	assert_time (((EGwSeriesTarget *) before->pdata[2])->comp, I_CAL_DTEND_PROPERTY, "20261025T130000");
+	g_assert_cmpuint (count_properties (((EGwSeriesTarget *) before->pdata[2])->comp, I_CAL_RRULE_PROPERTY), ==, 0);
+
+	/* All appointments an hour later and in another place; the 24th
+	 * excluded; the rule ends with the 26th ("this and the following"
+	 * deleted from the 27th on) */
+	changed = i_cal_component_clone (master);
+	i_cal_component_set_location (changed, "Raum 9");
+	tt = i_cal_time_new_from_string ("20261023T130000");
+	i_cal_time_set_timezone (tt, berlin ());
+	i_cal_component_set_dtstart (changed, tt);
+	g_object_unref (tt);
+	tt = i_cal_time_new_from_string ("20261023T140000");
+	i_cal_time_set_timezone (tt, berlin ());
+	i_cal_component_set_dtend (changed, tt);
+	g_object_unref (tt);
+	tt = i_cal_time_new_from_string ("20261024T130000");
+	i_cal_component_take_property (changed, i_cal_property_new_exdate (tt));
+	g_object_unref (tt);
+	prop = i_cal_component_get_first_property (changed, I_CAL_RRULE_PROPERTY);
+	recurrence = i_cal_property_get_rrule (prop);
+	i_cal_recurrence_set_count (recurrence, 4);
+	i_cal_property_set_rrule (prop, recurrence);
+	g_object_unref (recurrence);
+	g_object_unref (prop);
+
+	targets = e_gw_series_targets (changed, detached, pairs, berlin (), &added);
+	g_assert_cmpuint (added, ==, 0);
+	g_assert_cmpuint (targets->len, ==, 5);
+	/* 23rd: moved to 13:00, new place */
+	assert_time (((EGwSeriesTarget *) targets->pdata[0])->comp, I_CAL_DTSTART_PROPERTY, "20261023T130000");
+	g_assert_cmpstr (i_cal_component_get_location (((EGwSeriesTarget *) targets->pdata[0])->comp), ==, "Raum 9");
+	g_assert_false (e_gw_series_same (((EGwSeriesTarget *) before->pdata[0])->comp, ((EGwSeriesTarget *) targets->pdata[0])->comp, berlin ()));
+	/* 24th: gone */
+	g_assert_null (((EGwSeriesTarget *) targets->pdata[1])->comp);
+	/* 25th: winter time, still 13:00 local, an hour long */
+	assert_time (((EGwSeriesTarget *) targets->pdata[2])->comp, I_CAL_DTSTART_PROPERTY, "20261025T130000");
+	assert_time (((EGwSeriesTarget *) targets->pdata[2])->comp, I_CAL_DTEND_PROPERTY, "20261025T140000");
+	/* 26th: the appointment with a component of its own keeps it */
+	g_assert_cmpstr (i_cal_component_get_summary (((EGwSeriesTarget *) targets->pdata[3])->comp), ==, "Serie verlegt");
+	g_assert_true (e_gw_series_same (((EGwSeriesTarget *) before->pdata[3])->comp, ((EGwSeriesTarget *) targets->pdata[3])->comp, berlin ()));
+	/* 27th: past the end of the rule */
+	g_assert_null (((EGwSeriesTarget *) targets->pdata[4])->comp);
+	g_ptr_array_unref (targets);
+
+	/* A longer rule would need appointments GroupWise does not make */
+	prop = i_cal_component_get_first_property (changed, I_CAL_RRULE_PROPERTY);
+	recurrence = i_cal_property_get_rrule (prop);
+	i_cal_recurrence_set_count (recurrence, 7);
+	i_cal_property_set_rrule (prop, recurrence);
+	g_object_unref (recurrence);
+	g_object_unref (prop);
+	targets = e_gw_series_targets (changed, detached, pairs, berlin (), &added);
+	g_assert_cmpuint (added, ==, 2);
+	g_ptr_array_unref (targets);
+
+	g_object_unref (changed);
+	g_ptr_array_unref (before);
+	g_ptr_array_unref (detached);
+	g_object_unref (moved);
+	g_object_unref (master);
+	g_ptr_array_unref (pairs);
+	g_object_unref (vcalendar);
+	g_ptr_array_unref (instances);
+	g_free (uid);
+	g_free (revision);
+	g_free (extra);
+}
+
 int
 main (int argc,
       char **argv)
@@ -1286,6 +1390,7 @@ main (int argc,
 	g_test_add_func ("/calendar/updates-unchanged", test_updates_unchanged);
 	g_test_add_func ("/calendar/series", test_series);
 	g_test_add_func ("/calendar/series-all-day", test_series_all_day);
+	g_test_add_func ("/calendar/series-targets", test_series_targets);
 	g_test_add_func ("/calendar/updates", test_updates);
 	g_test_add_func ("/calendar/travel-time", test_travel_time);
 	g_test_add_func ("/calendar/updates-refused", test_updates_refused);
