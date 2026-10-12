@@ -227,9 +227,9 @@ Die Registerkarte **Postfach und Passwort** der GroupWise-Einstellungen zeigt da
 
 - **Speicherplatz**: wie viel das Postfach belegt und wie groß es werden darf, als Balken und in Megabyte, dazu die Schwelle, ab der GroupWise Sie warnt. Hat das Postfach keine Größenbegrenzung, steht dort nur der belegte Platz.
 
-- **Inhalt**: die Zahl der Nachrichten in den Ordnern und der ungelesenen darunter, die Einträge im Kalender, die Zahl der Ordner, Kalender und Adressbücher.
+- **Inhalt**: die Zahl der Nachrichten in den Ordnern, die ungelesenen in der Mailbox, die Einträge im Kalender, die Zahl der Ordner, Kalender und Adressbücher.
 
-- Eine **Liste der Ordner** mit Nachrichten und Ungelesenen, die vollsten zuerst; ein Klick auf eine Spaltenüberschrift sortiert um. GroupWise zählt die Mailbox, den Kalender, „In Arbeit“ und die von Ihnen angelegten Ordner; die Ausgangsnachrichten und andere Sichten auf das Postfach zählt es nicht.
+- Eine **Liste der Ordner** mit Nachrichten und Ungelesenen, die vollsten zuerst; ein Klick auf eine Spaltenüberschrift sortiert um. GroupWise zählt die Mailbox, den Kalender, „In Arbeit“ und die von Ihnen angelegten Ordner; die Ausgangsnachrichten und andere Sichten auf das Postfach zählt es nicht. Ungelesene Nachrichten zählt GroupWise über diese Schnittstelle nur in der Mailbox.
 
 Die Zahlen sind der Stand beim Öffnen des Fensters. Bei einem Proxy-Konto beschreiben sie das andere Postfach.
 

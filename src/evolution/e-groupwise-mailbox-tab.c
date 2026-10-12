@@ -357,7 +357,7 @@ mailbox_new_tab (void)
 {
 	static const gchar *figure_names[] = {
 		N_("Messages in the folders:"),
-		N_("Unread:"),
+		N_("Unread in the Mailbox:"),
 		N_("Entries in the Calendar:"),
 		N_("Folders:"),
 		N_("Calendars:"),
@@ -436,7 +436,8 @@ mailbox_new_tab (void)
 	gtk_box_pack_start (GTK_BOX (box), scrolled, TRUE, TRUE, 0);
 
 	label = gtk_label_new (_("GroupWise counts the Mailbox, the Calendar, the Work In Progress folder and the folders "
-		"you made; the Sent Items and other views onto the mailbox it does not count."));
+		"you made; the Sent Items and other views onto the mailbox it does not count. Unread messages it "
+		"counts in the Mailbox only."));
 	gtk_label_set_line_wrap (GTK_LABEL (label), TRUE);
 	gtk_label_set_xalign (GTK_LABEL (label), 0.0);
 	gtk_widget_set_margin_start (label, 12);

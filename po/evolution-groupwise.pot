@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: evolution-groupwise\n"
 "Report-Msgid-Bugs-To: rbackes@bond.de\n"
-"POT-Creation-Date: 2026-10-12 12:40+0200\n"
+"POT-Creation-Date: 2026-10-12 12:48+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -782,7 +782,7 @@ msgid "Messages in the folders:"
 msgstr ""
 
 #: src/evolution/e-groupwise-mailbox-tab.c:360
-msgid "Unread:"
+msgid "Unread in the Mailbox:"
 msgstr ""
 
 #: src/evolution/e-groupwise-mailbox-tab.c:361
@@ -825,37 +825,37 @@ msgstr ""
 msgid ""
 "GroupWise counts the Mailbox, the Calendar, the Work In Progress folder and "
 "the folders you made; the Sent Items and other views onto the mailbox it "
-"does not count."
-msgstr ""
-
-#: src/evolution/e-groupwise-mailbox-tab.c:446
-msgid "Change _Password…"
+"does not count. Unread messages it counts in the Mailbox only."
 msgstr ""
 
 #: src/evolution/e-groupwise-mailbox-tab.c:447
+msgid "Change _Password…"
+msgstr ""
+
+#: src/evolution/e-groupwise-mailbox-tab.c:448
 msgid "Change the password you log in to GroupWise with"
 msgstr ""
 
-#: src/evolution/e-groupwise-mailbox-tab.c:552
+#: src/evolution/e-groupwise-mailbox-tab.c:553
 #, c-format
 msgid "%s MB of %s MB used (%d %%). GroupWise warns you from %d %%."
 msgstr ""
 
-#: src/evolution/e-groupwise-mailbox-tab.c:556
+#: src/evolution/e-groupwise-mailbox-tab.c:557
 #, c-format
 msgid "%s MB of %s MB used (%d %%)."
 msgstr ""
 
-#: src/evolution/e-groupwise-mailbox-tab.c:560
+#: src/evolution/e-groupwise-mailbox-tab.c:561
 #, c-format
 msgid "%s MB used; the mailbox has no limit."
 msgstr ""
 
-#: src/evolution/e-groupwise-mailbox-tab.c:563
+#: src/evolution/e-groupwise-mailbox-tab.c:564
 msgid "The server does not tell the size of the mailbox."
 msgstr ""
 
-#: src/evolution/e-groupwise-mailbox-tab.c:637
+#: src/evolution/e-groupwise-mailbox-tab.c:638
 msgid "Mailbox and Password"
 msgstr ""
 
