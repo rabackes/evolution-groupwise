@@ -24,6 +24,8 @@
  * the store's account, and the proxy calendars of the same user that other
  * accounts show. */
 
+#include <string.h>
+
 #include <e-util/e-util.h>
 #include <libemail-engine/libemail-engine.h>
 #include <mail/e-mail-backend.h>
@@ -35,6 +37,7 @@
 
 #define CHECK_SECONDS 2
 #define STORE_CALENDAR_EVENTS "groupwise-events-calendar"
+#define STORE_CALENDAR_FOLDERS "groupwise-events-calendar-folders"
 
 static GHashTable *seen;	/* store UID -> number */
 
@@ -57,6 +60,27 @@ refreshed_cb (GObject *source_object,
 	g_clear_error (&error);
 }
 
+/* Whether the folder of a source is among those the events named:
+ * " ID ID"; NULL or with a "*": any */
+static gboolean
+folder_is_named (const gchar *folders,
+		 const gchar *folder_id)
+{
+	const gchar *at = folder_id ? strchr (folder_id, '@') : NULL;
+	gchar *base;
+	gboolean named;
+
+	if (!folders || strchr (folders, '*') || !folder_id)
+		return TRUE;
+
+	/* (shared, a folder has another ending) */
+	base = g_strdup_printf (" %.*s@", at ? (gint) (at - folder_id) : (gint) strlen (folder_id), folder_id);
+	named = strstr (folders, base) != NULL;
+	g_free (base);
+
+	return named;
+}
+
 static void
 refresh_mailbox (EShell *shell,
 		 CamelService *store)
@@ -65,8 +89,15 @@ refresh_mailbox (EShell *shell,
 	EClientCache *client_cache = e_shell_get_client_cache (shell);
 	ESource *account = e_source_registry_ref_source (registry, camel_service_get_uid (store));
 	CamelSettings *settings = camel_service_ref_settings (store);
-	gchar *collection = account ? e_source_dup_parent (account) : NULL, *proxy = NULL;
+	gchar *collection = account ? e_source_dup_parent (account) : NULL, *proxy = NULL, *folders;
 	guint ii, refreshed = 0;
+
+	/* The folders the events were about (taken, so that the next ones start anew) */
+	for (;;) {
+		folders = g_object_get_data (G_OBJECT (store), STORE_CALENDAR_FOLDERS);
+		if (!folders || g_object_replace_data (G_OBJECT (store), STORE_CALENDAR_FOLDERS, folders, NULL, NULL, NULL))
+			break;
+	}
 
 	/* A proxy account: the mailbox of that user */
 	if (settings && g_object_class_find_property (G_OBJECT_GET_CLASS (settings), "proxy"))
@@ -87,12 +118,18 @@ refresh_mailbox (EShell *shell,
 			}
 			role = e_source_groupwise_folder_dup_role (e_source_get_extension (source, E_SOURCE_EXTENSION_GROUPWISE_FOLDER));
 			of = e_source_groupwise_folder_dup_proxy (e_source_get_extension (source, E_SOURCE_EXTENSION_GROUPWISE_FOLDER));
-			if (g_strcmp0 (role, E_GW_SOURCE_ROLE_PROXY) == 0)
+			if (g_strcmp0 (role, E_GW_SOURCE_ROLE_PROXY) == 0) {
+				/* (its folder here is not the one over there) */
 				wanted = proxy && of && g_ascii_strcasecmp (proxy, of) == 0;
-			else if (g_strcmp0 (role, E_GW_SOURCE_ROLE_SHARED) == 0)
+			} else if (g_strcmp0 (role, E_GW_SOURCE_ROLE_SHARED) == 0) {
 				wanted = FALSE;
-			else
-				wanted = g_strcmp0 (parent, collection) == 0;
+			} else {
+				gchar *folder_id = e_source_groupwise_folder_dup_id (e_source_get_extension (source, E_SOURCE_EXTENSION_GROUPWISE_FOLDER));
+
+				/* Only the calendars the events were about */
+				wanted = g_strcmp0 (parent, collection) == 0 && folder_is_named (folders, folder_id);
+				g_free (folder_id);
+			}
 
 			/* Only what is open (the others refresh when opened) */
 			client = wanted ? e_client_cache_ref_cached_client (client_cache, source, extensions[ii]) : NULL;
@@ -111,6 +148,7 @@ refresh_mailbox (EShell *shell,
 
 	g_free (collection);
 	g_free (proxy);
+	g_free (folders);
 	g_clear_object (&settings);
 	g_clear_object (&account);
 }

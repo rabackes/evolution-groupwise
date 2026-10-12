@@ -1490,6 +1490,32 @@ append_rrule (GString *xml,
 	g_string_append (xml, "</rrule>");
 	g_object_unref (rule);
 
+	/* The days left out of the series: the POA makes no appointment for them */
+	{
+		GString *days = g_string_new (NULL);
+
+		for (prop = i_cal_component_get_first_property (comp, I_CAL_EXDATE_PROPERTY); prop;
+		     g_object_unref (prop), prop = i_cal_component_get_next_property (comp, I_CAL_EXDATE_PROPERTY)) {
+			ICalTime *exdate = i_cal_property_get_exdate (prop);
+
+			if (exdate && !i_cal_time_is_null_time (exdate)) {
+				gchar *day;
+
+				/* A time is of the day it has where the appointments are */
+				if (!i_cal_time_is_date (exdate) && i_cal_time_is_utc (exdate) && zone)
+					i_cal_time_convert_to_zone_inplace (exdate, zone);
+				day = g_strdup_printf ("%04d-%02d-%02d", i_cal_time_get_year (exdate),
+					i_cal_time_get_month (exdate), i_cal_time_get_day (exdate));
+				e_gw_xml_add_leaf (days, "date", day);
+				g_free (day);
+			}
+			g_clear_object (&exdate);
+		}
+		if (days->len)
+			g_string_append_printf (xml, "<exdate>%s</exdate>", days->str);
+		g_string_free (days, TRUE);
+	}
+
 	return TRUE;
 }
 

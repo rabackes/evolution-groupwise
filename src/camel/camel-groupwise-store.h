@@ -57,6 +57,10 @@ gboolean	camel_groupwise_store_get_read_only
 /* Object datum of a store: a number that grows whenever the events of the
  * mailbox concern its calendars and lists (which another process keeps) */
 #define CAMEL_GROUPWISE_STORE_CALENDAR_EVENTS "groupwise-events-calendar"
+/* ... and in which folders: IDs separated by spaces, "*" for events that
+ * name none (object data, a string; who reads it takes it away with
+ * g_object_replace_data()) */
+#define CAMEL_GROUPWISE_STORE_CALENDAR_FOLDERS "groupwise-events-calendar-folders"
 #define CAMEL_GROUPWISE_STORE_PORT_UNREACHABLE "groupwise-events-port-unreachable"
 
 G_END_DECLS

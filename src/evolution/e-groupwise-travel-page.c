@@ -749,6 +749,7 @@ travel_editor_fill_component_cb (ECompEditor *comp_editor,
 	EShell *shell = e_shell_get_default ();
 	ECalComponent *ecomp;
 	ConflictData data = { NULL, NULL, 0, 0, NULL, 0 };
+	gboolean following = FALSE;
 	GString *names = NULL;
 	GList *sources, *link;
 	GArray *ranges;
@@ -803,6 +804,43 @@ travel_editor_fill_component_cb (ECompEditor *comp_editor,
 		}
 		if (range.start > 0 && range.end > range.start)
 			g_array_append_val (ranges, range);
+
+		/* An appointment of a series: whether the change is for this one
+		 * or for the following ones too the user says only after this.
+		 * The following ones are looked at as well, moved as this one is. */
+		if (range.end > range.start && original && target &&
+		    e_cal_util_component_has_property (component, I_CAL_RRULE_PROPERTY) &&
+		    e_cal_util_component_has_property (component, I_CAL_RECURRENCEID_PROPERTY)) {
+			ICalComponent *master = NULL;
+			ICalTime *old_start = i_cal_component_get_dtstart (original);
+
+			if (old_start && !i_cal_time_is_null_time (old_start) &&
+			    e_cal_client_get_object_sync (target, i_cal_component_get_uid (component), NULL, &master, NULL, NULL) && master) {
+				GArray *later = g_array_new (FALSE, FALSE, sizeof (TimeRange));
+				ICalTime *to = i_cal_time_clone (old_start);
+				time_t old_time = instance_time (old_start);
+				guint ii;
+
+				i_cal_time_adjust (to, 366, 0, 0, 0);
+				e_cal_recur_generate_instances_sync (master, old_start, to, collect_range_cb, later,
+					e_comp_editor_lookup_timezone_cb, comp_editor, calendar_config_get_icaltimezone (), NULL, NULL);
+				for (ii = 0; ii < later->len; ii++) {
+					TimeRange *occurrence = &g_array_index (later, TimeRange, ii);
+					TimeRange moved;
+
+					if (occurrence->start <= old_time)
+						continue;
+					moved.start = occurrence->start + (range.start - old_time);
+					moved.end = moved.start + (range.end - range.start);
+					g_array_append_val (ranges, moved);
+					following = TRUE;
+				}
+				g_array_unref (later);
+				g_object_unref (to);
+			}
+			g_clear_object (&master);
+			g_clear_object (&old_start);
+		}
 	}
 	if (!ranges->len) {
 		g_array_unref (ranges);
@@ -844,8 +882,11 @@ travel_editor_fill_component_cb (ECompEditor *comp_editor,
 			GTK_MESSAGE_WARNING, GTK_BUTTONS_NONE, "%s",
 			_("The appointment overlaps with busy time in your calendar"));
 
-		gtk_message_dialog_format_secondary_text (GTK_MESSAGE_DIALOG (dialog), "%s\n\n%s", names->str,
-			_("The preparation and travel time of the appointment counts, too."));
+		gtk_message_dialog_format_secondary_text (GTK_MESSAGE_DIALOG (dialog), "%s\n\n%s%s%s", names->str,
+			_("The preparation and travel time of the appointment counts, too."),
+			following ? "\n" : "",
+			following ? _("The following appointments of the series are checked as well: they matter when you "
+				      "save the change for this and future instances or for all.") : "");
 		gtk_dialog_add_button (GTK_DIALOG (dialog), _("_Cancel"), GTK_RESPONSE_CANCEL);
 		gtk_dialog_add_button (GTK_DIALOG (dialog), _("_Save Anyway"), GTK_RESPONSE_ACCEPT);
 		gtk_dialog_set_default_response (GTK_DIALOG (dialog), GTK_RESPONSE_ACCEPT);

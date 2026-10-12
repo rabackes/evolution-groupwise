@@ -917,7 +917,9 @@ Kalender kann Evolution bei Bedarf direkt abonnieren.</p>
 <p>Evolution gleicht die Kalender alle 15 Minuten mit dem Server ab, sodass Änderungen aus dem
 GroupWise-Client von selbst erscheinen. Schneller geht es mit der Kontooption „Den Server alle … Sekunden
 nach Änderungen im Postfach fragen“ (Kapitel 3, Kontooptionen): Dann erscheinen sie innerhalb des dort
-eingestellten Abstands, mit der Sofort-Meldung des Servers nach wenigen Sekunden. Das Intervall können Sie in den Eigenschaften eines Kalenders
+eingestellten Abstands, mit der Sofort-Meldung des Servers nach wenigen Sekunden. Abgeglichen
+wird dabei nur der Kalender, in dem sich etwas geändert hat; alle Kalender des Postfachs nur dann, wenn der
+Server keinen nennt (bei Antworten auf Einladungen und erledigten Aufgaben). Das Intervall können Sie in den Eigenschaften eines Kalenders
 ändern.</p>
 
 <h2 id="kal-termine">5.2&nbsp;&nbsp;Termine und Serien</h2>
@@ -962,7 +964,9 @@ eingestellten Abstands, mit der Sofort-Meldung des Servers nach wenigen Sekunden
 		<span class="menu">Dieses und alle zukünftigen Vorkommen löschen …</span> und
 		<span class="menu">Alle Wiederholungen löschen …</span>. Die Warnung vor einer Überschneidung
 		mit belegter Zeit (<a href="#kal-reisezeit">5.7</a>) prüft bei einer Serie jeden ihrer nächsten
-		Termine einzeln.<br>
+		Termine einzeln. Ändern Sie einen einzelnen Termin der Serie, prüft sie auch die folgenden
+		Termine, als würden sie ebenso geändert – ob die Änderung nur für diesen oder auch für die
+		folgenden gilt, fragt Evolution erst danach.<br>
 		Jede Änderung wird Termin für Termin nach GroupWise geschrieben; bei langen Serien dauert das
 		einen Moment. <b>Nicht möglich</b> ist, einer Serie Termine hinzuzufügen oder ihre Regel auf andere
 		Tage zu ändern (GroupWise legt die Termine einer Serie beim Anlegen an) – löschen Sie dann die
@@ -971,7 +975,9 @@ eingestellten Abstands, mit der Sofort-Meldung des Servers nach wenigen Sekunden
 		angelegt.<br>
 		Alte Serien, die GroupWise ohne Regel führt (angelegt mit sehr alten Versionen), erscheinen
 		weiterhin als einzelne Termine. Eine neue Serie (täglich, wöchentlich, monatlich, jährlich) legen
-		Sie in Evolution wie gewohnt mit einer Wiederholung an.</li>
+		Sie in Evolution wie gewohnt mit einer Wiederholung an; Ausnahmen, die Sie dabei auf der Seite
+		<span class="menu">Wiederholung</span> eintragen (etwa das Wochenende einer täglichen Serie),
+		werden übernommen – für diese Tage entsteht kein Termin.</li>
 	<li>Ein neuer Termin in einem Unterkalender wird direkt in diesem Unterkalender angelegt, bei Serien
 		jeder einzelne Termin.</li>
 	<li>Ein Termin, den Sie in GroupWise angefangen und noch nicht gespeichert oder gesendet haben (er

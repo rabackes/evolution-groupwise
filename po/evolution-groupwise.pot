@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: evolution-groupwise\n"
 "Report-Msgid-Bugs-To: rbackes@bond.de\n"
-"POT-Creation-Date: 2026-10-12 15:38+0200\n"
+"POT-Creation-Date: 2026-10-12 16:07+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -138,11 +138,11 @@ msgstr ""
 msgid "GroupWise does not support this kind of recurrence"
 msgstr ""
 
-#: src/calendar/e-gw-calendar.c:1612
+#: src/calendar/e-gw-calendar.c:1638
 msgid "The item on the server is of another kind"
 msgstr ""
 
-#: src/calendar/e-gw-calendar.c:1627
+#: src/calendar/e-gw-calendar.c:1653
 msgid "Cannot read the item on the server"
 msgstr ""
 
@@ -504,7 +504,7 @@ msgstr ""
 #: src/evolution/e-groupwise-share-accept.c:314
 #: src/evolution/e-groupwise-share-tab.c:789
 #: src/evolution/e-groupwise-signatures-tab.c:228
-#: src/evolution/e-groupwise-travel-page.c:849
+#: src/evolution/e-groupwise-travel-page.c:890
 msgid "_Cancel"
 msgstr ""
 
@@ -2529,19 +2529,25 @@ msgstr ""
 msgid "Travel times before/after the appointment are the _same"
 msgstr ""
 
-#: src/evolution/e-groupwise-travel-page.c:845
+#: src/evolution/e-groupwise-travel-page.c:883
 msgid "The appointment overlaps with busy time in your calendar"
 msgstr ""
 
-#: src/evolution/e-groupwise-travel-page.c:848
+#: src/evolution/e-groupwise-travel-page.c:886
 msgid "The preparation and travel time of the appointment counts, too."
 msgstr ""
 
-#: src/evolution/e-groupwise-travel-page.c:850
+#: src/evolution/e-groupwise-travel-page.c:888
+msgid ""
+"The following appointments of the series are checked as well: they matter "
+"when you save the change for this and future instances or for all."
+msgstr ""
+
+#: src/evolution/e-groupwise-travel-page.c:891
 msgid "_Save Anyway"
 msgstr ""
 
-#: src/evolution/e-groupwise-travel-page.c:1272
+#: src/evolution/e-groupwise-travel-page.c:1313
 msgid "_Travel Time"
 msgstr ""
 

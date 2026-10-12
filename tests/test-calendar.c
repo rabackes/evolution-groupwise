@@ -824,6 +824,18 @@ test_write_recurrence (void)
 	g_free (xml);
 	g_object_unref (comp);
 
+	/* Days left out: the weekend of a daily series (one given in UTC, late
+	 * in the evening of the day before) */
+	comp = ical ("BEGIN:VEVENT\r\nUID:evo-6b\r\nSUMMARY:Werktags\r\n"
+		"DTSTART;TZID=Europe/Berlin:20261015T000500\r\nDTEND;TZID=Europe/Berlin:20261015T003000\r\n"
+		"RRULE:FREQ=DAILY;COUNT=7\r\nEXDATE;TZID=Europe/Berlin:20261017T000500\r\n"
+		"EXDATE:20261017T220500Z\r\nEND:VEVENT\r\n");
+	xml = e_gw_calendar_item_xml (comp, NULL, berlin (), NULL, &error);
+	g_assert_no_error (error);
+	assert_contains (xml, "</rrule><exdate><date>2026-10-17</date><date>2026-10-18</date></exdate>");
+	g_free (xml);
+	g_object_unref (comp);
+
 	comp = ical ("BEGIN:VEVENT\r\nUID:evo-7\r\nSUMMARY:Monatlich\r\nDTSTART:20261013T080000Z\r\n"
 		"RRULE:FREQ=MONTHLY;COUNT=6;BYDAY=2TU\r\nEND:VEVENT\r\n");
 	xml = e_gw_calendar_item_xml (comp, NULL, berlin (), NULL, &error);

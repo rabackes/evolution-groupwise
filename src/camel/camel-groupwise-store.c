@@ -1001,6 +1001,7 @@ events_refresh_folders (CamelGroupwiseStore *store,
 	GHashTable *refresh = g_hash_table_new_full (g_str_hash, g_str_equal, g_free, NULL);	/* full names */
 	GPtrArray *opened = camel_store_dup_opened_folders (CAMEL_STORE (store));
 	gboolean any_added = FALSE, any_trash = FALSE, calendar = FALSE;
+	GString *calendar_folders = g_string_new (NULL);	/* " ID ID", or " *": whichever */
 	gboolean know_folders = !camel_groupwise_store_summary_is_empty (summary);
 	GHashTableIter iter;
 	gpointer key;
@@ -1024,15 +1025,21 @@ events_refresh_folders (CamelGroupwiseStore *store,
 		if (g_str_equal (event->type, "ItemAccept") || g_str_equal (event->type, "ItemDecline") ||
 		    g_str_equal (event->type, "ItemComplete") || g_str_equal (event->type, "ItemUncomplete")) {
 			calendar = TRUE;
+			/* (they name no folder) */
+			g_string_append (calendar_folders, " *");
 			continue;
 		}
-		if (know_folders && !calendar) {
+		if (know_folders) {
 			const gchar *ids[] = { event->container, event->from };
 
-			for (jj = 0; jj < G_N_ELEMENTS (ids) && !calendar; jj++) {
+			for (jj = 0; jj < G_N_ELEMENTS (ids); jj++) {
 				gchar *full_name = ids[jj] ? camel_groupwise_store_summary_dup_full_name (summary, ids[jj]) : NULL;
 
-				calendar = ids[jj] && !full_name;
+				if (ids[jj] && !full_name) {
+					calendar = TRUE;
+					if (!strstr (calendar_folders->str, ids[jj]))
+						g_string_append_printf (calendar_folders, " %s", ids[jj]);
+				}
 				g_free (full_name);
 			}
 		}
@@ -1106,10 +1113,23 @@ events_refresh_folders (CamelGroupwiseStore *store,
 	/* Calendars and lists are another process's: who watches the number
 	 * (the Evolution module) has them refreshed */
 	if (calendar) {
+		/* In which folders: added to what is not fetched yet */
+		for (;;) {
+			gchar *old = g_object_get_data (G_OBJECT (store), CAMEL_GROUPWISE_STORE_CALENDAR_FOLDERS);
+			gchar *all = g_strconcat (old ? old : "", calendar_folders->str, NULL);
+
+			if (g_object_replace_data (G_OBJECT (store), CAMEL_GROUPWISE_STORE_CALENDAR_FOLDERS, old, all, g_free, NULL)) {
+				/* (what was replaced is the caller's) */
+				g_free (old);
+				break;
+			}
+			g_free (all);
+		}
 		g_object_set_data (G_OBJECT (store), CAMEL_GROUPWISE_STORE_CALENDAR_EVENTS,
 			GUINT_TO_POINTER (++store->events_calendar));
-		g_debug ("events: calendars and lists");
+		g_debug ("events: calendars and lists (%s )", calendar_folders->str);
 	}
+	g_string_free (calendar_folders, TRUE);
 
 	if (opened)
 		g_ptr_array_unref (opened);
