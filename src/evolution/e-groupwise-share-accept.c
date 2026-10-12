@@ -58,6 +58,7 @@ typedef struct {
 	GPtrArray *folders;	/* EGwFolder */
 
 	gchar *name, *description, *container;
+	gint color;		/* of a calendar, as GroupWise keeps it; -1: none */
 } AcceptData;
 
 static void
@@ -126,6 +127,16 @@ accept_thread (GTask *task,
 
 	id = e_gw_connection_accept_share_sync (data->cnc, data->offer->id, data->name, data->description,
 		data->container, cancellable, &error);
+	/* The color the calendar gets in Evolution is the one it has in GroupWise */
+	if (id && data->color >= 0) {
+		gchar *updates = g_strdup_printf ("<update><calendarAttribute><color>%d</color></calendarAttribute></update>", data->color);
+		GError *local_error = NULL;
+
+		if (!e_gw_connection_modify_item_sync (data->cnc, id, updates, cancellable, &local_error))
+			g_debug ("color of %s: %s", id, local_error ? local_error->message : "?");
+		g_clear_error (&local_error);
+		g_free (updates);
+	}
 	if (id)
 		g_task_return_pointer (task, id, g_free);
 	else
@@ -327,7 +338,7 @@ static gboolean
 run_dialog (AcceptData *data,
 	    GtkWindow *parent)
 {
-	GtkWidget *dialog, *box, *grid, *label, *name, *scrolled, *description, *view;
+	GtkWidget *dialog, *box, *grid, *label, *name, *scrolled, *description, *view, *color = NULL;
 	GtkTreeStore *store;
 	GtkTreeSelection *selection = NULL;
 	GtkTreePath *cabinet;
@@ -411,6 +422,22 @@ run_dialog (AcceptData *data,
 	gtk_container_add (GTK_CONTAINER (scrolled), description);
 	gtk_grid_attach (GTK_GRID (grid), scrolled, 1, row++, 1, 1);
 
+	if (calendar) {
+		/* Some of the colors Evolution offers for calendars */
+		static const gchar *colors[] = { "#62a0ea", "#57e389", "#f8e45c", "#ffa348", "#ed333b", "#c061cb", "#b5835a", "#5bc8af" };
+		GdkRGBA rgba;
+
+		label = left_label (_("C_olor:"), TRUE);
+		gtk_widget_set_valign (label, GTK_ALIGN_CENTER);
+		gtk_grid_attach (GTK_GRID (grid), label, 0, row, 1, 1);
+		gdk_rgba_parse (&rgba, colors[g_random_int_range (0, G_N_ELEMENTS (colors))]);
+		color = gtk_color_button_new_with_rgba (&rgba);
+		gtk_widget_set_halign (color, GTK_ALIGN_START);
+		gtk_widget_set_tooltip_text (color, _("The color of the calendar, here and in GroupWise"));
+		gtk_label_set_mnemonic_widget (GTK_LABEL (label), color);
+		gtk_grid_attach (GTK_GRID (grid), color, 1, row++, 1, 1);
+	}
+
 	if (!calendar) {
 		/* Where the folder goes; a calendar goes beside the others */
 		label = left_label (_("_Position:"), TRUE);
@@ -450,6 +477,14 @@ run_dialog (AcceptData *data,
 		data->name = g_strstrip (g_strdup (gtk_entry_get_text (GTK_ENTRY (name))));
 		gtk_text_buffer_get_bounds (buffer, &start, &end);
 		data->description = g_strstrip (gtk_text_buffer_get_text (buffer, &start, &end, FALSE));
+		if (color) {
+			GdkRGBA rgba;
+
+			/* COLORREF: red in the lowest byte */
+			gtk_color_chooser_get_rgba (GTK_COLOR_CHOOSER (color), &rgba);
+			data->color = (gint) (rgba.red * 255 + 0.5) | ((gint) (rgba.green * 255 + 0.5) << 8) |
+				((gint) (rgba.blue * 255 + 0.5) << 16);
+		}
 		if (selection && gtk_tree_selection_get_selected (selection, &model, &iter))
 			gtk_tree_model_get (model, &iter, COL_ID, &data->container, -1);
 		for (guint ii = 0; calendar && !data->container && ii < data->folders->len; ii++) {
@@ -536,6 +571,7 @@ e_groupwise_share_accept_run (EShellView *shell_view,
 
 	data = g_new0 (AcceptData, 1);
 	data->ref_count = 1;
+	data->color = -1;
 	data->shell_view = g_object_ref (shell_view);
 	data->registry = g_object_ref (registry);
 	data->account = g_object_ref (account);

@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: evolution-groupwise\n"
 "Report-Msgid-Bugs-To: rbackes@bond.de\n"
-"POT-Creation-Date: 2026-10-12 09:59+0200\n"
+"POT-Creation-Date: 2026-10-12 10:11+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -388,55 +388,55 @@ msgid "A folder name must not contain \"/\""
 msgstr ""
 
 #: src/camel/camel-groupwise-store-summary.c:387
-#: src/evolution/e-groupwise-share-accept.c:219
+#: src/evolution/e-groupwise-share-accept.c:230
 msgid "Mailbox"
 msgstr ""
 
 #: src/camel/camel-groupwise-store-summary.c:388
 #: src/evolution/e-groupwise-junk-tab.c:528
-#: src/evolution/e-groupwise-share-accept.c:220
+#: src/evolution/e-groupwise-share-accept.c:231
 msgid "Junk Mail"
 msgstr ""
 
 #: src/camel/camel-groupwise-store-summary.c:389
-#: src/evolution/e-groupwise-share-accept.c:221
+#: src/evolution/e-groupwise-share-accept.c:232
 msgid "Trash"
 msgstr ""
 
 #: src/camel/camel-groupwise-store-summary.c:390
-#: src/evolution/e-groupwise-share-accept.c:222
+#: src/evolution/e-groupwise-share-accept.c:233
 msgid "Sent Items"
 msgstr ""
 
 #: src/camel/camel-groupwise-store-summary.c:391
-#: src/evolution/e-groupwise-share-accept.c:223
+#: src/evolution/e-groupwise-share-accept.c:234
 msgid "Work In Progress"
 msgstr ""
 
 #: src/camel/camel-groupwise-store-summary.c:392
-#: src/evolution/e-groupwise-share-accept.c:224
+#: src/evolution/e-groupwise-share-accept.c:235
 msgid "Cabinet"
 msgstr ""
 
 #: src/camel/camel-groupwise-store-summary.c:393
 #: src/camel/camel-groupwise-store-summary.c:394
-#: src/evolution/e-groupwise-share-accept.c:225
+#: src/evolution/e-groupwise-share-accept.c:236
 msgid "Tasklist"
 msgstr ""
 
 #: src/camel/camel-groupwise-store-summary.c:395
-#: src/evolution/e-groupwise-share-accept.c:226
+#: src/evolution/e-groupwise-share-accept.c:237
 #: src/registry/module-groupwise-backend.c:276
 msgid "Calendar"
 msgstr ""
 
 #: src/camel/camel-groupwise-store-summary.c:396
-#: src/evolution/e-groupwise-share-accept.c:227
+#: src/evolution/e-groupwise-share-accept.c:238
 msgid "Contacts"
 msgstr ""
 
 #: src/camel/camel-groupwise-store-summary.c:397
-#: src/evolution/e-groupwise-share-accept.c:228
+#: src/evolution/e-groupwise-share-accept.c:239
 msgid "Documents"
 msgstr ""
 
@@ -490,7 +490,7 @@ msgstr ""
 #: src/evolution/e-groupwise-sent-items.c:457
 #: src/evolution/e-groupwise-sent-items.c:508
 #: src/evolution/e-groupwise-settings-window.c:375
-#: src/evolution/e-groupwise-share-accept.c:346
+#: src/evolution/e-groupwise-share-accept.c:357
 #: src/evolution/e-groupwise-share-tab.c:776
 #: src/evolution/e-groupwise-signatures-tab.c:228
 #: src/evolution/e-groupwise-travel-page.c:773
@@ -553,7 +553,7 @@ msgid "_Remove User"
 msgstr ""
 
 #: src/evolution/e-groupwise-access-tab.c:270
-#: src/evolution/e-groupwise-share-accept.c:186
+#: src/evolution/e-groupwise-share-accept.c:197
 #: src/evolution/e-groupwise-share-tab.c:72
 msgid "Read"
 msgstr ""
@@ -1887,80 +1887,88 @@ msgstr ""
 msgid "Reading the settings from the server…"
 msgstr ""
 
-#: src/evolution/e-groupwise-share-accept.c:111
+#: src/evolution/e-groupwise-share-accept.c:112
 msgid "accepting the shared folder"
 msgstr ""
 
-#: src/evolution/e-groupwise-share-accept.c:189
+#: src/evolution/e-groupwise-share-accept.c:200
 #: src/evolution/e-groupwise-share-tab.c:73
 msgid "Add"
 msgstr ""
 
-#: src/evolution/e-groupwise-share-accept.c:191
+#: src/evolution/e-groupwise-share-accept.c:202
 #: src/evolution/e-groupwise-share-tab.c:74
 msgid "Edit"
 msgstr ""
 
-#: src/evolution/e-groupwise-share-accept.c:193
+#: src/evolution/e-groupwise-share-accept.c:204
 #: src/evolution/e-groupwise-share-tab.c:75
 msgid "Delete"
 msgstr ""
 
-#: src/evolution/e-groupwise-share-accept.c:238
+#: src/evolution/e-groupwise-share-accept.c:249
 #, c-format
 msgid "%s Home"
 msgstr ""
 
-#: src/evolution/e-groupwise-share-accept.c:344
+#: src/evolution/e-groupwise-share-accept.c:355
 msgid "Install Shared Calendar"
 msgstr ""
 
-#: src/evolution/e-groupwise-share-accept.c:344
+#: src/evolution/e-groupwise-share-accept.c:355
 msgid "Install Shared Folder"
 msgstr ""
 
-#: src/evolution/e-groupwise-share-accept.c:346
+#: src/evolution/e-groupwise-share-accept.c:357
 msgid "_Install"
 msgstr ""
 
-#: src/evolution/e-groupwise-share-accept.c:355
+#: src/evolution/e-groupwise-share-accept.c:366
 #, c-format
 msgid "%s shared the calendar “%s” with you."
 msgstr ""
 
-#: src/evolution/e-groupwise-share-accept.c:358
+#: src/evolution/e-groupwise-share-accept.c:369
 #, c-format
 msgid "%s shared the folder “%s” with you."
 msgstr ""
 
-#: src/evolution/e-groupwise-share-accept.c:372
+#: src/evolution/e-groupwise-share-accept.c:383
 #, c-format
 msgid "Message from %s:"
 msgstr ""
 
-#: src/evolution/e-groupwise-share-accept.c:382
+#: src/evolution/e-groupwise-share-accept.c:393
 msgid "Your access rights:"
 msgstr ""
 
-#: src/evolution/e-groupwise-share-accept.c:387
+#: src/evolution/e-groupwise-share-accept.c:398
 msgid "_Name:"
 msgstr ""
 
-#: src/evolution/e-groupwise-share-accept.c:399
+#: src/evolution/e-groupwise-share-accept.c:410
 msgid "_Description:"
 msgstr ""
 
-#: src/evolution/e-groupwise-share-accept.c:416
+#: src/evolution/e-groupwise-share-accept.c:430
+msgid "C_olor:"
+msgstr ""
+
+#: src/evolution/e-groupwise-share-accept.c:436
+msgid "The color of the calendar, here and in GroupWise"
+msgstr ""
+
+#: src/evolution/e-groupwise-share-accept.c:443
 msgid "_Position:"
 msgstr ""
 
-#: src/evolution/e-groupwise-share-accept.c:424
+#: src/evolution/e-groupwise-share-accept.c:451
 msgid ""
 "The new folder is put into the folder selected here; the topmost row puts it "
 "beside the Cabinet"
 msgstr ""
 
-#: src/evolution/e-groupwise-share-accept.c:485
+#: src/evolution/e-groupwise-share-accept.c:520
 msgid "Shared address books cannot be installed here yet"
 msgstr ""
 

@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: evolution-groupwise\n"
 "Report-Msgid-Bugs-To: rbackes@bond.de\n"
-"POT-Creation-Date: 2026-10-12 09:59+0200\n"
+"POT-Creation-Date: 2026-10-12 10:11+0200\n"
 "PO-Revision-Date: 2026-09-27 18:27+0200\n"
 "Last-Translator: Automatically generated\n"
 "Language-Team: none\n"
@@ -81,29 +81,38 @@ msgstr "noch keine Antwort"
 msgid ""
 "The owner of this shared calendar did not grant you the right to add "
 "appointments to it."
-msgstr "Der Eigentümer dieses freigegebenen Kalenders hat Ihnen nicht das Recht gegeben, Termine hinzuzufügen."
+msgstr ""
+"Der Eigentümer dieses freigegebenen Kalenders hat Ihnen nicht das Recht "
+"gegeben, Termine hinzuzufügen."
 
 #: src/calendar/e-cal-backend-groupwise.c:2293
 msgid ""
 "The owner of this shared calendar did not grant you the right to delete "
 "appointments from it."
-msgstr "Der Eigentümer dieses freigegebenen Kalenders hat Ihnen nicht das Recht gegeben, Termine zu löschen."
+msgstr ""
+"Der Eigentümer dieses freigegebenen Kalenders hat Ihnen nicht das Recht "
+"gegeben, Termine zu löschen."
 
 #: src/calendar/e-cal-backend-groupwise.c:2296
 msgid ""
 "The owner of this shared calendar did not grant you the right to change its "
 "appointments."
-msgstr "Der Eigentümer dieses freigegebenen Kalenders hat Ihnen nicht das Recht gegeben, Termine zu bearbeiten."
+msgstr ""
+"Der Eigentümer dieses freigegebenen Kalenders hat Ihnen nicht das Recht "
+"gegeben, Termine zu bearbeiten."
 
 #: src/calendar/e-cal-backend-groupwise.c:2370
 msgid ""
 "A shared calendar takes appointments without attendees only. Create the "
 "meeting in your own calendar."
-msgstr "In einen freigegebenen Kalender können nur Termine ohne Teilnehmer eingetragen werden. Legen Sie die Besprechung in Ihrem eigenen Kalender an."
+msgstr ""
+"In einen freigegebenen Kalender können nur Termine ohne Teilnehmer "
+"eingetragen werden. Legen Sie die Besprechung in Ihrem eigenen Kalender an."
 
 #: src/calendar/e-cal-backend-groupwise.c:2640
 msgid "The server did not delete the appointment from the shared calendar."
-msgstr "Der Server hat den Termin nicht aus dem freigegebenen Kalender gelöscht."
+msgstr ""
+"Der Server hat den Termin nicht aus dem freigegebenen Kalender gelöscht."
 
 #: src/calendar/e-cal-backend-groupwise.c:2682
 #, c-format
@@ -416,55 +425,55 @@ msgid "A folder name must not contain \"/\""
 msgstr "Ein Ordnername darf kein „/“ enthalten"
 
 #: src/camel/camel-groupwise-store-summary.c:387
-#: src/evolution/e-groupwise-share-accept.c:219
+#: src/evolution/e-groupwise-share-accept.c:230
 msgid "Mailbox"
 msgstr "Mailbox"
 
 #: src/camel/camel-groupwise-store-summary.c:388
 #: src/evolution/e-groupwise-junk-tab.c:528
-#: src/evolution/e-groupwise-share-accept.c:220
+#: src/evolution/e-groupwise-share-accept.c:231
 msgid "Junk Mail"
 msgstr "Junkmail"
 
 #: src/camel/camel-groupwise-store-summary.c:389
-#: src/evolution/e-groupwise-share-accept.c:221
+#: src/evolution/e-groupwise-share-accept.c:232
 msgid "Trash"
 msgstr "Papierkorb"
 
 #: src/camel/camel-groupwise-store-summary.c:390
-#: src/evolution/e-groupwise-share-accept.c:222
+#: src/evolution/e-groupwise-share-accept.c:233
 msgid "Sent Items"
 msgstr "Ausgangsnachrichten"
 
 #: src/camel/camel-groupwise-store-summary.c:391
-#: src/evolution/e-groupwise-share-accept.c:223
+#: src/evolution/e-groupwise-share-accept.c:234
 msgid "Work In Progress"
 msgstr "In Arbeit"
 
 #: src/camel/camel-groupwise-store-summary.c:392
-#: src/evolution/e-groupwise-share-accept.c:224
+#: src/evolution/e-groupwise-share-accept.c:235
 msgid "Cabinet"
 msgstr "Aktenschrank"
 
 #: src/camel/camel-groupwise-store-summary.c:393
 #: src/camel/camel-groupwise-store-summary.c:394
-#: src/evolution/e-groupwise-share-accept.c:225
+#: src/evolution/e-groupwise-share-accept.c:236
 msgid "Tasklist"
 msgstr "Jobliste"
 
 #: src/camel/camel-groupwise-store-summary.c:395
-#: src/evolution/e-groupwise-share-accept.c:226
+#: src/evolution/e-groupwise-share-accept.c:237
 #: src/registry/module-groupwise-backend.c:276
 msgid "Calendar"
 msgstr "Kalender"
 
 #: src/camel/camel-groupwise-store-summary.c:396
-#: src/evolution/e-groupwise-share-accept.c:227
+#: src/evolution/e-groupwise-share-accept.c:238
 msgid "Contacts"
 msgstr "Kontakte"
 
 #: src/camel/camel-groupwise-store-summary.c:397
-#: src/evolution/e-groupwise-share-accept.c:228
+#: src/evolution/e-groupwise-share-accept.c:239
 msgid "Documents"
 msgstr "Dokumente"
 
@@ -518,7 +527,7 @@ msgstr "Proxy-Zugriff gewähren"
 #: src/evolution/e-groupwise-sent-items.c:457
 #: src/evolution/e-groupwise-sent-items.c:508
 #: src/evolution/e-groupwise-settings-window.c:375
-#: src/evolution/e-groupwise-share-accept.c:346
+#: src/evolution/e-groupwise-share-accept.c:357
 #: src/evolution/e-groupwise-share-tab.c:776
 #: src/evolution/e-groupwise-signatures-tab.c:228
 #: src/evolution/e-groupwise-travel-page.c:773
@@ -583,7 +592,7 @@ msgid "_Remove User"
 msgstr "Benutzer _entfernen"
 
 #: src/evolution/e-groupwise-access-tab.c:270
-#: src/evolution/e-groupwise-share-accept.c:186
+#: src/evolution/e-groupwise-share-accept.c:197
 #: src/evolution/e-groupwise-share-tab.c:72
 msgid "Read"
 msgstr "Lesen"
@@ -861,7 +870,9 @@ msgstr "_Freigabe …"
 
 #: src/evolution/e-groupwise-mail-ui.c:1231
 msgid "Share the calendar with other GroupWise users, or see who shares it"
-msgstr "Den Kalender für andere GroupWise-Benutzer freigeben oder sehen, wer ihn freigibt"
+msgstr ""
+"Den Kalender für andere GroupWise-Benutzer freigeben oder sehen, wer ihn "
+"freigibt"
 
 #: src/evolution/e-groupwise-mail-ui.c:1261
 msgid "_Restore"
@@ -1985,74 +1996,82 @@ msgstr "_OK"
 msgid "Reading the settings from the server…"
 msgstr "Die Einstellungen werden vom Server gelesen …"
 
-#: src/evolution/e-groupwise-share-accept.c:111
+#: src/evolution/e-groupwise-share-accept.c:112
 msgid "accepting the shared folder"
 msgstr "Annehmen des freigegebenen Ordners"
 
-#: src/evolution/e-groupwise-share-accept.c:189
+#: src/evolution/e-groupwise-share-accept.c:200
 #: src/evolution/e-groupwise-share-tab.c:73
 msgid "Add"
 msgstr "Hinzufügen"
 
-#: src/evolution/e-groupwise-share-accept.c:191
+#: src/evolution/e-groupwise-share-accept.c:202
 #: src/evolution/e-groupwise-share-tab.c:74
 msgid "Edit"
 msgstr "Bearbeiten"
 
-#: src/evolution/e-groupwise-share-accept.c:193
+#: src/evolution/e-groupwise-share-accept.c:204
 #: src/evolution/e-groupwise-share-tab.c:75
 msgid "Delete"
 msgstr "Löschen"
 
-#: src/evolution/e-groupwise-share-accept.c:238
+#: src/evolution/e-groupwise-share-accept.c:249
 #, c-format
 msgid "%s Home"
 msgstr "%s Basisordner"
 
-#: src/evolution/e-groupwise-share-accept.c:344
+#: src/evolution/e-groupwise-share-accept.c:355
 msgid "Install Shared Calendar"
 msgstr "Freigegebenen Kalender installieren"
 
-#: src/evolution/e-groupwise-share-accept.c:344
+#: src/evolution/e-groupwise-share-accept.c:355
 msgid "Install Shared Folder"
 msgstr "Freigegebenen Ordner installieren"
 
-#: src/evolution/e-groupwise-share-accept.c:346
+#: src/evolution/e-groupwise-share-accept.c:357
 msgid "_Install"
 msgstr "_Installieren"
 
-#: src/evolution/e-groupwise-share-accept.c:355
+#: src/evolution/e-groupwise-share-accept.c:366
 #, c-format
 msgid "%s shared the calendar “%s” with you."
 msgstr "%s hat den Kalender „%s“ für Sie freigegeben."
 
-#: src/evolution/e-groupwise-share-accept.c:358
+#: src/evolution/e-groupwise-share-accept.c:369
 #, c-format
 msgid "%s shared the folder “%s” with you."
 msgstr "%s hat den Ordner „%s“ für Sie freigegeben."
 
-#: src/evolution/e-groupwise-share-accept.c:372
+#: src/evolution/e-groupwise-share-accept.c:383
 #, c-format
 msgid "Message from %s:"
 msgstr "Mitteilung von %s:"
 
-#: src/evolution/e-groupwise-share-accept.c:382
+#: src/evolution/e-groupwise-share-accept.c:393
 msgid "Your access rights:"
 msgstr "Ihre Zugriffsrechte:"
 
-#: src/evolution/e-groupwise-share-accept.c:387
+#: src/evolution/e-groupwise-share-accept.c:398
 msgid "_Name:"
 msgstr "_Name:"
 
-#: src/evolution/e-groupwise-share-accept.c:399
+#: src/evolution/e-groupwise-share-accept.c:410
 msgid "_Description:"
 msgstr "_Beschreibung:"
 
-#: src/evolution/e-groupwise-share-accept.c:416
+#: src/evolution/e-groupwise-share-accept.c:430
+msgid "C_olor:"
+msgstr "_Farbe:"
+
+#: src/evolution/e-groupwise-share-accept.c:436
+msgid "The color of the calendar, here and in GroupWise"
+msgstr "Die Farbe des Kalenders, hier und in GroupWise"
+
+#: src/evolution/e-groupwise-share-accept.c:443
 msgid "_Position:"
 msgstr "_Position:"
 
-#: src/evolution/e-groupwise-share-accept.c:424
+#: src/evolution/e-groupwise-share-accept.c:451
 msgid ""
 "The new folder is put into the folder selected here; the topmost row puts it "
 "beside the Cabinet"
@@ -2060,7 +2079,7 @@ msgstr ""
 "Der neue Ordner wird in dem hier markierten Ordner angelegt; die oberste "
 "Zeile legt ihn neben dem Aktenschrank an"
 
-#: src/evolution/e-groupwise-share-accept.c:485
+#: src/evolution/e-groupwise-share-accept.c:520
 msgid "Shared address books cannot be installed here yet"
 msgstr "Freigegebene Adressbücher können hier noch nicht installiert werden"
 
@@ -2113,7 +2132,9 @@ msgstr "_Senden"
 msgid ""
 "The new participants are sent a notification that you shared this calendar "
 "with them. You may add a message for them."
-msgstr "Die neuen Teilnehmer erhalten eine Benachrichtigung, dass Sie diesen Kalender für sie freigegeben haben. Sie können eine Mitteilung hinzufügen."
+msgstr ""
+"Die neuen Teilnehmer erhalten eine Benachrichtigung, dass Sie diesen "
+"Kalender für sie freigegeben haben. Sie können eine Mitteilung hinzufügen."
 
 #: src/evolution/e-groupwise-share-tab.c:786
 msgid ""
@@ -2159,7 +2180,9 @@ msgstr "Die Änderungen an der Freigabe des Ordners übernehmen?"
 msgid ""
 "You changed whom the calendar is shared with or what they may do, and did "
 "not apply that yet."
-msgstr "Sie haben geändert, für wen der Kalender freigegeben ist oder was die Benutzer dürfen, und das noch nicht übernommen."
+msgstr ""
+"Sie haben geändert, für wen der Kalender freigegeben ist oder was die "
+"Benutzer dürfen, und das noch nicht übernommen."
 
 #: src/evolution/e-groupwise-share-tab.c:921
 msgid ""
@@ -2245,7 +2268,9 @@ msgstr "Freigabe ü_bernehmen"
 
 #: src/evolution/e-groupwise-share-tab.c:1118
 msgid "Share the calendar as set here; new users are sent a notification"
-msgstr "Den Kalender wie hier eingestellt freigeben; neue Benutzer erhalten eine Benachrichtigung"
+msgstr ""
+"Den Kalender wie hier eingestellt freigeben; neue Benutzer erhalten eine "
+"Benachrichtigung"
 
 #: src/evolution/e-groupwise-share-tab.c:1119
 msgid "Share the folder as set here; new users are sent a notification"

@@ -557,7 +557,7 @@ Wählen Sie im Kontextmenü des Kalenders `Freigabe …`. Es öffnet sich der Di
 
 ### Eine Kalender-Freigabe annehmen
 
-Die Nachricht **Benachrichtigung über freigegebenen Kalender: …** kommt in der Mailbox an. Ein Doppelklick darauf (oder `Nachricht → Freigegebenen Ordner installieren …`) öffnet den Dialog **Freigegebenen Kalender installieren** mit dem Absender, seiner Mitteilung, Ihren Rechten sowie Name und Beschreibung, unter denen der Kalender bei Ihnen erscheinen soll. Eine Position gibt es hier nicht zu wählen: Der Kalender kommt zu Ihren anderen Kalendern. Nach `Installieren` erscheint er nach wenigen Sekunden in der Kalenderansicht, mit dem Namen des Eigentümers in Klammern.
+Die Nachricht **Benachrichtigung über freigegebenen Kalender: …** kommt in der Mailbox an. Ein Doppelklick darauf (oder `Nachricht → Freigegebenen Ordner installieren …`) öffnet den Dialog **Freigegebenen Kalender installieren** mit dem Absender, seiner Mitteilung, Ihren Rechten sowie Name und Beschreibung, unter denen der Kalender bei Ihnen erscheinen soll, und der **Farbe**, die er in Evolution und im GroupWise-Client bekommt (später in Evolution über die Eigenschaften des Kalenders änderbar). Eine Position gibt es hier nicht zu wählen: Der Kalender kommt zu Ihren anderen Kalendern. Nach `Installieren` erscheint er nach wenigen Sekunden in der Kalenderansicht, mit dem Namen des Eigentümers in Klammern.
 
 ### In einem freigegebenen Kalender arbeiten
 
