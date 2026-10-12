@@ -425,6 +425,8 @@ test_mime_plain (void)
 	assert_text (item, "subject", "Grüße");
 	g_assert_null (e_gw_xml_find (item, "source"));
 	assert_text (item, "options/priority", "High");
+	/* No receipt asked for */
+	g_assert_null (e_gw_xml_find (item, "distribution/sendoptions"));
 
 	recipients = e_gw_xml_find (item, "distribution/recipients");
 	assert_text (nth_child (recipients, "recipient", 0), "displayName", "Rainer Backes");
@@ -564,6 +566,32 @@ test_mime_html_only (void)
 	g_free (text);
 	assert_text (item, "attachments/attachment/name", "Text.htm");
 
+	xmlFreeDoc (doc);
+}
+
+/* The composer's "Request Read Receipt" is GroupWise's return notification */
+static void
+test_mime_read_receipt (void)
+{
+	xmlDoc *doc;
+	xmlNode *item;
+	const gchar *raw =
+		"From: User One <one@example.com>\r\n"
+		"To: User Two <two@example.com>\r\n"
+		"Subject: Bitte lesen\r\n"
+		"Disposition-Notification-To: User One <one@example.com>\r\n"
+		"Content-Type: text/plain; charset=UTF-8\r\n"
+		"\r\n"
+		"Text\r\n";
+
+	item = item_of (raw, NULL, FALSE, &doc);
+	assert_text (item, "distribution/sendoptions/notification/opened/mail", "1");
+	g_assert_null (e_gw_xml_find (item, "distribution/sendoptions/notification/deleted"));
+	xmlFreeDoc (doc);
+
+	/* A draft is not sent */
+	item = item_of (raw, NULL, TRUE, &doc);
+	g_assert_null (e_gw_xml_find (item, "distribution/sendoptions"));
 	xmlFreeDoc (doc);
 }
 
@@ -726,6 +754,7 @@ main (int argc,
 	g_test_add_func ("/mime/plain", test_mime_plain);
 	g_test_add_func ("/mime/html", test_mime_html);
 	g_test_add_func ("/mime/html-only", test_mime_html_only);
+	g_test_add_func ("/mime/read-receipt", test_mime_read_receipt);
 	g_test_add_func ("/mime/envelope", test_mime_envelope);
 	g_test_add_func ("/mime/draft", test_mime_draft);
 	g_test_add_func ("/mime/signed", test_mime_signed);

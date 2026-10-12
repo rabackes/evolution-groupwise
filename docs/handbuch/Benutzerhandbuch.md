@@ -281,6 +281,12 @@ Wie im GroupWise-Client sehen Sie bei gesendeten Nachrichten, was bei den Empfä
 
 - `Zurückziehen …` holt die ausgewählten Nachrichten nach einer Rückfrage aus den Postfächern der Empfänger in GroupWise zurück. Die gesendete Nachricht bleibt in den Ausgangsnachrichten; ihr Zustellstatus zeigt die Empfänger dann als „Zurückgezogen“. Empfänger außerhalb von GroupWise haben die Nachricht bereits erhalten. Bei einem nur lesbaren Konto fehlt der Eintrag.
 
+### Benachrichtigung, wenn der Empfänger öffnet
+
+Kreuzen Sie im Editor `Optionen → Lesebestätigung anfordern` an, fordert Evolution bei GroupWise die **Rückmeldung „Wenn geöffnet“** als Mail an (im GroupWise-Client: *Sendeoptionen → Rückmeldung → Wenn geöffnet: Mail-Empfang*). Sobald ein Empfänger im GroupWise-System die Nachricht öffnet, legt GroupWise Ihnen eine Nachricht „*Name* opened *Betreff*“ in die Mailbox – ohne Zutun des Empfängers; er wird nicht gefragt. Für Empfänger im Internet fordert GroupWise eine gewöhnliche Lesebestätigung an, über die deren Mailprogramm entscheidet.
+
+Soll das für jede Nachricht gelten, schalten Sie unter `Bearbeiten → Einstellungen → Editoreinstellungen → Allgemein` „Lesebestätigung immer anfordern“ ein. Unabhängig davon zeigt `Zustellstatus …` in den Ausgangsnachrichten jederzeit, wer eine Nachricht zugestellt bekommen, geöffnet oder gelöscht hat.
+
 ### Telefonnachrichten
 
 Eine Telefonnachricht hält für jemanden fest, wer in seiner Abwesenheit angerufen hat. Wählen Sie `Datei → Neu → Telefonnachricht` oder denselben Eintrag im Aufklappmenü des Knopfs `Neu` in der Werkzeugleiste – in jeder Ansicht, wie im GroupWise-Client. Der Dialog **Telefonnachricht**:
@@ -751,7 +757,7 @@ Diese Übersicht stellt die Funktionen des GroupWise-Clients für Windows denen 
 |---|---|
 | Serientermine als Serie bearbeiten | Jeder Termin einer Serie ist ein einzelner Termin; die ganze Serie oder ihre Regel lässt sich nicht in einem Schritt ändern. |
 | Einladungen delegieren, neue Zeit vorschlagen | fehlt; eine delegierte Einladung wird als Status angezeigt. |
-| Sendeoptionen für Mail | Die Priorität wird übertragen. Benachrichtigung beim Öffnen oder Löschen, verzögerte Zustellung, Verfallsdatum, „Antwort angefordert“, Klassifizierung und verborgener Betreff fehlen; den Status einer gesendeten Nachricht zeigt `Zustellstatus …`. |
+| Sendeoptionen für Mail | Die Priorität wird übertragen, und „Lesebestätigung anfordern“ fordert die Rückmeldung beim Öffnen als Mail an ([4.2](#mail-lesebestaetigung)). Rückmeldung beim Löschen, verzögerte Zustellung, Verfallsdatum, „Antwort angefordert“, Klassifizierung und verborgener Betreff fehlen; den Status einer gesendeten Nachricht zeigt `Zustellstatus …`. |
 | Suchen im ganzen Postfach auf dem Server (Volltext) | Evolution durchsucht, was es lokal kennt: die Nachrichtenlisten und bereits geladene Nachrichten. |
 | Proxy-Kalender unter dem eigenen Konto beschreiben | nur lesbar; zum Schreiben dient das Proxy-Konto. |
 | Archiv | Das GroupWise-Archiv hat ein eigenes, nicht offengelegtes Format und lässt sich nur mit dem GroupWise-Client lesen. |

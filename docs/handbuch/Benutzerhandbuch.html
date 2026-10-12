@@ -549,6 +549,18 @@ Kontextmenü einer Nachricht und im Menü <span class="menu">Nachricht</span>:</
 		außerhalb von GroupWise haben die Nachricht bereits erhalten. Bei einem nur lesbaren Konto
 		fehlt der Eintrag.</li>
 </ul>
+<h3 id="mail-lesebestaetigung">Benachrichtigung, wenn der Empfänger öffnet</h3>
+<p>Kreuzen Sie im Editor <span class="menu">Optionen → Lesebestätigung anfordern</span> an, fordert
+Evolution bei GroupWise die <b>Rückmeldung „Wenn geöffnet“</b> als Mail an (im GroupWise-Client:
+<i>Sendeoptionen → Rückmeldung → Wenn geöffnet: Mail-Empfang</i>). Sobald ein Empfänger im GroupWise-System
+die Nachricht öffnet, legt GroupWise Ihnen eine Nachricht „<i>Name</i> opened <i>Betreff</i>“ in die
+Mailbox – ohne Zutun des Empfängers; er wird nicht gefragt. Für Empfänger im Internet fordert GroupWise
+eine gewöhnliche Lesebestätigung an, über die deren Mailprogramm entscheidet.</p>
+<p>Soll das für jede Nachricht gelten, schalten Sie unter <span class="menu">Bearbeiten → Einstellungen →
+Editoreinstellungen → Allgemein</span> „Lesebestätigung immer anfordern“ ein. Unabhängig davon zeigt
+<span class="menu">Zustellstatus …</span> in den Ausgangsnachrichten jederzeit, wer eine Nachricht
+zugestellt bekommen, geöffnet oder gelöscht hat.</p>
+
 <h3 id="mail-telefon">Telefonnachrichten</h3>
 <p>Eine Telefonnachricht hält für jemanden fest, wer in seiner Abwesenheit angerufen hat. Wählen Sie
 <span class="menu">Datei → Neu → Telefonnachricht</span> oder denselben Eintrag im Aufklappmenü des Knopfs
@@ -1319,9 +1331,11 @@ Entwicklung fortgeschrieben.</p>
 	<tr><td>Einladungen delegieren, neue Zeit vorschlagen</td>
 		<td>fehlt; eine delegierte Einladung wird als Status angezeigt.</td></tr>
 	<tr><td>Sendeoptionen für Mail</td>
-		<td>Die Priorität wird übertragen. Benachrichtigung beim Öffnen oder Löschen, verzögerte Zustellung,
-		Verfallsdatum, „Antwort angefordert“, Klassifizierung und verborgener Betreff fehlen; den Status
-		einer gesendeten Nachricht zeigt <span class="menu">Zustellstatus …</span>.</td></tr>
+		<td>Die Priorität wird übertragen, und „Lesebestätigung anfordern“ fordert die Rückmeldung beim
+		Öffnen als Mail an (<a href="#mail-lesebestaetigung">4.2</a>). Rückmeldung beim Löschen,
+		verzögerte Zustellung, Verfallsdatum, „Antwort angefordert“, Klassifizierung und verborgener
+		Betreff fehlen; den Status einer gesendeten Nachricht zeigt
+		<span class="menu">Zustellstatus …</span>.</td></tr>
 	<tr><td>Suchen im ganzen Postfach auf dem Server (Volltext)</td>
 		<td>Evolution durchsucht, was es lokal kennt: die Nachrichtenlisten und bereits geladene Nachrichten.</td></tr>
 	<tr><td>Proxy-Kalender unter dem eigenen Konto beschreiben</td>

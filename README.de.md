@@ -418,6 +418,13 @@ Adressbuch (`AddressBook`) an und gleicht die Quellen neu ab, `delete_resource_s
 eigenen Login auf den Server geschrieben (`modifyItemRequest`); das Passwort der letzten Anmeldung hält das
 Backend dafür im Speicher. Proxy-Konten bleiben außen vor.
 
+### Lesebestätigung
+
+Die Option *Lesebestätigung anfordern* des Editors (Kopfzeile `Disposition-Notification-To`) wird zu
+`<sendoptions><notification><opened><mail>1</mail></opened></notification></sendoptions>` in der
+`<distribution>`: GroupWise schickt dem Absender eine Mail, sobald ein Empfänger öffnet (`<deleted>` und
+`<notify>` gäbe es ebenso; nicht angeboten).
+
 ### Telefonnachrichten
 
 *Datei → Neu → Telefonnachricht* (`e_shell_window_register_new_item_actions`, je Fenster einmal) öffnet einen eigenen Dialog (Empfänger, Anrufer, Firma, Telefon, die

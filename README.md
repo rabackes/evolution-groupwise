@@ -390,6 +390,13 @@ in Evolution that does not come from the server is written to the server in a lo
 (`modifyItemRequest`); the backend keeps the password of the last login in memory for that. Proxy accounts
 are left out.
 
+### Read receipt
+
+The composer's *Request Read Receipt* (header `Disposition-Notification-To`) becomes
+`<sendoptions><notification><opened><mail>1</mail></opened></notification></sendoptions>` in the
+`<distribution>`: GroupWise sends the sender a mail as soon as a recipient opens the message (`<deleted>` and
+`<notify>` exist as well; not offered).
+
 ### Phone messages
 
 *File → New → Phone Message* (`e_shell_window_register_new_item_actions`, once for a window) opens a dialog of its own (recipients, caller, company, phone, the seven

@@ -432,7 +432,13 @@ camel_groupwise_item_from_message (CamelMimeMessage *message,
 
 	g_string_append (xml, "<distribution><recipients>");
 	count = add_recipients (xml, message, recipients);
-	g_string_append (xml, "</recipients></distribution>");
+	g_string_append (xml, "</recipients>");
+	/* "Request Read Receipt" of the composer: GroupWise sends the sender
+	 * a mail when a recipient opens the message (its return notification;
+	 * for recipients on the Internet it asks as the header does) */
+	if (!draft && camel_medium_get_header (CAMEL_MEDIUM (message), "Disposition-Notification-To"))
+		g_string_append (xml, "<sendoptions><notification><opened><mail>1</mail></opened></notification></sendoptions>");
+	g_string_append (xml, "</distribution>");
 
 	if (!count && !draft) {
 		g_set_error_literal (error, CAMEL_SERVICE_ERROR, CAMEL_SERVICE_ERROR_INVALID,
