@@ -24,8 +24,10 @@ evolution-groupwise (0.9.3) noble; urgency=medium
     attachments.
   * Shared folders carry Evolution's shared-by-me and shared-to-me icons
     in the folder list.
+  * Events port: the question about the firewall no longer comes when
+    the server reaches the port and merely left out a message.
 
- -- Rainer Backes <rbackes@bond.de>  Sun, 11 Oct 2026 18:00:00 +0200
+ -- Rainer Backes <rbackes@bond.de>  Mon, 12 Oct 2026 12:00:00 +0200
 
 evolution-groupwise (0.9.2) noble; urgency=medium
 

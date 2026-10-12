@@ -100,7 +100,7 @@ line tool.
 %endif
 
 %changelog
-* Sun Oct 11 2026 Rainer Backes <rbackes@bond.de> - 0.9.3-0
+* Mon Oct 12 2026 Rainer Backes <rbackes@bond.de> - 0.9.3-0
 - Sharing mail folders: the page "Sharing" of the folder properties (context
   menu "Sharing…") lists the users a folder is shared with, how far they got
   and their rights, adds and removes users (chosen from the system address
@@ -122,6 +122,8 @@ line tool.
   822 there, are built from the item and its attachments.
 - Shared folders carry Evolution's shared-by-me and shared-to-me icons in the
   folder list.
+- Events port: the question about the firewall no longer comes when the
+  server reaches the port and merely left out a message.
 
 * Sat Oct 10 2026 Rainer Backes <rbackes@bond.de> - 0.9.2-0
 - Calendar: deleting an own meeting "only for me" takes it out of the own
