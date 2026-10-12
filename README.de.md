@@ -418,6 +418,13 @@ Adressbuch (`AddressBook`) an und gleicht die Quellen neu ab, `delete_resource_s
 eigenen Login auf den Server geschrieben (`modifyItemRequest`); das Passwort der letzten Anmeldung hält das
 Backend dafür im Speicher. Proxy-Konten bleiben außen vor.
 
+### Telefonnachrichten
+
+*Nachricht → Neue Telefonnachricht …* öffnet einen eigenen Dialog (Empfänger, Anrufer, Firma, Telefon, die
+sieben Ankreuzfelder, Text) und sendet mit `sendItemRequest` ein Item `xsi:type="PhoneMessage"` (`<caller>`,
+`<company>`, `<phone>`, `<flags>` mit `called`, `pleaseCall`, `willCall`, `returnedYourCall`,
+`wantsToSeeYou`, `cameToSeeYou`, `urgent`). Der Betreff ist wie im GroupWise-Client „Anrufer Telefon“.
+
 ### Postfachgröße und Passwort
 
 Die Registerkarte *Postfach und Passwort* der GroupWise-Einstellungen zeigt `getDiskSpaceUsageRequest`

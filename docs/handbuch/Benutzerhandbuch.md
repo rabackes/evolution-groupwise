@@ -48,7 +48,7 @@ Evolution und der GroupWise-Client nennen dieselben Dinge teils verschieden – 
 | Gemeinsame Notiz (Shared Memo) | Notiz (Reminder) | Notiz an einem Tag, die an andere gesendet wird |
 | – | Haftnotiz (Sticky Note) | Persönliche Notiz ohne Datum; in Evolution gibt es dafür keine Entsprechung |
 | E-Mail-Nachricht (Mail Message) | Mail | Nachricht |
-| – | Telefonische Nachricht (Phone Message), „Während Sie weg waren“ (While You Were Out) und die persönliche telefonische Nachricht | Nachricht mit zusätzlichen Feldern für Anrufer, Firma, Telefonnummer und Ankreuzfeldern (hat angerufen, bitte zurückrufen, dringend …). Evolution zeigt eine empfangene als Nachricht; die Felder stehen als eigener Absatz über dem Nachrichtentext. Anlegen kann Evolution keine. |
+| Telefonnachricht (Phone Message) | Telefonnachricht (Phone Message), „Während Sie weg waren“ (While You Were Out) und die persönliche Telefonnachricht | Nachricht mit zusätzlichen Feldern für Anrufer, Firma, Telefonnummer und Ankreuzfeldern (hat angerufen, bitte zurückrufen, dringend …). Evolution zeigt eine empfangene als Nachricht; die Felder stehen als eigener Absatz über dem Nachrichtentext. Geschrieben wird sie mit `Nachricht → Neue Telefonnachricht …` ([4.2](#mail-telefon)). |
 | Aufgaben (Tasks), die Ansicht | Jobliste (Tasklist) | Liste der offenen Aufgaben; die GroupWise-Jobliste enthält zusätzlich Nachrichten, die Sie zur Nachverfolgung markiert haben |
 | Organisator (Organizer) | Absender (From) | Wer eine Besprechung ansetzt |
 | Teilnehmer (Attendees) | Empfänger: An, Kopie (CC), Blindkopie (BC) | Wer eingeladen ist; Evolution unterscheidet stattdessen erforderliche und optionale Teilnehmer |
@@ -280,6 +280,22 @@ Wie im GroupWise-Client sehen Sie bei gesendeten Nachrichten, was bei den Empfä
 - `Neu senden …` öffnet die Nachricht wie im GroupWise-Client in einem neuen Nachrichtenfenster, in dem Sie sie ändern können. Die Signatur steht auf „Keine“, weil die Nachricht ihre Signatur schon enthält. Beim `Senden` fragt Evolution, ob die ursprüngliche Nachricht bei den Empfängern zurückgezogen werden soll: `Zurückziehen`, `Nicht zurückziehen` oder `Abbrechen` (zurück ins Nachrichtenfenster).
 
 - `Zurückziehen …` holt die ausgewählten Nachrichten nach einer Rückfrage aus den Postfächern der Empfänger in GroupWise zurück. Die gesendete Nachricht bleibt in den Ausgangsnachrichten; ihr Zustellstatus zeigt die Empfänger dann als „Zurückgezogen“. Empfänger außerhalb von GroupWise haben die Nachricht bereits erhalten. Bei einem nur lesbaren Konto fehlt der Eintrag.
+
+### Telefonnachrichten
+
+Eine Telefonnachricht hält für jemanden fest, wer in seiner Abwesenheit angerufen hat. Wählen Sie in der E-Mail-Ansicht `Nachricht → Neue Telefonnachricht …`; der Dialog **Telefonnachricht** entspricht *Datei → Neu → Telefonnachricht* im GroupWise-Client:
+
+- **Von** – das Postfach, aus dem gesendet wird; die Auswahl erscheint nur, wenn Sie neben Ihrem Konto Proxy-Konten haben. Vorgewählt ist das Konto des gerade ausgewählten Ordners.
+
+- **An** – die Empfänger: getippt, mit Ergänzung aus den Adressbüchern, oder über `Adressbuch …` ausgewählt.
+
+- **Anrufer**, **Firma**, **Telefon**.
+
+- Die Ankreuzfelder **Hat angerufen**, **Bitte zurückrufen**, **Ruft wieder an**, **Hat zurückgerufen**, **Möchte Sie sprechen**, **War hier** und **Dringend**.
+
+- **Nachricht** – der Text.
+
+`Senden` schickt sie über GroupWise ab. Einen eigenen Betreff hat eine Telefonnachricht nicht: Wie im GroupWise-Client stehen dafür der Anrufer und die Telefonnummer. Die Empfänger sehen sie im GroupWise-Client als Telefonnachricht und in Evolution als Nachricht mit den Angaben zum Anruf über dem Text; bei Ihnen liegt sie in den Ausgangsnachrichten. Nötig sind mindestens ein Empfänger und der Anrufer oder ein Text.
 
 ### Signaturen
 
@@ -708,6 +724,7 @@ Diese Übersicht stellt die Funktionen des GroupWise-Clients für Windows denen 
 |---|---|
 | Ordnerliste und Systemordner; Ordner anlegen, umbenennen, verschieben, löschen | ja, in der Reihenfolge des Clients ([4.1](#mail-ordner)) |
 | Mail lesen, schreiben, antworten, weiterleiten; Anlagen, Entwürfe | ja; die Empfänger erhalten eine echte GroupWise-Nachricht ([4.2](#mail-senden)) |
+| Telefonnachrichten senden und empfangen | ja ([4.2](#mail-telefon)) |
 | Gesendete Objekte: Zustellstatus, Zurückziehen, Erneut senden | ja ([4.2](#mail-senden)) |
 | Signaturen | ja, mit GroupWise abgeglichen |
 | Kategorien; Folgenachricht und Jobliste | ja, als Beschriftungen bzw. Kategorien ([4.4](#mail-beschriftungen)) |
@@ -740,7 +757,6 @@ Diese Übersicht stellt die Funktionen des GroupWise-Clients für Windows denen 
 | Archiv | Das GroupWise-Archiv hat ein eigenes, nicht offengelegtes Format und lässt sich nur mit dem GroupWise-Client lesen. |
 | Besprechungen mit Teams, Zoom oder WebEx planen | fehlt. |
 | S/MIME: signiert oder verschlüsselt senden | fehlt; empfangene Nachrichten werden angezeigt. |
-| Telefonnachrichten senden | fehlt; empfangene werden mit Anrufer, Firma und Nummer angezeigt. |
 | Alternative Absenderadressen | fehlt. |
 | Nachrichten als privat markieren; Kategorien an Kontakten | fehlt. |
 | In einem freigegebenen Ordner ablegen (Posted Item), Eigentum übertragen | fehlt. |

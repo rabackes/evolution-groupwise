@@ -48,6 +48,33 @@ gboolean	e_gw_connection_modify_password_sync
 						 GCancellable *cancellable,
 						 GError **error);
 
+/* What the caller of a phone message did or wants */
+typedef enum {
+	E_GW_PHONE_CALLED		= 1 << 0,
+	E_GW_PHONE_PLEASE_CALL		= 1 << 1,
+	E_GW_PHONE_WILL_CALL		= 1 << 2,
+	E_GW_PHONE_RETURNED_CALL	= 1 << 3,
+	E_GW_PHONE_WANTS_TO_SEE_YOU	= 1 << 4,
+	E_GW_PHONE_CAME_TO_SEE_YOU	= 1 << 5,
+	E_GW_PHONE_URGENT		= 1 << 6
+} EGwPhoneFlags;
+
+/* Sends a phone message (sendItemRequest of a PhoneMessage) to the users
+ * @emails (their names in @names, same order; a name may be NULL). The
+ * subject is, as the GroupWise client makes it, the caller and the number.
+ * Returns the ID of the sent item. */
+gchar *		e_gw_connection_send_phone_message_sync
+						(EGwConnection *cnc,
+						 const gchar * const *names,
+						 const gchar * const *emails,
+						 const gchar *caller,
+						 const gchar *company,
+						 const gchar *phone,
+						 EGwPhoneFlags flags,
+						 const gchar *text,
+						 GCancellable *cancellable,
+						 GError **error);
+
 G_END_DECLS
 
 #endif /* E_GW_MAILBOX_H */

@@ -179,11 +179,12 @@ englischen, wie sie in englisch eingestellten Programmen stehen.</p>
 	<tr><td>–</td><td>Haftnotiz (Sticky Note)</td>
 		<td>Persönliche Notiz ohne Datum; in Evolution gibt es dafür keine Entsprechung</td></tr>
 	<tr><td>E-Mail-Nachricht (Mail Message)</td><td>Mail</td><td>Nachricht</td></tr>
-	<tr><td>–</td><td>Telefonische Nachricht (Phone Message), „Während Sie weg waren“ (While You Were
-		Out) und die persönliche telefonische Nachricht</td>
+	<tr><td>Telefonnachricht (Phone Message)</td><td>Telefonnachricht (Phone Message), „Während Sie weg
+		waren“ (While You Were Out) und die persönliche Telefonnachricht</td>
 		<td>Nachricht mit zusätzlichen Feldern für Anrufer, Firma, Telefonnummer und Ankreuzfeldern
 		(hat angerufen, bitte zurückrufen, dringend …). Evolution zeigt eine empfangene als Nachricht;
-		die Felder stehen als eigener Absatz über dem Nachrichtentext. Anlegen kann Evolution keine.</td></tr>
+		die Felder stehen als eigener Absatz über dem Nachrichtentext. Geschrieben wird sie mit
+		<span class="menu">Nachricht → Neue Telefonnachricht …</span> (<a href="#mail-telefon">4.2</a>).</td></tr>
 	<tr><td>Aufgaben (Tasks), die Ansicht</td><td>Jobliste (Tasklist)</td>
 		<td>Liste der offenen Aufgaben; die GroupWise-Jobliste enthält zusätzlich Nachrichten, die Sie
 		zur Nachverfolgung markiert haben</td></tr>
@@ -548,6 +549,26 @@ Kontextmenü einer Nachricht und im Menü <span class="menu">Nachricht</span>:</
 		außerhalb von GroupWise haben die Nachricht bereits erhalten. Bei einem nur lesbaren Konto
 		fehlt der Eintrag.</li>
 </ul>
+<h3 id="mail-telefon">Telefonnachrichten</h3>
+<p>Eine Telefonnachricht hält für jemanden fest, wer in seiner Abwesenheit angerufen hat. Wählen Sie in
+der E-Mail-Ansicht <span class="menu">Nachricht → Neue Telefonnachricht …</span>; der Dialog
+<b>Telefonnachricht</b> entspricht <i>Datei → Neu → Telefonnachricht</i> im GroupWise-Client:</p>
+<ul>
+	<li><b>Von</b> – das Postfach, aus dem gesendet wird; die Auswahl erscheint nur, wenn Sie neben Ihrem
+		Konto Proxy-Konten haben. Vorgewählt ist das Konto des gerade ausgewählten Ordners.</li>
+	<li><b>An</b> – die Empfänger: getippt, mit Ergänzung aus den Adressbüchern, oder über
+		<span class="menu">Adressbuch …</span> ausgewählt.</li>
+	<li><b>Anrufer</b>, <b>Firma</b>, <b>Telefon</b>.</li>
+	<li>Die Ankreuzfelder <b>Hat angerufen</b>, <b>Bitte zurückrufen</b>, <b>Ruft wieder an</b>,
+		<b>Hat zurückgerufen</b>, <b>Möchte Sie sprechen</b>, <b>War hier</b> und <b>Dringend</b>.</li>
+	<li><b>Nachricht</b> – der Text.</li>
+</ul>
+<p><span class="menu">Senden</span> schickt sie über GroupWise ab. Einen eigenen Betreff hat eine
+Telefonnachricht nicht: Wie im GroupWise-Client stehen dafür der Anrufer und die Telefonnummer. Die
+Empfänger sehen sie im GroupWise-Client als Telefonnachricht und in Evolution als Nachricht mit den Angaben
+zum Anruf über dem Text; bei Ihnen liegt sie in den Ausgangsnachrichten. Nötig sind mindestens ein
+Empfänger und der Anrufer oder ein Text.</p>
+
 <h3>Signaturen</h3>
 <p>Ihre Signaturen aus GroupWise stehen in Evolution zur Verfügung: im Feld <span class="menu">Signatur:</span>
 des Nachrichten-Editors und unter <span class="menu">Bearbeiten → Einstellungen → Editoreinstellungen →
@@ -1248,6 +1269,8 @@ Entwicklung fortgeschrieben.</p>
 		<td>ja, in der Reihenfolge des Clients (<a href="#mail-ordner">4.1</a>)</td></tr>
 	<tr><td>Mail lesen, schreiben, antworten, weiterleiten; Anlagen, Entwürfe</td>
 		<td>ja; die Empfänger erhalten eine echte GroupWise-Nachricht (<a href="#mail-senden">4.2</a>)</td></tr>
+	<tr><td>Telefonnachrichten senden und empfangen</td>
+		<td>ja (<a href="#mail-telefon">4.2</a>)</td></tr>
 	<tr><td>Gesendete Objekte: Zustellstatus, Zurückziehen, Erneut senden</td>
 		<td>ja (<a href="#mail-senden">4.2</a>)</td></tr>
 	<tr><td>Signaturen</td><td>ja, mit GroupWise abgeglichen</td></tr>
@@ -1306,7 +1329,6 @@ Entwicklung fortgeschrieben.</p>
 		GroupWise-Client lesen.</td></tr>
 	<tr><td>Besprechungen mit Teams, Zoom oder WebEx planen</td><td>fehlt.</td></tr>
 	<tr><td>S/MIME: signiert oder verschlüsselt senden</td><td>fehlt; empfangene Nachrichten werden angezeigt.</td></tr>
-	<tr><td>Telefonnachrichten senden</td><td>fehlt; empfangene werden mit Anrufer, Firma und Nummer angezeigt.</td></tr>
 	<tr><td>Alternative Absenderadressen</td><td>fehlt.</td></tr>
 	<tr><td>Nachrichten als privat markieren; Kategorien an Kontakten</td><td>fehlt.</td></tr>
 	<tr><td>In einem freigegebenen Ordner ablegen (Posted Item), Eigentum übertragen</td><td>fehlt.</td></tr>

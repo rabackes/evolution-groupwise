@@ -44,6 +44,7 @@
 #include "e-groupwise-defaults.h"
 #include "e-groupwise-delete-dialog.h"
 #include "e-groupwise-events-port.h"
+#include "e-groupwise-phone-message.h"
 #include "e-groupwise-proxy-options.h"
 #include "e-groupwise-sent-items.h"
 #include "e-groupwise-share-accept.h"
@@ -61,6 +62,7 @@
 #define SETTINGS_ACTION "groupwise-account-settings"
 #define SHARE_ACTION "groupwise-folder-share"
 #define ACCEPT_SHARE_ACTION "groupwise-share-accept"
+#define PHONE_MESSAGE_ACTION "groupwise-phone-message-new"
 #define CALENDAR_SHARE_ACTION "groupwise-calendar-share"
 #define BOOK_SHARE_ACTION "groupwise-book-share"
 #define CALENDAR_RENAME_ACTION "groupwise-calendar-rename"
@@ -257,6 +259,30 @@ own_folder_selected (EShellView *shell_view)
 }
 
 /* Sharing is a page of the folder properties */
+/* A phone message, from the mailbox whose folder is selected */
+static void
+action_phone_message_cb (EUIAction *action,
+			 GVariant *parameter,
+			 gpointer user_data)
+{
+	EShellView *shell_view = user_data;
+	EShellSidebar *sidebar = e_shell_view_get_shell_sidebar (shell_view);
+	EMFolderTree *folder_tree = NULL;
+	CamelStore *store = NULL;
+	ESource *account = NULL;
+	gchar *full_name = NULL;
+
+	g_object_get (sidebar, "folder-tree", &folder_tree, NULL);
+	if (folder_tree && (em_folder_tree_get_selected (folder_tree, &store, &full_name) ||
+	    em_folder_tree_store_root_selected (folder_tree, &store)) && store)
+		account = e_groupwise_ui_ref_account_source (shell_view_get_registry (shell_view), CAMEL_SERVICE (store));
+	e_groupwise_phone_message_new (shell_view, account);
+	g_clear_object (&account);
+	g_clear_object (&store);
+	g_clear_object (&folder_tree);
+	g_free (full_name);
+}
+
 static void
 action_share_cb (EUIAction *action,
 		 GVariant *parameter,
@@ -1500,6 +1526,7 @@ e_groupwise_mail_ui_constructed (GObject *object)
 		    "<placeholder id='custom-menus'>"
 		      "<submenu action='mail-message-menu'>"
 			"<item action='" ACCEPT_SHARE_ACTION "'/>"
+			"<item action='" PHONE_MESSAGE_ACTION "'/>"
 		      "</submenu>"
 		    "</placeholder>"
 		  "</menu>"
@@ -1511,7 +1538,13 @@ e_groupwise_mail_ui_constructed (GObject *object)
 		  N_("Install Shared _Folder…"),
 		  NULL,
 		  N_("Accept the folder this notification offers: it is added to the folder list"),
-		  action_accept_share_cb, NULL, NULL, NULL }
+		  action_accept_share_cb, NULL, NULL, NULL },
+		{ PHONE_MESSAGE_ACTION,
+		  "call-start",
+		  N_("New _Phone Message…"),
+		  NULL,
+		  N_("Write a GroupWise phone message: who called, and what the caller wants"),
+		  action_phone_message_cb, NULL, NULL, NULL }
 	};
 
 	EShellView *shell_view;

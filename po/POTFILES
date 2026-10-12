@@ -25,6 +25,7 @@ src/evolution/e-groupwise-mailbox-tab.c
 src/evolution/e-groupwise-mail-ui.c
 src/evolution/e-groupwise-name-selector.c
 src/evolution/e-groupwise-new-item.c
+src/evolution/e-groupwise-phone-message.c
 src/evolution/e-groupwise-proxy-options.c
 src/evolution/e-groupwise-proxy-tab.c
 src/evolution/e-groupwise-rule-editor.c

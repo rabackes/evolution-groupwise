@@ -81,3 +81,74 @@ e_gw_connection_modify_password_sync (EGwConnection *cnc,
 
 	return TRUE;
 }
+
+gchar *
+e_gw_connection_send_phone_message_sync (EGwConnection *cnc,
+					 const gchar * const *names,
+					 const gchar * const *emails,
+					 const gchar *caller,
+					 const gchar *company,
+					 const gchar *phone,
+					 EGwPhoneFlags flags,
+					 const gchar *text,
+					 GCancellable *cancellable,
+					 GError **error)
+{
+	static const struct {
+		EGwPhoneFlags flag;
+		const gchar *name;
+	} flag_names[] = {
+		{ E_GW_PHONE_CALLED, "called" },
+		{ E_GW_PHONE_PLEASE_CALL, "pleaseCall" },
+		{ E_GW_PHONE_WILL_CALL, "willCall" },
+		{ E_GW_PHONE_RETURNED_CALL, "returnedYourCall" },
+		{ E_GW_PHONE_WANTS_TO_SEE_YOU, "wantsToSeeYou" },
+		{ E_GW_PHONE_CAME_TO_SEE_YOU, "cameToSeeYou" },
+		{ E_GW_PHONE_URGENT, "urgent" }
+	};
+	GString *xml;
+	gchar *subject, *id;
+	guint ii;
+
+	g_return_val_if_fail (E_IS_GW_CONNECTION (cnc), NULL);
+	g_return_val_if_fail (emails != NULL && emails[0] != NULL, NULL);
+
+	xml = g_string_new ("<item xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xsi:type=\"PhoneMessage\">");
+	subject = g_strstrip (g_strconcat (caller ? caller : "", " ", phone ? phone : "", NULL));
+	e_gw_xml_add_leaf (xml, "subject", subject);
+	g_free (subject);
+
+	g_string_append (xml, "<distribution><recipients>");
+	for (ii = 0; emails[ii]; ii++) {
+		g_string_append (xml, "<recipient>");
+		e_gw_xml_add_leaf (xml, "displayName", names && names[ii] && *names[ii] ? names[ii] : emails[ii]);
+		e_gw_xml_add_leaf (xml, "email", emails[ii]);
+		e_gw_xml_add_leaf (xml, "distType", "TO");
+		g_string_append (xml, "</recipient>");
+	}
+	g_string_append (xml, "</recipients></distribution>");
+
+	if (text && *text) {
+		gchar *encoded = g_base64_encode ((const guchar *) text, strlen (text));
+
+		g_string_append_printf (xml, "<message><part contentType=\"text/plain\">%s</part></message>", encoded);
+		g_free (encoded);
+	}
+	if (caller && *caller)
+		e_gw_xml_add_leaf (xml, "caller", caller);
+	if (company && *company)
+		e_gw_xml_add_leaf (xml, "company", company);
+	if (phone && *phone)
+		e_gw_xml_add_leaf (xml, "phone", phone);
+	g_string_append (xml, "<flags>");
+	for (ii = 0; ii < G_N_ELEMENTS (flag_names); ii++) {
+		if (flags & flag_names[ii].flag)
+			e_gw_xml_add_int (xml, flag_names[ii].name, 1);
+	}
+	g_string_append (xml, "</flags></item>");
+
+	id = e_gw_connection_send_item_sync (cnc, xml->str, cancellable, error);
+	g_string_free (xml, TRUE);
+
+	return id;
+}
