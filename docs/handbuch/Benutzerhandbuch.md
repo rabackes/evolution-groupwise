@@ -606,7 +606,7 @@ Ein persönliches Adressbuch geben Sie über `Freigabe …` in seinem Kontextmen
 
 - Das Recht wird beim Hinzufügen eines Benutzers festgelegt und lässt sich danach **nicht mehr ändern**. Um es zu ändern, entfernen Sie den Benutzer, wählen `Freigabe übernehmen` und fügen ihn neu hinzu; er erhält dann eine neue Benachrichtigung und muss sie erneut annehmen.
 
-Neue Benutzer erhalten die **Benachrichtigung über freigegebenes Adressbuch**. Entziehen Sie die Freigabe, verschwindet das Adressbuch beim Empfänger. Das GroupWise-Adressbuch und „Häufige Kontakte“ lassen sich nicht freigeben.
+Neue Benutzer erhalten die **Benachrichtigung über freigegebenes Adressbuch**. Entziehen Sie die Freigabe, verschwindet das Adressbuch beim Empfänger; der Server schickt ihm dabei die ursprüngliche Benachrichtigung noch einmal als gewöhnliche Nachricht (gleicher Betreff, Absender in der Form „benutzer.postamt.domäne“) – sie bietet nichts mehr an und kann gelöscht werden. Das GroupWise-Adressbuch und „Häufige Kontakte“ lassen sich nicht freigeben.
 
 ### Eine Adressbuch-Freigabe annehmen
 
