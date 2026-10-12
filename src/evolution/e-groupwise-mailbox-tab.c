@@ -59,7 +59,7 @@ typedef struct {
 typedef struct {
 	GtkWidget *widget;
 	GtkWidget *usage_bar, *usage_label;
-	GtkWidget *figures[6];
+	GtkWidget *figures[7];
 	GtkListStore *model;
 	GtkWidget *password_button;
 	ESourceRegistry *registry;
@@ -357,11 +357,12 @@ mailbox_new_tab (void)
 {
 	static const gchar *figure_names[] = {
 		N_("Messages in the folders:"),
-		N_("Unread in the Mailbox:"),
+		N_("Unread:"),
 		N_("Entries in the Calendar:"),
 		N_("Folders:"),
 		N_("Calendars:"),
-		N_("Address books:")
+		N_("Address books:"),
+		N_("Contacts:")
 	};
 	MailboxTab *tab = g_new0 (MailboxTab, 1);
 	GtkWidget *box, *grid, *label, *scrolled, *view;
@@ -436,8 +437,8 @@ mailbox_new_tab (void)
 	gtk_box_pack_start (GTK_BOX (box), scrolled, TRUE, TRUE, 0);
 
 	label = gtk_label_new (_("GroupWise counts the Mailbox, the Calendar, the Work In Progress folder and the folders "
-		"you made; the Sent Items and other views onto the mailbox it does not count. Unread messages it "
-		"counts in the Mailbox only."));
+		"you made; the Sent Items, other views onto the mailbox and folders other users share with you "
+		"it does not count."));
 	gtk_label_set_line_wrap (GTK_LABEL (label), TRUE);
 	gtk_label_set_xalign (GTK_LABEL (label), 0.0);
 	gtk_widget_set_margin_start (label, 12);
@@ -535,7 +536,7 @@ mailbox_fill (gpointer ptr,
 {
 	MailboxTab *tab = ptr;
 	MailboxData *data = data_ptr;
-	gint64 messages = 0, unread = 0, calendar = 0;
+	gint64 messages = 0, unread = 0, calendar = 0, contacts = 0;
 	guint n_folders = 0, n_calendars = 0, ii;
 	gchar *text, *used, *max_size;
 
@@ -580,6 +581,9 @@ mailbox_fill (gpointer ptr,
 				n_calendars++;
 			continue;
 		}
+		/* The folders of the address books count their contacts */
+		if (folder->type == E_GW_FOLDER_TYPE_CONTACTS || g_strcmp0 (folder->folder_type, "UserContacts") == 0)
+			contacts += MAX (folder->count, 0);
 		if (folder->type == E_GW_FOLDER_TYPE_ROOT || folder->type == E_GW_FOLDER_TYPE_CONTACTS ||
 		    folder->type == E_GW_FOLDER_TYPE_QUERY || folder->type == E_GW_FOLDER_TYPE_OTHER ||
 		    g_strcmp0 (folder->folder_type, "UserContacts") == 0)
@@ -588,6 +592,9 @@ mailbox_fill (gpointer ptr,
 		if (folder->count < 0)
 			continue;
 
+		/* (drafts and deleted messages are "unread" on the server) */
+		if (folder->type == E_GW_FOLDER_TYPE_DRAFT || folder->type == E_GW_FOLDER_TYPE_TRASH)
+			folder->unread_count = 0;
 		messages += folder->count;
 		unread += MAX (folder->unread_count, 0);
 		name = e_groupwise_ui_dup_folder_name (folder);
@@ -606,6 +613,7 @@ mailbox_fill (gpointer ptr,
 	/* (the Calendar itself and the user's further calendars) */
 	set_figure (tab->figures[4], n_calendars + 1);
 	set_figure (tab->figures[5], data->n_books);
+	set_figure (tab->figures[6], contacts);
 
 	mailbox_data_free (data);
 }

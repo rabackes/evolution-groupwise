@@ -275,7 +275,9 @@ e_gw_connection_get_folder_list_sync (EGwConnection *cnc,
 	xmlNode *node;
 
 	e_gw_xml_add_leaf (inner, "parent", parent ? parent : "folders");
-	g_string_append (inner, "<view/>");
+	/* Asked for by name, the POA counts the unread messages of every
+	 * folder (else of the Mailbox alone) and the contacts of the books */
+	g_string_append (inner, "<view>default count unreadCount hasUnread</view>");
 	e_gw_xml_add_bool (inner, "recurse", recurse);
 	e_gw_xml_add_bool (inner, "imap", FALSE);
 	e_gw_xml_add_bool (inner, "nntp", FALSE);

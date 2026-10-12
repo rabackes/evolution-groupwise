@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: evolution-groupwise\n"
 "Report-Msgid-Bugs-To: rbackes@bond.de\n"
-"POT-Creation-Date: 2026-10-12 12:48+0200\n"
+"POT-Creation-Date: 2026-10-12 12:51+0200\n"
 "PO-Revision-Date: 2026-09-27 18:27+0200\n"
 "Last-Translator: Automatically generated\n"
 "Language-Team: none\n"
@@ -424,55 +424,55 @@ msgstr "%s ist ein Systemordner von GroupWise"
 msgid "A folder name must not contain \"/\""
 msgstr "Ein Ordnername darf kein „/“ enthalten"
 
-#: src/camel/camel-groupwise-store-summary.c:387
+#: src/camel/camel-groupwise-store-summary.c:388
 #: src/evolution/e-groupwise-ui-utils.c:209
 msgid "Mailbox"
 msgstr "Mailbox"
 
-#: src/camel/camel-groupwise-store-summary.c:388
+#: src/camel/camel-groupwise-store-summary.c:389
 #: src/evolution/e-groupwise-junk-tab.c:528
 #: src/evolution/e-groupwise-ui-utils.c:210
 msgid "Junk Mail"
 msgstr "Junkmail"
 
-#: src/camel/camel-groupwise-store-summary.c:389
+#: src/camel/camel-groupwise-store-summary.c:390
 #: src/evolution/e-groupwise-ui-utils.c:211
 msgid "Trash"
 msgstr "Papierkorb"
 
-#: src/camel/camel-groupwise-store-summary.c:390
+#: src/camel/camel-groupwise-store-summary.c:391
 #: src/evolution/e-groupwise-ui-utils.c:212
 msgid "Sent Items"
 msgstr "Ausgangsnachrichten"
 
-#: src/camel/camel-groupwise-store-summary.c:391
+#: src/camel/camel-groupwise-store-summary.c:392
 #: src/evolution/e-groupwise-ui-utils.c:213
 msgid "Work In Progress"
 msgstr "In Arbeit"
 
-#: src/camel/camel-groupwise-store-summary.c:392
+#: src/camel/camel-groupwise-store-summary.c:393
 #: src/evolution/e-groupwise-ui-utils.c:214
 msgid "Cabinet"
 msgstr "Aktenschrank"
 
-#: src/camel/camel-groupwise-store-summary.c:393
 #: src/camel/camel-groupwise-store-summary.c:394
+#: src/camel/camel-groupwise-store-summary.c:395
 #: src/evolution/e-groupwise-ui-utils.c:215
 msgid "Tasklist"
 msgstr "Jobliste"
 
-#: src/camel/camel-groupwise-store-summary.c:395
+#: src/camel/camel-groupwise-store-summary.c:396
 #: src/evolution/e-groupwise-ui-utils.c:216
 #: src/registry/module-groupwise-backend.c:342
 msgid "Calendar"
 msgstr "Kalender"
 
-#: src/camel/camel-groupwise-store-summary.c:396
+#: src/camel/camel-groupwise-store-summary.c:397
 #: src/evolution/e-groupwise-ui-utils.c:217
 msgid "Contacts"
 msgstr "Kontakte"
 
-#: src/camel/camel-groupwise-store-summary.c:397
+#: src/camel/camel-groupwise-store-summary.c:398
 #: src/evolution/e-groupwise-ui-utils.c:218
 msgid "Documents"
 msgstr "Dokumente"
@@ -849,8 +849,8 @@ msgid "Messages in the folders:"
 msgstr "Nachrichten in den Ordnern:"
 
 #: src/evolution/e-groupwise-mailbox-tab.c:360
-msgid "Unread in the Mailbox:"
-msgstr "Ungelesen in der Mailbox:"
+msgid "Unread:"
+msgstr "Ungelesen:"
 
 #: src/evolution/e-groupwise-mailbox-tab.c:361
 msgid "Entries in the Calendar:"
@@ -868,61 +868,65 @@ msgstr "Kalender:"
 msgid "Address books:"
 msgstr "Adressbücher:"
 
-#: src/evolution/e-groupwise-mailbox-tab.c:376
+#: src/evolution/e-groupwise-mailbox-tab.c:365
+msgid "Contacts:"
+msgstr "Kontakte:"
+
+#: src/evolution/e-groupwise-mailbox-tab.c:377
 msgid "Space"
 msgstr "Speicherplatz"
 
-#: src/evolution/e-groupwise-mailbox-tab.c:386
+#: src/evolution/e-groupwise-mailbox-tab.c:387
 msgid "Content"
 msgstr "Inhalt"
 
-#: src/evolution/e-groupwise-mailbox-tab.c:412
+#: src/evolution/e-groupwise-mailbox-tab.c:413
 msgid "Folder"
 msgstr "Ordner"
 
-#: src/evolution/e-groupwise-mailbox-tab.c:419
+#: src/evolution/e-groupwise-mailbox-tab.c:420
 msgid "Messages"
 msgstr "Nachrichten"
 
-#: src/evolution/e-groupwise-mailbox-tab.c:425
+#: src/evolution/e-groupwise-mailbox-tab.c:426
 msgid "Unread"
 msgstr "Ungelesen"
 
-#: src/evolution/e-groupwise-mailbox-tab.c:438
+#: src/evolution/e-groupwise-mailbox-tab.c:439
 msgid ""
 "GroupWise counts the Mailbox, the Calendar, the Work In Progress folder and "
-"the folders you made; the Sent Items and other views onto the mailbox it "
-"does not count. Unread messages it counts in the Mailbox only."
-msgstr "GroupWise zählt die Mailbox, den Kalender, den Ordner „In Arbeit“ und die von Ihnen angelegten Ordner; die Ausgangsnachrichten und andere Sichten auf das Postfach zählt es nicht. Ungelesene Nachrichten zählt es nur in der Mailbox."
+"the folders you made; the Sent Items, other views onto the mailbox and "
+"folders other users share with you it does not count."
+msgstr "GroupWise zählt die Mailbox, den Kalender, den Ordner „In Arbeit“ und die von Ihnen angelegten Ordner; die Ausgangsnachrichten, andere Sichten auf das Postfach und Ordner, die andere Benutzer für Sie freigegeben haben, zählt es nicht."
 
-#: src/evolution/e-groupwise-mailbox-tab.c:447
+#: src/evolution/e-groupwise-mailbox-tab.c:448
 msgid "Change _Password…"
 msgstr "_Passwort ändern …"
 
-#: src/evolution/e-groupwise-mailbox-tab.c:448
+#: src/evolution/e-groupwise-mailbox-tab.c:449
 msgid "Change the password you log in to GroupWise with"
 msgstr "Das Passwort ändern, mit dem Sie sich an GroupWise anmelden"
 
-#: src/evolution/e-groupwise-mailbox-tab.c:553
+#: src/evolution/e-groupwise-mailbox-tab.c:554
 #, c-format
 msgid "%s MB of %s MB used (%d %%). GroupWise warns you from %d %%."
 msgstr "%s MB von %s MB belegt (%d %%). GroupWise warnt Sie ab %d %%."
 
-#: src/evolution/e-groupwise-mailbox-tab.c:557
+#: src/evolution/e-groupwise-mailbox-tab.c:558
 #, c-format
 msgid "%s MB of %s MB used (%d %%)."
 msgstr "%s MB von %s MB belegt (%d %%)."
 
-#: src/evolution/e-groupwise-mailbox-tab.c:561
+#: src/evolution/e-groupwise-mailbox-tab.c:562
 #, c-format
 msgid "%s MB used; the mailbox has no limit."
 msgstr "%s MB belegt; das Postfach hat keine Größenbegrenzung."
 
-#: src/evolution/e-groupwise-mailbox-tab.c:564
+#: src/evolution/e-groupwise-mailbox-tab.c:565
 msgid "The server does not tell the size of the mailbox."
 msgstr "Der Server nennt die Größe des Postfachs nicht."
 
-#: src/evolution/e-groupwise-mailbox-tab.c:638
+#: src/evolution/e-groupwise-mailbox-tab.c:643
 msgid "Mailbox and Password"
 msgstr "Postfach und Passwort"
 
@@ -2849,8 +2853,8 @@ msgstr ""
 "Dieser Kalender bzw. dieses Adressbuch kann in GroupWise nicht gelöscht "
 "werden"
 
-#~ msgid "Unread:"
-#~ msgstr "Ungelesen:"
+#~ msgid "Unread in the Mailbox:"
+#~ msgstr "Ungelesen in der Mailbox:"
 
 #, fuzzy
 #~ msgid "Calendars and address books:"

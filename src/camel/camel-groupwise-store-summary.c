@@ -148,7 +148,13 @@ camel_groupwise_folder_records_from_folders (GPtrArray *folders)
 		record->full_name = full_name;
 		record->type = folder->type;
 		record->total = folder->count;
-		record->unread = folder->unread_count;
+		/* A folder the server counts and names no unread messages for has
+		 * none. Drafts and what is in the Trash count as unread there:
+		 * not a number to show at the folder (opened, it counts itself). */
+		if (folder->type == E_GW_FOLDER_TYPE_DRAFT || folder->type == E_GW_FOLDER_TYPE_TRASH)
+			record->unread = -1;
+		else
+			record->unread = folder->unread_count < 0 && folder->count >= 0 ? 0 : folder->unread_count;
 		record->shared = folder->is_shared_to_me ? 2 : folder->is_shared_by_me ? 1 : 0;
 		record->rights = folder->share_rights;
 		g_ptr_array_add (records, record);

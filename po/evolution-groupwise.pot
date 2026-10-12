@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: evolution-groupwise\n"
 "Report-Msgid-Bugs-To: rbackes@bond.de\n"
-"POT-Creation-Date: 2026-10-12 12:48+0200\n"
+"POT-Creation-Date: 2026-10-12 12:51+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -387,55 +387,55 @@ msgstr ""
 msgid "A folder name must not contain \"/\""
 msgstr ""
 
-#: src/camel/camel-groupwise-store-summary.c:387
+#: src/camel/camel-groupwise-store-summary.c:388
 #: src/evolution/e-groupwise-ui-utils.c:209
 msgid "Mailbox"
 msgstr ""
 
-#: src/camel/camel-groupwise-store-summary.c:388
+#: src/camel/camel-groupwise-store-summary.c:389
 #: src/evolution/e-groupwise-junk-tab.c:528
 #: src/evolution/e-groupwise-ui-utils.c:210
 msgid "Junk Mail"
 msgstr ""
 
-#: src/camel/camel-groupwise-store-summary.c:389
+#: src/camel/camel-groupwise-store-summary.c:390
 #: src/evolution/e-groupwise-ui-utils.c:211
 msgid "Trash"
 msgstr ""
 
-#: src/camel/camel-groupwise-store-summary.c:390
+#: src/camel/camel-groupwise-store-summary.c:391
 #: src/evolution/e-groupwise-ui-utils.c:212
 msgid "Sent Items"
 msgstr ""
 
-#: src/camel/camel-groupwise-store-summary.c:391
+#: src/camel/camel-groupwise-store-summary.c:392
 #: src/evolution/e-groupwise-ui-utils.c:213
 msgid "Work In Progress"
 msgstr ""
 
-#: src/camel/camel-groupwise-store-summary.c:392
+#: src/camel/camel-groupwise-store-summary.c:393
 #: src/evolution/e-groupwise-ui-utils.c:214
 msgid "Cabinet"
 msgstr ""
 
-#: src/camel/camel-groupwise-store-summary.c:393
 #: src/camel/camel-groupwise-store-summary.c:394
+#: src/camel/camel-groupwise-store-summary.c:395
 #: src/evolution/e-groupwise-ui-utils.c:215
 msgid "Tasklist"
 msgstr ""
 
-#: src/camel/camel-groupwise-store-summary.c:395
+#: src/camel/camel-groupwise-store-summary.c:396
 #: src/evolution/e-groupwise-ui-utils.c:216
 #: src/registry/module-groupwise-backend.c:342
 msgid "Calendar"
 msgstr ""
 
-#: src/camel/camel-groupwise-store-summary.c:396
+#: src/camel/camel-groupwise-store-summary.c:397
 #: src/evolution/e-groupwise-ui-utils.c:217
 msgid "Contacts"
 msgstr ""
 
-#: src/camel/camel-groupwise-store-summary.c:397
+#: src/camel/camel-groupwise-store-summary.c:398
 #: src/evolution/e-groupwise-ui-utils.c:218
 msgid "Documents"
 msgstr ""
@@ -782,7 +782,7 @@ msgid "Messages in the folders:"
 msgstr ""
 
 #: src/evolution/e-groupwise-mailbox-tab.c:360
-msgid "Unread in the Mailbox:"
+msgid "Unread:"
 msgstr ""
 
 #: src/evolution/e-groupwise-mailbox-tab.c:361
@@ -801,61 +801,65 @@ msgstr ""
 msgid "Address books:"
 msgstr ""
 
-#: src/evolution/e-groupwise-mailbox-tab.c:376
+#: src/evolution/e-groupwise-mailbox-tab.c:365
+msgid "Contacts:"
+msgstr ""
+
+#: src/evolution/e-groupwise-mailbox-tab.c:377
 msgid "Space"
 msgstr ""
 
-#: src/evolution/e-groupwise-mailbox-tab.c:386
+#: src/evolution/e-groupwise-mailbox-tab.c:387
 msgid "Content"
 msgstr ""
 
-#: src/evolution/e-groupwise-mailbox-tab.c:412
+#: src/evolution/e-groupwise-mailbox-tab.c:413
 msgid "Folder"
 msgstr ""
 
-#: src/evolution/e-groupwise-mailbox-tab.c:419
+#: src/evolution/e-groupwise-mailbox-tab.c:420
 msgid "Messages"
 msgstr ""
 
-#: src/evolution/e-groupwise-mailbox-tab.c:425
+#: src/evolution/e-groupwise-mailbox-tab.c:426
 msgid "Unread"
 msgstr ""
 
-#: src/evolution/e-groupwise-mailbox-tab.c:438
+#: src/evolution/e-groupwise-mailbox-tab.c:439
 msgid ""
 "GroupWise counts the Mailbox, the Calendar, the Work In Progress folder and "
-"the folders you made; the Sent Items and other views onto the mailbox it "
-"does not count. Unread messages it counts in the Mailbox only."
-msgstr ""
-
-#: src/evolution/e-groupwise-mailbox-tab.c:447
-msgid "Change _Password…"
+"the folders you made; the Sent Items, other views onto the mailbox and "
+"folders other users share with you it does not count."
 msgstr ""
 
 #: src/evolution/e-groupwise-mailbox-tab.c:448
+msgid "Change _Password…"
+msgstr ""
+
+#: src/evolution/e-groupwise-mailbox-tab.c:449
 msgid "Change the password you log in to GroupWise with"
 msgstr ""
 
-#: src/evolution/e-groupwise-mailbox-tab.c:553
+#: src/evolution/e-groupwise-mailbox-tab.c:554
 #, c-format
 msgid "%s MB of %s MB used (%d %%). GroupWise warns you from %d %%."
 msgstr ""
 
-#: src/evolution/e-groupwise-mailbox-tab.c:557
+#: src/evolution/e-groupwise-mailbox-tab.c:558
 #, c-format
 msgid "%s MB of %s MB used (%d %%)."
 msgstr ""
 
-#: src/evolution/e-groupwise-mailbox-tab.c:561
+#: src/evolution/e-groupwise-mailbox-tab.c:562
 #, c-format
 msgid "%s MB used; the mailbox has no limit."
 msgstr ""
 
-#: src/evolution/e-groupwise-mailbox-tab.c:564
+#: src/evolution/e-groupwise-mailbox-tab.c:565
 msgid "The server does not tell the size of the mailbox."
 msgstr ""
 
-#: src/evolution/e-groupwise-mailbox-tab.c:638
+#: src/evolution/e-groupwise-mailbox-tab.c:643
 msgid "Mailbox and Password"
 msgstr ""
 

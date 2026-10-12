@@ -457,12 +457,12 @@ wie <i>Werkzeuge → Mailbox-Größe überprüfen</i> im GroupWise-Client:</p>
 	<li><b>Speicherplatz</b>: wie viel das Postfach belegt und wie groß es werden darf, als Balken und in
 		Megabyte, dazu die Schwelle, ab der GroupWise Sie warnt. Hat das Postfach keine Größenbegrenzung,
 		steht dort nur der belegte Platz.</li>
-	<li><b>Inhalt</b>: die Zahl der Nachrichten in den Ordnern, die ungelesenen in der Mailbox, die Einträge
-		im Kalender, die Zahl der Ordner, Kalender und Adressbücher.</li>
+	<li><b>Inhalt</b>: die Zahl der Nachrichten in den Ordnern und der ungelesenen darunter, die Einträge
+		im Kalender, die Zahl der Ordner, Kalender und Adressbücher sowie der Kontakte darin.</li>
 	<li>Eine <b>Liste der Ordner</b> mit Nachrichten und Ungelesenen, die vollsten zuerst; ein Klick auf
 		eine Spaltenüberschrift sortiert um. GroupWise zählt die Mailbox, den Kalender, „In Arbeit“ und
-		die von Ihnen angelegten Ordner; die Ausgangsnachrichten und andere Sichten auf das Postfach zählt
-		es nicht. Ungelesene Nachrichten zählt GroupWise über diese Schnittstelle nur in der Mailbox.</li>
+		die von Ihnen angelegten Ordner; die Ausgangsnachrichten, andere Sichten auf das Postfach und
+		Ordner, die andere Benutzer für Sie freigegeben haben, zählt es nicht.</li>
 </ul>
 <p>Die Zahlen sind der Stand beim Öffnen des Fensters. Bei einem Proxy-Konto beschreiben sie das andere
 Postfach.</p>
@@ -499,6 +499,11 @@ bleiben, wie sie sind.</p>
 		zeigt Evolution den geänderten Betreff.</li>
 	<li><b>Gelesen/ungelesen</b> wird in beide Richtungen abgeglichen. Das bloße Ansehen in der Liste
 		markiert nichts als gelesen.</li>
+	<li><b>Zahl der Ungelesenen</b>: Wie im GroupWise-Client steht hinter jedem Ordner, wie viele
+		ungelesene Nachrichten er enthält – auch bei Ordnern, die Sie noch nicht geöffnet haben. Für diese
+		ist es der Stand des letzten Abgleichs der Ordnerliste (beim Start und bei
+		<span class="menu">Abrufen</span>); ein geöffneter Ordner zählt laufend mit. Ordner, die andere
+		Benutzer für Sie freigegeben haben, zählt der Server erst, wenn Sie sie öffnen.</li>
 	<li><b>Verschieben und Kopieren</b> innerhalb des Kontos geschieht auf dem Server: Eine kopierte
 		Nachricht ist in GroupWise dieselbe Nachricht in einem weiteren Ordner.</li>
 	<li><b>Einladungen</b> in der Mailbox erscheinen als Nachrichten; beantworten Sie sie in der

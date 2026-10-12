@@ -55,8 +55,9 @@ typedef struct {
 	gchar *folder_type;		/* raw <folderType>, NULL if absent */
 	EGwFolderType type;
 	EGwFolderKind kind;
-	gint64 count;			/* -1 if not reported */
-	gint64 unread_count;		/* -1 if not reported */
+	gint64 count;			/* -1 if not reported (folders of another user's,
+					 * views such as the Sent Items) */
+	gint64 unread_count;		/* -1 if not reported: none where @count is there */
 	gboolean is_shared_to_me;
 	gboolean is_shared_by_me;
 	guint share_rights;		/* shared to the user: what the user may do

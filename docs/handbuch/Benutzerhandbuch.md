@@ -227,9 +227,9 @@ Die Registerkarte **Postfach und Passwort** der GroupWise-Einstellungen zeigt da
 
 - **Speicherplatz**: wie viel das Postfach belegt und wie groß es werden darf, als Balken und in Megabyte, dazu die Schwelle, ab der GroupWise Sie warnt. Hat das Postfach keine Größenbegrenzung, steht dort nur der belegte Platz.
 
-- **Inhalt**: die Zahl der Nachrichten in den Ordnern, die ungelesenen in der Mailbox, die Einträge im Kalender, die Zahl der Ordner, Kalender und Adressbücher.
+- **Inhalt**: die Zahl der Nachrichten in den Ordnern und der ungelesenen darunter, die Einträge im Kalender, die Zahl der Ordner, Kalender und Adressbücher sowie der Kontakte darin.
 
-- Eine **Liste der Ordner** mit Nachrichten und Ungelesenen, die vollsten zuerst; ein Klick auf eine Spaltenüberschrift sortiert um. GroupWise zählt die Mailbox, den Kalender, „In Arbeit“ und die von Ihnen angelegten Ordner; die Ausgangsnachrichten und andere Sichten auf das Postfach zählt es nicht. Ungelesene Nachrichten zählt GroupWise über diese Schnittstelle nur in der Mailbox.
+- Eine **Liste der Ordner** mit Nachrichten und Ungelesenen, die vollsten zuerst; ein Klick auf eine Spaltenüberschrift sortiert um. GroupWise zählt die Mailbox, den Kalender, „In Arbeit“ und die von Ihnen angelegten Ordner; die Ausgangsnachrichten, andere Sichten auf das Postfach und Ordner, die andere Benutzer für Sie freigegeben haben, zählt es nicht.
 
 Die Zahlen sind der Stand beim Öffnen des Fensters. Bei einem Proxy-Konto beschreiben sie das andere Postfach.
 
@@ -250,6 +250,8 @@ Evolution zeigt alle Ordner des GroupWise-Postfachs, wie der GroupWise-Client zu
 - **Geänderter Betreff**: Haben Sie den Betreff einer Nachricht im GroupWise-Client geändert, zeigt Evolution den geänderten Betreff.
 
 - **Gelesen/ungelesen** wird in beide Richtungen abgeglichen. Das bloße Ansehen in der Liste markiert nichts als gelesen.
+
+- **Zahl der Ungelesenen**: Wie im GroupWise-Client steht hinter jedem Ordner, wie viele ungelesene Nachrichten er enthält – auch bei Ordnern, die Sie noch nicht geöffnet haben. Für diese ist es der Stand des letzten Abgleichs der Ordnerliste (beim Start und bei `Abrufen`); ein geöffneter Ordner zählt laufend mit. Ordner, die andere Benutzer für Sie freigegeben haben, zählt der Server erst, wenn Sie sie öffnen.
 
 - **Verschieben und Kopieren** innerhalb des Kontos geschieht auf dem Server: Eine kopierte Nachricht ist in GroupWise dieselbe Nachricht in einem weiteren Ordner.
 
