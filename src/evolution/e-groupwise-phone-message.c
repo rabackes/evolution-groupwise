@@ -408,14 +408,14 @@ phone_dialog_new (GtkWindow *parent,
 }
 
 void
-e_groupwise_phone_message_new (EShellView *shell_view,
+e_groupwise_phone_message_new (EShellWindow *shell_window,
 			       ESource *preferred_account)
 {
 	EShell *shell;
 
-	g_return_if_fail (E_IS_SHELL_VIEW (shell_view));
+	g_return_if_fail (E_IS_SHELL_WINDOW (shell_window));
 
-	shell = e_shell_window_get_shell (E_SHELL_WINDOW (e_shell_view_get_shell_window (shell_view)));
-	phone_dialog_new (GTK_WINDOW (e_shell_view_get_shell_window (shell_view)), e_shell_get_registry (shell),
+	shell = e_shell_window_get_shell (shell_window);
+	phone_dialog_new (GTK_WINDOW (shell_window), e_shell_get_registry (shell),
 		e_shell_get_client_cache (shell), preferred_account);
 }

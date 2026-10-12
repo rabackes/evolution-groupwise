@@ -420,7 +420,7 @@ Backend dafür im Speicher. Proxy-Konten bleiben außen vor.
 
 ### Telefonnachrichten
 
-*Nachricht → Neue Telefonnachricht …* öffnet einen eigenen Dialog (Empfänger, Anrufer, Firma, Telefon, die
+*Datei → Neu → Telefonnachricht* (`e_shell_window_register_new_item_actions`, je Fenster einmal) öffnet einen eigenen Dialog (Empfänger, Anrufer, Firma, Telefon, die
 sieben Ankreuzfelder, Text) und sendet mit `sendItemRequest` ein Item `xsi:type="PhoneMessage"` (`<caller>`,
 `<company>`, `<phone>`, `<flags>` mit `called`, `pleaseCall`, `willCall`, `returnedYourCall`,
 `wantsToSeeYou`, `cameToSeeYou`, `urgent`). Der Betreff ist wie im GroupWise-Client „Anrufer Telefon“.

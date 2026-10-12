@@ -48,7 +48,7 @@ Evolution und der GroupWise-Client nennen dieselben Dinge teils verschieden – 
 | Gemeinsame Notiz (Shared Memo) | Notiz (Reminder) | Notiz an einem Tag, die an andere gesendet wird |
 | – | Haftnotiz (Sticky Note) | Persönliche Notiz ohne Datum; in Evolution gibt es dafür keine Entsprechung |
 | E-Mail-Nachricht (Mail Message) | Mail | Nachricht |
-| Telefonnachricht (Phone Message) | Telefonnachricht (Phone Message), „Während Sie weg waren“ (While You Were Out) und die persönliche Telefonnachricht | Nachricht mit zusätzlichen Feldern für Anrufer, Firma, Telefonnummer und Ankreuzfeldern (hat angerufen, bitte zurückrufen, dringend …). Evolution zeigt eine empfangene als Nachricht; die Felder stehen als eigener Absatz über dem Nachrichtentext. Geschrieben wird sie mit `Nachricht → Neue Telefonnachricht …` ([4.2](#mail-telefon)). |
+| Telefonnachricht (Phone Message) | Telefonnachricht (Phone Message), „Während Sie weg waren“ (While You Were Out) und die persönliche Telefonnachricht | Nachricht mit zusätzlichen Feldern für Anrufer, Firma, Telefonnummer und Ankreuzfeldern (hat angerufen, bitte zurückrufen, dringend …). Evolution zeigt eine empfangene als Nachricht; die Felder stehen als eigener Absatz über dem Nachrichtentext. Geschrieben wird sie mit `Datei → Neu → Telefonnachricht` ([4.2](#mail-telefon)). |
 | Aufgaben (Tasks), die Ansicht | Jobliste (Tasklist) | Liste der offenen Aufgaben; die GroupWise-Jobliste enthält zusätzlich Nachrichten, die Sie zur Nachverfolgung markiert haben |
 | Organisator (Organizer) | Absender (From) | Wer eine Besprechung ansetzt |
 | Teilnehmer (Attendees) | Empfänger: An, Kopie (CC), Blindkopie (BC) | Wer eingeladen ist; Evolution unterscheidet stattdessen erforderliche und optionale Teilnehmer |
@@ -283,9 +283,9 @@ Wie im GroupWise-Client sehen Sie bei gesendeten Nachrichten, was bei den Empfä
 
 ### Telefonnachrichten
 
-Eine Telefonnachricht hält für jemanden fest, wer in seiner Abwesenheit angerufen hat. Wählen Sie in der E-Mail-Ansicht `Nachricht → Neue Telefonnachricht …`; der Dialog **Telefonnachricht** entspricht *Datei → Neu → Telefonnachricht* im GroupWise-Client:
+Eine Telefonnachricht hält für jemanden fest, wer in seiner Abwesenheit angerufen hat. Wählen Sie `Datei → Neu → Telefonnachricht` oder denselben Eintrag im Aufklappmenü des Knopfs `Neu` in der Werkzeugleiste – in jeder Ansicht, wie im GroupWise-Client. Der Dialog **Telefonnachricht**:
 
-- **Von** – das Postfach, aus dem gesendet wird; die Auswahl erscheint nur, wenn Sie neben Ihrem Konto Proxy-Konten haben. Vorgewählt ist das Konto des gerade ausgewählten Ordners.
+- **Von** – das Postfach, aus dem gesendet wird; die Auswahl erscheint nur, wenn Sie neben Ihrem Konto Proxy-Konten haben. Vorgewählt ist das Konto des in der E-Mail-Ansicht ausgewählten Ordners, sonst Ihr eigenes.
 
 - **An** – die Empfänger: getippt, mit Ergänzung aus den Adressbüchern, oder über `Adressbuch …` ausgewählt.
 

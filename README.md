@@ -392,7 +392,7 @@ are left out.
 
 ### Phone messages
 
-*Message → New Phone Message…* opens a dialog of its own (recipients, caller, company, phone, the seven
+*File → New → Phone Message* (`e_shell_window_register_new_item_actions`, once for a window) opens a dialog of its own (recipients, caller, company, phone, the seven
 check boxes, text) and sends an item `xsi:type="PhoneMessage"` with `sendItemRequest` (`<caller>`,
 `<company>`, `<phone>`, `<flags>` with `called`, `pleaseCall`, `willCall`, `returnedYourCall`,
 `wantsToSeeYou`, `cameToSeeYou`, `urgent`). The subject is, as the GroupWise client makes it, "caller phone".

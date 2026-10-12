@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: evolution-groupwise\n"
 "Report-Msgid-Bugs-To: rbackes@bond.de\n"
-"POT-Creation-Date: 2026-10-12 12:58+0200\n"
+"POT-Creation-Date: 2026-10-12 13:16+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -234,26 +234,26 @@ msgid "While you were out"
 msgstr ""
 
 #: src/camel/camel-groupwise-folder.c:2384
-#: src/evolution/e-groupwise-phone-message.c:321
+#: src/evolution/e-groupwise-phone-message.c:319
 msgid "Phone Message"
 msgstr ""
 
-#: src/camel/camel-groupwise-folder.c:2526
-#: src/camel/camel-groupwise-folder.c:2807
+#: src/camel/camel-groupwise-folder.c:2531
+#: src/camel/camel-groupwise-folder.c:2812
 #, c-format
 msgid "Cannot get the message %s"
 msgstr ""
 
-#: src/camel/camel-groupwise-folder.c:2853
+#: src/camel/camel-groupwise-folder.c:2858
 msgid "This message is not available in offline mode."
 msgstr ""
 
-#: src/camel/camel-groupwise-folder.c:2863
+#: src/camel/camel-groupwise-folder.c:2868
 #, c-format
 msgid "Cannot read the message %s"
 msgstr ""
 
-#: src/camel/camel-groupwise-folder.c:3091
+#: src/camel/camel-groupwise-folder.c:3096
 #, c-format
 msgid "Cannot create folder cache %s: %s"
 msgstr ""
@@ -486,8 +486,8 @@ msgstr ""
 #: src/evolution/e-groupwise-access-tab.c:157
 #: src/evolution/e-groupwise-junk-tab.c:70
 #: src/evolution/e-groupwise-mailbox-tab.c:302
-#: src/evolution/e-groupwise-mail-ui.c:497
-#: src/evolution/e-groupwise-phone-message.c:322
+#: src/evolution/e-groupwise-mail-ui.c:530
+#: src/evolution/e-groupwise-phone-message.c:320
 #: src/evolution/e-groupwise-rule-editor.c:1336
 #: src/evolution/e-groupwise-rules-tab.c:351
 #: src/evolution/e-groupwise-sent-items.c:457
@@ -869,201 +869,201 @@ msgstr ""
 msgid "restoring messages"
 msgstr ""
 
-#: src/evolution/e-groupwise-mail-ui.c:442
+#: src/evolution/e-groupwise-mail-ui.c:296
+msgid "_Phone Message"
+msgstr ""
+
+#: src/evolution/e-groupwise-mail-ui.c:298
+msgid "Write a GroupWise phone message: who called, and what the caller wants"
+msgstr ""
+
+#: src/evolution/e-groupwise-mail-ui.c:475
 msgid "updating the junk mail lists"
 msgstr ""
 
-#: src/evolution/e-groupwise-mail-ui.c:469
+#: src/evolution/e-groupwise-mail-ui.c:502
 msgid "Junk the Sender"
 msgstr ""
 
-#: src/evolution/e-groupwise-mail-ui.c:469
+#: src/evolution/e-groupwise-mail-ui.c:502
 msgid ""
 "Future mail goes into the Junk Mail folder; this message goes there now."
 msgstr ""
 
-#: src/evolution/e-groupwise-mail-ui.c:469
+#: src/evolution/e-groupwise-mail-ui.c:502
 msgid "_Junk"
 msgstr ""
 
-#: src/evolution/e-groupwise-mail-ui.c:470
+#: src/evolution/e-groupwise-mail-ui.c:503
 msgid "Block the Sender"
 msgstr ""
 
-#: src/evolution/e-groupwise-mail-ui.c:470
+#: src/evolution/e-groupwise-mail-ui.c:503
 msgid ""
 "Future mail is not delivered; this message goes into the Junk Mail folder."
 msgstr ""
 
-#: src/evolution/e-groupwise-mail-ui.c:470
+#: src/evolution/e-groupwise-mail-ui.c:503
 msgid "_Block"
 msgstr ""
 
-#: src/evolution/e-groupwise-mail-ui.c:471
+#: src/evolution/e-groupwise-mail-ui.c:504
 msgid "Trust the Sender"
 msgstr ""
 
-#: src/evolution/e-groupwise-mail-ui.c:471
+#: src/evolution/e-groupwise-mail-ui.c:504
 msgid ""
 "Mail from the sender is never junk; this message goes back into the Mailbox."
 msgstr ""
 
-#: src/evolution/e-groupwise-mail-ui.c:471
+#: src/evolution/e-groupwise-mail-ui.c:504
 msgid "_Trust"
 msgstr ""
 
-#: src/evolution/e-groupwise-mail-ui.c:511
+#: src/evolution/e-groupwise-mail-ui.c:544
 #, c-format
 msgid "Only the _address %s"
 msgstr ""
 
-#: src/evolution/e-groupwise-mail-ui.c:513
+#: src/evolution/e-groupwise-mail-ui.c:546
 #, c-format
 msgid "Only the _addresses of the %u senders"
 msgstr ""
 
-#: src/evolution/e-groupwise-mail-ui.c:517
+#: src/evolution/e-groupwise-mail-ui.c:550
 #, c-format
 msgid "The whole _domain %s (with its subdomains)"
 msgstr ""
 
-#: src/evolution/e-groupwise-mail-ui.c:519
+#: src/evolution/e-groupwise-mail-ui.c:552
 msgid "Their whole _domains (with their subdomains)"
 msgstr ""
 
-#: src/evolution/e-groupwise-mail-ui.c:525
+#: src/evolution/e-groupwise-mail-ui.c:558
 msgid ""
 "This applies to Internet mail only; the lists are in the GroupWise Settings "
 "of the account."
 msgstr ""
 
-#: src/evolution/e-groupwise-mail-ui.c:1353
 #: src/evolution/e-groupwise-mail-ui.c:1386
-#: src/evolution/e-groupwise-mail-ui.c:1473
+#: src/evolution/e-groupwise-mail-ui.c:1419
+#: src/evolution/e-groupwise-mail-ui.c:1506
 msgid "S_haring…"
 msgstr ""
 
-#: src/evolution/e-groupwise-mail-ui.c:1355
+#: src/evolution/e-groupwise-mail-ui.c:1388
 msgid "Share the address book with other GroupWise users, or see who shares it"
 msgstr ""
 
-#: src/evolution/e-groupwise-mail-ui.c:1359
 #: src/evolution/e-groupwise-mail-ui.c:1392
+#: src/evolution/e-groupwise-mail-ui.c:1425
 msgid "_Rename…"
 msgstr ""
 
-#: src/evolution/e-groupwise-mail-ui.c:1361
+#: src/evolution/e-groupwise-mail-ui.c:1394
 msgid "Rename the address book, in GroupWise as well"
 msgstr ""
 
-#: src/evolution/e-groupwise-mail-ui.c:1388
+#: src/evolution/e-groupwise-mail-ui.c:1421
 msgid "Share the calendar with other GroupWise users, or see who shares it"
 msgstr ""
 
-#: src/evolution/e-groupwise-mail-ui.c:1394
+#: src/evolution/e-groupwise-mail-ui.c:1427
 msgid "Rename the calendar, in GroupWise as well"
 msgstr ""
 
-#: src/evolution/e-groupwise-mail-ui.c:1424
+#: src/evolution/e-groupwise-mail-ui.c:1457
 msgid "_Restore"
 msgstr ""
 
-#: src/evolution/e-groupwise-mail-ui.c:1426
+#: src/evolution/e-groupwise-mail-ui.c:1459
 msgid "Put the selected messages back into the folders they were deleted from"
 msgstr ""
 
-#: src/evolution/e-groupwise-mail-ui.c:1467
+#: src/evolution/e-groupwise-mail-ui.c:1500
 msgid "GroupWise _Settings…"
 msgstr ""
 
-#: src/evolution/e-groupwise-mail-ui.c:1469
+#: src/evolution/e-groupwise-mail-ui.c:1502
 msgid ""
 "Settings the GroupWise server keeps for the account: junk mail handling and "
 "more"
 msgstr ""
 
-#: src/evolution/e-groupwise-mail-ui.c:1475
+#: src/evolution/e-groupwise-mail-ui.c:1508
 msgid "Share the folder with other GroupWise users, or see who shares it"
 msgstr ""
 
-#: src/evolution/e-groupwise-mail-ui.c:1477
+#: src/evolution/e-groupwise-mail-ui.c:1510
 msgid "GroupWise _Junk Mail"
 msgstr ""
 
-#: src/evolution/e-groupwise-mail-ui.c:1480
+#: src/evolution/e-groupwise-mail-ui.c:1513
 msgid "Junk Mail _Settings…"
 msgstr ""
 
-#: src/evolution/e-groupwise-mail-ui.c:1482
+#: src/evolution/e-groupwise-mail-ui.c:1515
 msgid "The junk mail handling of GroupWise: settings and lists"
 msgstr ""
 
-#: src/evolution/e-groupwise-mail-ui.c:1486
+#: src/evolution/e-groupwise-mail-ui.c:1519
 msgid "_Junk the Sender…"
 msgstr ""
 
-#: src/evolution/e-groupwise-mail-ui.c:1488
+#: src/evolution/e-groupwise-mail-ui.c:1521
 msgid "Put the sender or the sender's domain onto the junk list of GroupWise"
 msgstr ""
 
-#: src/evolution/e-groupwise-mail-ui.c:1492
+#: src/evolution/e-groupwise-mail-ui.c:1525
 msgid "_Block the Sender…"
 msgstr ""
 
-#: src/evolution/e-groupwise-mail-ui.c:1494
+#: src/evolution/e-groupwise-mail-ui.c:1527
 msgid "Put the sender or the sender's domain onto the block list of GroupWise"
 msgstr ""
 
-#: src/evolution/e-groupwise-mail-ui.c:1498
+#: src/evolution/e-groupwise-mail-ui.c:1531
 msgid "_Trust the Sender…"
 msgstr ""
 
-#: src/evolution/e-groupwise-mail-ui.c:1500
+#: src/evolution/e-groupwise-mail-ui.c:1533
 msgid "Put the sender or the sender's domain onto the trust list of GroupWise"
 msgstr ""
 
-#: src/evolution/e-groupwise-mail-ui.c:1504
+#: src/evolution/e-groupwise-mail-ui.c:1537
 msgid "Delivery _Status…"
 msgstr ""
 
-#: src/evolution/e-groupwise-mail-ui.c:1506
+#: src/evolution/e-groupwise-mail-ui.c:1539
 msgid ""
 "What happened to the message at each recipient: delivered, opened, deleted …"
 msgstr ""
 
-#: src/evolution/e-groupwise-mail-ui.c:1510
+#: src/evolution/e-groupwise-mail-ui.c:1543
 msgid "Resen_d…"
 msgstr ""
 
-#: src/evolution/e-groupwise-mail-ui.c:1512
+#: src/evolution/e-groupwise-mail-ui.c:1545
 msgid ""
 "Open the message to change it and send it anew; sending asks whether the "
 "original is retracted"
 msgstr ""
 
-#: src/evolution/e-groupwise-mail-ui.c:1516
+#: src/evolution/e-groupwise-mail-ui.c:1549
 msgid "Re_tract…"
 msgstr ""
 
-#: src/evolution/e-groupwise-mail-ui.c:1518
+#: src/evolution/e-groupwise-mail-ui.c:1551
 msgid "Take the selected messages back from the recipients' mailboxes"
 msgstr ""
 
-#: src/evolution/e-groupwise-mail-ui.c:1538
+#: src/evolution/e-groupwise-mail-ui.c:1570
 msgid "Install Shared _Folder…"
 msgstr ""
 
-#: src/evolution/e-groupwise-mail-ui.c:1540
+#: src/evolution/e-groupwise-mail-ui.c:1572
 msgid ""
 "Accept the folder this notification offers: it is added to the folder list"
-msgstr ""
-
-#: src/evolution/e-groupwise-mail-ui.c:1544
-msgid "New _Phone Message…"
-msgstr ""
-
-#: src/evolution/e-groupwise-mail-ui.c:1546
-msgid "Write a GroupWise phone message: who called, and what the caller wants"
 msgstr ""
 
 #: src/evolution/e-groupwise-name-selector.c:115
@@ -1098,61 +1098,61 @@ msgstr ""
 msgid "_Urgent"
 msgstr ""
 
-#: src/evolution/e-groupwise-phone-message.c:152
+#: src/evolution/e-groupwise-phone-message.c:150
 #, c-format
 msgid "The phone message was not sent: %s"
 msgstr ""
 
-#: src/evolution/e-groupwise-phone-message.c:214
+#: src/evolution/e-groupwise-phone-message.c:212
 msgid "Name whom the phone message is for."
 msgstr ""
 
-#: src/evolution/e-groupwise-phone-message.c:219
+#: src/evolution/e-groupwise-phone-message.c:217
 msgid "Say who called, or write a message."
 msgstr ""
 
-#: src/evolution/e-groupwise-phone-message.c:322
+#: src/evolution/e-groupwise-phone-message.c:320
 #: src/evolution/e-groupwise-share-tab.c:789
 msgid "_Send"
 msgstr ""
 
-#: src/evolution/e-groupwise-phone-message.c:337
+#: src/evolution/e-groupwise-phone-message.c:335
 #: src/evolution/e-groupwise-vacation-tab.c:144
 msgid "_From:"
 msgstr ""
 
-#: src/evolution/e-groupwise-phone-message.c:353
+#: src/evolution/e-groupwise-phone-message.c:351
 #: src/evolution/e-groupwise-rule-editor.c:95
 #: src/evolution/e-groupwise-rule-editor.c:135
 #: src/evolution/e-groupwise-sent-items.c:145
 msgid "To"
 msgstr ""
 
-#: src/evolution/e-groupwise-phone-message.c:358
+#: src/evolution/e-groupwise-phone-message.c:356
 msgid "T_o:"
 msgstr ""
 
-#: src/evolution/e-groupwise-phone-message.c:361
+#: src/evolution/e-groupwise-phone-message.c:359
 msgid "A_ddress Book…"
 msgstr ""
 
-#: src/evolution/e-groupwise-phone-message.c:362
+#: src/evolution/e-groupwise-phone-message.c:360
 msgid "Pick the recipients from the address books"
 msgstr ""
 
-#: src/evolution/e-groupwise-phone-message.c:368
+#: src/evolution/e-groupwise-phone-message.c:366
 msgid "C_aller:"
 msgstr ""
 
-#: src/evolution/e-groupwise-phone-message.c:369
+#: src/evolution/e-groupwise-phone-message.c:367
 msgid "Compa_ny:"
 msgstr ""
 
-#: src/evolution/e-groupwise-phone-message.c:370
+#: src/evolution/e-groupwise-phone-message.c:368
 msgid "P_hone:"
 msgstr ""
 
-#: src/evolution/e-groupwise-phone-message.c:382
+#: src/evolution/e-groupwise-phone-message.c:380
 #: src/evolution/e-groupwise-share-tab.c:847
 #: src/evolution/e-groupwise-vacation-tab.c:165
 msgid "_Message:"

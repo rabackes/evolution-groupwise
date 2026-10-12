@@ -62,7 +62,7 @@
 #define SETTINGS_ACTION "groupwise-account-settings"
 #define SHARE_ACTION "groupwise-folder-share"
 #define ACCEPT_SHARE_ACTION "groupwise-share-accept"
-#define PHONE_MESSAGE_ACTION "groupwise-phone-message-new"
+#define PHONE_MESSAGE_ACTION "new-menu-groupwise-phone-message"
 #define CALENDAR_SHARE_ACTION "groupwise-calendar-share"
 #define BOOK_SHARE_ACTION "groupwise-book-share"
 #define CALENDAR_RENAME_ACTION "groupwise-calendar-rename"
@@ -259,28 +259,61 @@ own_folder_selected (EShellView *shell_view)
 }
 
 /* Sharing is a page of the folder properties */
-/* A phone message, from the mailbox whose folder is selected */
+/* A phone message, from the mailbox whose folder is selected in the mail
+ * view (when the window has one yet). In the "New" menu, from every view. */
 static void
 action_phone_message_cb (EUIAction *action,
 			 GVariant *parameter,
 			 gpointer user_data)
 {
-	EShellView *shell_view = user_data;
-	EShellSidebar *sidebar = e_shell_view_get_shell_sidebar (shell_view);
+	EShellWindow *shell_window = user_data;
+	EShellView *shell_view = e_shell_window_peek_shell_view (shell_window, "mail");
 	EMFolderTree *folder_tree = NULL;
 	CamelStore *store = NULL;
 	ESource *account = NULL;
 	gchar *full_name = NULL;
 
-	g_object_get (sidebar, "folder-tree", &folder_tree, NULL);
+	if (shell_view)
+		g_object_get (e_shell_view_get_shell_sidebar (shell_view), "folder-tree", &folder_tree, NULL);
 	if (folder_tree && (em_folder_tree_get_selected (folder_tree, &store, &full_name) ||
 	    em_folder_tree_store_root_selected (folder_tree, &store)) && store)
 		account = e_groupwise_ui_ref_account_source (shell_view_get_registry (shell_view), CAMEL_SERVICE (store));
-	e_groupwise_phone_message_new (shell_view, account);
+	e_groupwise_phone_message_new (shell_window, account);
 	g_clear_object (&account);
 	g_clear_object (&store);
 	g_clear_object (&folder_tree);
 	g_free (full_name);
+}
+
+/* File > New and the "New" button of the toolbar, once for a window */
+static void
+register_new_items (EShellWindow *shell_window)
+{
+	EUIActionEntry entries[] = {
+		{ PHONE_MESSAGE_ACTION,
+		  "call-start",
+		  /* (translated here: Evolution looks the labels of this menu up in its own catalogue) */
+		  _("_Phone Message"),
+		  NULL,
+		  _("Write a GroupWise phone message: who called, and what the caller wants"),
+		  action_phone_message_cb, NULL, NULL, NULL }
+	};
+
+	if (g_object_get_data (G_OBJECT (shell_window), "groupwise-new-items"))
+		return;
+	g_object_set_data (G_OBJECT (shell_window), "groupwise-new-items", GINT_TO_POINTER (1));
+
+	e_shell_window_register_new_item_actions (shell_window, "mail", entries, G_N_ELEMENTS (entries));
+
+	/* The first entry registered is taken for the main one of the view
+	 * (the one the "New" button itself starts): that stays the mail message */
+	{
+		EUIActionGroup *group = e_shell_window_get_ui_action_group (shell_window, "new-item");
+		EUIAction *action = group ? e_ui_action_group_get_action (group, PHONE_MESSAGE_ACTION) : NULL;
+
+		if (action)
+			g_object_set_data (G_OBJECT (action), "primary", NULL);
+	}
 }
 
 static void
@@ -1526,7 +1559,6 @@ e_groupwise_mail_ui_constructed (GObject *object)
 		    "<placeholder id='custom-menus'>"
 		      "<submenu action='mail-message-menu'>"
 			"<item action='" ACCEPT_SHARE_ACTION "'/>"
-			"<item action='" PHONE_MESSAGE_ACTION "'/>"
 		      "</submenu>"
 		    "</placeholder>"
 		  "</menu>"
@@ -1538,13 +1570,7 @@ e_groupwise_mail_ui_constructed (GObject *object)
 		  N_("Install Shared _Folder…"),
 		  NULL,
 		  N_("Accept the folder this notification offers: it is added to the folder list"),
-		  action_accept_share_cb, NULL, NULL, NULL },
-		{ PHONE_MESSAGE_ACTION,
-		  "call-start",
-		  N_("New _Phone Message…"),
-		  NULL,
-		  N_("Write a GroupWise phone message: who called, and what the caller wants"),
-		  action_phone_message_cb, NULL, NULL, NULL }
+		  action_accept_share_cb, NULL, NULL, NULL }
 	};
 
 	EShellView *shell_view;
@@ -1557,6 +1583,7 @@ e_groupwise_mail_ui_constructed (GObject *object)
 	/* With whichever view Evolution starts (the mail view may come much
 	 * later, or never) */
 	start_services (shell_view);
+	register_new_items (E_SHELL_WINDOW (e_shell_view_get_shell_window (shell_view)));
 
 	if (shell_view_class && g_strcmp0 (shell_view_class->ui_manager_id, "org.gnome.evolution.calendars") == 0)
 		setup_calendar_view (shell_view);

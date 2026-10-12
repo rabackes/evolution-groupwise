@@ -20,14 +20,14 @@
 #define E_GROUPWISE_PHONE_MESSAGE_H
 
 #include <libedataserver/libedataserver.h>
-#include <shell/e-shell-view.h>
+#include <shell/e-shell-window.h>
 
 G_BEGIN_DECLS
 
 /* Opens the dialog for a new phone message. It is sent from the mailbox of
  * @preferred_account (a GroupWise mail account), or of the user's own
  * account when that is NULL. Does nothing without a GroupWise account. */
-void		e_groupwise_phone_message_new	(EShellView *shell_view,
+void		e_groupwise_phone_message_new	(EShellWindow *shell_window,
 						 ESource *preferred_account);
 
 G_END_DECLS
