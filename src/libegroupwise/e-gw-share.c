@@ -39,7 +39,8 @@ static const struct {
 	{ "read", E_GW_SHARE_READ },
 	{ "add", E_GW_SHARE_ADD },
 	{ "edit", E_GW_SHARE_EDIT },
-	{ "delete", E_GW_SHARE_DELETE }
+	{ "delete", E_GW_SHARE_DELETE },
+	{ "canTakeOwnership", E_GW_SHARE_TAKE_OWNERSHIP }
 };
 
 static const struct {
@@ -276,6 +277,8 @@ e_gw_connection_modify_share_sync (EGwConnection *cnc,
 {
 	EGwResponse *response;
 	GString *inner;
+	gboolean notify = FALSE;
+	guint ii;
 
 	g_return_val_if_fail (E_IS_GW_CONNECTION (cnc), FALSE);
 	g_return_val_if_fail (folder_id != NULL, FALSE);
@@ -289,9 +292,13 @@ e_gw_connection_modify_share_sync (EGwConnection *cnc,
 	if (!added && !changed && !removed)
 		return TRUE;
 
+	/* Offering the folder itself tells the user, like sharing it does */
+	for (ii = 0; changed && ii < changed->len && !notify; ii++)
+		notify = (((EGwShareEntry *) changed->pdata[ii])->rights & E_GW_SHARE_TAKE_OWNERSHIP) != 0;
+
 	inner = g_string_new (NULL);
 	e_gw_xml_add_leaf (inner, "id", folder_id);
-	if (added) {
+	if (added || notify) {
 		g_string_append (inner, "<notification>");
 		if (subject && *subject)
 			e_gw_xml_add_leaf (inner, "subject", subject);
@@ -440,6 +447,16 @@ e_gw_connection_get_share_notification_sync (EGwConnection *cnc,
 	}
 	notification->folder_name = e_gw_xml_dup_text (item, "name");
 	notification->subject = e_gw_xml_dup_text (item, "subject");
+	/* The offer of the ownership comes without the name: the POA puts it
+	 * behind the subject */
+	if ((!notification->folder_name || !*notification->folder_name) && notification->subject) {
+		const gchar *colon = g_strrstr (notification->subject, ": ");
+
+		if (colon && colon[2]) {
+			g_free (notification->folder_name);
+			notification->folder_name = g_strdup (colon + 2);
+		}
+	}
 	notification->sender_name = e_gw_xml_dup_text (item, "distribution/from/displayName");
 	notification->sender_email = e_gw_xml_dup_text (item, "distribution/from/email");
 	notification->message = item_text (item);

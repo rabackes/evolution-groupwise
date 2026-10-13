@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: evolution-groupwise\n"
 "Report-Msgid-Bugs-To: rbackes@bond.de\n"
-"POT-Creation-Date: 2026-10-13 13:47+0200\n"
+"POT-Creation-Date: 2026-10-13 14:05+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -517,8 +517,10 @@ msgstr ""
 #: src/evolution/e-groupwise-sent-items.c:457
 #: src/evolution/e-groupwise-sent-items.c:508
 #: src/evolution/e-groupwise-settings-window.c:376
-#: src/evolution/e-groupwise-share-accept.c:314
-#: src/evolution/e-groupwise-share-tab.c:789
+#: src/evolution/e-groupwise-share-accept.c:326
+#: src/evolution/e-groupwise-share-accept.c:338
+#: src/evolution/e-groupwise-share-tab.c:815
+#: src/evolution/e-groupwise-share-tab.c:920
 #: src/evolution/e-groupwise-signatures-tab.c:228
 #: src/evolution/e-groupwise-travel-page.c:1092
 msgid "_Cancel"
@@ -561,7 +563,7 @@ msgstr ""
 #: src/evolution/e-groupwise-access-tab.c:237
 #: src/evolution/e-groupwise-proxy-tab.c:167
 #: src/evolution/e-groupwise-rules-tab.c:404
-#: src/evolution/e-groupwise-share-tab.c:1086
+#: src/evolution/e-groupwise-share-tab.c:1234
 #: src/evolution/e-groupwise-signatures-tab.c:285
 msgid "Name"
 msgstr ""
@@ -576,7 +578,7 @@ msgid "A_dd User…"
 msgstr ""
 
 #: src/evolution/e-groupwise-access-tab.c:259
-#: src/evolution/e-groupwise-share-tab.c:1109
+#: src/evolution/e-groupwise-share-tab.c:1257
 msgid "_Remove User"
 msgstr ""
 
@@ -1154,7 +1156,8 @@ msgid "Say who called, or write a message."
 msgstr ""
 
 #: src/evolution/e-groupwise-phone-message.c:320
-#: src/evolution/e-groupwise-share-tab.c:789
+#: src/evolution/e-groupwise-share-tab.c:815
+#: src/evolution/e-groupwise-share-tab.c:920
 msgid "_Send"
 msgstr ""
 
@@ -1195,7 +1198,8 @@ msgid "P_hone:"
 msgstr ""
 
 #: src/evolution/e-groupwise-phone-message.c:380
-#: src/evolution/e-groupwise-share-tab.c:847
+#: src/evolution/e-groupwise-share-tab.c:873
+#: src/evolution/e-groupwise-share-tab.c:953
 #: src/evolution/e-groupwise-vacation-tab.c:165
 msgid "_Message:"
 msgstr ""
@@ -1238,12 +1242,12 @@ msgid "_User:"
 msgstr ""
 
 #: src/evolution/e-groupwise-proxy-calendar.c:230
-#: src/evolution/e-groupwise-share-accept.c:358
+#: src/evolution/e-groupwise-share-accept.c:382
 msgid "_Name:"
 msgstr ""
 
 #: src/evolution/e-groupwise-proxy-calendar.c:239
-#: src/evolution/e-groupwise-share-accept.c:390
+#: src/evolution/e-groupwise-share-accept.c:414
 msgid "C_olor:"
 msgstr ""
 
@@ -2126,7 +2130,7 @@ msgid "Delivery Status"
 msgstr ""
 
 #: src/evolution/e-groupwise-sent-items.c:287
-#: src/evolution/e-groupwise-share-tab.c:1477
+#: src/evolution/e-groupwise-share-tab.c:1638
 msgid "_Close"
 msgstr ""
 
@@ -2241,59 +2245,81 @@ msgstr ""
 msgid "Delete"
 msgstr ""
 
-#: src/evolution/e-groupwise-share-accept.c:311
-msgid "Install Shared Address Book"
+#: src/evolution/e-groupwise-share-accept.c:317
+#, c-format
+msgid ""
+"%s would like to transfer the ownership of the shared folder “%s” to you."
 msgstr ""
 
-#: src/evolution/e-groupwise-share-accept.c:312
-msgid "Install Shared Calendar"
-msgstr ""
-
-#: src/evolution/e-groupwise-share-accept.c:312
-msgid "Install Shared Folder"
-msgstr ""
-
-#: src/evolution/e-groupwise-share-accept.c:314
-msgid "_Install"
+#: src/evolution/e-groupwise-share-accept.c:321
+#, c-format
+msgid "Message from %s: %s"
 msgstr ""
 
 #: src/evolution/e-groupwise-share-accept.c:323
+msgid ""
+"When you take it over, the folder with all it holds belongs to your mailbox, "
+"and you decide whom it is shared with. It leaves the mailbox of the previous "
+"owner."
+msgstr ""
+
+#: src/evolution/e-groupwise-share-accept.c:327
+msgid "_Take Ownership"
+msgstr ""
+
+#: src/evolution/e-groupwise-share-accept.c:335
+msgid "Install Shared Address Book"
+msgstr ""
+
+#: src/evolution/e-groupwise-share-accept.c:336
+msgid "Install Shared Calendar"
+msgstr ""
+
+#: src/evolution/e-groupwise-share-accept.c:336
+msgid "Install Shared Folder"
+msgstr ""
+
+#: src/evolution/e-groupwise-share-accept.c:338
+msgid "_Install"
+msgstr ""
+
+#: src/evolution/e-groupwise-share-accept.c:347
 #, c-format
 msgid "%s shared the address book “%s” with you."
 msgstr ""
 
-#: src/evolution/e-groupwise-share-accept.c:326
+#: src/evolution/e-groupwise-share-accept.c:350
 #, c-format
 msgid "%s shared the calendar “%s” with you."
 msgstr ""
 
-#: src/evolution/e-groupwise-share-accept.c:329
+#: src/evolution/e-groupwise-share-accept.c:353
 #, c-format
 msgid "%s shared the folder “%s” with you."
 msgstr ""
 
-#: src/evolution/e-groupwise-share-accept.c:343
+#: src/evolution/e-groupwise-share-accept.c:367
 #, c-format
 msgid "Message from %s:"
 msgstr ""
 
-#: src/evolution/e-groupwise-share-accept.c:353
+#: src/evolution/e-groupwise-share-accept.c:377
 msgid "Your access rights:"
 msgstr ""
 
-#: src/evolution/e-groupwise-share-accept.c:370
+#: src/evolution/e-groupwise-share-accept.c:394
 msgid "_Description:"
 msgstr ""
 
-#: src/evolution/e-groupwise-share-accept.c:396
+#: src/evolution/e-groupwise-share-accept.c:420
 msgid "The color of the calendar, here and in GroupWise"
 msgstr ""
 
-#: src/evolution/e-groupwise-share-accept.c:403
+#: src/evolution/e-groupwise-share-accept.c:427
 msgid "_Position:"
 msgstr ""
 
-#: src/evolution/e-groupwise-share-accept.c:411
+#: src/evolution/e-groupwise-share-accept.c:435
 msgid ""
 "The new folder is put into the folder selected here; the topmost row puts it "
 "beside the Cabinet"
@@ -2319,221 +2345,259 @@ msgstr ""
 msgid "New"
 msgstr ""
 
-#: src/evolution/e-groupwise-share-tab.c:336
+#: src/evolution/e-groupwise-share-tab.c:181
+msgid "Ownership offered"
+msgstr ""
+
+#: src/evolution/e-groupwise-share-tab.c:349
 msgid ""
 "The rights in an address book cannot be changed later: remove the user, "
 "apply, and add the user anew"
 msgstr ""
 
-#: src/evolution/e-groupwise-share-tab.c:500 src/libegroupwise/e-gw-proxy.c:172
+#: src/evolution/e-groupwise-share-tab.c:513 src/libegroupwise/e-gw-proxy.c:172
 #, c-format
 msgid "No GroupWise user “%s”"
 msgstr ""
 
-#: src/evolution/e-groupwise-share-tab.c:739
+#: src/evolution/e-groupwise-share-tab.c:765
 msgid "sharing the address book"
 msgstr ""
 
-#: src/evolution/e-groupwise-share-tab.c:739
+#: src/evolution/e-groupwise-share-tab.c:765
 msgid "sharing the calendar"
 msgstr ""
 
-#: src/evolution/e-groupwise-share-tab.c:739
+#: src/evolution/e-groupwise-share-tab.c:765
 msgid "sharing the folder"
 msgstr ""
 
-#: src/evolution/e-groupwise-share-tab.c:785
+#: src/evolution/e-groupwise-share-tab.c:811
 msgid "Shared Address Book Notification"
 msgstr ""
 
-#: src/evolution/e-groupwise-share-tab.c:786
+#: src/evolution/e-groupwise-share-tab.c:812
 msgid "Shared Calendar Notification"
 msgstr ""
 
-#: src/evolution/e-groupwise-share-tab.c:786
+#: src/evolution/e-groupwise-share-tab.c:812
 msgid "Shared Folder Notification"
 msgstr ""
 
-#: src/evolution/e-groupwise-share-tab.c:797
+#: src/evolution/e-groupwise-share-tab.c:823
 msgid ""
 "The new participants are sent a notification that you shared this address "
 "book with them. You may add a message for them."
 msgstr ""
 
-#: src/evolution/e-groupwise-share-tab.c:799
+#: src/evolution/e-groupwise-share-tab.c:825
 msgid ""
 "The new participants are sent a notification that you shared this calendar "
 "with them. You may add a message for them."
 msgstr ""
 
-#: src/evolution/e-groupwise-share-tab.c:801
+#: src/evolution/e-groupwise-share-tab.c:827
 msgid ""
 "The new participants are sent a notification that you shared this folder "
 "with them. You may add a message for them."
 msgstr ""
 
-#: src/evolution/e-groupwise-share-tab.c:820
+#: src/evolution/e-groupwise-share-tab.c:846
 msgid "Participants:"
 msgstr ""
 
-#: src/evolution/e-groupwise-share-tab.c:830
+#: src/evolution/e-groupwise-share-tab.c:856
+#: src/evolution/e-groupwise-share-tab.c:943
 #: src/evolution/e-groupwise-vacation-tab.c:187
 msgid "S_ubject:"
 msgstr ""
 
-#: src/evolution/e-groupwise-share-tab.c:837
+#: src/evolution/e-groupwise-share-tab.c:863
 #, c-format
 msgid "Shared address book notification: %s"
 msgstr ""
 
-#: src/evolution/e-groupwise-share-tab.c:838
+#: src/evolution/e-groupwise-share-tab.c:864
 #, c-format
 msgid "Shared calendar notification: %s"
 msgstr ""
 
-#: src/evolution/e-groupwise-share-tab.c:838
+#: src/evolution/e-groupwise-share-tab.c:864
 #, c-format
 msgid "Shared folder notification: %s"
 msgstr ""
 
-#: src/evolution/e-groupwise-share-tab.c:934
+#: src/evolution/e-groupwise-share-tab.c:918
+msgid "Transfer Ownership"
+msgstr ""
+
+#: src/evolution/e-groupwise-share-tab.c:928
+#, c-format
+msgid ""
+"%s is sent a request to take over this folder. Once they accept it, the "
+"folder with all it holds is theirs and leaves your mailbox; you are no "
+"participant of it then, unless the new owner shares it with you."
+msgstr ""
+
+#: src/evolution/e-groupwise-share-tab.c:948
+msgid "Request to take over the ownership of the shared folder"
+msgstr ""
+
+#: src/evolution/e-groupwise-share-tab.c:966
+msgid "I would like to transfer the ownership of this folder to you."
+msgstr ""
+
+#: src/evolution/e-groupwise-share-tab.c:1000
+msgid "Apply the changes to the sharing first."
+msgstr ""
+
+#: src/evolution/e-groupwise-share-tab.c:1082
 msgid "Apply the changes to the sharing of the address book?"
 msgstr ""
 
-#: src/evolution/e-groupwise-share-tab.c:935
+#: src/evolution/e-groupwise-share-tab.c:1083
 msgid "Apply the changes to the sharing of the calendar?"
 msgstr ""
 
-#: src/evolution/e-groupwise-share-tab.c:935
+#: src/evolution/e-groupwise-share-tab.c:1083
 msgid "Apply the changes to the sharing of the folder?"
 msgstr ""
 
-#: src/evolution/e-groupwise-share-tab.c:937
+#: src/evolution/e-groupwise-share-tab.c:1085
 msgid ""
 "You changed whom the address book is shared with or what they may do, and "
 "did not apply that yet."
 msgstr ""
 
-#: src/evolution/e-groupwise-share-tab.c:938
+#: src/evolution/e-groupwise-share-tab.c:1086
 msgid ""
 "You changed whom the calendar is shared with or what they may do, and did "
 "not apply that yet."
 msgstr ""
 
-#: src/evolution/e-groupwise-share-tab.c:939
+#: src/evolution/e-groupwise-share-tab.c:1087
 msgid ""
 "You changed whom the folder is shared with or what they may do, and did not "
 "apply that yet."
 msgstr ""
 
-#: src/evolution/e-groupwise-share-tab.c:940
+#: src/evolution/e-groupwise-share-tab.c:1088
 msgid "_Discard"
 msgstr ""
 
-#: src/evolution/e-groupwise-share-tab.c:940
+#: src/evolution/e-groupwise-share-tab.c:1088
 msgid "_Apply"
 msgstr ""
 
-#: src/evolution/e-groupwise-share-tab.c:966
+#: src/evolution/e-groupwise-share-tab.c:1114
 msgid "You"
 msgstr ""
 
-#: src/evolution/e-groupwise-share-tab.c:1001
+#: src/evolution/e-groupwise-share-tab.c:1149
 #, c-format
 msgid "%s shares this address book with you."
 msgstr ""
 
-#: src/evolution/e-groupwise-share-tab.c:1002
+#: src/evolution/e-groupwise-share-tab.c:1150
 #, c-format
 msgid "%s shares this calendar with you."
 msgstr ""
 
-#: src/evolution/e-groupwise-share-tab.c:1002
+#: src/evolution/e-groupwise-share-tab.c:1150
 #, c-format
 msgid "%s shares this folder with you."
 msgstr ""
 
-#: src/evolution/e-groupwise-share-tab.c:1019
+#: src/evolution/e-groupwise-share-tab.c:1167
 msgid "_Not shared"
 msgstr ""
 
-#: src/evolution/e-groupwise-share-tab.c:1021
+#: src/evolution/e-groupwise-share-tab.c:1169
 msgid "_Shared with"
 msgstr ""
 
-#: src/evolution/e-groupwise-share-tab.c:1033
+#: src/evolution/e-groupwise-share-tab.c:1181
 msgid "Users"
 msgstr ""
 
-#: src/evolution/e-groupwise-share-tab.c:1052
+#: src/evolution/e-groupwise-share-tab.c:1200
 msgid "Na_me:"
 msgstr ""
 
-#: src/evolution/e-groupwise-share-tab.c:1057
+#: src/evolution/e-groupwise-share-tab.c:1205
 msgid "The name or the e-mail address of a user of the GroupWise system"
 msgstr ""
 
-#: src/evolution/e-groupwise-share-tab.c:1062
+#: src/evolution/e-groupwise-share-tab.c:1210
 msgid "Choose users from the address books"
 msgstr ""
 
-#: src/evolution/e-groupwise-share-tab.c:1067
+#: src/evolution/e-groupwise-share-tab.c:1215
 msgid "Add _User"
 msgstr ""
 
-#: src/evolution/e-groupwise-share-tab.c:1078
+#: src/evolution/e-groupwise-share-tab.c:1226
 msgid "Share _list:"
 msgstr ""
 
-#: src/evolution/e-groupwise-share-tab.c:1091
+#: src/evolution/e-groupwise-share-tab.c:1239
 msgid "Status"
 msgstr ""
 
-#: src/evolution/e-groupwise-share-tab.c:1096
+#: src/evolution/e-groupwise-share-tab.c:1244
 msgid "Access"
 msgstr ""
 
-#: src/evolution/e-groupwise-share-tab.c:1115
+#: src/evolution/e-groupwise-share-tab.c:1266
+msgid "_Transfer Ownership…"
+msgstr ""
+
+#: src/evolution/e-groupwise-share-tab.c:1268
+msgid ""
+"Offer the folder itself to the selected user, who has accepted the share"
+msgstr ""
+
+#: src/evolution/e-groupwise-share-tab.c:1276
 msgid "Additional access"
 msgstr ""
 
-#: src/evolution/e-groupwise-share-tab.c:1131
+#: src/evolution/e-groupwise-share-tab.c:1292
 msgid "Share all su_bfolders"
 msgstr ""
 
-#: src/evolution/e-groupwise-share-tab.c:1132
+#: src/evolution/e-groupwise-share-tab.c:1293
 msgid "The server takes this only together with new users"
 msgstr ""
 
-#: src/evolution/e-groupwise-share-tab.c:1140
+#: src/evolution/e-groupwise-share-tab.c:1301
 msgid "A_pply Sharing"
 msgstr ""
 
-#: src/evolution/e-groupwise-share-tab.c:1142
+#: src/evolution/e-groupwise-share-tab.c:1303
 msgid "Share the address book as set here; new users are sent a notification"
 msgstr ""
 
-#: src/evolution/e-groupwise-share-tab.c:1143
+#: src/evolution/e-groupwise-share-tab.c:1304
 msgid "Share the calendar as set here; new users are sent a notification"
 msgstr ""
 
-#: src/evolution/e-groupwise-share-tab.c:1144
+#: src/evolution/e-groupwise-share-tab.c:1305
 msgid "Share the folder as set here; new users are sent a notification"
 msgstr ""
 
-#: src/evolution/e-groupwise-share-tab.c:1279
+#: src/evolution/e-groupwise-share-tab.c:1440
 msgid "This address book cannot be shared."
 msgstr ""
 
-#: src/evolution/e-groupwise-share-tab.c:1279
+#: src/evolution/e-groupwise-share-tab.c:1440
 msgid "This calendar cannot be shared."
 msgstr ""
 
-#: src/evolution/e-groupwise-share-tab.c:1304
+#: src/evolution/e-groupwise-share-tab.c:1465
 msgid "Sharing"
 msgstr ""
 
-#: src/evolution/e-groupwise-share-tab.c:1475
+#: src/evolution/e-groupwise-share-tab.c:1636
 #, c-format
 msgid "Sharing of “%s”"
 msgstr ""
@@ -2827,11 +2891,11 @@ msgstr ""
 msgid "The server started no free/busy search"
 msgstr ""
 
-#: src/libegroupwise/e-gw-share.c:183
+#: src/libegroupwise/e-gw-share.c:184
 msgid "The folder does not exist"
 msgstr ""
 
-#: src/libegroupwise/e-gw-share.c:422
+#: src/libegroupwise/e-gw-share.c:429
 msgid "The message does not offer a shared folder"
 msgstr ""
 

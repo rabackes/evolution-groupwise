@@ -391,6 +391,14 @@ eingefügt. Ein für den Benutzer freigegebener Ordner zeigt dort Eigentümer un
 einen freigegebenen Ordner unter einer anderen ID (aus `@13` wird `@35`), seine Nachrichtenliste wird
 deshalb einmal neu eingelesen.
 
+Der Eigentümer gibt einen freigegebenen Mailordner mit *Eigentum übertragen …* auf diesem Reiter ab: Der
+Eintrag eines Benutzers, der die Freigabe angenommen hat, bekommt das Recht `canTakeOwnership`
+(`modifyItemRequest` mit `<notification>` – ohne Betreff schickt der POA keine), der Benutzer erhält eine
+Freigabe-Benachrichtigung mit diesem Recht, und `acceptShareRequest` darauf macht den Ordner zu seinem (ein
+neuer Ordner, nicht mehr freigegeben); aus dem Postfach des bisherigen Eigentümers verschwindet er. Wie der
+GroupWise-Client den bisherigen Eigentümer als Teilnehmer behält, ist nicht bekannt. Das Zurücksetzen der
+Rechte nimmt das Angebot zurück.
+
 Ein von einem anderen Benutzer freigegebener Ordner kommt als Benachrichtigung in die Mailbox; *Freigegebenen
 Ordner installieren …* an dieser Nachricht (Doppelklick oder Menü *Nachricht*) zeigt Absender, Text und Rechte,
 fragt Name, Beschreibung und übergeordneten Ordner ab und nimmt an (`acceptShareRequest`). In einem solchen

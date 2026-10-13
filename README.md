@@ -365,6 +365,13 @@ folders carry Evolution's shared-by-me / shared-to-me icons in the folder list. 
 shows. A folder shared to the user shows its owner and the user's rights there. The POA keeps a shared
 folder under another ID (`@13` becomes `@35`), so its message list is read anew once.
 
+The owner hands a shared mail folder over with *Transfer Ownership…* on that page: the entry of a user who
+accepted the share gets the right `canTakeOwnership` (`modifyItemRequest` with `<notification>` — without a
+subject the POA sends none), the user receives a shared-folder notification carrying that right, and
+`acceptShareRequest` on it makes the folder the user's (a new folder, no longer shared); it leaves the
+mailbox of the previous owner. How the GroupWise client keeps the previous owner as a participant is not
+known. Setting the rights back withdraws the offer.
+
 A folder another user shares arrives as a notification in the Mailbox; *Install Shared Folder…* on that
 message (a double click, or the menu *Message*) shows sender, text and rights and asks for name, description and
 parent folder, then accepts (`acceptShareRequest`). In such a folder the POA does not stream a GroupWise

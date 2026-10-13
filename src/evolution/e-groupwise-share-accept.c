@@ -308,6 +308,30 @@ run_dialog (AcceptData *data,
 	gboolean accept, calendar = offer->kind == E_GW_SHARE_KIND_CALENDAR, book = offer->kind == E_GW_SHARE_KIND_BOOK;
 	gint row = 0;
 
+	/* The owner offers the folder itself, to a user who has it already:
+	 * it stays where it is in the folder list */
+	if (offer->rights & E_GW_SHARE_TAKE_OWNERSHIP) {
+		dialog = gtk_message_dialog_new (parent, GTK_DIALOG_MODAL | GTK_DIALOG_DESTROY_WITH_PARENT,
+			GTK_MESSAGE_QUESTION, GTK_BUTTONS_NONE,
+			/* Translators: the first %s is the name of a user, the second %s that of a folder */
+			_("%s would like to transfer the ownership of the shared folder “%s” to you."),
+			sender ? sender : "", offer->folder_name ? offer->folder_name : "");
+		text = offer->message && *g_strstrip (offer->message) ?
+			/* Translators: the first %s is the name of a user, the second %s what the user wrote */
+			g_strdup_printf (_("Message from %s: %s"), sender ? sender : "", offer->message) : NULL;
+		gtk_message_dialog_format_secondary_text (GTK_MESSAGE_DIALOG (dialog), "%s%s%s", text ? text : "", text ? "\n\n" : "",
+			_("When you take it over, the folder with all it holds belongs to your mailbox, and you "
+			"decide whom it is shared with. It leaves the mailbox of the previous owner."));
+		g_free (text);
+		gtk_dialog_add_buttons (GTK_DIALOG (dialog), _("_Cancel"), GTK_RESPONSE_CANCEL,
+			_("_Take Ownership"), GTK_RESPONSE_OK, NULL);
+		gtk_dialog_set_default_response (GTK_DIALOG (dialog), GTK_RESPONSE_CANCEL);
+		accept = gtk_dialog_run (GTK_DIALOG (dialog)) == GTK_RESPONSE_OK;
+		gtk_widget_destroy (dialog);
+
+		return accept;
+	}
+
 	dialog = gtk_dialog_new_with_buttons (book ? _("Install Shared Address Book") :
 		calendar ? _("Install Shared Calendar") : _("Install Shared Folder"),
 		parent, GTK_DIALOG_MODAL | GTK_DIALOG_DESTROY_WITH_PARENT,

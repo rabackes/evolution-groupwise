@@ -68,9 +68,10 @@ static const gchar *summary =
 	"  access-set ID OLD NEW     change the rights of an entry\n"
 	"  access-remove ID          take the access away\n"
 	"  size                      show the space the mailbox takes and its limit\n"
-	"  share FOLDER-ID           show how a folder is shared (rights: 1 read, 2 add, 4 edit, 8 delete)\n"
+	"  share FOLDER-ID           show how a folder is shared (rights: 1 read, 2 add, 4 edit, 8 delete, 16 offer the ownership)\n"
 	"  share-add FOLDER-ID EMAIL RIGHTS SUBJECT [MESSAGE [tree]]  share it with a user\n"
-	"  share-set FOLDER-ID EMAIL RIGHTS  change the rights of a user\n"
+	"  share-set FOLDER-ID EMAIL RIGHTS [SUBJECT [MESSAGE]]  change the rights of a user (hex; subject\n"
+	"                            and message go with an offer of the ownership)\n"
 	"  share-remove FOLDER-ID EMAIL      take the folder from a user\n"
 	"  share-offer ITEM-ID       show the notification of a shared folder\n"
 	"  share-accept ITEM-ID [NAME [PARENT-ID]]  accept it\n"
@@ -503,7 +504,7 @@ run_command (EGwConnection *cnc,
 			return FALSE;
 		}
 		return e_gw_connection_modify_share_sync (cnc, share->id, NULL, set ? list : NULL, set ? NULL : list,
-			FALSE, NULL, NULL, NULL, NULL, error);
+			FALSE, set && argc > 5 ? argv[5] : NULL, set && argc > 6 ? argv[6] : NULL, NULL, NULL, error);
 	}
 	if (g_str_equal (cmd, "size")) {
 		EGwDiskUsage usage;

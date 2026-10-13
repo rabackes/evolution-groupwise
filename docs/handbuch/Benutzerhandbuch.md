@@ -489,6 +489,20 @@ Der Empfänger nimmt die Freigabe an (siehe unten); entziehen Sie ihm den Ordner
 
 Das Symbol wechselt, sobald Sie eine Freigabe übernommen oder aufgehoben haben.
 
+### Eigentum übertragen
+
+Einen freigegebenen Mailordner können Sie ganz an einen Teilnehmer abgeben, zum Beispiel wenn die Zuständigkeit wechselt. Markieren Sie in der Freigabeliste einen Benutzer mit dem Status „Angenommen“ und klicken Sie auf `Eigentum übertragen …`. Der Dialog `Eigentum übertragen` fragt nach `Betreff` und `Mitteilung` der Aufforderung, die der Benutzer erhält; `Senden` schickt sie ab. In der Freigabeliste steht der Benutzer danach mit dem Status „Eigentum angeboten“.
+
+- Der Ordner wechselt erst, wenn der Benutzer die Aufforderung annimmt. Er gehört dann mit seinem gesamten Inhalt zu dessen Postfach und **verschwindet aus Ihrem Postfach**. Anders als im GroupWise-Client können Sie dabei nicht Teilnehmer bleiben; der neue Eigentümer kann den Ordner aber wieder für Sie freigeben.
+
+- Solange der Benutzer nicht angenommen hat, bleibt alles beim Alten.
+
+- Offene Änderungen an der Freigabe müssen vorher mit `Freigabe übernehmen` gesendet sein.
+
+- Für Kalender und Adressbücher gibt es die Übertragung nicht.
+
+**Eigentum übernehmen:** Bietet Ihnen jemand das Eigentum an einem Ordner an, den er für Sie freigegeben hat, erhalten Sie in der Mailbox eine Benachrichtigung. Öffnen Sie sie wie eine Freigabe (siehe unten): Statt des Dialogs zum Annehmen fragt Evolution dann, ob Sie den Ordner übernehmen wollen; `Eigentum übernehmen` macht Sie zum Eigentümer. Der Ordner ist danach Ihr eigener und nicht mehr freigegeben.
+
 ### Eine Freigabe annehmen
 
 Gibt ein anderer Benutzer einen Ordner für Sie frei, erhalten Sie in der Mailbox die Nachricht **Benachrichtigung über freigegebenen Ordner: …**. Ein Doppelklick auf die Nachricht öffnet – wie das Öffnen im GroupWise-Client – den Dialog **Freigegebenen Ordner installieren**; ebenso der Eintrag `Freigegebenen Ordner installieren …` im Menü `Nachricht` (er erscheint nur bei solchen Nachrichten). Den Text der Benachrichtigung lesen Sie in der Vorschau oder über `In neuem Fenster öffnen`. Der Dialog zeigt, wer welchen Ordner freigibt, die Mitteilung des Absenders und Ihre Zugriffsrechte, und fragt:
@@ -802,7 +816,8 @@ Diese Übersicht stellt die Funktionen des GroupWise-Clients für Windows denen 
 | Absender wählen („Von“): Postfächer, für die man Proxy ist (Benutzer und Ressourcen) | vorhanden: im Feld „Von“ des eigenen Kontos, siehe Abschnitt 4.8. |
 | Alternative (sekundäre) Absenderadressen eines Postfachs | fehlt. |
 | Nachrichten als privat markieren; Kategorien an Kontakten | fehlt. |
-| In einem freigegebenen Ordner ablegen (Posted Item), Eigentum übertragen | fehlt. |
+| Eigentum eines freigegebenen Ordners übertragen | ja, für Mailordner ([4.9](#mail-eigentum)); der bisherige Eigentümer bleibt dabei nicht Teilnehmer. |
+| In einem freigegebenen Ordner ablegen (Posted Item) | fehlt. |
 | Alarme und Benachrichtigungen eines anderen Benutzers erhalten | Das Recht lässt sich vergeben; Evolution nutzt es nicht. |
 | Mehrbenutzer-Kalender | keine eigene Spaltenansicht; stattdessen lassen sich mehrere Kalender überlagert einblenden. |
 | In GroupWise abonnierte Internet-Kalender | werden ausgelassen; Evolution kann solche Kalender selbst abonnieren. |

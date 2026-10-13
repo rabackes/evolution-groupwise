@@ -97,7 +97,7 @@ typedef struct {
 	GtkWidget *page, *apply_button;
 	GtkWidget *radio_none, *radio_shared;
 	GtkWidget *shared_box;
-	GtkWidget *entry, *add_button, *remove_button;
+	GtkWidget *entry, *add_button, *remove_button, *transfer_button;
 	GtkWidget *message;
 	GtkWidget *view;
 	GtkWidget *rights_box, *boxes[G_N_ELEMENTS (rights_boxes)];
@@ -174,8 +174,11 @@ status_data_func (GtkTreeViewColumn *column,
 {
 	gint status;
 
-	gtk_tree_model_get (model, iter, COL_STATUS, &status, -1);
-	g_object_set (renderer, "text", status_text (status), NULL);
+	guint rights;
+
+	gtk_tree_model_get (model, iter, COL_STATUS, &status, COL_OLD_RIGHTS, &rights, -1);
+	/* Translators: the status of a user the owner offered the ownership of the folder to */
+	g_object_set (renderer, "text", (rights & E_GW_SHARE_TAKE_OWNERSHIP) ? _("Ownership offered") : status_text (status), NULL);
 }
 
 static void
@@ -325,6 +328,16 @@ update_sensitivity (ShareTab *tab)
 	gtk_widget_set_sensitive (tab->entry, mine);
 	gtk_widget_set_sensitive (tab->add_button, mine && !tab->resolving);
 	gtk_widget_set_sensitive (tab->remove_button, mine && selected);
+	if (tab->transfer_button) {
+		gint status = -1;
+		guint old = 0;
+
+		if (selected)
+			gtk_tree_model_get (GTK_TREE_MODEL (tab->model), &iter, COL_STATUS, &status, COL_OLD_RIGHTS, &old, -1);
+		/* To a user who has the folder, and not offered yet */
+		gtk_widget_set_sensitive (tab->transfer_button, mine && selected && !tab->applying &&
+			status == E_GW_SHARE_STATUS_ACCEPTED && !(old & E_GW_SHARE_TAKE_OWNERSHIP));
+	}
 	/* The rights in an address book are set when it is shared with a user;
 	 * the server does not change them later */
 	if (tab->book && selected) {
@@ -659,6 +672,19 @@ remove_clicked_cb (GtkButton *button,
 /* ------------------------------------------------------------------ */
 /* Applying */
 
+static gboolean	ask_transfer		(ShareTab *tab,
+					 const gchar *name,
+					 gchar **out_subject,
+					 gchar **out_message);
+static void	apply_done_cb		(GObject *source_object,
+					 GAsyncResult *result,
+					 gpointer user_data);
+static void	apply_data_free		(gpointer ptr);
+static void	apply_thread		(GTask *task,
+					 gpointer source_object,
+					 gpointer task_data,
+					 GCancellable *cancellable);
+
 typedef struct {
 	ShareTab *tab;
 	GPtrArray *added, *changed, *removed;
@@ -873,6 +899,128 @@ ask_notification (ShareTab *tab,
 	gtk_widget_destroy (dialog);
 
 	return send;
+}
+
+/* Subject and text of the message that offers a user the ownership of the
+ * folder; FALSE: do not offer it */
+static gboolean
+ask_transfer (ShareTab *tab,
+	      const gchar *name,
+	      gchar **out_subject,
+	      gchar **out_message)
+{
+	GtkWidget *dialog, *box, *grid, *label, *subject, *scrolled, *text;
+	GtkTextBuffer *buffer;
+	GtkTextIter start, end;
+	gchar *intro;
+	gboolean send;
+
+	dialog = gtk_dialog_new_with_buttons (_("Transfer Ownership"), GTK_WINDOW (tab->dialog),
+		GTK_DIALOG_MODAL | GTK_DIALOG_DESTROY_WITH_PARENT,
+		_("_Cancel"), GTK_RESPONSE_CANCEL, _("_Send"), GTK_RESPONSE_OK, NULL);
+	gtk_dialog_set_default_response (GTK_DIALOG (dialog), GTK_RESPONSE_OK);
+
+	box = gtk_dialog_get_content_area (GTK_DIALOG (dialog));
+	gtk_container_set_border_width (GTK_CONTAINER (box), 12);
+	gtk_box_set_spacing (GTK_BOX (box), 12);
+
+	/* Translators: %s is the name of a user */
+	intro = g_strdup_printf (_("%s is sent a request to take over this folder. Once they accept it, the folder "
+		"with all it holds is theirs and leaves your mailbox; you are no participant of it then, "
+		"unless the new owner shares it with you."), name);
+	label = gtk_label_new (intro);
+	g_free (intro);
+	gtk_label_set_line_wrap (GTK_LABEL (label), TRUE);
+	gtk_label_set_max_width_chars (GTK_LABEL (label), 60);
+	gtk_label_set_xalign (GTK_LABEL (label), 0);
+	gtk_box_pack_start (GTK_BOX (box), label, FALSE, FALSE, 0);
+
+	grid = gtk_grid_new ();
+	gtk_grid_set_row_spacing (GTK_GRID (grid), 6);
+	gtk_grid_set_column_spacing (GTK_GRID (grid), 12);
+	gtk_box_pack_start (GTK_BOX (box), grid, TRUE, TRUE, 0);
+
+	label = gtk_label_new_with_mnemonic (_("S_ubject:"));
+	gtk_label_set_xalign (GTK_LABEL (label), 0);
+	gtk_grid_attach (GTK_GRID (grid), label, 0, 0, 1, 1);
+	subject = gtk_entry_new ();
+	/* The server puts the name of the folder behind it */
+	gtk_entry_set_text (GTK_ENTRY (subject), _("Request to take over the ownership of the shared folder"));
+	gtk_widget_set_hexpand (subject, TRUE);
+	gtk_label_set_mnemonic_widget (GTK_LABEL (label), subject);
+	gtk_grid_attach (GTK_GRID (grid), subject, 1, 0, 1, 1);
+
+	label = gtk_label_new_with_mnemonic (_("_Message:"));
+	gtk_label_set_xalign (GTK_LABEL (label), 0);
+	gtk_widget_set_valign (label, GTK_ALIGN_START);
+	gtk_grid_attach (GTK_GRID (grid), label, 0, 1, 1, 1);
+	scrolled = gtk_scrolled_window_new (NULL, NULL);
+	gtk_scrolled_window_set_shadow_type (GTK_SCROLLED_WINDOW (scrolled), GTK_SHADOW_IN);
+	gtk_scrolled_window_set_policy (GTK_SCROLLED_WINDOW (scrolled), GTK_POLICY_NEVER, GTK_POLICY_AUTOMATIC);
+	gtk_widget_set_size_request (scrolled, 360, 100);
+	gtk_widget_set_hexpand (scrolled, TRUE);
+	gtk_widget_set_vexpand (scrolled, TRUE);
+	text = gtk_text_view_new ();
+	gtk_text_view_set_wrap_mode (GTK_TEXT_VIEW (text), GTK_WRAP_WORD_CHAR);
+	gtk_text_buffer_set_text (gtk_text_view_get_buffer (GTK_TEXT_VIEW (text)),
+		_("I would like to transfer the ownership of this folder to you."), -1);
+	gtk_label_set_mnemonic_widget (GTK_LABEL (label), text);
+	gtk_container_add (GTK_CONTAINER (scrolled), text);
+	gtk_grid_attach (GTK_GRID (grid), scrolled, 1, 1, 1, 1);
+
+	gtk_widget_show_all (box);
+
+	send = gtk_dialog_run (GTK_DIALOG (dialog)) == GTK_RESPONSE_OK;
+	if (send) {
+		buffer = gtk_text_view_get_buffer (GTK_TEXT_VIEW (text));
+		gtk_text_buffer_get_bounds (buffer, &start, &end);
+		*out_subject = g_strstrip (g_strdup (gtk_entry_get_text (GTK_ENTRY (subject))));
+		*out_message = gtk_text_buffer_get_text (buffer, &start, &end, FALSE);
+	}
+	gtk_widget_destroy (dialog);
+
+	return send;
+}
+
+/* Offers the selected user the ownership of the folder */
+static void
+transfer_clicked_cb (GtkButton *button,
+		     ShareTab *tab)
+{
+	GtkTreeIter iter;
+	ApplyData *data;
+	EGwShareEntry *entry;
+	GTask *task;
+
+	if (tab->applying || !get_selected (tab, &iter))
+		return;
+
+	/* Only this goes to the server now */
+	if (collect_changes (tab, NULL, NULL, NULL)) {
+		set_message (tab, _("Apply the changes to the sharing first."));
+		return;
+	}
+
+	entry = entry_of_row (tab, &iter, TRUE);
+	data = g_new0 (ApplyData, 1);
+	data->tab = share_tab_ref (tab);
+	data->added = g_ptr_array_new_with_free_func ((GDestroyNotify) e_gw_share_entry_free);
+	data->changed = g_ptr_array_new_with_free_func ((GDestroyNotify) e_gw_share_entry_free);
+	data->removed = g_ptr_array_new_with_free_func ((GDestroyNotify) e_gw_share_entry_free);
+	if (!ask_transfer (tab, entry->display_name ? entry->display_name : entry->email, &data->subject, &data->message)) {
+		e_gw_share_entry_free (entry);
+		apply_data_free (data);
+		return;
+	}
+	entry->rights |= E_GW_SHARE_TAKE_OWNERSHIP;
+	g_ptr_array_add (data->changed, entry);
+
+	tab->applying = TRUE;
+	gtk_widget_set_sensitive (tab->page, FALSE);
+	task = g_task_new (NULL, NULL, apply_done_cb, NULL);
+	g_task_set_task_data (task, data, apply_data_free);
+	g_task_run_in_thread (task, apply_thread);
+	g_object_unref (task);
 }
 
 /* Sends what the page has to the server; new users are notified. Returns
@@ -1109,7 +1257,20 @@ build_page (ShareTab *tab,
 	tab->remove_button = gtk_button_new_with_mnemonic (_("_Remove User"));
 	gtk_widget_set_valign (tab->remove_button, GTK_ALIGN_START);
 	g_signal_connect (tab->remove_button, "clicked", G_CALLBACK (remove_clicked_cb), tab);
-	gtk_grid_attach (GTK_GRID (grid), tab->remove_button, 2, row++, 1, 1);
+	{
+		GtkWidget *buttons = gtk_box_new (GTK_ORIENTATION_VERTICAL, 6);
+
+		gtk_box_pack_start (GTK_BOX (buttons), tab->remove_button, FALSE, FALSE, 0);
+		/* A folder of mails: the owner can hand it over to one who has it */
+		if (!tab->calendar && !tab->book) {
+			tab->transfer_button = gtk_button_new_with_mnemonic (_("_Transfer Ownership…"));
+			gtk_widget_set_tooltip_text (tab->transfer_button,
+				_("Offer the folder itself to the selected user, who has accepted the share"));
+			g_signal_connect (tab->transfer_button, "clicked", G_CALLBACK (transfer_clicked_cb), tab);
+			gtk_box_pack_start (GTK_BOX (buttons), tab->transfer_button, FALSE, FALSE, 0);
+		}
+		gtk_grid_attach (GTK_GRID (grid), buttons, 2, row++, 1, 1);
+	}
 
 	/* Reading is always granted */
 	frame = gtk_frame_new (_("Additional access"));

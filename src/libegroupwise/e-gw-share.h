@@ -30,7 +30,11 @@ typedef enum {
 	E_GW_SHARE_READ		= 1 << 0,
 	E_GW_SHARE_ADD		= 1 << 1,
 	E_GW_SHARE_EDIT		= 1 << 2,
-	E_GW_SHARE_DELETE	= 1 << 3
+	E_GW_SHARE_DELETE	= 1 << 3,
+	/* The owner offers the user the folder itself: accepting the
+	 * notification this sends makes the user its owner, and the folder
+	 * leaves the mailbox of the one who had it */
+	E_GW_SHARE_TAKE_OWNERSHIP = 1 << 4
 } EGwShareRights;
 
 #define E_GW_SHARE_ALL (E_GW_SHARE_READ | E_GW_SHARE_ADD | E_GW_SHARE_EDIT | E_GW_SHARE_DELETE)
@@ -95,7 +99,8 @@ EGwShare *	e_gw_connection_get_share_sync	(EGwConnection *cnc,
  * Changes who a folder of the user is shared with, in one request: the users
  * in @added get it (they are sent a notification with @subject and @message;
  * @description is what they are offered as description of the folder), those
- * in @changed (EGwShareEntry with the new rights) other rights, those in
+ * in @changed (EGwShareEntry with the new rights) other rights (one with
+ * E_GW_SHARE_TAKE_OWNERSHIP is sent a notification as well), those in
  * @removed lose it. Any of the lists may be NULL. @share_tree shares the
  * subfolders as well; the POA takes it only along with new users.
  */

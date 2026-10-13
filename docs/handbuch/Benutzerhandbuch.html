@@ -868,6 +868,29 @@ Evolution verwendet stattdessen zwei eigene Ordnersymbole:</p>
 	<tr><td>von anderen für Sie freigegeben</td><td>Ordner mit einem Netzwerkanschluss darunter</td></tr>
 </table>
 <p>Das Symbol wechselt, sobald Sie eine Freigabe übernommen oder aufgehoben haben.</p>
+<h3 id="mail-eigentum">Eigentum übertragen</h3>
+<p>Einen freigegebenen Mailordner können Sie ganz an einen Teilnehmer abgeben, zum Beispiel wenn die
+Zuständigkeit wechselt. Markieren Sie in der Freigabeliste einen Benutzer mit dem Status „Angenommen“ und
+klicken Sie auf <span class="menu">Eigentum übertragen …</span>. Der Dialog
+<span class="menu">Eigentum übertragen</span> fragt nach <span class="menu">Betreff</span> und
+<span class="menu">Mitteilung</span> der Aufforderung, die der Benutzer erhält;
+<span class="menu">Senden</span> schickt sie ab. In der Freigabeliste steht der Benutzer danach mit dem
+Status „Eigentum angeboten“.</p>
+<ul>
+	<li>Der Ordner wechselt erst, wenn der Benutzer die Aufforderung annimmt. Er gehört dann mit seinem
+		gesamten Inhalt zu dessen Postfach und <b>verschwindet aus Ihrem Postfach</b>. Anders als im
+		GroupWise-Client können Sie dabei nicht Teilnehmer bleiben; der neue Eigentümer kann den Ordner
+		aber wieder für Sie freigeben.</li>
+	<li>Solange der Benutzer nicht angenommen hat, bleibt alles beim Alten.</li>
+	<li>Offene Änderungen an der Freigabe müssen vorher mit <span class="menu">Freigabe übernehmen</span>
+		gesendet sein.</li>
+	<li>Für Kalender und Adressbücher gibt es die Übertragung nicht.</li>
+</ul>
+<p><b>Eigentum übernehmen:</b> Bietet Ihnen jemand das Eigentum an einem Ordner an, den er für Sie
+freigegeben hat, erhalten Sie in der Mailbox eine Benachrichtigung. Öffnen Sie sie wie eine Freigabe (siehe
+unten): Statt des Dialogs zum Annehmen fragt Evolution dann, ob Sie den Ordner übernehmen wollen;
+<span class="menu">Eigentum übernehmen</span> macht Sie zum Eigentümer. Der Ordner ist danach Ihr eigener
+und nicht mehr freigegeben.</p>
 <h3>Eine Freigabe annehmen</h3>
 <p>Gibt ein anderer Benutzer einen Ordner für Sie frei, erhalten Sie in der Mailbox die Nachricht
 <b>Benachrichtigung über freigegebenen Ordner: …</b>. Ein Doppelklick auf die Nachricht öffnet – wie das Öffnen im GroupWise-Client – den Dialog
@@ -1449,7 +1472,9 @@ fortgeschrieben.</p>
 		<td>vorhanden: im Feld „Von“ des eigenen Kontos, siehe Abschnitt 4.8.</td></tr>
 	<tr><td>Alternative (sekundäre) Absenderadressen eines Postfachs</td><td>fehlt.</td></tr>
 	<tr><td>Nachrichten als privat markieren; Kategorien an Kontakten</td><td>fehlt.</td></tr>
-	<tr><td>In einem freigegebenen Ordner ablegen (Posted Item), Eigentum übertragen</td><td>fehlt.</td></tr>
+	<tr><td>Eigentum eines freigegebenen Ordners übertragen</td><td>ja, für Mailordner
+		(<a href="#mail-eigentum">4.9</a>); der bisherige Eigentümer bleibt dabei nicht Teilnehmer.</td></tr>
+	<tr><td>In einem freigegebenen Ordner ablegen (Posted Item)</td><td>fehlt.</td></tr>
 	<tr><td>Alarme und Benachrichtigungen eines anderen Benutzers erhalten</td>
 		<td>Das Recht lässt sich vergeben; Evolution nutzt es nicht.</td></tr>
 	<tr><td>Mehrbenutzer-Kalender</td>
