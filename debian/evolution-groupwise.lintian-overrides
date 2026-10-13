@@ -1,0 +1,3 @@
+# The module of Evolution links the private libraries of Evolution itself,
+# which lie in /usr/lib/evolution, as every module of Evolution does
+evolution-groupwise: custom-library-search-path RUNPATH /usr/lib/evolution [usr/lib/evolution/modules/module-groupwise-configuration.so]
