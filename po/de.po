@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: evolution-groupwise\n"
 "Report-Msgid-Bugs-To: rbackes@bond.de\n"
-"POT-Creation-Date: 2026-10-13 13:31+0200\n"
+"POT-Creation-Date: 2026-10-13 13:47+0200\n"
 "PO-Revision-Date: 2026-09-27 18:27+0200\n"
 "Last-Translator: Automatically generated\n"
 "Language-Team: none\n"
@@ -552,7 +552,7 @@ msgstr "Proxy-Zugriff gewähren"
 #: src/evolution/e-groupwise-mailbox-tab.c:302
 #: src/evolution/e-groupwise-mail-ui.c:532
 #: src/evolution/e-groupwise-phone-message.c:320
-#: src/evolution/e-groupwise-proxy-calendar.c:157
+#: src/evolution/e-groupwise-proxy-calendar.c:205
 #: src/evolution/e-groupwise-rule-editor.c:1336
 #: src/evolution/e-groupwise-rules-tab.c:351
 #: src/evolution/e-groupwise-sent-items.c:457
@@ -567,7 +567,7 @@ msgstr "_Abbrechen"
 
 #: src/evolution/e-groupwise-access-tab.c:157
 #: src/evolution/e-groupwise-junk-tab.c:70
-#: src/evolution/e-groupwise-proxy-calendar.c:157
+#: src/evolution/e-groupwise-proxy-calendar.c:205
 #: src/evolution/e-groupwise-share-tab.c:74
 msgid "_Add"
 msgstr "_Hinzufügen"
@@ -1082,7 +1082,9 @@ msgstr "Pro_xy-Kalender hinzufügen …"
 #: src/evolution/e-groupwise-mail-ui.c:1468
 msgid ""
 "Show the calendar of a user who granted you proxy rights below this account"
-msgstr "Den Kalender eines Benutzers, der Ihnen Proxy-Rechte gegeben hat, unter diesem Konto anzeigen"
+msgstr ""
+"Den Kalender eines Benutzers, der Ihnen Proxy-Rechte gegeben hat, unter "
+"diesem Konto anzeigen"
 
 #: src/evolution/e-groupwise-mail-ui.c:1474
 msgid "Share the calendar with other GroupWise users, or see who shares it"
@@ -1302,42 +1304,54 @@ msgstr "_Telefon:"
 msgid "_Message:"
 msgstr "_Nachricht:"
 
-#: src/evolution/e-groupwise-proxy-calendar.c:123
+#: src/evolution/e-groupwise-proxy-calendar.c:143
+#: src/evolution/e-groupwise-proxy-calendar.c:259
+#: src/evolution/e-groupwise-proxy-tab.c:519
+#, c-format
+msgid "%s (Proxy)"
+msgstr "%s (Proxy)"
+
+#: src/evolution/e-groupwise-proxy-calendar.c:166
 msgid "Reading the GroupWise proxy list"
 msgstr "Lesen der GroupWise-Proxy-Liste"
 
-#: src/evolution/e-groupwise-proxy-calendar.c:147
-#: src/evolution/e-groupwise-proxy-calendar.c:221
+#: src/evolution/e-groupwise-proxy-calendar.c:195
+#: src/evolution/e-groupwise-proxy-calendar.c:272
 msgid "Adding a proxy calendar"
 msgstr "Hinzufügen eines Proxy-Kalenders"
 
-#: src/evolution/e-groupwise-proxy-calendar.c:148
+#: src/evolution/e-groupwise-proxy-calendar.c:196
 msgid ""
 "No other user has granted you proxy rights, or their calendars are set up "
 "already."
-msgstr "Kein anderer Benutzer hat Ihnen Proxy-Rechte gegeben, oder deren Kalender sind schon eingerichtet."
+msgstr ""
+"Kein anderer Benutzer hat Ihnen Proxy-Rechte gegeben, oder deren Kalender "
+"sind schon eingerichtet."
 
-#: src/evolution/e-groupwise-proxy-calendar.c:154
+#: src/evolution/e-groupwise-proxy-calendar.c:202
 msgid "Add Proxy Calendar"
 msgstr "Proxy-Kalender hinzufügen"
 
-#: src/evolution/e-groupwise-proxy-calendar.c:166
+#: src/evolution/e-groupwise-proxy-calendar.c:214
 msgid ""
 "The calendar of a user or resource that granted you proxy rights shows below "
 "your account. What you may do there is what they granted you for "
 "appointments."
-msgstr "Der Kalender eines Benutzers oder einer Ressource, die Ihnen Proxy-Rechte gegeben hat, erscheint unter Ihrem Konto. Was Sie dort tun dürfen, bestimmen die Rechte, die Sie für Termine erhalten haben."
+msgstr ""
+"Der Kalender eines Benutzers oder einer Ressource, die Ihnen Proxy-Rechte "
+"gegeben hat, erscheint unter Ihrem Konto. Was Sie dort tun dürfen, bestimmen "
+"die Rechte, die Sie für Termine erhalten haben."
 
-#: src/evolution/e-groupwise-proxy-calendar.c:173
+#: src/evolution/e-groupwise-proxy-calendar.c:221
 msgid "_User:"
 msgstr "_Benutzer:"
 
-#: src/evolution/e-groupwise-proxy-calendar.c:182
+#: src/evolution/e-groupwise-proxy-calendar.c:230
 #: src/evolution/e-groupwise-share-accept.c:358
 msgid "_Name:"
 msgstr "_Name:"
 
-#: src/evolution/e-groupwise-proxy-calendar.c:191
+#: src/evolution/e-groupwise-proxy-calendar.c:239
 #: src/evolution/e-groupwise-share-accept.c:390
 msgid "C_olor:"
 msgstr "_Farbe:"
@@ -1388,11 +1402,6 @@ msgstr "Als Konto _einrichten"
 #: src/evolution/e-groupwise-proxy-tab.c:189
 msgid "_Remove Account"
 msgstr "Konto _entfernen"
-
-#: src/evolution/e-groupwise-proxy-tab.c:519
-#, c-format
-msgid "%s (Proxy)"
-msgstr "%s (Proxy)"
 
 #: src/evolution/e-groupwise-proxy-tab.c:664
 msgid "Proxy accounts need an account made as a GroupWise collection"

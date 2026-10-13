@@ -529,7 +529,7 @@ Evolution gleicht die Kalender alle 15 Minuten mit dem Server ab, sodass Änderu
 
 ### Einen Proxy-Kalender hinzufügen
 
-Klicken Sie in der Kalenderliste mit der rechten Maustaste auf einen Kalender Ihres GroupWise-Kontos und wählen Sie `Proxy-Kalender hinzufügen …`. Der Dialog `Proxy-Kalender hinzufügen` bietet unter `Benutzer` alle Benutzer und Ressourcen an, die Ihnen Proxy-Rechte gegeben haben und deren Kalender noch nicht eingerichtet ist. Mit `Name` und `Farbe` legen Sie fest, wie der Kalender in der Liste erscheint; `Hinzufügen` richtet ihn ein.
+Klicken Sie in der Kalenderliste mit der rechten Maustaste auf einen Kalender Ihres GroupWise-Kontos und wählen Sie `Proxy-Kalender hinzufügen …`. Der Dialog `Proxy-Kalender hinzufügen` bietet unter `Benutzer` alle Benutzer und Ressourcen an, die Ihnen Proxy-Rechte gegeben haben und deren Kalender noch nicht eingerichtet ist. Mit `Name` und `Farbe` legen Sie fest, wie der Kalender in der Liste erscheint; vorgeschlagen wird der Name des Benutzers mit dem Zusatz „(Proxy)“, zum Beispiel „Erika Muster (Proxy)“; `Hinzufügen` richtet ihn ein.
 
 - Über das Kontextmenü des Proxy-Kalenders ändern Sie später den Namen (`Umbenennen …`) und die Farbe (`Eigenschaften`); `Kalender löschen` entfernt ihn nach einer Rückfrage wieder aus der Liste. Dabei wird nichts im Postfach des anderen Benutzers gelöscht.
 

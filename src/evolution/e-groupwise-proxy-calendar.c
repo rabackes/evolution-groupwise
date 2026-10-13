@@ -139,8 +139,11 @@ user_changed_cb (GtkComboBox *combo,
 		 GtkEntry *name)
 {
 	gchar *text = gtk_combo_box_text_get_active_text (GTK_COMBO_BOX_TEXT (combo));
+	/* Translators: the name a proxy calendar gets to start with; %s is the name of the other user */
+	gchar *title = text ? g_strdup_printf (_("%s (Proxy)"), text) : NULL;
 
-	gtk_entry_set_text (name, text ? text : "");
+	gtk_entry_set_text (name, title ? title : "");
+	g_free (title);
 	g_free (text);
 }
 
@@ -250,8 +253,11 @@ loaded_cb (GObject *source_object,
 
 		gtk_color_chooser_get_rgba (GTK_COLOR_CHOOSER (color), &rgba);
 		if (!*title) {
+			gchar *text = gtk_combo_box_text_get_active_text (GTK_COMBO_BOX_TEXT (combo));
+
 			g_free (title);
-			title = gtk_combo_box_text_get_active_text (GTK_COMBO_BOX_TEXT (combo));
+			title = g_strdup_printf (_("%s (Proxy)"), text ? text : email);
+			g_free (text);
 		}
 		/* The fields of an entry are divided by tabs, the entries by lines */
 		g_strdelimit (title, "\t\n", ' ');
