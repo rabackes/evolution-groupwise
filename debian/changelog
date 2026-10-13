@@ -1,4 +1,4 @@
-evolution-groupwise (0.11.0) noble; urgency=medium
+evolution-groupwise (0.11.0) trixie; urgency=medium
 
   * Proxy calendars can be added in Evolution: "Add Proxy Calendar…" in
     the context menu of a calendar shows the whole calendar of a user or
