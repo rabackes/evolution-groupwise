@@ -1,3 +1,21 @@
+evolution-groupwise (0.11.0) noble; urgency=medium
+
+  * Proxy calendars can be added in Evolution: "Add Proxy Calendar…" in
+    the context menu of a calendar shows the whole calendar of a user or
+    resource of the proxy list below the own account. Such a calendar is
+    kept in Evolution only; it is renamed and removed from its context
+    menu.
+  * Proxy calendars, those made in the GroupWise client as well, are
+    written as far as the other user granted it.
+  * Senders: the mailboxes the user is proxy of (users and resources)
+    can be chosen in "From" of the own account; the message goes out of
+    that mailbox.
+  * Sharing: the owner of a shared mail folder can transfer its
+    ownership to a user who accepted the share ("Transfer Ownership…" on
+    the share page); that user is asked whether to take it over.
+
+ -- Rainer Backes <rbackes@bond.de>  Tue, 13 Oct 2026 15:00:00 +0200
+
 evolution-groupwise (0.10.0) noble; urgency=medium
 
   * Calendars and address books are made, renamed and deleted from

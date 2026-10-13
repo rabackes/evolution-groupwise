@@ -10,7 +10,7 @@
 #
 
 Name:           evolution-groupwise
-Version:        0.10.0
+Version:        0.11.0
 Release:        0
 Summary:        GroupWise mailboxes in Evolution
 License:        LGPL-2.1-or-later
@@ -100,6 +100,19 @@ line tool.
 %endif
 
 %changelog
+* Tue Oct 13 2026 Rainer Backes <rbackes@bond.de> - 0.11.0-0
+- Proxy calendars can be added in Evolution: "Add Proxy Calendar…" in the
+  context menu of a calendar shows the whole calendar of a user or resource of
+  the proxy list below the own account. Such a calendar is kept in Evolution
+  only; it is renamed and removed from its context menu.
+- Proxy calendars, those made in the GroupWise client as well, are written as
+  far as the other user granted it.
+- Senders: the mailboxes the user is proxy of (users and resources) can be
+  chosen in "From" of the own account; the message goes out of that mailbox.
+- Sharing: the owner of a shared mail folder can transfer its ownership to a
+  user who accepted the share ("Transfer Ownership…" on the share page); that
+  user is asked whether to take it over.
+
 * Mon Oct 12 2026 Rainer Backes <rbackes@bond.de> - 0.10.0-0
 - Calendars and address books are made, renamed and deleted from Evolution:
   its dialogs for a new calendar or address book offer the GroupWise account,
