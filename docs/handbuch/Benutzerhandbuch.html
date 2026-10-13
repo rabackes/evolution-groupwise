@@ -811,9 +811,9 @@ das Recht fehlt.</p>
 	<li>Die weiteren (sekundären) Internet-Adressen eines Postfachs, die der GroupWise-Client zusätzlich
 		anbietet, stehen nicht zur Auswahl.</li>
 </ul>
-<p>Die Kalender anderer Benutzer, die Sie im GroupWise-Client als Proxy-Kalender hinzugefügt haben,
-erscheinen unter Ihrem eigenen Konto (siehe Abschnitt 5.1) – außer für Benutzer, für die Sie ein
-Proxy-Konto eingerichtet haben: deren Kalender stehen dann nur beim Proxy-Konto.</p>
+<p>Brauchen Sie von einem anderen Benutzer nur den Kalender, genügt ein <b>Proxy-Kalender</b> unter Ihrem
+eigenen Konto, ohne Proxy-Konto (siehe <a href="#kal-proxy">Abschnitt 5.1</a>). Für Benutzer, für die Sie
+ein Proxy-Konto eingerichtet haben, stehen die Kalender nur beim Proxy-Konto.</p>
 
 <!-- ============================================================ -->
 <h2 id="mail-freigabe">4.9&nbsp;&nbsp;Ordner freigeben</h2>
@@ -916,7 +916,9 @@ Evolution die Nachrichtenliste dieses Ordners deshalb beim nächsten Start einma
 		in der Farbe, die er in GroupWise hat. Ein Termin aus „Privat“ steht in Evolution nur in „Privat“,
 		auch wenn der GroupWise-Client ihn zusätzlich im Hauptkalender anzeigt.</li>
 	<li><b>Proxy-Kalender</b> – die Kalender anderer Benutzer, die Ihnen Proxy-Rechte eingeräumt haben
-		und die Sie im GroupWise-Client als Proxy-Kalender hinzugefügt haben. Evolution meldet sich dafür mit
+		und die Sie im GroupWise-Client oder in Evolution (siehe unten) als Proxy-Kalender hinzugefügt
+		haben. Ein Proxy-Kalender ist immer der gesamte Kalender des anderen Benutzers, mit den Terminen
+		seiner Unterkalender. Evolution meldet sich dafür mit
 		Ihrem Passwort als Proxy am anderen Postfach an. Den Besitzer erkennt es an seiner eindeutigen
 		Kennung, auch wenn der Kalender oder der Benutzer umbenannt wurde. Eine Besprechung, an der Sie
 		selbst ebenfalls teilnehmen, zeigt Evolution wie der GroupWise-Client nur einmal: in Ihrem eigenen
@@ -927,9 +929,10 @@ Evolution die Nachrichtenliste dieses Ordners deshalb beim nächsten Start einma
 	<li><b>Freigegebene Kalender</b> – Kalender, die andere Benutzer für Sie freigegeben haben, mit dem
 		Namen des Besitzers in Klammern.</li>
 </ol>
-<p>Proxy-Kalender sind derzeit <b>nur lesbar</b>; in einem freigegebenen Kalender können Sie so viel,
-wie der Eigentümer Ihnen erlaubt hat (siehe <a href="#kal-freigabe">5.8</a>). Für beide gibt es keine
-Erinnerungen. Abonnierte Internet-Kalender, die GroupWise selbst abruft, werden nicht angezeigt – solche
+<p>In einem Proxy-Kalender können Sie so viel, wie der andere Benutzer Ihnen als Proxy für Termine
+erlaubt hat: mit dem Schreibrecht legen Sie dort Termine an, ändern und löschen sie, sonst ist der Kalender
+nur lesbar. In einem freigegebenen Kalender gilt, was der Eigentümer Ihnen erlaubt hat (siehe
+<a href="#kal-freigabe">5.8</a>). Für beide gibt es keine Erinnerungen. Abonnierte Internet-Kalender, die GroupWise selbst abruft, werden nicht angezeigt – solche
 Kalender kann Evolution bei Bedarf direkt abonnieren.</p>
 <p>Evolution gleicht die Kalender alle 15 Minuten mit dem Server ab, sodass Änderungen aus dem
 GroupWise-Client von selbst erscheinen. Schneller geht es mit der Kontooption „Den Server alle … Sekunden
@@ -938,6 +941,26 @@ eingestellten Abstands, mit der Sofort-Meldung des Servers nach wenigen Sekunden
 wird dabei nur der Kalender, in dem sich etwas geändert hat; alle Kalender des Postfachs nur dann, wenn der
 Server keinen nennt (bei Antworten auf Einladungen und erledigten Aufgaben). Das Intervall können Sie in den Eigenschaften eines Kalenders
 ändern.</p>
+<h3 id="kal-proxy">Einen Proxy-Kalender hinzufügen</h3>
+<p>Klicken Sie in der Kalenderliste mit der rechten Maustaste auf einen Kalender Ihres GroupWise-Kontos und
+wählen Sie <span class="menu">Proxy-Kalender hinzufügen …</span>. Der Dialog
+<span class="menu">Proxy-Kalender hinzufügen</span> bietet unter <span class="menu">Benutzer</span> alle
+Benutzer und Ressourcen an, die Ihnen Proxy-Rechte gegeben haben und deren Kalender noch nicht eingerichtet
+ist. Mit <span class="menu">Name</span> und <span class="menu">Farbe</span> legen Sie fest, wie der Kalender
+in der Liste erscheint; <span class="menu">Hinzufügen</span> richtet ihn ein.</p>
+<ul>
+	<li>Über das Kontextmenü des Proxy-Kalenders ändern Sie später den Namen
+		(<span class="menu">Umbenennen …</span>) und die Farbe (<span class="menu">Eigenschaften</span>);
+		<span class="menu">Kalender löschen</span> entfernt ihn nach einer Rückfrage wieder aus der Liste.
+		Dabei wird nichts im Postfach des anderen Benutzers gelöscht.</li>
+	<li>Ein in Evolution hinzugefügter Proxy-Kalender wird <b>nur in Evolution</b> gespeichert: GroupWise
+		lässt das Anlegen seiner eigenen Proxy-Kalender von außen nicht zu. Im GroupWise-Client und auf
+		anderen Rechnern erscheint er deshalb nicht. Umgekehrt zeigt Evolution die im GroupWise-Client
+		hinzugefügten Proxy-Kalender von selbst an; diese lassen sich nur dort umbenennen und entfernen.</li>
+	<li>So gibt es zwei Stufen des Proxy-Zugriffs: das <b>Proxy-Konto</b> für das ganze Postfach mit Mail,
+		Kalendern und Einstellungen (<a href="#mail-proxy">4.8</a>) und den <b>Proxy-Kalender</b> allein
+		für die Termine.</li>
+</ul>
 
 <h2 id="kal-termine">5.2&nbsp;&nbsp;Termine und Serien</h2>
 <ul>
@@ -1126,8 +1149,9 @@ Unterkalender, Proxy-Kalender, freigegebene Kalender) legt das Modul beim ersten
 		verschwindet dabei nur aus Ihrem Postfach; beim Eigentümer bleibt er bestehen.</li>
 </ul>
 <p>Das gilt für Ihre eigenen Unterkalender und für Kalender, die andere für Sie freigegeben haben. Der
-Hauptkalender, die Aufgaben- und Notizliste sowie Proxy-Kalender lassen sich weder umbenennen noch löschen
-(ein Name, den Sie dort vergeben, wird beim nächsten Abgleich zurückgesetzt); in Proxy-Konten legen Sie
+Hauptkalender, die Aufgaben- und Notizliste sowie die im GroupWise-Client hinzugefügten Proxy-Kalender
+lassen sich weder umbenennen noch löschen (ein Name, den Sie dort vergeben, wird beim nächsten Abgleich
+zurückgesetzt); für in Evolution hinzugefügte Proxy-Kalender siehe <a href="#kal-proxy">5.1</a>; in Proxy-Konten legen Sie
 Kalender weiterhin im GroupWise-Client an. Weitere Aufgaben- oder Notizlisten kennt GroupWise nicht.
 Voraussetzung ist, dass das Konto verbunden ist.</p>
 
@@ -1279,9 +1303,9 @@ Kontaktansicht. Ein nur zum Lesen freigegebenes Adressbuch ist in Evolution schr
 <h1 id="grenzen">8&nbsp;&nbsp;Grenzen und Hinweise</h1>
 <table>
 	<tr><th style="width:35%">Thema</th><th>Stand</th></tr>
-	<tr><td>Kalender anderer Benutzer</td><td>Proxy-Kalender unter dem eigenen Konto sind nur lesbar; die
+	<tr><td>Kalender anderer Benutzer</td><td>Proxy-Kalender unter dem eigenen Konto, die
 		Kalender eines Proxy-Kontos und freigegebene Kalender sind nach den gewährten Rechten
-		beschreibbar. In einen freigegebenen Kalender gehören nur Termine ohne Teilnehmer.</td></tr>
+		beschreibbar. In Evolution hinzugefügte Proxy-Kalender kennt nur Evolution. In einen freigegebenen Kalender gehören nur Termine ohne Teilnehmer.</td></tr>
 	<tr><td>Freigaben</td><td>Mailordner (4.9), Kalender (5.8) und Adressbücher (Kapitel 7) lassen sich
 		freigeben und Freigaben anderer annehmen. Bei Adressbüchern kennt der Server nur Lesen oder Lesen
 		und Bearbeiten, und das Recht eines Benutzers lässt sich nachträglich nicht ändern.</td></tr>
@@ -1412,8 +1436,9 @@ fortgeschrieben.</p>
 		<span class="menu">Zustellstatus …</span>.</td></tr>
 	<tr><td>Suchen im ganzen Postfach auf dem Server (Volltext)</td>
 		<td>Evolution durchsucht, was es lokal kennt: die Nachrichtenlisten und bereits geladene Nachrichten.</td></tr>
-	<tr><td>Proxy-Kalender unter dem eigenen Konto beschreiben</td>
-		<td>nur lesbar; zum Schreiben dient das Proxy-Konto.</td></tr>
+	<tr><td>Proxy-Kalender hinzufügen und beschreiben</td>
+		<td>ja (<a href="#kal-proxy">5.1</a>), beschreibbar nach den gewährten Rechten. Ein in Evolution
+		hinzugefügter Proxy-Kalender bleibt in Evolution und erscheint nicht im GroupWise-Client.</td></tr>
 	<tr><td>Archiv</td>
 		<td>Das GroupWise-Archiv hat ein eigenes, nicht offengelegtes Format und lässt sich nur mit dem
 		GroupWise-Client lesen.</td></tr>

@@ -34,12 +34,12 @@
  * GroupWise Calendar shows it; here it shows in "Privat" only, the Calendar
  * lists the appointments of no subcalendar. New appointments of a
  * subcalendar are created in it (sendItem with its container).
- * Calendars of other users are read only: a proxy calendar (role "proxy")
- * through a proxy login into the other mailbox, with its Calendar and Sent
- * Items; a calendar shared to the user (role "shared") as it is.
+ * Calendars of other users: a proxy calendar (role "proxy") through a proxy
+ * login into the other mailbox, with its Calendar and Sent Items; a calendar
+ * shared to the user (role "shared") as it is.
  * The calendars of a proxy account (a collection with the setting Proxy)
- * are those of the other mailbox, in a proxy login, writable as far as the
- * other user granted it.
+ * are those of the other mailbox, in a proxy login. Both are writable as far
+ * as the other user granted it.
  *
  * GroupWise sends and answers meetings itself: the backend creates the
  * messages (sendItem with the attendees, accept, decline, retract), so
@@ -528,6 +528,11 @@ ecb_groupwise_connect_sync (ECalMetaBackend *meta_backend,
 		if (!cbgw->calendar_id)
 			cbgw->calendar_id = g_strdup (folder_id);
 
+		/* From here on a proxy calendar is what the Calendar of a proxy
+		 * account is, only that it shows the subcalendars' appointments too */
+		if (role == ROLE_PROXY)
+			role = ROLE_MAIN;
+
 		cbgw->cnc = cnc;
 		cbgw->role = role;
 		cbgw->share_rights = share_rights;
@@ -543,7 +548,7 @@ ecb_groupwise_connect_sync (ECalMetaBackend *meta_backend,
 		cbgw->user_email = g_strdup (e_gw_connection_get_user_email (cnc));
 		g_rec_mutex_unlock (&cbgw->lock);
 
-		/* Proxy calendars are only read (for now); those of a proxy account
+		/* Proxy calendars and those of a proxy account are written
 		 * as far as the other user granted it, a shared calendar when the
 		 * user may more than read there (what exactly, each change checks) */
 		e_cal_backend_set_writable (E_CAL_BACKEND (cbgw),

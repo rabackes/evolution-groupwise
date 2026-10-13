@@ -45,6 +45,7 @@
 #include "e-groupwise-delete-dialog.h"
 #include "e-groupwise-events-port.h"
 #include "e-groupwise-phone-message.h"
+#include "e-groupwise-proxy-calendar.h"
 #include "e-groupwise-proxy-options.h"
 #include "e-groupwise-sent-items.h"
 #include "e-groupwise-share-accept.h"
@@ -66,6 +67,7 @@
 #define CALENDAR_SHARE_ACTION "groupwise-calendar-share"
 #define BOOK_SHARE_ACTION "groupwise-book-share"
 #define CALENDAR_RENAME_ACTION "groupwise-calendar-rename"
+#define CALENDAR_PROXY_ACTION "groupwise-calendar-add-proxy"
 #define BOOK_RENAME_ACTION "groupwise-book-rename"
 
 static gboolean	selected_source_is_renamable	(EShellView *shell_view);
@@ -1264,6 +1266,47 @@ action_calendar_share_cb (EUIAction *action,
 	}
 }
 
+/* The GroupWise account of the calendar selected in the list, when it is
+ * the user's own (a proxy account shows the other user's calendars as its) */
+static ESource *
+ref_selected_own_collection (EShellView *shell_view)
+{
+	EShell *shell = e_shell_backend_get_shell (e_shell_view_get_shell_backend (shell_view));
+	ESourceSelector *selector = NULL;
+	ESource *source, *collection = NULL;
+
+	g_object_get (e_shell_view_get_shell_sidebar (shell_view), "selector", &selector, NULL);
+	source = selector ? e_source_selector_ref_primary_selection (selector) : NULL;
+	g_clear_object (&selector);
+
+	if (source && e_source_has_extension (source, E_SOURCE_EXTENSION_GROUPWISE_FOLDER))
+		collection = e_source_registry_find_extension (e_shell_get_registry (shell), source, E_SOURCE_EXTENSION_COLLECTION);
+	if (collection) {
+		gchar *proxy = e_groupwise_ui_dup_proxy (collection);
+
+		if (proxy)
+			g_clear_object (&collection);
+		g_free (proxy);
+	}
+	g_clear_object (&source);
+
+	return collection;
+}
+
+static void
+action_calendar_add_proxy_cb (EUIAction *action,
+			      GVariant *parameter,
+			      gpointer user_data)
+{
+	EShellView *shell_view = user_data;
+	ESource *collection = ref_selected_own_collection (shell_view);
+
+	if (collection) {
+		e_groupwise_proxy_calendar_add (shell_view, collection);
+		g_object_unref (collection);
+	}
+}
+
 static void
 calendar_update_actions_cb (EShellView *shell_view,
 			    gpointer user_data)
@@ -1273,6 +1316,9 @@ calendar_update_actions_cb (EShellView *shell_view,
 
 	set_visible (action_group, CALENDAR_SHARE_ACTION, calendar != NULL);
 	set_visible (action_group, CALENDAR_RENAME_ACTION, selected_source_is_renamable (shell_view));
+	g_clear_object (&calendar);
+	calendar = ref_selected_own_collection (shell_view);
+	set_visible (action_group, CALENDAR_PROXY_ACTION, calendar != NULL);
 	g_clear_object (&calendar);
 }
 
@@ -1409,11 +1455,18 @@ setup_calendar_view (EShellView *shell_view)
 		    "<placeholder id='calendar-popup-actions'>"
 		      "<item action='" CALENDAR_RENAME_ACTION "'/>"
 		      "<item action='" CALENDAR_SHARE_ACTION "'/>"
+		      "<item action='" CALENDAR_PROXY_ACTION "'/>"
 		    "</placeholder>"
 		  "</menu>"
 		"</eui>";
 
 	static const EUIActionEntry entries[] = {
+		{ CALENDAR_PROXY_ACTION,
+		  NULL,
+		  N_("Add Pro_xy Calendar…"),
+		  NULL,
+		  N_("Show the calendar of a user who granted you proxy rights below this account"),
+		  action_calendar_add_proxy_cb, NULL, NULL, NULL },
 		{ CALENDAR_SHARE_ACTION,
 		  NULL,
 		  N_("S_haring…"),

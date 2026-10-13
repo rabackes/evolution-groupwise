@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: evolution-groupwise\n"
 "Report-Msgid-Bugs-To: rbackes@bond.de\n"
-"POT-Creation-Date: 2026-10-12 17:11+0200\n"
+"POT-Creation-Date: 2026-10-13 13:31+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -55,45 +55,45 @@ msgstr ""
 msgid "The calendar is not set up for GroupWise"
 msgstr ""
 
-#: src/calendar/e-cal-backend-groupwise.c:1275
+#: src/calendar/e-cal-backend-groupwise.c:1280
 msgid "accepted"
 msgstr ""
 
-#: src/calendar/e-cal-backend-groupwise.c:1278
+#: src/calendar/e-cal-backend-groupwise.c:1283
 msgid "declined"
 msgstr ""
 
-#: src/calendar/e-cal-backend-groupwise.c:1281
+#: src/calendar/e-cal-backend-groupwise.c:1286
 msgid "tentative"
 msgstr ""
 
-#: src/calendar/e-cal-backend-groupwise.c:1284
+#: src/calendar/e-cal-backend-groupwise.c:1289
 msgid "delegated"
 msgstr ""
 
-#: src/calendar/e-cal-backend-groupwise.c:1287
+#: src/calendar/e-cal-backend-groupwise.c:1292
 msgid "no answer yet"
 msgstr ""
 
-#: src/calendar/e-cal-backend-groupwise.c:2485
+#: src/calendar/e-cal-backend-groupwise.c:2490
 msgid ""
 "The owner of this shared calendar did not grant you the right to add "
 "appointments to it."
 msgstr ""
 
-#: src/calendar/e-cal-backend-groupwise.c:2488
+#: src/calendar/e-cal-backend-groupwise.c:2493
 msgid ""
 "The owner of this shared calendar did not grant you the right to delete "
 "appointments from it."
 msgstr ""
 
-#: src/calendar/e-cal-backend-groupwise.c:2491
+#: src/calendar/e-cal-backend-groupwise.c:2496
 msgid ""
 "The owner of this shared calendar did not grant you the right to change its "
 "appointments."
 msgstr ""
 
-#: src/calendar/e-cal-backend-groupwise.c:2602
+#: src/calendar/e-cal-backend-groupwise.c:2607
 msgid ""
 "GroupWise makes the appointments of a series when the series is created: its "
 "rule cannot be changed to other days, and no appointments can be added. "
@@ -101,17 +101,17 @@ msgid ""
 "others."
 msgstr ""
 
-#: src/calendar/e-cal-backend-groupwise.c:2740
+#: src/calendar/e-cal-backend-groupwise.c:2745
 msgid ""
 "A shared calendar takes appointments without attendees only. Create the "
 "meeting in your own calendar."
 msgstr ""
 
-#: src/calendar/e-cal-backend-groupwise.c:3037
+#: src/calendar/e-cal-backend-groupwise.c:3042
 msgid "The server did not delete the appointment from the shared calendar."
 msgstr ""
 
-#: src/calendar/e-cal-backend-groupwise.c:3079
+#: src/calendar/e-cal-backend-groupwise.c:3084
 #, c-format
 msgid ""
 "“%s” is the preparation or travel time of an appointment. Move or delete the "
@@ -119,7 +119,7 @@ msgid ""
 "“Travel Time” of the appointment."
 msgstr ""
 
-#: src/calendar/e-cal-backend-groupwise.c:3386
+#: src/calendar/e-cal-backend-groupwise.c:3391
 #, c-format
 msgid ""
 "“%s” is a meeting you organized in this calendar. Answer the invitation in "
@@ -362,7 +362,7 @@ msgid "GroupWise mail for %s on %s"
 msgstr ""
 
 #: src/camel/camel-groupwise-store.c:415
-#: src/registry/module-groupwise-backend.c:667
+#: src/registry/module-groupwise-backend.c:790
 msgid "The GroupWise account is not connected"
 msgstr ""
 
@@ -509,8 +509,9 @@ msgstr ""
 #: src/evolution/e-groupwise-access-tab.c:157
 #: src/evolution/e-groupwise-junk-tab.c:70
 #: src/evolution/e-groupwise-mailbox-tab.c:302
-#: src/evolution/e-groupwise-mail-ui.c:530
+#: src/evolution/e-groupwise-mail-ui.c:532
 #: src/evolution/e-groupwise-phone-message.c:320
+#: src/evolution/e-groupwise-proxy-calendar.c:157
 #: src/evolution/e-groupwise-rule-editor.c:1336
 #: src/evolution/e-groupwise-rules-tab.c:351
 #: src/evolution/e-groupwise-sent-items.c:457
@@ -525,6 +526,7 @@ msgstr ""
 
 #: src/evolution/e-groupwise-access-tab.c:157
 #: src/evolution/e-groupwise-junk-tab.c:70
+#: src/evolution/e-groupwise-proxy-calendar.c:157
 #: src/evolution/e-groupwise-share-tab.c:74
 msgid "_Add"
 msgstr ""
@@ -888,211 +890,220 @@ msgstr ""
 msgid "Mailbox and Password"
 msgstr ""
 
-#: src/evolution/e-groupwise-mail-ui.c:167
+#: src/evolution/e-groupwise-mail-ui.c:169
 msgid "restoring messages"
 msgstr ""
 
-#: src/evolution/e-groupwise-mail-ui.c:296
+#: src/evolution/e-groupwise-mail-ui.c:298
 msgid "_Phone Message"
 msgstr ""
 
-#: src/evolution/e-groupwise-mail-ui.c:298
+#: src/evolution/e-groupwise-mail-ui.c:300
 msgid "Write a GroupWise phone message: who called, and what the caller wants"
 msgstr ""
 
-#: src/evolution/e-groupwise-mail-ui.c:475
+#: src/evolution/e-groupwise-mail-ui.c:477
 msgid "updating the junk mail lists"
 msgstr ""
 
-#: src/evolution/e-groupwise-mail-ui.c:502
+#: src/evolution/e-groupwise-mail-ui.c:504
 msgid "Junk the Sender"
 msgstr ""
 
-#: src/evolution/e-groupwise-mail-ui.c:502
+#: src/evolution/e-groupwise-mail-ui.c:504
 msgid ""
 "Future mail goes into the Junk Mail folder; this message goes there now."
 msgstr ""
 
-#: src/evolution/e-groupwise-mail-ui.c:502
+#: src/evolution/e-groupwise-mail-ui.c:504
 msgid "_Junk"
 msgstr ""
 
-#: src/evolution/e-groupwise-mail-ui.c:503
+#: src/evolution/e-groupwise-mail-ui.c:505
 msgid "Block the Sender"
 msgstr ""
 
-#: src/evolution/e-groupwise-mail-ui.c:503
+#: src/evolution/e-groupwise-mail-ui.c:505
 msgid ""
 "Future mail is not delivered; this message goes into the Junk Mail folder."
 msgstr ""
 
-#: src/evolution/e-groupwise-mail-ui.c:503
+#: src/evolution/e-groupwise-mail-ui.c:505
 msgid "_Block"
 msgstr ""
 
-#: src/evolution/e-groupwise-mail-ui.c:504
+#: src/evolution/e-groupwise-mail-ui.c:506
 msgid "Trust the Sender"
 msgstr ""
 
-#: src/evolution/e-groupwise-mail-ui.c:504
+#: src/evolution/e-groupwise-mail-ui.c:506
 msgid ""
 "Mail from the sender is never junk; this message goes back into the Mailbox."
 msgstr ""
 
-#: src/evolution/e-groupwise-mail-ui.c:504
+#: src/evolution/e-groupwise-mail-ui.c:506
 msgid "_Trust"
-msgstr ""
-
-#: src/evolution/e-groupwise-mail-ui.c:544
-#, c-format
-msgid "Only the _address %s"
 msgstr ""
 
 #: src/evolution/e-groupwise-mail-ui.c:546
 #, c-format
+msgid "Only the _address %s"
+msgstr ""
+
+#: src/evolution/e-groupwise-mail-ui.c:548
+#, c-format
 msgid "Only the _addresses of the %u senders"
 msgstr ""
 
-#: src/evolution/e-groupwise-mail-ui.c:550
+#: src/evolution/e-groupwise-mail-ui.c:552
 #, c-format
 msgid "The whole _domain %s (with its subdomains)"
 msgstr ""
 
-#: src/evolution/e-groupwise-mail-ui.c:552
+#: src/evolution/e-groupwise-mail-ui.c:554
 msgid "Their whole _domains (with their subdomains)"
 msgstr ""
 
-#: src/evolution/e-groupwise-mail-ui.c:558
+#: src/evolution/e-groupwise-mail-ui.c:560
 msgid ""
 "This applies to Internet mail only; the lists are in the GroupWise Settings "
 "of the account."
 msgstr ""
 
-#: src/evolution/e-groupwise-mail-ui.c:1386
-#: src/evolution/e-groupwise-mail-ui.c:1419
-#: src/evolution/e-groupwise-mail-ui.c:1524
+#: src/evolution/e-groupwise-mail-ui.c:1432
+#: src/evolution/e-groupwise-mail-ui.c:1472
+#: src/evolution/e-groupwise-mail-ui.c:1577
 msgid "S_haring…"
 msgstr ""
 
-#: src/evolution/e-groupwise-mail-ui.c:1388
+#: src/evolution/e-groupwise-mail-ui.c:1434
 msgid "Share the address book with other GroupWise users, or see who shares it"
 msgstr ""
 
-#: src/evolution/e-groupwise-mail-ui.c:1392
-#: src/evolution/e-groupwise-mail-ui.c:1425
+#: src/evolution/e-groupwise-mail-ui.c:1438
+#: src/evolution/e-groupwise-mail-ui.c:1478
 msgid "_Rename…"
 msgstr ""
 
-#: src/evolution/e-groupwise-mail-ui.c:1394
+#: src/evolution/e-groupwise-mail-ui.c:1440
 msgid "Rename the address book, in GroupWise as well"
 msgstr ""
 
-#: src/evolution/e-groupwise-mail-ui.c:1421
+#: src/evolution/e-groupwise-mail-ui.c:1466
+msgid "Add Pro_xy Calendar…"
+msgstr ""
+
+#: src/evolution/e-groupwise-mail-ui.c:1468
+msgid ""
+"Show the calendar of a user who granted you proxy rights below this account"
+msgstr ""
+
+#: src/evolution/e-groupwise-mail-ui.c:1474
 msgid "Share the calendar with other GroupWise users, or see who shares it"
 msgstr ""
 
-#: src/evolution/e-groupwise-mail-ui.c:1427
+#: src/evolution/e-groupwise-mail-ui.c:1480
 msgid "Rename the calendar, in GroupWise as well"
 msgstr ""
 
-#: src/evolution/e-groupwise-mail-ui.c:1436
+#: src/evolution/e-groupwise-mail-ui.c:1489
 msgid "Delete This _Occurrence…"
 msgstr ""
 
-#: src/evolution/e-groupwise-mail-ui.c:1437
+#: src/evolution/e-groupwise-mail-ui.c:1490
 msgid "Delete All Occ_urrences…"
 msgstr ""
 
-#: src/evolution/e-groupwise-mail-ui.c:1475
+#: src/evolution/e-groupwise-mail-ui.c:1528
 msgid "_Restore"
 msgstr ""
 
-#: src/evolution/e-groupwise-mail-ui.c:1477
+#: src/evolution/e-groupwise-mail-ui.c:1530
 msgid "Put the selected messages back into the folders they were deleted from"
 msgstr ""
 
-#: src/evolution/e-groupwise-mail-ui.c:1518
+#: src/evolution/e-groupwise-mail-ui.c:1571
 msgid "GroupWise _Settings…"
 msgstr ""
 
-#: src/evolution/e-groupwise-mail-ui.c:1520
+#: src/evolution/e-groupwise-mail-ui.c:1573
 msgid ""
 "Settings the GroupWise server keeps for the account: junk mail handling and "
 "more"
 msgstr ""
 
-#: src/evolution/e-groupwise-mail-ui.c:1526
+#: src/evolution/e-groupwise-mail-ui.c:1579
 msgid "Share the folder with other GroupWise users, or see who shares it"
 msgstr ""
 
-#: src/evolution/e-groupwise-mail-ui.c:1528
+#: src/evolution/e-groupwise-mail-ui.c:1581
 msgid "GroupWise _Junk Mail"
 msgstr ""
 
-#: src/evolution/e-groupwise-mail-ui.c:1531
+#: src/evolution/e-groupwise-mail-ui.c:1584
 msgid "Junk Mail _Settings…"
 msgstr ""
 
-#: src/evolution/e-groupwise-mail-ui.c:1533
+#: src/evolution/e-groupwise-mail-ui.c:1586
 msgid "The junk mail handling of GroupWise: settings and lists"
 msgstr ""
 
-#: src/evolution/e-groupwise-mail-ui.c:1537
+#: src/evolution/e-groupwise-mail-ui.c:1590
 msgid "_Junk the Sender…"
 msgstr ""
 
-#: src/evolution/e-groupwise-mail-ui.c:1539
+#: src/evolution/e-groupwise-mail-ui.c:1592
 msgid "Put the sender or the sender's domain onto the junk list of GroupWise"
 msgstr ""
 
-#: src/evolution/e-groupwise-mail-ui.c:1543
+#: src/evolution/e-groupwise-mail-ui.c:1596
 msgid "_Block the Sender…"
 msgstr ""
 
-#: src/evolution/e-groupwise-mail-ui.c:1545
+#: src/evolution/e-groupwise-mail-ui.c:1598
 msgid "Put the sender or the sender's domain onto the block list of GroupWise"
 msgstr ""
 
-#: src/evolution/e-groupwise-mail-ui.c:1549
+#: src/evolution/e-groupwise-mail-ui.c:1602
 msgid "_Trust the Sender…"
 msgstr ""
 
-#: src/evolution/e-groupwise-mail-ui.c:1551
+#: src/evolution/e-groupwise-mail-ui.c:1604
 msgid "Put the sender or the sender's domain onto the trust list of GroupWise"
 msgstr ""
 
-#: src/evolution/e-groupwise-mail-ui.c:1555
+#: src/evolution/e-groupwise-mail-ui.c:1608
 msgid "Delivery _Status…"
 msgstr ""
 
-#: src/evolution/e-groupwise-mail-ui.c:1557
+#: src/evolution/e-groupwise-mail-ui.c:1610
 msgid ""
 "What happened to the message at each recipient: delivered, opened, deleted …"
 msgstr ""
 
-#: src/evolution/e-groupwise-mail-ui.c:1561
+#: src/evolution/e-groupwise-mail-ui.c:1614
 msgid "Resen_d…"
 msgstr ""
 
-#: src/evolution/e-groupwise-mail-ui.c:1563
+#: src/evolution/e-groupwise-mail-ui.c:1616
 msgid ""
 "Open the message to change it and send it anew; sending asks whether the "
 "original is retracted"
 msgstr ""
 
-#: src/evolution/e-groupwise-mail-ui.c:1567
+#: src/evolution/e-groupwise-mail-ui.c:1620
 msgid "Re_tract…"
 msgstr ""
 
-#: src/evolution/e-groupwise-mail-ui.c:1569
+#: src/evolution/e-groupwise-mail-ui.c:1622
 msgid "Take the selected messages back from the recipients' mailboxes"
 msgstr ""
 
-#: src/evolution/e-groupwise-mail-ui.c:1588
+#: src/evolution/e-groupwise-mail-ui.c:1641
 msgid "Install Shared _Folder…"
 msgstr ""
 
-#: src/evolution/e-groupwise-mail-ui.c:1590
+#: src/evolution/e-groupwise-mail-ui.c:1643
 msgid ""
 "Accept the folder this notification offers: it is added to the folder list"
 msgstr ""
@@ -1187,6 +1198,46 @@ msgstr ""
 #: src/evolution/e-groupwise-share-tab.c:847
 #: src/evolution/e-groupwise-vacation-tab.c:165
 msgid "_Message:"
+msgstr ""
+
+#: src/evolution/e-groupwise-proxy-calendar.c:123
+msgid "Reading the GroupWise proxy list"
+msgstr ""
+
+#: src/evolution/e-groupwise-proxy-calendar.c:147
+#: src/evolution/e-groupwise-proxy-calendar.c:221
+msgid "Adding a proxy calendar"
+msgstr ""
+
+#: src/evolution/e-groupwise-proxy-calendar.c:148
+msgid ""
+"No other user has granted you proxy rights, or their calendars are set up "
+"already."
+msgstr ""
+
+#: src/evolution/e-groupwise-proxy-calendar.c:154
+msgid "Add Proxy Calendar"
+msgstr ""
+
+#: src/evolution/e-groupwise-proxy-calendar.c:166
+msgid ""
+"The calendar of a user or resource that granted you proxy rights shows below "
+"your account. What you may do there is what they granted you for "
+"appointments."
+msgstr ""
+
+#: src/evolution/e-groupwise-proxy-calendar.c:173
+msgid "_User:"
+msgstr ""
+
+#: src/evolution/e-groupwise-proxy-calendar.c:182
+#: src/evolution/e-groupwise-share-accept.c:358
+msgid "_Name:"
+msgstr ""
+
+#: src/evolution/e-groupwise-proxy-calendar.c:191
+#: src/evolution/e-groupwise-share-accept.c:390
+msgid "C_olor:"
 msgstr ""
 
 #: src/evolution/e-groupwise-proxy-tab.c:86
@@ -2228,16 +2279,8 @@ msgstr ""
 msgid "Your access rights:"
 msgstr ""
 
-#: src/evolution/e-groupwise-share-accept.c:358
-msgid "_Name:"
-msgstr ""
-
 #: src/evolution/e-groupwise-share-accept.c:370
 msgid "_Description:"
-msgstr ""
-
-#: src/evolution/e-groupwise-share-accept.c:390
-msgid "C_olor:"
 msgstr ""
 
 #: src/evolution/e-groupwise-share-accept.c:396
@@ -2576,7 +2619,7 @@ msgid ""
 msgstr ""
 
 #: src/evolution/e-groupwise-ui-utils.c:110
-#: src/registry/module-groupwise-backend.c:902
+#: src/registry/module-groupwise-backend.c:1049
 msgid "The account has no GroupWise settings"
 msgstr ""
 
@@ -2798,14 +2841,14 @@ msgstr ""
 msgid "Notes"
 msgstr ""
 
-#: src/registry/module-groupwise-backend.c:703
+#: src/registry/module-groupwise-backend.c:826
 msgid "GroupWise can make calendars and address books, with a name"
 msgstr ""
 
-#: src/registry/module-groupwise-backend.c:728
+#: src/registry/module-groupwise-backend.c:851
 msgid "The mailbox has no Calendar"
 msgstr ""
 
-#: src/registry/module-groupwise-backend.c:759
+#: src/registry/module-groupwise-backend.c:882
 msgid "This calendar or address book cannot be deleted in GroupWise"
 msgstr ""

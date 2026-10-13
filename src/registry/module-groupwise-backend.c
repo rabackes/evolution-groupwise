@@ -390,6 +390,76 @@ set_folder_extension (ESource *child,
 	return changed;
 }
 
+/* A proxy calendar set up in Evolution: no folder of the mailbox, an entry
+ * of the setting ProxyCalendars. Its ID is this prefix and the address. */
+#define LOCAL_PROXY_PREFIX "evolution-proxy:"
+
+static gboolean
+is_local_proxy_id (const gchar *id)
+{
+	return id && g_str_has_prefix (id, LOCAL_PROXY_PREFIX);
+}
+
+/* The entries of the setting: string arrays { e-mail, name, color } */
+static GPtrArray *
+dup_local_proxy_calendars (ESource *collection)
+{
+	GPtrArray *entries = g_ptr_array_new_with_free_func ((GDestroyNotify) g_strfreev);
+	CamelGroupwiseSettings *settings = e_gw_backend_ref_settings (NULL, collection);
+	gchar *value = settings ? camel_groupwise_settings_dup_proxy_calendars (settings) : NULL;
+	gchar **lines = value ? g_strsplit (value, "\n", -1) : NULL;
+	guint ii;
+
+	for (ii = 0; lines && lines[ii]; ii++) {
+		gchar **fields = g_strsplit (lines[ii], "\t", 3);
+
+		if (fields[0] && *fields[0] && fields[1])
+			g_ptr_array_add (entries, fields);
+		else
+			g_strfreev (fields);
+	}
+	g_strfreev (lines);
+	g_free (value);
+	g_clear_object (&settings);
+
+	return entries;
+}
+
+/* Writes the entries back: without the one of @email, or with @name for it */
+static gboolean
+change_local_proxy_calendar (ECollectionBackend *backend,
+			     const gchar *email,
+			     const gchar *name,
+			     GError **error)
+{
+	ESource *collection = e_backend_get_source (E_BACKEND (backend));
+	CamelGroupwiseSettings *settings = e_gw_backend_ref_settings (NULL, collection);
+	GPtrArray *entries = dup_local_proxy_calendars (collection);
+	GString *value = g_string_new (NULL);
+	gboolean success;
+	guint ii;
+
+	for (ii = 0; ii < entries->len; ii++) {
+		gchar **fields = entries->pdata[ii];
+		gboolean it = g_ascii_strcasecmp (fields[0], email) == 0;
+
+		if (it && !name)
+			continue;
+		if (value->len)
+			g_string_append_c (value, '\n');
+		g_string_append_printf (value, "%s\t%s\t%s", fields[0], it ? name : fields[1], fields[2] ? fields[2] : "");
+	}
+	g_ptr_array_unref (entries);
+
+	if (settings)
+		camel_groupwise_settings_set_proxy_calendars (settings, value->str);
+	success = settings && e_source_write_sync (collection, NULL, error);
+	g_string_free (value, TRUE);
+	g_clear_object (&settings);
+
+	return success;
+}
+
 static ESource *
 new_calendar (ECollectionBackend *backend,
 	      guint kind,
@@ -454,7 +524,8 @@ sync_calendar_source (ECollectionBackend *backend,
 	gchar *name = calendar_display_name (folder, role, kind);
 	ESource *child = g_hash_table_lookup (by_resource, resource_id);
 	/* A calendar the user made, or accepted from another user */
-	gboolean managed = kind == 0 && (role == E_GW_CALENDAR_ROLE_OWN || role == E_GW_CALENDAR_ROLE_SHARED);
+	gboolean managed = kind == 0 && (role == E_GW_CALENDAR_ROLE_OWN || role == E_GW_CALENDAR_ROLE_SHARED ||
+		is_local_proxy_id (folder->id));
 	gchar *suffix = role == E_GW_CALENDAR_ROLE_SHARED && folder->owner_name && *folder->owner_name ?
 		g_strdup_printf (" (%s)", folder->owner_name) : NULL;
 
@@ -548,6 +619,58 @@ sync_calendars (ECollectionBackend *backend,
 			/* Appointments only: tasks and notes stay in the lists of the Calendar */
 			sync_calendar_source (backend, server, by_resource, 0, folder, role, proxies);
 		}
+	}
+
+	/* The proxy calendars set up in Evolution, unless the user has the same
+	 * from GroupWise or as a proxy account */
+	if (!is_proxy) {
+		GPtrArray *entries = dup_local_proxy_calendars (e_backend_get_source (E_BACKEND (backend)));
+		GHashTable *seen = g_hash_table_new_full (g_str_hash, g_str_equal, g_free, NULL);
+
+		if (proxy_accounts) {
+			GHashTableIter iter;
+			gpointer key;
+
+			g_hash_table_iter_init (&iter, proxy_accounts);
+			while (g_hash_table_iter_next (&iter, &key, NULL))
+				g_hash_table_add (seen, g_strdup (key));
+		}
+		for (ii = 0; ii < folders->len; ii++) {
+			EGwFolder *folder = folders->pdata[ii];
+
+			if (e_gw_folder_get_calendar_role (folder, folders) == E_GW_CALENDAR_ROLE_PROXY) {
+				const gchar *proxy = proxies && folder->proxy_uuid && g_hash_table_contains (proxies, folder->proxy_uuid) ?
+					g_hash_table_lookup (proxies, folder->proxy_uuid) : folder->proxy_email;
+
+				if (proxy)
+					g_hash_table_add (seen, g_utf8_casefold (proxy, -1));
+			}
+		}
+
+		for (ii = 0; ii < entries->len; ii++) {
+			gchar **fields = entries->pdata[ii];
+			gchar *folded = g_utf8_casefold (fields[0], -1);
+			EGwFolder folder = { 0 };
+			guint red, green, blue;
+
+			if (g_hash_table_contains (seen, folded)) {
+				g_free (folded);
+				continue;
+			}
+			folder.id = g_strconcat (LOCAL_PROXY_PREFIX, folded, NULL);
+			folder.name = fields[1];
+			folder.proxy_email = fields[0];
+			folder.is_calendar = TRUE;
+			folder.includes_content = TRUE;
+			folder.count = folder.unread_count = -1;
+			folder.color = fields[2] && sscanf (fields[2], "#%2x%2x%2x", &red, &green, &blue) == 3 ?
+				(gint64) (red | (green << 8) | (blue << 16)) : -1;
+			sync_calendar_source (backend, server, by_resource, 0, &folder, E_GW_CALENDAR_ROLE_PROXY, NULL);
+			g_hash_table_add (seen, folded);
+			g_free (folder.id);
+		}
+		g_hash_table_destroy (seen);
+		g_ptr_array_unref (entries);
 	}
 
 	/* What is left is gone from the server */
@@ -760,6 +883,22 @@ gw_collection_delete_resource_sync (ECollectionBackend *backend,
 		return FALSE;
 	}
 
+	/* A proxy calendar set up in Evolution: its entry */
+	if (is_local_proxy_id (id)) {
+		gchar *proxy = e_source_groupwise_folder_dup_proxy (e_source_get_extension (source, E_SOURCE_EXTENSION_GROUPWISE_FOLDER));
+
+		success = proxy && change_local_proxy_calendar (backend, proxy, NULL, error);
+		if (success) {
+			ESourceRegistryServer *server = e_collection_backend_ref_server (backend);
+
+			e_source_registry_server_remove_source (server, source);
+			g_object_unref (server);
+		}
+		g_free (proxy);
+		g_free (id);
+		return success;
+	}
+
 	cnc = connect_again (backend, cancellable, error);
 	if (!cnc) {
 		g_free (id);
@@ -814,7 +953,15 @@ rename_thread (GTask *task,
 	const gchar *suffix = g_object_get_data (G_OBJECT (data->child), DATA_SUFFIX);
 	gboolean success = FALSE;
 
-	cnc = id && *plain ? connect_again (data->backend, cancellable, &error) : NULL;
+	if (is_local_proxy_id (id) && *plain) {
+		gchar *proxy = e_source_groupwise_folder_dup_proxy (e_source_get_extension (data->child, E_SOURCE_EXTENSION_GROUPWISE_FOLDER));
+
+		success = proxy && change_local_proxy_calendar (data->backend, proxy, plain, &error);
+		g_free (proxy);
+		cnc = NULL;
+	} else {
+		cnc = id && *plain ? connect_again (data->backend, cancellable, &error) : NULL;
+	}
 	if (cnc) {
 		if (e_source_has_extension (data->child, E_SOURCE_EXTENSION_ADDRESS_BOOK))
 			success = e_gw_connection_rename_address_book_sync (cnc, id, plain, cancellable, &error);

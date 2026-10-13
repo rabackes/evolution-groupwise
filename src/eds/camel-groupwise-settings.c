@@ -31,6 +31,7 @@ struct _CamelGroupwiseSettings {
 	guint events_port;
 	GMutex lock;
 	gchar *proxy;
+	gchar *proxy_calendars;
 };
 
 enum {
@@ -48,7 +49,8 @@ enum {
 	PROP_EVENTS_INTERVAL,
 	PROP_USE_EVENTS_PORT,
 	PROP_EVENTS_PORT,
-	PROP_PROXY
+	PROP_PROXY,
+	PROP_PROXY_CALENDARS
 };
 
 G_DEFINE_TYPE_WITH_CODE (CamelGroupwiseSettings, camel_groupwise_settings, CAMEL_TYPE_OFFLINE_SETTINGS,
@@ -106,6 +108,9 @@ groupwise_settings_set_property (GObject *object,
 	case PROP_PROXY:
 		camel_groupwise_settings_set_proxy (CAMEL_GROUPWISE_SETTINGS (object), g_value_get_string (value));
 		return;
+	case PROP_PROXY_CALENDARS:
+		camel_groupwise_settings_set_proxy_calendars (CAMEL_GROUPWISE_SETTINGS (object), g_value_get_string (value));
+		return;
 	}
 
 	G_OBJECT_WARN_INVALID_PROPERTY_ID (object, property_id, pspec);
@@ -162,6 +167,9 @@ groupwise_settings_get_property (GObject *object,
 	case PROP_PROXY:
 		g_value_take_string (value, camel_groupwise_settings_dup_proxy (CAMEL_GROUPWISE_SETTINGS (object)));
 		return;
+	case PROP_PROXY_CALENDARS:
+		g_value_take_string (value, camel_groupwise_settings_dup_proxy_calendars (CAMEL_GROUPWISE_SETTINGS (object)));
+		return;
 	}
 
 	G_OBJECT_WARN_INVALID_PROPERTY_ID (object, property_id, pspec);
@@ -173,6 +181,7 @@ groupwise_settings_finalize (GObject *object)
 	CamelGroupwiseSettings *settings = CAMEL_GROUPWISE_SETTINGS (object);
 
 	g_free (settings->proxy);
+	g_free (settings->proxy_calendars);
 	g_mutex_clear (&settings->lock);
 
 	G_OBJECT_CLASS (camel_groupwise_settings_parent_class)->finalize (object);
@@ -245,6 +254,14 @@ camel_groupwise_settings_class_init (CamelGroupwiseSettingsClass *class)
 	g_object_class_install_property (object_class, PROP_PROXY,
 		g_param_spec_string ("proxy", "Proxy",
 			"E-mail address of the user whose mailbox a proxy account shows",
+			NULL, G_PARAM_READWRITE | G_PARAM_EXPLICIT_NOTIFY | G_PARAM_STATIC_STRINGS));
+
+	/* The proxy calendars set up in Evolution (GroupWise keeps those its
+	 * own client made as folders, which cannot be made from here): a line
+	 * "e-mail<tab>name<tab>color" for each */
+	g_object_class_install_property (object_class, PROP_PROXY_CALENDARS,
+		g_param_spec_string ("proxy-calendars", "Proxy Calendars",
+			"The calendars of other users shown below the account, set up in Evolution",
 			NULL, G_PARAM_READWRITE | G_PARAM_EXPLICIT_NOTIFY | G_PARAM_STATIC_STRINGS));
 }
 
@@ -459,4 +476,39 @@ camel_groupwise_settings_set_run_folder_rules (CamelGroupwiseSettings *settings,
 
 	settings->run_folder_rules = run_folder_rules;
 	g_object_notify (G_OBJECT (settings), "run-folder-rules");
+}
+
+gchar *
+camel_groupwise_settings_dup_proxy_calendars (CamelGroupwiseSettings *settings)
+{
+	gchar *proxy_calendars;
+
+	g_return_val_if_fail (CAMEL_IS_GROUPWISE_SETTINGS (settings), NULL);
+
+	g_mutex_lock (&settings->lock);
+	proxy_calendars = g_strdup (settings->proxy_calendars);
+	g_mutex_unlock (&settings->lock);
+
+	return proxy_calendars;
+}
+
+void
+camel_groupwise_settings_set_proxy_calendars (CamelGroupwiseSettings *settings,
+					      const gchar *proxy_calendars)
+{
+	g_return_if_fail (CAMEL_IS_GROUPWISE_SETTINGS (settings));
+
+	if (proxy_calendars && !*proxy_calendars)
+		proxy_calendars = NULL;
+
+	g_mutex_lock (&settings->lock);
+	if (g_strcmp0 (settings->proxy_calendars, proxy_calendars) == 0) {
+		g_mutex_unlock (&settings->lock);
+		return;
+	}
+	g_free (settings->proxy_calendars);
+	settings->proxy_calendars = g_strdup (proxy_calendars);
+	g_mutex_unlock (&settings->lock);
+
+	g_object_notify (G_OBJECT (settings), "proxy-calendars");
 }

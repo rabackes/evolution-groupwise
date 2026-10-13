@@ -94,6 +94,12 @@ gchar *		camel_groupwise_settings_dup_proxy
 void		camel_groupwise_settings_set_proxy
 						(CamelGroupwiseSettings *settings,
 						 const gchar *proxy);
+/* The proxy calendars set up in Evolution: lines "e-mail<tab>name<tab>color" */
+gchar *		camel_groupwise_settings_dup_proxy_calendars
+						(CamelGroupwiseSettings *settings);
+void		camel_groupwise_settings_set_proxy_calendars
+						(CamelGroupwiseSettings *settings,
+						 const gchar *proxy_calendars);
 
 /* Default port of the POA SOAP interface */
 #define CAMEL_GROUPWISE_DEFAULT_PORT 7191

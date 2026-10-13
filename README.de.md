@@ -15,7 +15,7 @@ einer Anmeldung:
 - **Adressbücher**: GroupWise-Adressbuch (nur lesen), Häufige Kontakte und persönliche Adressbücher.
 - **Kalender, Aufgaben, Notizen**: Termine (ganztägig, Erinnerungen, Belegt-Status), Besprechungen mit
   Einladungen, Antworten, Änderungen und Zurückziehen durch GroupWise selbst, Frei/Belegt-Suche; eigene
-  Unterkalender als eigene Kalender, Proxy-Kalender (nur lesen) und freigegebene Kalender (nach den
+  Unterkalender als eigene Kalender, Proxy-Kalender und freigegebene Kalender (nach den
   gewährten Rechten); eigene Unterkalender lassen sich freigeben.
 - **Proxy-Konten**: die Postfächer von Benutzern, die einem Proxy-Rechte gegeben haben, als eigene
   Konten neben dem eigenen (in grauer Schrift), zum Lesen und Senden im Namen des anderen Benutzers.
@@ -135,8 +135,12 @@ Zertifikat, für die Mail und für Adressbücher und Kalender des Kontos.
   GroupWise-Element: Es bleibt derselbe Termin, eine Besprechung wird nicht erneut versendet.
   Abonnierte Internet-Kalender werden ausgelassen.
 - Proxy-Kalender (Kalender anderer Benutzer, für die man Proxy-Rechte hat) und für den Benutzer
-  freigegebene Kalender sind ebenfalls eigene Kalender. Ein Proxy-Kalender ist vorerst nur lesbar und wird
-  über eine Proxy-Anmeldung am anderen Postfach gelesen, mit dem eigenen Passwort. Ein freigegebener
+  freigegebene Kalender sind ebenfalls eigene Kalender. Ein Proxy-Kalender ist der gesamte Kalender des
+  anderen Benutzers und wird über eine Proxy-Anmeldung am anderen Postfach gelesen und (soweit gewährt)
+  beschrieben, mit dem eigenen Passwort. Neben denen, die der GroupWise-Client angelegt hat (Ordner vom
+  Typ ProxyFolder, die sich über SOAP nicht anlegen lassen), lassen sich Proxy-Kalender in Evolution
+  hinzufügen: „Proxy-Kalender hinzufügen …“ im Kontextmenü eines Kalenders hält sie in der Einstellung
+  `ProxyCalendars` des Kontos, das Collection-Backend legt die Quellen dazu an. Ein freigegebener
   Kalender ist so weit beschreibbar, wie der Eigentümer es erlaubt hat (siehe „Kalender freigeben“).
 - Frei/Belegt kommt aus der Belegt-Suche des POA (interne Benutzer).
 
@@ -468,7 +472,7 @@ nennt für ein Buch keine neue ID. Ein nur zum Lesen freigegebenes Buch ist im B
 
 ### Noch nicht unterstützt
 
-Schreiben in Proxy-Kalender unter dem eigenen Konto, signierte oder verschlüsselte Nachrichten (GroupWise baut die Nachricht für die Empfänger
+Signierte oder verschlüsselte Nachrichten (GroupWise baut die Nachricht für die Empfänger
 selbst zusammen).
 
 ## Werkzeuge

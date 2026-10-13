@@ -14,7 +14,7 @@ login:
 - **Address books**: the GroupWise Address Book (read-only), Frequent Contacts and personal address books.
 - **Calendar, tasks, notes**: appointments (all-day, alarms, busy status), meetings with invitations,
   answers, changes and retraction done by GroupWise itself, free/busy lookup; own subcalendars as
-  calendars of their own, proxy calendars (read only) and calendars shared to the user (as far as the
+  calendars of their own, proxy calendars and calendars shared to the user (as far as the
   owner granted it); own subcalendars can be shared.
 - **Proxy accounts**: the mailboxes of users who granted the user proxy rights, as accounts of their
   own beside the user's (in grey), to read and to send in the other user's name.
@@ -128,8 +128,12 @@ certificate, for mail and for the address books and calendars of the account.
   GroupWise item: it stays the same appointment, a meeting is not sent again. Subscribed Internet
   calendars are left out.
 - Proxy calendars (the calendars of other users the user has proxy rights for) and calendars shared to
-  the user are calendars of their own as well. A proxy calendar is read only for now and is read with a
-  proxy login into the other mailbox, with the user's own password. A shared calendar can be written as far
+  the user are calendars of their own as well. A proxy calendar is the whole calendar of the other user,
+  read and written (as far as the user granted it) with a proxy login into the other mailbox, with the
+  user's own password. Besides those the GroupWise client made (folders of type ProxyFolder, which
+  cannot be created over SOAP), proxy calendars can be added in Evolution: “Add Proxy Calendar…” in the
+  context menu of a calendar keeps them in the setting `ProxyCalendars` of the account, and the
+  collection backend makes their sources. A shared calendar can be written as far
   as its owner granted it (see “Sharing calendars”).
 - Free/busy comes from the busy search of the POA (internal users).
 
@@ -440,7 +444,7 @@ book. A book shared for reading only is read-only in the backend.
 
 ### Not yet supported
 
-Writing into proxy calendars below the own account, signed or encrypted messages (GroupWise builds the message for the recipients itself).
+Signed or encrypted messages (GroupWise builds the message for the recipients itself).
 
 ## Tools
 
