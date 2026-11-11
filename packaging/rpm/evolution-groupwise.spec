@@ -10,7 +10,7 @@
 #
 
 Name:           evolution-groupwise
-Version:        0.11.1
+Version:        0.11.2
 Release:        0
 Summary:        GroupWise mailboxes in Evolution
 License:        LGPL-2.1-or-later
@@ -100,6 +100,14 @@ line tool.
 %endif
 
 %changelog
+* Wed Nov 11 2026 Rainer Backes <rbackes@bond.de> - 0.11.2-0
+- Development: podman containers (containers/<distro>/build.sh and
+  lint.sh) build and lint the package on Fedora, openSUSE Tumbleweed,
+  Ubuntu, Debian 13 and openSUSE Leap 16 without separate machines or
+  virtual machines; Arch Linux is covered through the existing, already
+  validated packaging/arch/PKGBUILD. No change to the installed
+  package itself.
+
 * Sat Nov 07 2026 Rainer Backes <rbackes@bond.de> - 0.11.1-0
 - Replies are linked to the message they answer: GroupWise marks the original
   replied and shows the reply under it in the discussion thread (issue #1).
