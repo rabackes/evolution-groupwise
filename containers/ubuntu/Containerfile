@@ -1,0 +1,19 @@
+# Build-only image for evolution-groupwise on Ubuntu.
+# Build (from repo root): podman build -f containers/ubuntu/Containerfile -t evolution-groupwise-ubuntu-build .
+# Run:                     containers/ubuntu/build.sh
+
+FROM docker.io/library/ubuntu:latest
+
+ENV DEBIAN_FRONTEND=noninteractive
+
+RUN apt-get update \
+    && apt-get install -y --no-install-recommends \
+        build-essential dpkg-dev devscripts lintian git ca-certificates \
+    && rm -rf /var/lib/apt/lists/*
+
+COPY debian /tmp/evolution-groupwise-builddep/debian
+RUN apt-get update \
+    && apt-get build-dep -y /tmp/evolution-groupwise-builddep \
+    && rm -rf /var/lib/apt/lists/* /tmp/evolution-groupwise-builddep
+
+WORKDIR /build

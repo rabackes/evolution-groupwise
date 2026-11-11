@@ -1,0 +1,19 @@
+# Build-only image for evolution-groupwise on Arch Linux.
+# Build (from repo root): podman build -f containers/arch/Containerfile -t evolution-groupwise-arch-build .
+# Run:                     containers/arch/build.sh
+
+FROM docker.io/library/archlinux:latest
+
+RUN pacman -Syu --noconfirm \
+    && pacman -S --noconfirm --needed base-devel git namcap \
+    && pacman -Scc --noconfirm </dev/null
+
+COPY packaging/arch/PKGBUILD /tmp/PKGBUILD
+RUN bash -c '\
+    cd /tmp \
+    && source PKGBUILD \
+    && pacman -S --noconfirm --needed "${depends[@]}" "${makedepends[@]}" "${checkdepends[@]}" \
+    && pacman -Scc --noconfirm \
+    ' </dev/null
+
+WORKDIR /build

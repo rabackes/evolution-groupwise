@@ -1,0 +1,19 @@
+# Build-only image for evolution-groupwise on openSUSE Leap 16.1 (the user's
+# own dev machine's distro).
+# Build (from repo root): podman build -f containers/opensuse-leap/Containerfile -t evolution-groupwise-leap-build .
+# Run:                     containers/opensuse-leap/build.sh
+
+FROM registry.opensuse.org/opensuse/leap:16.1
+
+SHELL ["/bin/bash", "-c"]
+
+RUN zypper --non-interactive refresh \
+    && zypper --non-interactive install rpm-build rpmdevtools git rpmlint \
+    && zypper clean --all
+
+COPY packaging/rpm/evolution-groupwise.spec /tmp/evolution-groupwise.spec
+RUN mapfile -t deps < <(rpmspec -q --buildrequires /tmp/evolution-groupwise.spec) \
+    && zypper --non-interactive install "${deps[@]}" \
+    && zypper clean --all
+
+WORKDIR /build

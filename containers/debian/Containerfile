@@ -1,0 +1,19 @@
+# Build-only image for evolution-groupwise on Debian 13 (trixie).
+# Build (from repo root): podman build -f containers/debian/Containerfile -t evolution-groupwise-debian-build .
+# Run:                     containers/debian/build.sh
+
+FROM docker.io/library/debian:trixie
+
+ENV DEBIAN_FRONTEND=noninteractive
+
+RUN apt-get update \
+    && apt-get install -y --no-install-recommends \
+        build-essential dpkg-dev devscripts lintian git ca-certificates \
+    && rm -rf /var/lib/apt/lists/*
+
+COPY debian /tmp/evolution-groupwise-builddep/debian
+RUN apt-get update \
+    && apt-get build-dep -y /tmp/evolution-groupwise-builddep \
+    && rm -rf /var/lib/apt/lists/* /tmp/evolution-groupwise-builddep
+
+WORKDIR /build

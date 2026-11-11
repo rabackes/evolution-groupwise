@@ -1,0 +1,18 @@
+# Build-only image for evolution-groupwise on openSUSE Tumbleweed.
+# Build (from repo root): podman build -f containers/opensuse-tumbleweed/Containerfile -t evolution-groupwise-tumbleweed-build .
+# Run:                     containers/opensuse-tumbleweed/build.sh
+
+FROM registry.opensuse.org/opensuse/tumbleweed:latest
+
+SHELL ["/bin/bash", "-c"]
+
+RUN zypper --non-interactive refresh \
+    && zypper --non-interactive install rpm-build rpmdevtools git rpmlint \
+    && zypper clean --all
+
+COPY packaging/rpm/evolution-groupwise.spec /tmp/evolution-groupwise.spec
+RUN mapfile -t deps < <(rpmspec -q --buildrequires /tmp/evolution-groupwise.spec) \
+    && zypper --non-interactive install "${deps[@]}" \
+    && zypper clean --all
+
+WORKDIR /build

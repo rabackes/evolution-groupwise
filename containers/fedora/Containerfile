@@ -1,0 +1,14 @@
+# Build-only image for evolution-groupwise on Fedora.
+# Build (from repo root): podman build -f containers/fedora/Containerfile -t evolution-groupwise-fedora-build .
+# Run:                     containers/fedora/build.sh
+
+FROM registry.fedoraproject.org/fedora:45
+
+RUN dnf -y install rpm-build rpmdevtools dnf-plugins-core git rpmlint glibc-langpack-en \
+    && dnf clean all
+
+COPY packaging/rpm/evolution-groupwise.spec /tmp/evolution-groupwise.spec
+RUN dnf builddep -y /tmp/evolution-groupwise.spec \
+    && dnf clean all
+
+WORKDIR /build
