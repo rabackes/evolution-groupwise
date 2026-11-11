@@ -1,6 +1,6 @@
 # SPDX-License-Identifier: LGPL-2.1-or-later
 pkgname=evolution-groupwise
-pkgver=0.11.1.r1.ga10b0f3
+pkgver=0.11.2
 pkgrel=1
 pkgdesc='GroupWise mail, contacts and calendars in Evolution'
 arch=('x86_64')
@@ -12,10 +12,10 @@ depends=('evolution>=3.52' 'evolution-data-server>=3.52' 'glib2' 'glibc'
 # Python is required at CMake configure time, even when checks are disabled.
 makedepends=('cmake' 'gettext' 'pkgconf' 'python')
 checkdepends=('openssl')
-# Pin the shared compatibility changes, rather than applying packaging patches.
-_commit=a10b0f391e817feac86dcf298a575c0b062a2212
+# Pin to the tagged release commit, rather than applying packaging patches.
+_commit=47939651462aaca3ef860820062c34ac4e247a93
 source=("$pkgname-$_commit.tar.gz::$url/archive/$_commit.tar.gz")
-sha256sums=('e01ea39416717b0f9516f9891e47e1f88902832bb0320b8e98003f31962be816')
+sha256sums=('299eb8561e1493dce8ac5bf8a82ccfc7f5e5bb088a6755b175892f1784071fc3')
 
 build() {
   cmake -S "$pkgname-$_commit" -B build \

@@ -11,7 +11,7 @@ sudo pacman -U evolution-groupwise-*.pkg.tar.zst
 
 Alternatively, `makepkg -si` builds, tests and installs interactively. The
 PKGBUILD downloads a SHA-256-verified archive pinned to the shared compatibility
-commit (after v0.11.1); it does not build from your working tree or a moving branch.
+commit (currently v0.11.2); it does not build from your working tree or a moving branch.
 Update `_commit`, `pkgver` and the checksum together for a newer source revision.
 
 Evolution and evolution-data-server 3.52 or later are required. On Arch, these
