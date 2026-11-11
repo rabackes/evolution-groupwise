@@ -721,7 +721,8 @@ Ein Doppelklick auf die Nachricht **Benachrichtigung über freigegebenes Adressb
 | Thema | Stand |
 |---|---|
 | Kalender anderer Benutzer | Proxy-Kalender unter dem eigenen Konto, die Kalender eines Proxy-Kontos und freigegebene Kalender sind nach den gewährten Rechten beschreibbar. In Evolution hinzugefügte Proxy-Kalender kennt nur Evolution. In einen freigegebenen Kalender gehören nur Termine ohne Teilnehmer. |
-| Freigaben | Mailordner (4.9), Kalender (5.8) und Adressbücher (Kapitel 7) lassen sich freigeben und Freigaben anderer annehmen. Bei Adressbüchern kennt der Server nur Lesen oder Lesen und Bearbeiten, und das Recht eines Benutzers lässt sich nachträglich nicht ändern. |
+| Freigaben | Mailordner (4.9), Kalender (5.8) und Adressbücher (Kapitel 7) lassen sich freigeben und Freigaben anderer annehmen. Bei Adressbüchern kennt der Server nur Lesen oder Lesen und Bearbeiten, und das Recht eines Benutzers lässt sich nachträglich nicht ändern. Übertragen Sie das Eigentum eines Mailordners (4.9), bleiben Sie dabei anders als im GroupWise-Client nicht Teilnehmer. |
+| Antworten mit anderem Absender | Antworten Sie mit einem Postfach, für das Sie Proxy sind, als Absender (4.8), verknüpft GroupWise die Antwort nicht mit dem Original (4.2). |
 | Proxy-Konten | Neue Nachrichten werden bei jedem Abgleich über die ganze Ordnerliste ermittelt, da der POA in Proxy-Sitzungen keine Änderungsabfrage beantwortet. Mit der Kontooption „Den Server alle … Sekunden nach Änderungen im Postfach fragen“ erscheinen sie trotzdem sofort. |
 | Geklonte Rechner | Zwei Rechner mit derselben Maschinen-ID stören sich bei der Abfrage der Änderungen am selben Postfach gegenseitig (siehe Kontooptionen in Kapitel 3). |
 | Signierte oder verschlüsselte Nachrichten | können nicht über GroupWise gesendet werden; empfangene werden angezeigt. |
