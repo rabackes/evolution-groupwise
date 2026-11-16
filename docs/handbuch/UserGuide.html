@@ -1,0 +1,1439 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>evolution-groupwise – User Guide</title>
+<!--
+  User Guide of evolution-groupwise. The PDF is built with
+  build-pdf.sh (WeasyPrint).
+
+  Copyright (C) 2026 bond Software Entwicklung GmbH
+  SPDX-License-Identifier: LGPL-2.1-or-later
+-->
+<style>
+@page {
+	size: A4;
+	margin: 22mm 20mm 22mm 22mm;
+	@top-left { content: "evolution-groupwise"; font: 8.5pt "DejaVu Sans", sans-serif; color: #777; }
+	@top-right { content: string(chapter); font: 8.5pt "DejaVu Sans", sans-serif; color: #777; }
+	@bottom-center { content: "Page " counter(page) " of " counter(pages); font: 8.5pt "DejaVu Sans", sans-serif; color: #777; }
+}
+@page :first {
+	@top-left { content: none; }
+	@top-right { content: none; }
+	@bottom-center { content: none; }
+}
+html { font: 10.5pt/1.45 "DejaVu Serif", "Liberation Serif", serif; color: #1c1c1c; }
+h1, h2, h3, .title, .toc, th { font-family: "DejaVu Sans", "Liberation Sans", sans-serif; }
+h1 { font-size: 17pt; color: #1f4e79; border-bottom: 1.5pt solid #1f4e79; padding-bottom: 3pt;
+     margin: 0 0 12pt 0; page-break-before: always; string-set: chapter content(); }
+h2 { font-size: 12.5pt; color: #1f4e79; margin: 16pt 0 5pt 0; page-break-after: avoid; }
+h3 { font-size: 11pt; margin: 12pt 0 4pt 0; page-break-after: avoid; }
+p { margin: 0 0 7pt 0; text-align: justify; hyphens: auto; }
+ul, ol { margin: 0 0 8pt 0; padding-left: 18pt; }
+li { margin-bottom: 3pt; }
+code, .path { font: 9pt "DejaVu Sans Mono", monospace; background: #f1f3f5; padding: 0 2pt; }
+pre { font: 8.8pt/1.35 "DejaVu Sans Mono", monospace; background: #f1f3f5; border-left: 3pt solid #9bb7d4;
+      padding: 6pt 8pt; margin: 4pt 0 10pt 0; white-space: pre-wrap; page-break-inside: avoid; }
+.menu { font-family: "DejaVu Sans", sans-serif; font-size: 9.5pt; font-style: italic; }
+table { border-collapse: collapse; width: 100%; margin: 4pt 0 10pt 0; font-size: 9.5pt; page-break-inside: avoid; }
+th, td { border: 0.6pt solid #b7c3cf; padding: 3pt 5pt; vertical-align: top; text-align: left; }
+th { background: #e6edf4; }
+.note { border: 0.8pt solid #d9b44a; background: #fdf7e3; padding: 5pt 8pt; margin: 6pt 0 10pt 0; page-break-inside: avoid; }
+.note b:first-child { font-family: "DejaVu Sans", sans-serif; }
+
+/* Title page */
+.cover { height: 240mm; display: flex; flex-direction: column; justify-content: space-between; }
+.cover .title { margin-top: 55mm; }
+.cover .title h0 { display: block; font-size: 30pt; font-weight: bold; color: #1f4e79; }
+.cover .title .sub { font-size: 16pt; color: #333; margin-top: 6pt; }
+.cover .title .desc { font-family: "DejaVu Serif", serif; font-size: 11.5pt; margin-top: 18pt; color: #444; max-width: 130mm; }
+.cover .meta { font-family: "DejaVu Sans", sans-serif; font-size: 9.5pt; color: #555; border-top: 1pt solid #1f4e79; padding-top: 6pt; }
+
+/* Table of contents */
+.toc { page-break-before: always; }
+.toc h2 { font-size: 17pt; margin-top: 0; border-bottom: 1.5pt solid #1f4e79; padding-bottom: 3pt; }
+.toc ol { list-style: none; padding-left: 0; }
+.toc ol ol { padding-left: 14pt; }
+.toc li { margin: 2pt 0; }
+.toc a { color: #1c1c1c; text-decoration: none; }
+.toc a::after { content: leader(".") target-counter(attr(href), page); }
+.toc > ol > li > a { font-weight: bold; }
+a { color: #1f4e79; }
+figure { margin: 8pt 0 10pt 0; text-align: center; page-break-inside: avoid; }
+figure img { max-width: 100%; border: 0.6pt solid #c8ccd0; }
+figcaption { font-size: 8.5pt; color: #666; margin-top: 3pt; }
+</style>
+</head>
+<body>
+
+<section class="cover">
+	<div class="title">
+		<h0>evolution-groupwise</h0>
+		<div class="sub">User Guide</div>
+		<div class="desc">GroupWise mailboxes in Evolution: mail, address books, calendars, tasks and memos
+			over the SOAP interface of the GroupWise Post Office Agent.</div>
+	</div>
+	<div class="meta">
+		Version 0.11.2 · November 2026<br>
+		bond Software Entwicklung GmbH<br>
+		License: GNU Lesser General Public License 2.1 or later
+	</div>
+</section>
+
+<nav class="toc">
+	<h2>Contents</h2>
+	<ol>
+		<li><a href="#ueberblick">1&nbsp;&nbsp;Overview</a></li>
+		<li><a href="#installation">2&nbsp;&nbsp;Installation</a></li>
+		<li><a href="#konto">3&nbsp;&nbsp;Setting Up an Account</a>
+			<ol>
+				<li><a href="#zertifikat">Certificate of the POA</a></li>
+				<li><a href="#gw-einstellungen">GroupWise Settings</a></li>
+				<li><a href="#abwesenheit">Out of Office</a></li>
+				<li><a href="#regeln">Rules</a></li>
+				<li><a href="#proxy-zugriff">Proxy Access to Your Mailbox</a></li>
+			</ol></li>
+		<li><a href="#mail">4&nbsp;&nbsp;Mail</a>
+			<ol>
+				<li><a href="#mail-ordner">4.1&nbsp;&nbsp;Folders and Messages</a></li>
+				<li><a href="#mail-senden">4.2&nbsp;&nbsp;Writing and Sending</a></li>
+				<li><a href="#mail-papierkorb">4.3&nbsp;&nbsp;Deleting and the Trash</a></li>
+				<li><a href="#mail-beschriftungen">4.4&nbsp;&nbsp;Labels and Categories</a></li>
+				<li><a href="#mail-junk">4.5&nbsp;&nbsp;Junk Mail</a></li>
+				<li><a href="#mail-suche">4.6&nbsp;&nbsp;Search Result Folders</a></li>
+				<li><a href="#mail-offline">4.7&nbsp;&nbsp;Working Offline</a></li>
+				<li><a href="#mail-proxy">4.8&nbsp;&nbsp;Proxy Access to Other Mailboxes</a></li>
+				<li><a href="#mail-freigabe">4.9&nbsp;&nbsp;Sharing a Folder</a></li>
+			</ol></li>
+		<li><a href="#kalender">5&nbsp;&nbsp;Calendar</a>
+			<ol>
+				<li><a href="#kal-liste">5.1&nbsp;&nbsp;The Calendars of an Account</a></li>
+				<li><a href="#kal-termine">5.2&nbsp;&nbsp;Appointments and Series</a></li>
+				<li><a href="#kal-besprechungen">5.3&nbsp;&nbsp;Meetings and Invitations</a></li>
+				<li><a href="#kal-verschieben">5.4&nbsp;&nbsp;Moving Appointments Between Calendars</a></li>
+				<li><a href="#kal-kategorien">5.5&nbsp;&nbsp;Categories</a></li>
+				<li><a href="#kal-eigenschaften">5.6&nbsp;&nbsp;Color and Properties</a></li>
+				<li><a href="#kal-reisezeit">5.7&nbsp;&nbsp;Preparation and Travel Time</a></li>
+				<li><a href="#kal-freigabe">5.8&nbsp;&nbsp;Sharing a Calendar</a></li>
+			</ol></li>
+		<li><a href="#aufgaben">6&nbsp;&nbsp;Tasks and Memos</a></li>
+		<li><a href="#adressbuecher">7&nbsp;&nbsp;Address Books</a></li>
+		<li><a href="#grenzen">8&nbsp;&nbsp;Limits and Notes</a></li>
+		<li><a href="#fehlersuche">9&nbsp;&nbsp;Troubleshooting</a></li>
+		<li><a href="#vergleich">10&nbsp;&nbsp;Comparison with the GroupWise Client</a></li>
+	</ol>
+</nav>
+
+<!-- ============================================================ -->
+<h1 id="ueberblick">1&nbsp;&nbsp;Overview</h1>
+
+<p>evolution-groupwise integrates GroupWise mailboxes directly into the mail and groupware program
+<b>Evolution</b>. It talks to the GroupWise Post Office Agent (POA) over its SOAP interface — the same
+path GroupWise Web uses. No additional service and no detour through IMAP is needed.</p>
+
+<p>A single login gives you:</p>
+<ul>
+	<li><b>Mail</b>: all folders of the mailbox, read and write, move, copy, delete, drafts, sending through
+		GroupWise — recipients get a genuine GroupWise message.</li>
+	<li><b>Address books</b>: the GroupWise address book (read-only), “Frequent Contacts” and your personal
+		address books (read and write), with autocompletion while writing.</li>
+	<li><b>Calendar</b>: appointments, all-day appointments, series, reminders, meetings with invitations and
+		answers, free/busy search; your own subcalendars, proxy calendars and calendars shared with you, as
+		calendars of their own.</li>
+	<li><b>Proxy access</b>: the mailboxes of other users who have given you proxy rights, as accounts of
+		their own next to yours — mail, calendar, tasks, memos and address books, read and write in their
+		name; and managing who may access your own mailbox.</li>
+	<li><b>Tasks and memos</b> from the GroupWise calendar.</li>
+	<li><b>Categories</b> from GroupWise as labels (mail) and categories (calendar).</li>
+</ul>
+
+<h2>Terms: GroupWise and Evolution</h2>
+<p>Evolution and the GroupWise client sometimes name the same thing differently. The table lines up the
+names; the English names are also the ones used in the <i>GroupWise Client User Guide</i>, which this
+manual cites throughout chapter 10.</p>
+<table>
+	<tr><th style="width:36%">Evolution</th><th style="width:36%">GroupWise Client</th><th>What it is</th></tr>
+	<tr><td>Appointment</td><td>Personal Appointment</td>
+		<td>An entry only in your own calendar, with no attendees</td></tr>
+	<tr><td>Meeting</td><td>Meeting</td>
+		<td>An appointment with attendees that is sent as an invitation</td></tr>
+	<tr><td>All Day Appointment; in the editor the option
+		<span class="menu">All Day Event</span></td>
+		<td>the option <span class="menu">All Day Event</span> when creating an appointment, personal or with
+		attendees</td>
+		<td>An appointment with no time, spanning whole days. GroupWise shows an all-day event as “free” by
+		default, so other appointments on that day are possible without a conflict (a three-day trade fair
+		and the appointments at the fair). Evolution otherwise makes every appointment “busy”; in a
+		GroupWise calendar, a new all-day appointment starts out free from the beginning, just as in the
+		GroupWise client. Change this with <span class="menu">Options → Show Time as Busy</span> in the
+		editor; it arrives in GroupWise as “free” or “busy” and the other way round too.</td></tr>
+	<tr><td>Task</td><td>Personal Task</td>
+		<td>A task only for yourself</td></tr>
+	<tr><td>Assigned Task</td><td>Task</td>
+		<td>A task that is sent to others</td></tr>
+	<tr><td>Memo</td><td>Personal Reminder</td>
+		<td>A note on a given day, only for yourself</td></tr>
+	<tr><td>Shared Memo</td><td>Reminder</td>
+		<td>A note on a given day that is sent to others</td></tr>
+	<tr><td>–</td><td>Sticky Note</td>
+		<td>A personal note with no date; Evolution has no equivalent for it</td></tr>
+	<tr><td>Mail Message</td><td>Mail</td><td>A message</td></tr>
+	<tr><td>Phone Message</td><td>Phone Message, “While You Were Out” and the personal phone message</td>
+		<td>A message with extra fields for the caller, company, phone number and checkboxes (telephoned,
+		please call, urgent …). Evolution shows a received one as a message; the fields appear as their own
+		paragraph above the message text. You write one with
+		<span class="menu">File → New → Phone Message</span> (<a href="#mail-telefon">4.2</a>).</td></tr>
+	<tr><td>Tasks (the view)</td><td>Tasklist</td>
+		<td>The list of open tasks; the GroupWise Tasklist additionally contains messages you have flagged
+		for follow-up</td></tr>
+	<tr><td>Organizer</td><td>From</td>
+		<td>Who schedules a meeting</td></tr>
+	<tr><td>Attendees</td><td>Recipients: To, Copy (CC), Blind Copy (BC)</td>
+		<td>Who is invited; Evolution instead distinguishes required and optional attendees</td></tr>
+	<tr><td>Label (for mail), Category (in the calendar)</td><td>Category</td>
+		<td>Color-coded marking</td></tr>
+	<tr><td>Search Folder</td><td>Find Results Folder</td>
+		<td>A folder that shows the result of a saved search</td></tr>
+</table>
+<p>This manual uses Evolution’s names; where it helps clarity, the GroupWise name is given alongside.</p>
+
+<h2>Requirements</h2>
+<table>
+	<tr><th style="width:32%">Component</th><th>Requirement</th></tr>
+	<tr><td>Evolution and evolution-data-server</td><td>3.52 or newer (e.g. openSUSE Leap 16, openSUSE
+		Tumbleweed, Ubuntu 24.04, a current Fedora). The “Restore” function in the Trash needs Evolution
+		3.56.</td></tr>
+	<tr><td>GroupWise</td><td>Post Office Agent with an active SOAP interface (default port 7191); developed
+		and tested with GroupWise 26.2.</td></tr>
+	<tr><td>Credentials</td><td>A GroupWise user ID and password.</td></tr>
+</table>
+
+<!-- ============================================================ -->
+<h1 id="installation">2&nbsp;&nbsp;Installation</h1>
+
+<h2>Installing from a Package</h2>
+<p>RPM packages are available for openSUSE and Fedora, a .deb package for Debian and Ubuntu. Install the
+package with your system’s package manager, for example on openSUSE:</p>
+<pre>sudo zypper install ./evolution-groupwise-0.11.2-0.x86_64.rpm \
+                    ./evolution-groupwise-lang-0.11.2-0.noarch.rpm</pre>
+<p>or on Debian/Ubuntu:</p>
+<pre>sudo apt install ./evolution-groupwise_0.11.2_amd64.deb</pre>
+<p>The package <code>evolution-groupwise-lang</code> contains the German translation (for now; more
+languages may follow). Afterwards, restart Evolution and the background services, most easily by logging
+out and back in, or with:</p>
+<pre>evolution --force-shutdown</pre>
+
+<h2>Building from Source</h2>
+<p>For developers and for testing, the module can be built with CMake and installed into the home
+directory without administrator rights. The commands for that are in the file <span class="path">README.md</span>
+of the sources. Such a developer install must be removed again before installing a package, or Evolution
+loads every module twice.</p>
+
+<!-- ============================================================ -->
+<h1 id="konto">3&nbsp;&nbsp;Setting Up an Account</h1>
+
+<ol>
+	<li>In Evolution, choose <span class="menu">File → New → Mail Account</span>.</li>
+	<li>Enter your name and your e-mail address.</li>
+	<li>Choose <b>GroupWise</b> as the server type. Server, port (7191) and user name are pre-filled from
+		the e-mail address: <i>user@company.com</i> becomes the user <i>user</i> on the server
+		<i>mail.company.com</i>. Correct the values if your GroupWise user ID or the POA are named
+		differently.</li>
+	<li>Finish the assistant and enter your password the first time it connects. Evolution can store it in
+		the keyring.</li>
+</ol>
+<p>There is no page for outgoing mail: messages are sent through GroupWise itself. The account then
+appears in the mail view, and its address books, calendars, task lists and memo lists appear under the
+account’s heading in their respective views.</p>
+
+<h2 id="zertifikat">Certificate of the POA</h2>
+<p>GroupWise usually issues the certificates of its agents with its own, internal certificate authority
+(CA), which Linux does not trust at first. Evolution therefore asks, the first time it connects, just like
+the GroupWise client, whether it should trust the POA’s certificate. Check the details shown and choose
+<span class="menu">Accept Permanently</span>; the acceptance applies to the whole account with its
+calendars and address books. If the POA’s certificate is renewed later, Evolution asks once more — again
+just like the GroupWise client.</p>
+<p>The certificate must be issued for the name under which you address the POA (for example
+<i>mail.example.com</i>); otherwise Evolution rejects the connection as insecure despite your
+acceptance.</p>
+<div class="note"><b>For administrators:</b> If the CA of the GroupWise system is known, the question about
+a renewal is skipped too. Put the CA file (PEM)
+<ul>
+	<li>for all users of a machine into <span class="path">/etc/pki/trust/anchors/</span> (openSUSE) or
+		<span class="path">/usr/local/share/ca-certificates/</span> (Debian/Ubuntu) and run
+		<code>sudo update-ca-certificates</code>, or</li>
+	<li>for a single user into <span class="path">~/.config/evolution-groupwise/ca/</span>.</li>
+</ul>
+The POA does not supply the CA itself, but the GroupWise administration service (port 9710) does, in its
+certificate chain. Before using it, compare the fingerprint with the one in the GroupWise administration
+console:
+<pre>openssl s_client -connect mail.example.com:9710 -showcerts &lt;/dev/null 2&gt;/dev/null \
+  | awk '/BEGIN CERT/{n++} n==2{print} /END CERT/ &amp;&amp; n==2{exit}' &gt; groupwise-ca.pem
+openssl x509 -in groupwise-ca.pem -noout -subject -fingerprint -sha256</pre>
+</div>
+
+<h2>Account Options</h2>
+<p>Under <span class="menu">Edit → Preferences → Mail Accounts → Edit</span> you will find:</p>
+<table>
+	<tr><th style="width:42%">Option</th><th>Meaning</th></tr>
+	<tr><td>Ask the server every … seconds for changes in the mailbox</td><td>GroupWise notes, on request,
+		what happens in the mailbox: new, read, moved and deleted messages. With this option, Evolution polls
+		that list at the set interval (default 60 seconds, minimum 15) and only synchronizes the affected
+		folders. New messages and anything you do in the GroupWise client or on a mobile device then appear
+		within this interval instead of only at the next full account fetch; the request itself is small.
+		This saves time especially for proxy accounts. The usual fetch continues as well. The option also
+		applies to the account’s <b>calendars, tasks and memos</b>: appointments you create, change or
+		delete in the GroupWise client or on a mobile device, and incoming invitations, appear just as
+		quickly instead of only at the next calendar sync (every 15 minutes) — as long as Evolution is
+		running. Off unless you turn it on; turning it off again makes Evolution remove the markers from the
+		mailbox. Your proxy accounts (section 4.8) take over this setting from your own account, including
+		the interval: you only set it there.</td></tr>
+	<tr><td>The server reports changes at once, on port … of this computer</td><td>In addition to the
+		request above: GroupWise reports to Evolution by itself as soon as something happens in the mailbox;
+		new messages then appear after one or two seconds. For this, the GroupWise server (POA) opens a
+		connection <i>to your computer</i>, on the given TCP port (default 5221). This only works if the
+		server can reach your computer — on a company network, not behind a home router — and if your
+		computer’s firewall lets the port through. If Evolution finds that the reports are not arriving, it
+		asks whether it should open the port in the firewall (<span class="menu">Open the Port</span>,
+		<span class="menu">Not Now</span>, <span class="menu">Do Not Ask Again</span>); the system asks for
+		the administrator password for that. Without incoming reports, the interval of the request above
+		simply applies. After turning on or changing either option, it takes a few minutes before the
+		server also reports messages from outside and actions in the GroupWise client at once. Only
+		selectable together with the request; off unless you turn it on. Your proxy accounts take over this
+		setting as well.</td></tr>
+	<tr><td>Apply filters and junk checking to new messages in the mailbox</td><td>Evolution’s own filter
+		rules and junk detection run over newly arrived messages. For this, Evolution downloads every new
+		message in full; the option is therefore off unless you need it.</td></tr>
+	<tr><td>Copy folder content locally for offline operation</td><td>Messages are downloaded ahead of time
+		so they can be read without a connection.</td></tr>
+	<tr><td>Read-only: never change anything on the server</td><td>Evolution only reads. Read status,
+		moving, deleting and sending are not sent to the server — useful for trying things out.</td></tr>
+	<tr><td>Run the rules for startup and exit when Evolution starts and quits</td><td>See section “Rules”:
+		Evolution lets GroupWise run the rules with the <i>Startup</i> and <i>Exit</i> event. Off unless you
+		turn it on.</td></tr>
+	<tr><td>Run the rules for opening and closing folders</td><td>Likewise for the <i>Folder Open</i> and
+		<i>Folder Close</i> events.</td></tr>
+</table>
+<div class="note"><b>Several computers on the same mailbox:</b> For polling changes, Evolution creates a
+marker in the mailbox that belongs to exactly one computer; its name contains an identifier of the computer
+(from the system’s machine ID) and your login name. Accessing the same mailbox from two computers, each has
+its own — that works. Problematic are <b>cloned computers</b> (copied virtual machines, rolled-out images):
+they have the same machine ID and take each other’s changes away, so each only gets part of them; the
+instant notification, too, then goes to only one of the two. Give a cloned computer a new machine ID. To do
+that, first turn the option off in Evolution (then Evolution removes the old marker from the mailbox), set
+a new machine ID as administrator, reboot the computer and turn the option back on:
+<pre>sudo rm -f /etc/machine-id /var/lib/dbus/machine-id
+sudo systemd-machine-id-setup</pre>
+Other parts of the system use the machine ID too; it is best to set it anew right after cloning, before you
+even set up Evolution.</div>
+
+<h2 id="gw-einstellungen">GroupWise Settings</h2>
+<p>Settings that the GroupWise server itself keeps for your mailbox are edited in the
+<b>GroupWise Settings</b> window: right-click the name of the GroupWise account in the folder list and
+choose <span class="menu">GroupWise Settings…</span>. The window reads the settings from the server when
+it opens and writes your changes back with <span class="menu">OK</span>; they then apply to every program,
+including the GroupWise client and GroupWise Web. It has the tabs <b>Out of Office</b>, <b>Rules</b> (see
+below), <b>Junk Mail</b> (see section 4.5), <b>Signatures</b> (see section 4.2), <b>Proxy Accounts</b> (see
+section 4.8), <b>Proxy Access</b> and <b>Mailbox and Password</b> (both see below). In the GroupWise client
+you find the same settings under the <i>Tools</i> menu.</p>
+<p>For a proxy account (section 4.8), <span class="menu">GroupWise Settings…</span> shows the Out of Office
+and junk mail settings of the other mailbox. This requires that the other user has given you the proxy
+right “Modify options, rules and folders”; otherwise the window reports this. The “Proxy Accounts” and
+“Proxy Access” tabs do not appear there.</p>
+
+<h2 id="abwesenheit">Out of Office</h2>
+<p>The <b>Out of Office</b> tab corresponds to the out-of-office rule of the GroupWise client:</p>
+<figure><img src="Einstellungen-Abwesenheit.png" alt="GroupWise Settings, Out of Office tab" style="width: 13cm"><figcaption>GroupWise Settings, Out of Office tab (the screenshot still shows the German interface)</figcaption></figure>
+<ul>
+	<li><b>Turn on my out of office rule</b> – while the rule is turned on (and the period is running, if
+		one is set), GroupWise automatically answers incoming mail, each sender only once.</li>
+	<li><b>Only during this period</b> – from and to a day (<b>Whole days</b>) or a time of day. GroupWise
+		enters an appointment with the status <i>Out of Office</i> into your calendar for the period and
+		removes it again once you turn the rule off. After the end of the period, GroupWise stops answering,
+		even if the rule stays on.</li>
+	<li><b>Reply</b> – subject and text of the automatic reply; the subject appears in parentheses after the
+		subject of the original message. Optionally, the sender’s message is included in the reply.</li>
+	<li><b>External users</b> – whether senders outside the GroupWise system are answered too, either all of
+		them or only your contacts, with a subject and text of their own (the text of the “Reply” tab does not
+		apply to them).</li>
+</ul>
+
+<h2 id="regeln">Rules</h2>
+<p>The <b>Rules</b> tab corresponds to <i>Tools → Rules</i> in the GroupWise client. GroupWise runs the
+rules itself, for every program, in the order of the list.</p>
+<figure><img src="Einstellungen-Regeln.png" alt="GroupWise Settings, Rules tab" style="width: 13cm"><figcaption>GroupWise Settings, Rules tab (the screenshot still shows the German interface)</figcaption></figure>
+<ul>
+	<li><b>List</b>: the <i>Active</i> checkbox turns a rule on or off; <span class="menu">Move Up</span>
+		and <span class="menu">Move Down</span> change the order; <span class="menu">New…</span>,
+		<span class="menu">Edit…</span> (or double-click), <span class="menu">Copy</span> and
+		<span class="menu">Delete</span> work as usual. Evolution sends all changes to GroupWise with
+		<span class="menu">OK</span>.</li>
+	<li><span class="menu">Run…</span> lets GroupWise apply the saved rule to the objects of your mailbox at
+		once (after a confirmation), for example a user-activated rule.</li>
+</ul>
+<p>The <b>Rule Editor</b> does not have quite the scope of the GroupWise client, but is noticeably easier to
+use and should be enough for everyday use:</p>
+<figure><img src="Regel-Editor.png" alt="The Rule Editor" style="width: 16cm"><figcaption>The Rule Editor (the screenshot still shows the German interface)</figcaption></figure>
+<ul>
+	<li><b>Event</b>: <i>New Item</i> (with the sources Received, Sent, Personal, Draft), <i>Filed Item</i>,
+		<i>Folder Open</i>, <i>Folder Close</i> (each for one folder or for any), <i>Completed Item</i>,
+		<i>Startup</i>, <i>Exit</i> and <i>User Activated</i>.</li>
+	<li><b>Item types</b>: Mail, Phone Message, Appointment, Task, Reminder Note; for appointments, also
+		whether the rule applies only without or only with a scheduling conflict.</li>
+	<li><b>Conditions</b>: any number, combined with “All conditions must be met (and)” or “Any condition
+		must be met (or)” (one level, no nested groups). The field names match the GroupWise client:
+		<ul>
+			<li>Text (contains, does not contain, begins with, matches, is not): From, To, CC, Subject, My
+				Subject, Message, Place, Attachments, Note, Submitted By, Account, and the caller’s name,
+				company and phone number;</li>
+			<li>Dates, compared with today plus a number of days (e.g. “before today plus −3” = older than
+				three days): Created, Delivered, Started, Ends, Due By, Delegated Date, Completion
+				Date;</li>
+			<li>Numbers (=, ≠, &gt;, ≥, &lt;, ≤): Size, % Complete, Job Priority; Job Category (a single
+				letter);</li>
+			<li>Counters of sent items – Accepted, Replied, Completed, Deleted, Opened Totals, Total Users –
+				against a number or against another counter (plus an offset), for example “Completed Total
+				= field Total Users”: every recipient has completed the task;</li>
+			<li>Choice fields: Priority (High, Standard, Low), Delivery Type (To, CC, BC), Message Status
+				(Accepted, Completed, Opened, Read, Private), Extended Message Status (states of third-party
+				archiving), Thread State (Collapsed, Watched, Ignored), Attachment List and Personal
+				Attachments (File, Audio, Film, Object (OLE), Document Reference, Mail, Appointment, Task,
+				Note, Phone Message), Mentions (me), Send Options (Reply Requested).</li>
+		</ul>
+		The editor does not offer document and library fields, or X-fields of Internet mail.</li>
+	<li><b>Actions</b>, in their order: Send Mail, Forward, Forward as Attachment, Delegate, Reply, Accept,
+		Category, Delete/Decline, Prune Message, Move to Folder, Link to Folder, Mark Private, Mark Read,
+		Mark Unread, Stop Rule Processing, and last <b>Reply Unconditionally (Dangerous)</b>.</li>
+</ul>
+<div class="note"><b>Reply and reply unconditionally:</b> <i>Reply</i> is GroupWise’s automatic reply: it
+answers each sender at most once a day and avoids message loops. <i>Reply Unconditionally (Dangerous)</i>
+is its predecessor and answers every message without any restriction – two such rules, a mailing list, or
+another out-of-office notice can answer each other endlessly. Use it only if you really need it.</div>
+<p>Rules with parts the editor cannot display (nested condition groups, document or X-fields, other actions
+such as Archive) are shown only; you can still turn them on and off, move, run and remove them. Edit them
+in the GroupWise client.</p>
+<p>The events <i>Startup</i>, <i>Exit</i>, <i>Folder Open</i> and <i>Folder Close</i> are triggered by the
+client in GroupWise, not the server. The two checkboxes below the list (also in the account options)
+decide whether Evolution takes this over: at Evolution’s start and exit, and on opening and leaving a
+folder respectively. Both are off at first – keep in mind that such rules can, for instance, delete
+messages permanently.</p>
+
+<h2 id="proxy-zugriff">Proxy Access to Your Mailbox</h2>
+<p>The <b>Proxy Access</b> tab corresponds to proxy access in the security options of the GroupWise client:
+it determines who may open your mailbox as a proxy, and with what rights.</p>
+<figure><img src="Einstellungen-Proxy-Zugriff.png" alt="GroupWise Settings, Proxy Access tab" style="width: 13cm"><figcaption>GroupWise Settings, Proxy Access tab (the screenshot still shows the German interface)</figcaption></figure>
+<ul>
+	<li>The list shows the users with access; at the very top is <b>All Users</b>, the rights given to
+		everyone in the GroupWise system (typically: read appointments, for free/busy scheduling).</li>
+	<li><span class="menu">Add User…</span> asks for the e-mail address or the name of a GroupWise user;
+		they initially get the right to read mail and appointments.
+		<span class="menu">Remove User</span> takes their access away.</li>
+	<li>For the selected user, set the rights below: <b>Read</b> and <b>Write</b> for Mail/Phone,
+		Appointments, Reminder Notes and Tasks (Write includes Read), plus <i>Subscribe to my alarms</i>,
+		<i>Subscribe to my notifications</i>, <i>Modify options, rules and folders</i>, <i>Read items marked
+		private</i> and <i>Modify security options</i>.</li>
+</ul>
+<p>With <span class="menu">OK</span>, Evolution sends the changes to GroupWise.</p>
+
+<h2 id="postfach">Mailbox and Password</h2>
+<p>The <b>Mailbox and Password</b> tab of the GroupWise settings shows the mailbox in figures, like
+<i>Tools → Check Mailbox Size</i> in the GroupWise client:</p>
+<ul>
+	<li><b>Space</b>: how much the mailbox uses and how large it may grow, as a bar and in megabytes, plus
+		the threshold at which GroupWise warns you. If the mailbox has no size limit, only the space used is
+		shown.</li>
+	<li><b>Content</b>: the number of messages in the folders and how many of them are unread, the entries
+		in the calendar, and the number of folders, calendars and address books, as well as the contacts in
+		them.</li>
+	<li>A <b>list of folders</b> with messages and unread ones, fullest first; clicking a column heading
+		re-sorts it. GroupWise counts the Mailbox, the Calendar, Work In Progress and the folders you
+		created; Sent Items, other views of the mailbox, and folders other users have shared with you, are
+		not counted.</li>
+</ul>
+<p>The figures are the state when the window was opened. For a proxy account, they describe the other
+mailbox.</p>
+<p><span class="menu">Change Password…</span> opens the <b>Change the Password of the Mailbox</b> dialog:
+old password, new password and its repetition, then <span class="menu">Change</span>. GroupWise changes
+the password at once – independent of <span class="menu">OK</span> or <span class="menu">Cancel</span> of
+the settings window. Evolution remembers the new password in the keyring, also for your proxy accounts;
+other programs and devices that use the mailbox (GroupWise Web, mobile devices) need it as well. The
+button only appears for your own account.</p>
+<div class="note"><b>Passwords from a directory service:</b> If your GroupWise system checks passwords
+against a directory service (LDAP), change the password there; GroupWise then refuses the change here, and
+the dialog shows the server’s message.</div>
+
+<!-- ============================================================ -->
+<h1 id="mail">4&nbsp;&nbsp;Mail</h1>
+
+<h2 id="mail-ordner">4.1&nbsp;&nbsp;Folders and Messages</h2>
+<p>Evolution shows all folders of the GroupWise mailbox, like the GroupWise client, system folders first
+in its order – Mailbox, Sent Items, Tasklist, Work In Progress (Drafts), Junk Mail, Trash, Cabinet with all
+its subfolders –, then your own folders and the search result folders, by name. The system folders carry
+the names the GroupWise client also shows in your language. Set an order yourself in Evolution (context
+menu of a folder, <span class="menu">Edit Sort Order…</span>), and that one applies. Folders shared by
+other users whose parent folder no longer exists are hidden, like in the GroupWise client. Folders can be
+created, renamed, moved and deleted. System folders such as the Mailbox or the Trash stay as they are.</p>
+<ul>
+	<li><b>Message list</b>: sender, subject, date, size, attachment icon, priority and read status come
+		directly from GroupWise. The content of a message is loaded only when it is opened.</li>
+	<li><b>Original message</b>: messages received from outside are shown by Evolution as they arrived, with
+		all header lines.</li>
+	<li><b>Changed subject</b>: if you changed the subject of a message in the GroupWise client, Evolution
+		shows the changed subject.</li>
+	<li><b>Read/unread</b> is synchronized both ways. Merely viewing it in the list marks nothing as
+		read.</li>
+	<li><b>Number of unread</b>: as in the GroupWise client, each folder shows how many unread messages it
+		contains – even for folders you have not yet opened. For those, it is the state of the last
+		folder-list sync (at startup and on <span class="menu">Send/Receive</span>); an opened folder is
+		counted continuously. Folders other users have shared with you are counted by the server only once
+		you open them.</li>
+	<li><b>Moving and copying</b> within the account happens on the server: a copied message is, in
+		GroupWise, the same message in a further folder.</li>
+	<li><b>Invitations</b> in the Mailbox appear as messages; answer them in the message view or in the
+		calendar. Answered invitations disappear from the Mailbox, like in the GroupWise client.</li>
+</ul>
+<p>Evolution checks for new messages regularly. Between two full syncs (at most every 15 minutes), it only
+asks for the changes since the last time.</p>
+
+<h2 id="mail-senden">4.2&nbsp;&nbsp;Writing and Sending</h2>
+<p>Messages are sent through GroupWise: internal recipients get a native GroupWise message, external ones
+an ordinary e-mail. The sent message then lies in Sent Items.</p>
+<ul>
+	<li><b>HTML and text</b>, embedded images, attachments and priority are carried over.</li>
+	<li><b>Drafts</b> are stored in the <i>Work In Progress</i> folder and so are also visible in the
+		GroupWise client.</li>
+	<li><b>Forward as Attachment</b>: if you forward a GroupWise message as an attachment, GroupWise
+		attaches the message itself, like the GroupWise client. Internal recipients see it as a GroupWise
+		message, not as a MIME file.</li>
+	<li><b>Replying</b> to a message of the account links it to the original in GroupWise, like the
+		GroupWise client: the original is marked as replied there, and the reply appears below it in the
+		discussion view. If you reply with a different mailbox as sender (<a href="#mail-proxy">4.8</a>),
+		the reply goes without this link.</li>
+	<li><b>Sender</b>: sending always goes through the account to which the chosen sending identity belongs.
+		Several GroupWise accounts side by side are possible.</li>
+</ul>
+<h3>Delivery Status and Retracting</h3>
+<p>As in the GroupWise client, for sent messages you can see what happened to them at the recipients, and
+retract them. Both are in the <i>Sent Items</i> folder of a GroupWise account, in a message’s context menu
+and in the <span class="menu">Message</span> menu:</p>
+<ul>
+	<li><span class="menu">Delivery Status…</span> opens a window for the selected message with all
+		recipients (To, CC, BC) and, below each, every event with its time: delivered, opened, deleted,
+		replied, forwarded, retracted, accepted or declined for appointments (with a comment), and more.
+		For recipients outside GroupWise, usually only “Transferred” appears.</li>
+	<li><span class="menu">Resend…</span> opens the message, as in the GroupWise client, in a new message
+		window where you can change it. The signature is set to “None”, because the message already
+		contains its signature. On <span class="menu">Send</span>, Evolution asks whether the original
+		message should be retracted from the recipients: <span class="menu">Retract</span>,
+		<span class="menu">Do Not Retract</span> or <span class="menu">Cancel</span> (back to the message
+		window).</li>
+	<li><span class="menu">Retract…</span> pulls the selected messages back out of the recipients’ mailboxes
+		in GroupWise, after a confirmation. The sent message stays in Sent Items; its delivery status then
+		shows the recipients as “Retracted”. Recipients outside GroupWise have already received the
+		message. For a read-only account, the entry is missing.</li>
+</ul>
+<h3 id="mail-lesebestaetigung">Notification When the Recipient Opens It</h3>
+<p>Check <span class="menu">Options → Request Read Receipt</span> in the editor, and Evolution asks
+GroupWise for the <b>“When Opened” return notification</b> as mail (in the GroupWise client:
+<i>Send Options → Notify → When Opened: Mail Receipt</i>). As soon as a recipient in the GroupWise system
+opens the message, GroupWise puts a message “<i>Name</i> opened <i>Subject</i>” into your Mailbox – without
+the recipient doing anything; they are not asked. For recipients on the Internet, GroupWise requests an
+ordinary read receipt, which their mail program decides on.</p>
+<p>For this to apply to every message, turn on “Always request a read receipt” under
+<span class="menu">Edit → Preferences → Composer Preferences → General</span>. Independent of that,
+<span class="menu">Delivery Status…</span> in Sent Items shows at any time who has had a message
+delivered, opened or deleted.</p>
+
+<h3 id="mail-telefon">Phone Messages</h3>
+<p>A phone message records, for someone, who called while they were away. Choose
+<span class="menu">File → New → Phone Message</span> or the same entry in the dropdown of the
+<span class="menu">New</span> button in the toolbar – in any view, as in the GroupWise client. The
+<b>Phone Message</b> dialog:</p>
+<ul>
+	<li><b>From</b> – the mailbox to send from; the choice only appears if you have proxy accounts besides
+		your own. Preselected is the account of the folder selected in the mail view, otherwise your
+		own.</li>
+	<li><b>To</b> – the recipients: typed, with completion from the address books, or chosen via
+		<span class="menu">Address Book…</span>.</li>
+	<li><b>Caller</b>, <b>Company</b>, <b>Phone</b>.</li>
+	<li>The checkboxes <b>Telephoned</b>, <b>Please Call</b>, <b>Will Call Again</b>, <b>Returned Your
+		Call</b>, <b>Wants to See You</b>, <b>Came to See You</b> and <b>Urgent</b>.</li>
+	<li><b>Message</b> – the text.</li>
+</ul>
+<p><span class="menu">Send</span> sends it through GroupWise. A phone message has no subject of its own:
+as in the GroupWise client, the caller and the phone number stand in for it. Recipients see it in the
+GroupWise client as a phone message and in Evolution as a message with the call details above the text;
+for you, it lies in Sent Items. At least one recipient and either the caller or a text are required.</p>
+
+<h3>Signatures</h3>
+<p>Your signatures from GroupWise are available in Evolution: in the <span class="menu">Signature:</span>
+field of the message editor, and under <span class="menu">Edit → Preferences → Composer Preferences →
+Signatures</span>, with images. Evolution inserts GroupWise’s default signature into new messages of the
+account, even if GroupWise is set to ask before sending; in the editor, choose another one or “None”. The
+signatures of a proxy account carry the account’s name, e.g. “Karl – Karl Napp (Proxy)”.</p>
+<p>Edit signatures in the <b>GroupWise Settings</b> window, <b>Signatures</b> tab:</p>
+<figure><img src="Einstellungen-Signaturen.png" alt="GroupWise Settings, Signatures tab" style="width: 13cm"><figcaption>GroupWise Settings, Signatures tab (the screenshot still shows the German interface)</figcaption></figure>
+<ul>
+	<li><span class="menu">Add…</span> and <span class="menu">Edit…</span> open Evolution’s signature
+		editor; on save, Evolution sends the signature to GroupWise.</li>
+	<li><span class="menu">Remove</span> deletes the signature, in GroupWise too.</li>
+	<li><span class="menu">Set as Default</span> makes the selected signature, with
+		<span class="menu">OK</span>, the default signature in GroupWise and the account’s signature in
+		Evolution.</li>
+</ul>
+<p>Changes and deletions under <span class="menu">Composer Preferences → Signatures</span> are also sent to
+GroupWise by Evolution. New signatures you create there with <span class="menu">Add</span>, however, stay
+in Evolution only, because they are not tied to an account. Changes made in the GroupWise client are taken
+over by Evolution the next time the account connects. Removing a whole account leaves its signatures in
+GroupWise untouched.</p>
+<div class="note"><b>Recommendation: write messages in HTML.</b> If you write a plain message in the
+GroupWise client, it uses its own, extended text format dating back to GroupWise’s early days. Evolution
+cannot process this format; a plain-text message in Evolution is therefore really just text. The HTML
+format, today’s standard for e-mail, makes more sense. Under <span class="menu">Edit → Preferences →
+Composer Preferences</span>, set <span class="menu">Format messages in</span> to <b>HTML</b>. Then
+Evolution inserts the signature with formatting and images, the way GroupWise stores it. If you write in
+“Plain Text” format instead, Evolution inserts the text version of the signature, and it stays plain text
+even if you switch the format to HTML afterwards in the choice above the message text; only choosing the
+signature again (for example “None” and then the signature once more) fetches the HTML version.</div>
+
+<div class="note"><b>Note:</b> Signed or encrypted messages (S/MIME, PGP) cannot be sent through GroupWise,
+because the POA assembles the message for the recipients itself. Evolution reports this when sending.</div>
+
+<h2 id="mail-papierkorb">4.3&nbsp;&nbsp;Deleting and the Trash</h2>
+<p>Deleted messages move into the GroupWise Trash, as in the GroupWise client.</p>
+<ul>
+	<li><b>Restore</b>: select messages in the Trash and choose <span class="menu">Restore</span> at the
+		very top of the context menu, or under <span class="menu">Edit → Restore</span>. The messages
+		return to the folders they were deleted from. If a folder no longer exists, they go to the Mailbox.
+		(Needs Evolution 3.56.)</li>
+	<li><b>Empty Trash</b> (context menu of the Trash or of the account, <span class="menu">Empty
+		Trash</span>) deletes permanently whatever is no longer in any other folder. Messages that are still
+		in another folder (because only one copy was deleted) merely leave the Trash and remain in their
+		folders.</li>
+	<li><b>Delete Permanently</b> (<span class="menu">Shift+Delete</span>, or delete and purge) removes a
+		message from every folder at once, without the detour through the Trash.</li>
+</ul>
+
+<h2 id="mail-beschriftungen">4.4&nbsp;&nbsp;Labels and Categories</h2>
+<p>GroupWise categories appear in Evolution as <b>labels</b>. GroupWise’s four predefined categories
+correspond to Evolution’s standard labels:</p>
+<table>
+	<tr><th>GroupWise</th><th>Evolution</th></tr>
+	<tr><td>Urgent</td><td>Important</td></tr>
+	<tr><td>Personal</td><td>Personal</td></tr>
+	<tr><td>Follow-up</td><td>To Do</td></tr>
+	<tr><td>Low priority</td><td>Later</td></tr>
+</table>
+<ul>
+	<li>Your <b>own categories</b> are added, with their GroupWise color, to Evolution’s label list when
+		connecting (<span class="menu">Edit → Preferences → Mail Preferences → Labels</span>). Categories
+		hidden in GroupWise stay out.</li>
+	<li>Setting or removing a label (context menu <span class="menu">Label</span>) sets or removes the
+		category in GroupWise. A label GroupWise does not yet know as a category – say “Work” – is created
+		there as a new category.</li>
+	<li>Categories set in the GroupWise client appear in Evolution at the next sync.</li>
+</ul>
+
+<h3>Follow-Up and the Tasklist</h3>
+<p>What Evolution calls “Follow Up” is not a message of its own, but a <b>marker for follow-up</b> on an
+existing message, optionally with a due date. The message list shows it with a flag, completed ones with a
+check mark. This is exactly GroupWise’s <b>Tasklist</b>, and Evolution synchronizes both ways:</p>
+<ul>
+	<li><span class="menu">Mark for Follow Up…</span> puts the message on the Tasklist, with the due date
+		chosen there (<span class="menu">Due By</span>). The message stays in its folder; in the GroupWise
+		client it additionally appears in the Tasklist.</li>
+	<li><span class="menu">Mark as Complete</span> checks it off as done in the Tasklist; if the check mark
+		is removed again in the GroupWise client, it is open again in Evolution.</li>
+	<li><span class="menu">Clear Flag</span> takes it off the Tasklist; the message itself remains.</li>
+	<li>Conversely, Evolution shows messages that were put on the Tasklist in the GroupWise client as
+		flagged, with their due date and completion state. GroupWise does not know the text of the flag
+		(“Follow up”, “Reply” …); it stays in Evolution only.</li>
+</ul>
+<p>Flags you had already set in Evolution before version 0.8.0 are carried over to the Tasklist at the
+first sync.</p>
+
+<h2 id="mail-junk">4.5&nbsp;&nbsp;Junk Mail</h2>
+<p>GroupWise sorts unwanted Internet mail itself: by a <b>junk list</b> (mail goes into the “Junk Mail”
+folder), a <b>block list</b> (mail is not delivered at all) and a <b>trust list</b> (mail is never junk; it
+takes precedence). Entries are e-mail addresses or Internet domains. The lists do not apply to internal
+mail from the GroupWise system.</p>
+<ul>
+	<li><b>Mark as Junk</b> (context menu <span class="menu">Mark as Junk</span>, or
+		<span class="menu">Ctrl+J</span>): the message moves into the “Junk Mail” folder, and its sender
+		goes onto GroupWise’s junk list (and off the trust list).</li>
+	<li><b>Mark as Not Junk</b> (context menu <span class="menu">Mark as Not Junk</span>, or
+		<span class="menu">Shift+Ctrl+J</span>) in the “Junk Mail” folder: the message returns to the
+		Mailbox, and its sender goes onto the trust list (and off the junk and block lists).</li>
+	<li>Evolution no longer shows an extra junk folder of its own; messages Evolution’s own junk check
+		recognizes are only moved, the lists stay unchanged.</li>
+</ul>
+<p>As in the GroupWise client, you can also specifically classify an address or a whole domain: a message’s
+context menu has, right below Evolution’s own entries, the submenu <span class="menu">GroupWise Junk
+Mail</span> with</p>
+<ul>
+	<li><span class="menu">Trust the Sender…</span> – onto the trust list; the message comes back from
+		“Junk Mail” into the Mailbox,</li>
+	<li><span class="menu">Junk the Sender…</span> – onto the junk list; the message goes into the
+		“Junk Mail” folder,</li>
+	<li><span class="menu">Block the Sender…</span> – onto the block list; future mail is no longer
+		delivered, the message goes into the “Junk Mail” folder,</li>
+	<li><span class="menu">Junk Mail Settings…</span> – opens the account’s GroupWise settings on the
+		“Junk Mail” tab.</li>
+</ul>
+<p>A dialog asks each time whether only the address or the whole domain (with its subdomains) is entered.
+In the folders of a proxy account (<a href="#mail-proxy">4.8</a>), the submenu acts on the lists of the
+other mailbox; this needs the proxy right “Modify options, rules and folders”.</p>
+<p>Below that is <span class="menu">Add sender to address book</span> (elsewhere in Evolution only in the
+<span class="menu">Message</span> menu): a dialog lets you choose the destination address book; completing
+<!-- VERIFY: the exact label of the "edit the new contact fully" button/link in this dialog was not confirmed against source or po files; used a generic paraphrase instead of a guessed exact string -->
+the entry lets you add further details. With the setting “Mail from senders who are not in any personal
+address book is junk”, a sender in one of your personal GroupWise address books counts as wanted.</p>
+<p>The settings and lists themselves are edited in the <b>GroupWise Settings</b> window, opened from the
+context menu of the GroupWise account in the folder list
+(<span class="menu">GroupWise Settings…</span>). On the <b>Junk Mail</b> tab, you can</p>
+<figure><img src="Einstellungen-Junkmail.png" alt="GroupWise Settings, Junk Mail tab" style="width: 13cm"><figcaption>GroupWise Settings, Junk Mail tab (the screenshot still shows the German interface)</figcaption></figure>
+<ul>
+	<li>turn the junk list and block list on or off,</li>
+	<li>classify mail and appointments from senders not in any personal address book as junk,</li>
+	<li>delete junk mail automatically after a number of days,</li>
+	<li>view the three lists and add or remove entries,</li>
+	<li>move entries from one list to another via a list’s context menu
+		(<span class="menu">Move to Junk List</span>, <span class="menu">Move to Block List</span>,
+		<span class="menu">Move to Trust List</span>).</li>
+</ul>
+<p>With <span class="menu">OK</span>, the changes are sent to GroupWise and then apply to every program,
+including the GroupWise client. GroupWise creates the “Junk Mail” folder as soon as junk mail management
+is turned on.</p>
+
+<h2 id="mail-suche">4.6&nbsp;&nbsp;Search Result Folders</h2>
+<p>Evolution shows GroupWise search result folders (for example “All Mails”) as folders. Deleting and
+moving act on the folder a message actually lies in; nothing can be moved into a search result folder
+itself. These folders are synced at most every 15 minutes and are not copied for offline operation.</p>
+<div class="note"><b>Limit:</b> Over SOAP, the POA returns only part of the hits of a search result folder
+(in testing, a good 4000 out of more than 60,000). For complete searches, use Evolution’s own search, or
+Evolution’s own search folders (<span class="menu">Edit → Search Folders</span>).</div>
+
+<h2 id="mail-offline">4.7&nbsp;&nbsp;Working Offline</h2>
+<p>Folder structure and message list stay visible even without a connection, as do messages already
+opened. With the account option “Copy folder content locally for offline operation”, or the folder
+property of the same name, Evolution downloads messages ahead of time. Changes made offline (read, labels)
+are sent at the next connection.</p>
+
+<h2 id="mail-proxy">4.8&nbsp;&nbsp;Proxy Access to Other Mailboxes</h2>
+<p>If another user has given you proxy rights to their mailbox in the GroupWise client, you can open it in
+Evolution as a <b>proxy account</b> next to your own account. The GroupWise client switches its whole
+window to the other mailbox for this; in Evolution, both mailboxes are in the folder list at the same
+time. The name and folders of a proxy account appear in <b>gray text</b>. The calendars (with
+subcalendars), task and memo lists, and personal address books of the other user belong to the proxy
+account too; they appear in their respective views under the proxy account’s heading.</p>
+<p>To set up a proxy account:</p>
+<ol>
+	<li>Right-click your GroupWise account in the folder list and choose
+		<span class="menu">GroupWise Settings…</span>.</li>
+	<li>The <b>Proxy Accounts</b> tab lists every user who has given you proxy rights. The “In Evolution”
+		column shows for whom an account already exists.</li>
+	<li>Select the user and click <span class="menu">Add as Account</span> (or
+		<span class="menu">Remove Account</span>). With <span class="menu">OK</span>, Evolution creates or
+		removes the account.</li>
+</ol>
+<figure><img src="Einstellungen-Proxy-Konten.png" alt="GroupWise Settings, Proxy Accounts tab" style="width: 13cm"><figcaption>GroupWise Settings, Proxy Accounts tab (the screenshot still shows the German interface)</figcaption></figure>
+<p>A proxy account is called “<i>Name</i> (Proxy)” and is a standalone account: you can rename, disable or
+remove it under <span class="menu">Edit → Preferences → Mail Accounts</span> – with its calendars and
+address books – without touching your own account. It logs in to the other mailbox as a proxy with your
+own password; when setting it up, Evolution also stores your password for the proxy account in the
+keyring. If you change your GroupWise password, Evolution asks for it once for the proxy account. The
+account comes with a sending identity carrying the other user’s name and address:</p>
+<ul>
+	<li><b>Read</b>: all folders of the other mailbox, as with your own account.</li>
+	<li><b>Calendar</b>: the calendars, task and memo lists of the proxy account are initially <b>not
+		checked</b>, i.e. not visible; check what you want to see in the calendar list – for example the
+		resource of a meeting room. If the other user has given you the write right for appointments (or
+		tasks, reminder notes), you can create, change and delete entries there; otherwise read-only. You do
+		not get reminders for their appointments.</li>
+	<li><b>Address books</b>: their personal address books (read and write), without autocompletion while
+		writing; you already have the GroupWise address book in your own account.</li>
+	<li><b>Sending</b>: when writing, choose the proxy account’s identity as sender. The message goes out
+		through the proxy login, in the name of the other user, as in the GroupWise client, and afterwards
+		lies in their Sent Items.</li>
+	<li><b>Rights</b>: the rights the other user has given you apply. Without the write right for mail, the
+		account is read-only (no moving, deleting, sending, read status). Without the read right for mail,
+		it does not connect, and reports this.</li>
+	<li><b>Settings</b>: with the proxy right “Modify options, rules and folders”, you edit the other
+		mailbox’s Out of Office and junk mail settings via the proxy account’s context menu
+		(<span class="menu">GroupWise Settings…</span>), and the <span class="menu">GroupWise Junk
+		Mail</span> submenu acts on its lists.</li>
+	<li>If the other user withdraws the proxy rights, the account on the tab is marked “Access no longer
+		granted”; remove it there.</li>
+	<li>Proxy accounts from older versions (0.3, 0.4) are listed on the tab marked “Account is made anew on
+		OK”; with <span class="menu">OK</span>, they are set up in the new form.</li>
+</ul>
+<h3 id="mail-absender">Sending from Another Mailbox, Without a Proxy Account</h3>
+<p>You do not need a proxy account to send: all users and resources who have given you proxy rights are
+offered in the <span class="menu">From</span> field of your own account when writing a message, as in the
+GroupWise client. Choose the sender you want there; the message then goes out through a proxy login from
+their mailbox and afterwards lies in their Sent Items. This requires the proxy right to write mail;
+otherwise Evolution reports, when sending, that the right is missing.</p>
+<ul>
+	<li>The list is synced with GroupWise’s proxy list at every login of the account: new entries are
+		added, withdrawn ones disappear.</li>
+	<li>The entries appear in the account settings under <span class="menu">Identity</span>, under the
+		<span class="menu">Aliases</span>. Aliases you entered yourself there are kept; deleting an entry
+		that came from GroupWise does not help, it comes back at the next login.</li>
+	<li>The other (secondary) Internet addresses of a mailbox that the GroupWise client additionally offers
+		are not available for choosing.</li>
+</ul>
+<p>If you only need the calendar of another user, a <b>proxy calendar</b> under your own account is enough,
+without a proxy account (see <a href="#kal-proxy">section 5.1</a>). For users for whom you have set up a
+proxy account, their calendars are only available at the proxy account.</p>
+
+<!-- ============================================================ -->
+<h2 id="mail-freigabe">4.9&nbsp;&nbsp;Sharing a Folder</h2>
+<p>You can share one of your own folders with other GroupWise users: it then also appears in their folder
+list, with the rights you grant. Unlike proxy access (4.8), which opens the whole mailbox, a share affects
+only this one folder – optionally with its subfolders.</p>
+<p>As in the GroupWise client, sharing is a tab of the folder properties. Choose
+<span class="menu">Sharing…</span> in the folder’s context menu (right above
+<span class="menu">Properties</span>; it opens the properties straight to this tab) or
+<span class="menu">Properties</span> and there the <span class="menu">Sharing</span> tab. The tab exists
+for folders you created yourself, and for folders others have shared with you; system folders such as the
+Mailbox do not have it. It appears a moment after the dialog, once the server has answered.</p>
+<ul>
+	<li><b>Not shared / Shared with</b>: “Not shared” withdraws the folder from every user on the list.</li>
+	<li><b>Name</b>: type a name or an e-mail address – Evolution suggests entries from the system’s
+		GroupWise address book – and put the user on the list with <span class="menu">Add User</span>. Or
+		choose via the button with the address book icon: the picker opens with the system’s GroupWise
+		address book, since only its users can receive a share; whoever you choose there is on the list as
+		soon as the dialog closes. The server checks whether the user exists in the GroupWise system.</li>
+	<li><b>Share list</b>: name, status and access. The status shows how far the user is with the share:
+		<i>New</i> (not yet sent), <i>Pending</i>, <i>Opened</i> (the notification was read),
+		<i>Accepted</i> or <i>Deleted</i>. <span class="menu">Remove User</span> withdraws the folder from
+		the selected user.</li>
+	<li><b>Additional access</b>: every user on the list may read; <span class="menu">Add</span>,
+		<span class="menu">Edit</span> and <span class="menu">Delete</span> grant more, per user.</li>
+	<li><b>Share all subfolders</b>: can only be set together with new users – the server no longer takes
+		over this setting afterwards.</li>
+</ul>
+<p>Evolution’s properties dialog only has <span class="menu">Close</span>, no “Cancel”. Sharing therefore
+has a button of its own: <span class="menu">Apply Sharing</span> sends what you have set to the server;
+the list then shows the new state. If new users are involved, Evolution first asks for the subject and
+message of the <b>Shared Folder Notification</b> these users receive; <span class="menu">Cancel</span>
+there sends nothing. If you close the properties with changes not yet applied, Evolution asks whether it
+should <span class="menu">Apply</span> or <span class="menu">Discard</span> them.</p>
+<p><b>Proxy accounts:</b> the folders of a proxy account (4.8) can be shared the same way, as far as your
+proxy rights in that mailbox reach – important, for instance, for resources that are only managed through
+proxy access. The notification then comes from the proxy account’s mailbox.</p>
+<p>The recipient accepts the share (see below); if you withdraw the folder from them again, it disappears
+from their folder list.</p>
+<p><b>Icons in the folder list:</b> the GroupWise client puts a small user icon on the folder – green on
+the left for folders you have shared, blue on the right for shares accepted from others. Evolution uses
+two icons of its own instead:</p>
+<table>
+	<tr><th style="width:35%">Folder</th><th>Icon in Evolution</th></tr>
+	<tr><td>shared by you with others</td><td>a folder with the sharing sign (three connected dots) on the
+		front</td></tr>
+	<tr><td>shared with you by others</td><td>a folder with a network plug underneath</td></tr>
+</table>
+<p>The icon changes as soon as you apply or withdraw a share.</p>
+<h3 id="mail-eigentum">Transferring Ownership</h3>
+<p>You can hand a shared mail folder over entirely to a participant, for example when responsibility
+changes. Select a user with the status “Accepted” in the share list and click
+<span class="menu">Transfer Ownership…</span>. The <span class="menu">Transfer Ownership</span> dialog
+asks for the <span class="menu">Subject</span> and <span class="menu">Message</span> of the request the
+user receives; <span class="menu">Send</span> sends it off. In the share list, the user then shows the
+status “Ownership offered”.</p>
+<ul>
+	<li>The folder only changes hands once the user accepts the request. It then belongs, with all its
+		content, to their mailbox and <b>disappears from your mailbox</b>. Unlike in the GroupWise client,
+		you cannot stay a participant; the new owner can, however, share the folder with you again.</li>
+	<li>As long as the user has not accepted, nothing changes.</li>
+	<li>Open changes to the sharing must be sent with <span class="menu">Apply Sharing</span> first.</li>
+	<li>There is no such transfer for calendars and address books.</li>
+</ul>
+<p><b>Taking over ownership:</b> if someone offers you ownership of a folder they have shared with you, you
+get a notification in the Mailbox. Open it like a share (see below): instead of the dialog for accepting,
+Evolution then asks whether you want to take over the folder; <span class="menu">Take Ownership</span>
+makes you the owner. The folder is then your own and no longer shared.</p>
+<h3>Accepting a Share</h3>
+<p>If another user shares a folder with you, you get the message <b>Shared Folder Notification: …</b> in
+the Mailbox. Double-clicking the message opens – like opening it in the GroupWise client – the dialog
+<b>Install Shared Folder</b>; so does the entry <span class="menu">Install Shared Folder…</span> in the
+<span class="menu">Message</span> menu (it only appears for such messages). Read the text of the
+notification in the preview, or via <span class="menu">Open in New Window</span>. The dialog shows who
+shares which folder, the sender’s message and your access rights, and asks:</p>
+<ul>
+	<li><b>Name</b> – what the folder should be called for you; preset is its name at the owner’s.</li>
+	<li><b>Description</b> – free text.</li>
+	<li><b>Position</b> – the folder in which the new folder is created; the Cabinet is preselected. The
+		tree starts, as in the GroupWise client, with the mailbox’s root folder: select it to create the
+		folder beside the Cabinet. The other system folders at this level are listed in gray for
+		orientation; nothing can be put into them. The order within a folder is decided by Evolution itself,
+		so there is no “Move Up/Move Down” as in the GroupWise client.</li>
+</ul>
+<p><span class="menu">Install</span> accepts the share: the folder appears in the folder list, and the
+notification disappears from the Mailbox. You do not have to decline a share – if you do not accept it,
+just leave the message or delete it. This also works in a proxy account, for example to accept a share for
+a resource.</p>
+<p>For a folder another user has shared with you, the tab shows the owner and your rights; nothing can be
+changed there.</p>
+<p><b>Your rights in such a folder:</b> you may always read. Without the <i>Add</i> right, nothing can be
+moved or copied into the folder; without the <i>Delete</i> right, its messages can neither be deleted nor
+moved into another folder (copying works). Evolution tells you which right is missing; a message marked
+for deletion reappears at the next sync. If the owner changes your rights, the new ones apply after the
+next read of the folder list.</p>
+<p>Messages in such a folder are read like any other. GroupWise-internal messages, however, are not handed
+out whole by the server there; Evolution assembles them from text, HTML version and attachments. GroupWise
+messages embedded in such a message are then missing.</p>
+<div class="note"><b>Re-reading after sharing:</b> The server runs a shared folder under a different
+identifier than an unshared one. After first sharing a folder, or after unsharing it, Evolution therefore
+re-reads this folder’s message list once at the next start.</div>
+
+<h1 id="kalender">5&nbsp;&nbsp;Calendar</h1>
+
+<h2 id="kal-liste">5.1&nbsp;&nbsp;The Calendars of an Account</h2>
+<p>The calendar view lists, under the account’s name, in this order:</p>
+<ol>
+	<li><b>Calendar</b> – the GroupWise main calendar. It shows the appointments that are not in any
+		subcalendar.</li>
+	<li><b>Your subcalendars</b> (for example “Private” or “Training”) – each as a calendar of its own, in
+		the color it has in GroupWise. An appointment from “Private” appears in Evolution only in “Private”,
+		even if the GroupWise client additionally shows it in the main calendar.</li>
+	<li><b>Proxy calendars</b> – the calendars of other users who have granted you proxy rights and whom you
+		have added as a proxy calendar, either in the GroupWise client or in Evolution (see below). A proxy
+		calendar is always the other user’s entire calendar, including the appointments of their
+		subcalendars. Evolution logs in to the other mailbox as a proxy with your password for this. It
+		recognizes the owner by their unique identifier, even if the calendar or the user was renamed. A
+		meeting you also attend yourself is shown by Evolution, like the GroupWise client, only once: in
+		your own calendar or subcalendar and in its color, not again in the proxy calendar. Hover over an
+		appointment in a proxy calendar, and the tooltip names the owner as “Organizer”. This entry does not
+		appear in the appointment editor; the appointment remains a normal appointment.</li>
+	<li><b>Shared calendars</b> – calendars other users have shared with you, with the owner’s name in
+		parentheses.</li>
+</ol>
+<p>In a proxy calendar, you can do as much as the other user has allowed you as a proxy for appointments:
+with the write right, you create, change and delete appointments there; otherwise the calendar is
+read-only. In a shared calendar, what the owner has allowed you applies (see <a href="#kal-freigabe">5.8</a>).
+Neither has reminders. Subscribed Internet calendars that GroupWise itself fetches are not shown –
+Evolution can subscribe to such calendars directly if needed.</p>
+<p>Evolution syncs the calendars with the server every 15 minutes, so changes from the GroupWise client
+appear by themselves. It is faster with the account option “Ask the server every … seconds for changes in
+the mailbox” (chapter 3, Account Options): then they appear within the set interval, with the server’s
+instant report after a few seconds. Only the calendar where something changed is synced; all calendars of
+the mailbox only when the server names none (for replies to invitations and completed tasks). You can
+change the interval in the properties of a calendar.</p>
+<h3 id="kal-proxy">Adding a Proxy Calendar</h3>
+<p>Right-click a calendar of your GroupWise account in the calendar list and choose
+<span class="menu">Add Proxy Calendar…</span>. The <span class="menu">Add Proxy Calendar</span> dialog
+offers, under <span class="menu">User</span>, every user and resource who has given you proxy rights and
+whose calendar is not yet set up. With <span class="menu">Name</span> and <span class="menu">Color</span>,
+you decide how the calendar appears in the list; the suggested name is the user’s name with the suffix
+“(Proxy)”, for example “Jane Doe (Proxy)”; <span class="menu">Add</span> sets it up.</p>
+<ul>
+	<li>Via the proxy calendar’s context menu, you can later change the name
+		(<span class="menu">Rename…</span>) and the color (<span class="menu">Properties</span>);
+		<span class="menu">Delete Calendar</span> removes it from the list again after a confirmation.
+		Nothing is deleted in the other user’s mailbox by this.</li>
+	<li>A proxy calendar added in Evolution is stored <b>in Evolution only</b>: GroupWise does not allow its
+		own proxy calendars to be created from outside. It therefore does not appear in the GroupWise client
+		or on other computers. Conversely, Evolution shows proxy calendars added in the GroupWise client by
+		itself; they can only be renamed and removed there.</li>
+	<li>So there are two levels of proxy access: the <b>proxy account</b> for the whole mailbox with mail,
+		calendars and settings (<a href="#mail-proxy">4.8</a>) and the <b>proxy calendar</b> for the
+		appointments alone.</li>
+</ul>
+
+<h2 id="kal-termine">5.2&nbsp;&nbsp;Appointments and Series</h2>
+<ul>
+	<li>Appointments with location, description, status (busy, tentative, free, out of office) and reminder
+		are transferred in both directions. Times are in your time zone.</li>
+	<li><b>Start and end in the appointment editor</b>: if you change the start of a GroupWise appointment,
+		the end moves along – the appointment keeps its length, as in the GroupWise client. If you change
+		the end, the start stays put. (Evolution itself leaves the end in place and so changes the
+		length.)</li>
+	<li>Editing an appointment does not change which calendar it is in – no matter which calendar is
+		currently selected in the list on the left. It is only moved if you change the
+		<b>Calendar</b> field in the editor.</li>
+	<li><b>All-day appointments</b> span whole days, as in GroupWise.</li>
+	<li><b>Reminders</b>: GroupWise has one reminder per appointment, before the start. Evolution shows it
+		for the main calendar and your subcalendars.</li>
+	<li><b>Series</b>: GroupWise creates every appointment of a series individually; the appointments carry
+		the recurrence rule, though, and are recognizably linked. Evolution shows such a series as
+		<b>one recurring appointment</b> with its rule (in the appointment editor under
+		<span class="menu">Recurrence</span>). An appointment of the series that was deleted in GroupWise
+		appears as an exception; one that was moved or changed individually, as a deviating single
+		appointment of the series. What always matters is which appointments actually exist in GroupWise:
+		the series in Evolution ends with its last existing appointment. Evolution marks the appointments of
+		a series with the recurrence icon (two arrows) and deviating single appointments with a pin; if you
+		named every appointment of a series individually in GroupWise, all but one will therefore carry the
+		pin.<br>
+		<b>Changing and deleting</b>: for an appointment of a series, Evolution asks, like the GroupWise
+		client, what is meant – <b>This Instance</b>, <b>This and Future Instances</b> or
+		<b>All Instances</b> (in the GroupWise client: this message, from this message forward, all
+		messages).
+		<ul>
+			<li><i>This Instance</i> changes or deletes the one appointment in GroupWise; it becomes a
+				deviating single appointment or an exception of the series.</li>
+			<li><i>All Instances</i> changes every appointment of the series still ahead of it; individually
+				changed appointments keep their deviation. Even the time of the whole series can be moved
+				this way. <span class="menu">Delete</span> with “all” deletes the whole series.</li>
+			<li><i>This and Future Instances</i> deletion ends the series at this point: the earlier
+				appointments – which did take place – are kept. On change, Evolution splits the series: the
+				following appointments are deleted and created anew as a new series.</li>
+		</ul>
+		Evolution asks when saving a change; for deletion, an appointment of a series has, in its context
+		menu, <span class="menu">Delete This Occurrence…</span>,
+		<span class="menu">Delete This and Future Occurrences…</span> and
+		<span class="menu">Delete All Occurrences…</span>. The warning about an overlap with busy time
+		(<a href="#kal-reisezeit">5.7</a>) checks every one of the next appointments of a series
+		individually. If you change the time of an appointment in the series, the question about scope
+		therefore comes first, and what you chose is checked: only this appointment, it and the following
+		ones, or all future appointments of the series.<br>
+		Every change is written to GroupWise appointment by appointment; for long series, this takes a
+		moment. Meanwhile, Evolution shows the <b>Saving the Series</b> window. <b>It is not possible</b> to
+		add appointments to a series or change its rule to other days (GroupWise creates the appointments of
+		a series when it is made) – delete the appointments no longer wanted and create a new series
+		instead; Evolution reports this. Copying or moving a series into another calendar creates it there
+		as a new series.<br>
+		Old series that GroupWise keeps without a rule (created with very old versions) still appear as
+		single appointments. You create a new series (daily, weekly, monthly, yearly) in Evolution as usual,
+		with a recurrence; exceptions you enter there on the <span class="menu">Recurrence</span> page (say,
+		the weekend of a daily series) are carried over – no appointment is created for those days.</li>
+	<li>A new appointment in a subcalendar is created directly in that subcalendar; for series, every single
+		appointment.</li>
+	<li>An appointment you started in GroupWise but have not yet saved or sent (it lies there in Work In
+		Progress) does not appear in the calendar.</li>
+</ul>
+
+<h2 id="kal-besprechungen">5.3&nbsp;&nbsp;Meetings and Invitations</h2>
+<p>GroupWise itself sends and answers meetings. Evolution does not send invitation e-mails of its own for
+these calendars.</p>
+<ul>
+	<li><b>Inviting</b>: create an appointment with attendees and send it. The attendees get a GroupWise
+		invitation; their replies appear on the appointment. As in the GroupWise client, you yourself – more
+		precisely, the owner of the chosen calendar – already stand in the attendee list of a new meeting,
+		with the status “Accepted”. Choose another GroupWise calendar at the top, and Evolution swaps the
+		entry. Leave the entry in place: your own copy of the meeting carries your reminder, your categories
+		and your travel time (<a href="#kal-reisezeit">5.7</a>). Without it, the meeting has no travel time –
+		and, as in the GroupWise client, it then does not appear in your calendar either, only in Sent Items.
+		An acceptance rule for your own appointments (e.g. “accept own appointment”) applies as in the
+		GroupWise client.</li>
+	<li><b>Changing</b>: a changed meeting is sent to the attendees again. Your personal details – reminder
+		and a subject changed only for yourself – affect only your own copy and do not trigger a new
+		send.</li>
+	<li><b>New from anywhere</b>: <span class="menu">New → Meeting</span> (likewise Appointment, Task, Memo)
+		creates the entry in the calendar or list selected in the calendar, task or memo view – even if you
+		are currently looking at a different view (say, Mail) and cannot see that selection. If that would
+		be another user’s mailbox (a proxy account, a proxy or shared calendar), Evolution instead uses,
+		with GroupWise, the calendar or list of your main account: you, not whichever user’s calendar
+		happened to be selected last, then become the organizer of a new meeting. In the editor, you can
+		change the calendar and the organizer as usual. If you create the entry in its own view (a meeting
+		in the calendar view), the calendar selected there still applies as before – this is how you
+		schedule a meeting for another user.<br>
+		If no calendar has ever been selected, Evolution uses its default calendar. The first time you start
+		with a GroupWise account, that will be the calendar of your main account (and correspondingly the
+		task and memo list), as long as “On This Computer” is still the default; set a different default in
+		the properties of a calendar with <span class="menu">Mark as Default Calendar</span>.</li>
+	<li><b>Choosing attendees and recipients</b>: while typing a name, Evolution searches the address books
+		you have checked under <span class="menu">Edit → Preferences → Contacts → Autocompletion</span>.
+		The same choice applies with GroupWise in the <span class="menu">Select Contacts from Address
+		Book</span> dialog, opened by the <span class="menu">Attendees…</span> button of a meeting, assigned
+		task or memo, and by the <span class="menu">To:</span>, <span class="menu">Copy To:</span> and
+		<span class="menu">Blind Copy To:</span> buttons of a message: the <span class="menu">Address
+		Book</span> field shows <span class="menu">Automatic</span> when opened, and the list and search go
+		over every checked address book at once. Choose a single address book there if you only want to
+		search in it. (Show the field for blind copies in the message window with
+		<span class="menu">View → Bcc Field</span>.)</li>
+	<li><b>Deleting and retracting</b>: if you delete a meeting you scheduled yourself, Evolution asks, as
+		the GroupWise client does. In the <span class="menu">Deletion Reason</span> field, you can enter a
+		comment for the retraction. <span class="menu">Delete and Notify</span> also retracts the meeting
+		from the mailboxes of the attendees in the GroupWise system; whoever had already opened or accepted
+		it gets a notice from GroupWise with your comment. <span class="menu">Delete Only for Me</span> (on
+		other accounts, the button reads “Delete Without Sending Notice”) removes it only from your
+		calendar, like “my mailbox only” in the GroupWise client: you no longer take part, and the meeting
+		stays with the attendees. It remains in the <span class="menu">Sent Items</span> folder; there you
+		see the delivery status with the replies and can still retract it later. For meetings already in
+		the past, Evolution does not offer the notice.</li>
+	<li><b>Replying</b>: answer invitations in the message view (Accept, Tentative, Decline) or in the
+		calendar via the appointment’s context menu (<span class="menu">Send RSVP</span>). The reply goes
+		through GroupWise to the organizer. Unanswered invitations appear bold in the calendar, tentatively
+		accepted ones in italics, declined ones struck through.</li>
+	<li><b>Attendees in the tooltip</b>: hover over a meeting, and the tooltip lists the attendees with their
+		reply under “Comments” (accepted, declined, tentative, no reply yet). With more than eight
+		attendees, only the users you work as a proxy for are listed there; “… (+5)” at the end says how
+		many further attendees there are.</li>
+	<li><b>Resources</b>: invite rooms and other GroupWise resources like attendees, also via the
+		“Resources” section of the dialog behind the <span class="menu">Attendees…</span> button; GroupWise
+		receives them, as from the GroupWise client, as attendees (not as a blind copy), with their name.
+		Invite a resource of the kind Place (a room), and if the meeting has no location yet, Evolution,
+		like the GroupWise client, enters the resource’s name as the location – already when the attendees
+		dialog is closed. Other resources (e.g. a projector) do not change the location.</li>
+	<li><b>Free/busy</b>: Evolution asks GroupWise for the availability of internal attendees (the
+		“Scheduling” tab in the appointment editor).</li>
+	<li><b>Overlaps</b>: when you save a new appointment, or one with a changed time, Evolution checks, as
+		the GroupWise client does, whether it – including its preparation and travel time – overlaps busy
+		time in your calendars (main calendar and subcalendars), including the travel time of other
+		appointments. It then asks, with a list of the affected appointments;
+		<span class="menu">Save Anyway</span> saves it, <span class="menu">Cancel</span> returns to the
+		editor. Appointments marked “Free”, declined ones, and all-day appointments do not count.</li>
+</ul>
+
+<h2 id="kal-verschieben">5.4&nbsp;&nbsp;Moving Appointments Between Calendars</h2>
+<p>Move an appointment between the main calendar and your subcalendars in two ways:</p>
+<ul>
+	<li>in the appointment’s context menu with <span class="menu">Move to Calendar…</span>, or</li>
+	<li>in the appointment editor, by choosing a different calendar at the top and saving.</li>
+</ul>
+<p>The appointment stays the same GroupWise appointment; it is moved on the server, not created anew. A
+meeting is neither retracted nor resent by this. Copying (<span class="menu">Copy to Calendar…</span>)
+instead creates a new, independent appointment.</p>
+<div class="note"><b>Note:</b> Dragging an appointment onto a calendar in the sidebar does not work
+reliably in Evolution – independent of GroupWise, even for local calendars. Use the context menu or the
+editor.</div>
+
+<h2 id="kal-kategorien">5.5&nbsp;&nbsp;Categories</h2>
+<p>The GroupWise categories of an appointment appear in Evolution as categories of the appointment, with
+the same names as the labels for mail (so the predefined ones as Important, Personal, To Do, Later). In
+the appointment editor, show the categories field with <span class="menu">View → Categories</span>. A
+category GroupWise does not yet know is created there. For meetings, categories belong to your own copy;
+they do not trigger a new send.</p>
+<p>Unlike in the GroupWise client, categories do not color appointments in Evolution – the color always
+comes from the calendar.</p>
+
+<h2 id="kal-eigenschaften">5.6&nbsp;&nbsp;Color and Properties</h2>
+<p>Via <span class="menu">Properties</span> in a calendar’s context menu, you change color and name, as
+well as the sync interval. The color from GroupWise is only taken over when first created; your changes in
+Evolution are kept. The order of the calendars (main calendar, subcalendars, proxy calendars, shared
+calendars) is decided by the module the first time they are created.</p>
+
+<h3 id="kal-anlegen">Creating, Renaming and Deleting Calendars</h3>
+<ul>
+	<li><b>Creating</b>: <span class="menu">File → New → Calendar</span> or <span class="menu">New
+		Calendar</span> in the calendar list’s context menu. In the <b>New Calendar</b> dialog, choose your
+		GroupWise account under <b>Type</b>, give a name and color, and confirm: the calendar is created in
+		GroupWise as a personal calendar under the main calendar, in that color, and appears in the calendar
+		list.</li>
+	<li><b>Renaming</b>: <span class="menu">Rename…</span> in the context menu (the name is edited right in
+		the list) or the <b>Name</b> field in <span class="menu">Properties</span> renames the calendar in
+		GroupWise too. The menu entry comes from the GroupWise module: Evolution itself does not offer
+		renaming for an account’s calendars. For a calendar another user has shared with you, this only
+		changes your own name for it; the owner’s name in parentheses stays.</li>
+	<li><b>Deleting</b>: <span class="menu">Delete Calendar</span> in the context menu deletes the calendar
+		in GroupWise, after a confirmation, <b>with all its appointments</b>. A calendar shared with you
+		only disappears from your mailbox this way; it remains with the owner.</li>
+</ul>
+<p>This applies to your own subcalendars and to calendars others have shared with you. The main calendar,
+the task and memo list, and proxy calendars added in the GroupWise client can neither be renamed nor
+deleted (a name you give there is reset at the next sync); for proxy calendars added in Evolution see
+<a href="#kal-proxy">5.1</a>; in proxy accounts, you still create calendars in the GroupWise client.
+GroupWise does not support further task or memo lists. The account must be connected.</p>
+
+<h2 id="kal-reisezeit">5.7&nbsp;&nbsp;Preparation and Travel Time</h2>
+<p>As in the GroupWise client, an appointment can have preparation or travel time before and after it.
+GroupWise occupies these times with appointments of its own, “Before: <i>Subject</i>” and “After:
+<i>Subject</i>”, and Evolution shows them the same way – as busy time right before and after the
+appointment.</p>
+<p><b>Setting it:</b> the appointment editor of a GroupWise calendar has the <span class="menu">Travel
+Time</span> tab with the red car – the icon the GroupWise client also uses for travel time. There you
+enter hours and minutes, separately for <span class="menu">Before the appointment</span> and
+<span class="menu">After the appointment</span>; the minutes step by 5 with the arrows. If
+<span class="menu">Travel times before/after the appointment are the same</span> is checked, the time
+after takes over the time before. On save, GroupWise creates the “Before:” and “After:” appointments or
+adjusts them. Set a time to 0, and the matching appointment disappears again – as in the GroupWise client.
+For a new meeting, Evolution sets the travel time on your own copy as soon as it is available at the next
+sync – right after sending; the “Before:” and “After:” appointments therefore appear a moment later.</p>
+<ul>
+	<li>The travel time belongs <b>only to you</b>: if you invite to a meeting, the attendees do not get it.
+		Conversely, you can enter your own travel time even on a received invitation.</li>
+	<li>If you move, change or delete the <b>appointment itself</b>, GroupWise carries the preparation and
+		travel time along: it moves with it, is named after the appointment and disappears with it. This
+		also applies to <span class="menu">Move to Calendar…</span>; the previous calendar gives up the
+		“Before:” and “After:” appointments along with it.</li>
+	<li>If you move one of the “Before:” or “After:” appointments, Evolution instead moves the whole
+		appointment by the same amount. Drag it longer or shorter, and that becomes the new preparation or
+		travel time.</li>
+	<li>The “Before:” and “After:” appointments cannot be deleted individually – Evolution reports this. Remove
+		the travel time on the <span class="menu">Travel Time</span> tab of the appointment itself. The
+		“Before:” and “After:” appointments do not have this tab.</li>
+</ul>
+
+<!-- ============================================================ -->
+<h2 id="kal-freigabe">5.8&nbsp;&nbsp;Sharing a Calendar</h2>
+<p>A subcalendar you created yourself can be shared with other GroupWise users, like a mail folder
+(<a href="#mail-freigabe">4.9</a>). The main calendar <b>Calendar</b> itself cannot be shared – proxy
+access exists for that.</p>
+<p>Choose <span class="menu">Sharing…</span> in the calendar’s context menu. The dialog
+<b>Sharing of “…”</b> opens, with the same elements as the <span class="menu">Sharing</span> tab of a mail
+folder: <b>Not shared / Shared with</b>, the name field with the address book button, the share list with
+status and access, the additional rights <b>Add</b>, <b>Edit</b> and <b>Delete</b>, as well as the
+<span class="menu">Apply Sharing</span> button. New users get the <b>Shared Calendar Notification</b>,
+whose subject and message you can adjust before sending. The entry appears for your own subcalendars and
+for calendars others have shared with you (there, the dialog only shows the owner and your rights), also
+in proxy accounts.</p>
+<h3>Accepting a Calendar Share</h3>
+<p>The message <b>Shared Calendar Notification: …</b> arrives in the Mailbox. Double-clicking it (or
+<span class="menu">Message → Install Shared Folder…</span>) opens the dialog <b>Install Shared
+Calendar</b> with the sender, their message, your rights, as well as name and description under which the
+calendar should appear for you, and the <b>Color</b> it gets in Evolution and in the GroupWise client
+(changeable later in Evolution via the calendar’s properties). There is no position to choose here: the
+calendar joins your other calendars. After <span class="menu">Install</span>, it appears in the calendar
+view after a few seconds, with the owner’s name in parentheses.</p>
+<h3>Working in a Shared Calendar</h3>
+<table>
+	<tr><th style="width:35%">Right</th><th>What you can do with it</th></tr>
+	<tr><td>Read (always)</td><td>See the appointments.</td></tr>
+	<tr><td>Add</td><td>Enter new appointments, also by copying or moving from another calendar.</td></tr>
+	<tr><td>Edit</td><td>Change existing appointments.</td></tr>
+	<tr><td>Delete</td><td>Delete appointments.</td></tr>
+</table>
+<p>If a right is missing, Evolution refuses the change with a message naming the missing right. If you
+only have the read right, the calendar is read-only. If the owner changes your rights, this applies in
+Evolution after the calendar next connects (at the latest after a restart).</p>
+<p>Only <b>appointments without attendees</b> belong in a shared calendar; create a meeting in your own
+calendar. Categories, reminders, and preparation and travel time are personal and are not stored for
+appointments of other calendars.</p>
+<div class="note"><b>Sharing or proxy?</b> Both show you appointments of another user, but in different
+ways. A <b>share</b> concerns exactly one subcalendar the owner created for it; you see only what lies in
+this calendar, and you accept the share once. <b>Proxy access</b> opens the other user’s mailbox with the
+rights they have given you: you see their whole calendar, including meetings and invitations (private
+entries only with your own right), and, set up as a proxy account, can create and answer appointments in
+their name. For a shared team or vacation calendar, sharing is the right choice; for standing in for a
+person, proxy access.</div>
+
+<h1 id="aufgaben">6&nbsp;&nbsp;Tasks and Memos</h1>
+<p>Tasks and memos of the GroupWise calendar appear in Evolution in the account’s task list
+<b>Tasks</b> and memo list <b>Memos</b>.</p>
+<ul>
+	<li><b>Tasks</b>: subject, description, due date, priority and completion status are transferred both
+		ways. GroupWise only knows days for tasks, no times, and no reminders. In GroupWise, tasks are
+		called “Jobs”.</li>
+	<li><b>Overdue tasks</b>: GroupWise pushes the start of an overdue, still open task forward to the
+		current day, every day, so it appears “today” in the GroupWise client; Evolution shows it the same
+		way. For a completed task, Evolution shows as its start the day it was originally created –
+		otherwise its start would often lie past its due date.</li>
+	<li><b>Hiding completed tasks</b>: Evolution keeps showing completed tasks, struck through, even very
+		old ones. Under <span class="menu">Edit → Preferences → Calendar and Tasks → Display</span>,
+		section “Task List”, <span class="menu">Hide completed tasks after … days</span> hides them (for
+		example after 0 days: at once). They remain in GroupWise and can be reopened there.</li>
+	<li><b>Memos</b> (GroupWise reminder notes) are transferred with their date and text. Memos in
+		subcalendars also appear in the account’s memo list.</li>
+</ul>
+
+<!-- ============================================================ -->
+<h1 id="adressbuecher">7&nbsp;&nbsp;Address Books</h1>
+<p>The contacts view lists, under the account’s name:</p>
+<ul>
+	<li><b>GroupWise Address Book</b> – the system address book of your GroupWise system, read-only.</li>
+	<li><b>Frequent Contacts</b> and your <b>personal address books</b> – read and write: creating, changing
+		and deleting contacts is sent to GroupWise.</li>
+	<li><b>Shared address books</b> – address books other users have shared with you, with the owner’s name
+		in parentheses; read-only or writable, depending on the share.</li>
+</ul>
+<p>The address books are kept locally so that <b>autocompletion</b> while writing is fast and works
+offline. It is turned on for the GroupWise address books; you can change this in an address book’s
+properties.</p>
+
+<h2 id="adr-anlegen">Creating, Renaming and Deleting Address Books</h2>
+<p>As with calendars (<a href="#kal-anlegen">5.6</a>): <span class="menu">File → New → Address Book</span>
+or <span class="menu">New Address Book</span> in the context menu creates a personal address book in
+GroupWise with the <b>Type</b> of your GroupWise account; <span class="menu">Rename…</span> renames it
+there, and <span class="menu">Delete Address Book</span> deletes it, after a confirmation,
+<b>with all its contacts</b>. An address book another user has shared with you can likewise be renamed
+(only for yourself) and deleted (it then only leaves your mailbox). The GroupWise address book and
+“Frequent Contacts” can neither be renamed nor deleted.</p>
+
+<h2 id="adr-freigabe">Sharing Address Books</h2>
+<p>Share a personal address book via <span class="menu">Sharing…</span> in its context menu. The dialog
+<b>Sharing of “…”</b> corresponds to that of calendars (<a href="#kal-freigabe">5.8</a>) and the tab of
+mail folders (<a href="#mail-freigabe">4.9</a>), with two particularities of the server:</p>
+<ul>
+	<li>An address book only knows <b>Read</b> or <b>Read and Edit</b>; “Edit” includes creating, changing
+		and deleting contacts.</li>
+	<li>The right is fixed when a user is added and <b>cannot be changed afterwards</b>. To change it,
+		remove the user, choose <span class="menu">Apply Sharing</span>, and add them anew; they then get a
+		new notification and must accept it again.</li>
+</ul>
+<p>New users get the <b>Shared Address Book Notification</b>. If you withdraw the share, the address book
+disappears for the recipient; the server sends them the original notification once more as an ordinary
+message (same subject, sender in the form “user.postoffice.domain”) – it no longer offers anything and can
+be deleted. The GroupWise address book and “Frequent Contacts” cannot be shared.</p>
+<h3>Accepting an Address Book Share</h3>
+<p>Double-clicking the message <b>Shared Address Book Notification: …</b> in the Mailbox (or
+<span class="menu">Message → Install Shared Folder…</span>) opens the dialog <b>Install Shared Address
+Book</b> with the sender, their message, your rights, as well as name and description. Preset is the
+address book’s name with the owner in parentheses. After <span class="menu">Install</span>, the address
+book appears in the contacts view after a few seconds. An address book shared as read-only is read-only in
+Evolution.</p>
+
+<!-- ============================================================ -->
+<h1 id="grenzen">8&nbsp;&nbsp;Limits and Notes</h1>
+<table>
+	<tr><th style="width:35%">Topic</th><th>State</th></tr>
+	<tr><td>Other users’ calendars</td><td>Proxy calendars under your own account, the calendars of a proxy
+		account, and shared calendars are writable according to the rights granted. Proxy calendars added
+		in Evolution are known to Evolution only. Only appointments without attendees belong in a shared
+		calendar.</td></tr>
+	<tr><td>Sharing</td><td>Mail folders (4.9), calendars (5.8) and address books (chapter 7) can be shared,
+		and shares from others accepted. For address books, the server only knows Read or Read and Edit,
+		and a user’s right cannot be changed afterwards. If you transfer ownership of a mail folder (4.9),
+		unlike in the GroupWise client you do not stay a participant.</td></tr>
+	<tr><td>Replying with a different sender</td><td>If you reply with a mailbox for which you are a proxy,
+		as sender (4.8), GroupWise does not link the reply to the original (4.2).</td></tr>
+	<tr><td>Proxy accounts</td><td>New messages are determined, at every sync, from the whole folder list,
+		because the POA does not answer a change query in proxy sessions. With the account option “Ask the
+		server every … seconds for changes in the mailbox”, they still appear at once.</td></tr>
+	<tr><td>Cloned computers</td><td>Two computers with the same machine ID interfere with each other when
+		polling for changes on the same mailbox (see Account Options in chapter 3).</td></tr>
+	<tr><td>Signed or encrypted messages</td><td>cannot be sent through GroupWise; received ones are
+		shown.</td></tr>
+	<tr><td>Search result folders</td><td>show only part of the hits over SOAP (see 4.6).</td></tr>
+	<tr><td>Recurring appointments</td><td>appear as a series with their rule and can be changed and deleted
+		for one, all, or the following appointments (5.2). Adding appointments and changing the rule to
+		other days is not possible. Very old series without a rule appear as single appointments.</td></tr>
+	<tr><td>Subscribed Internet calendars</td><td>are left out.</td></tr>
+	<tr><td>Dragging onto the calendar list</td><td>not reliable in Evolution; use the context menu or the
+		editor.</td></tr>
+	<tr><td>Restoring from the Trash</td><td>only from Evolution 3.56 on.</td></tr>
+</table>
+
+<!-- ============================================================ -->
+<h1 id="fehlersuche">9&nbsp;&nbsp;Troubleshooting</h1>
+
+<h2>Connecting and Logging In</h2>
+<ul>
+	<li><b>Certificate error</b>: confirm Evolution’s prompt with <span class="menu">Accept
+		Permanently</span> (chapter 3, “Certificate of the POA”). If Evolution still reports the connection
+		as insecure, the name in the certificate does not match the account’s server address; this must be
+		fixed by the GroupWise administration. After installing a CA, restart Evolution and the background
+		services (<code>evolution --force-shutdown</code>).</li>
+	<li><b>Wrong password</b>: Evolution asks again. You can change a password stored in the keyring in the
+		account settings.</li>
+	<li><b>Server on a different post office</b>: the POA forwards the login to the right POA by
+		itself.</li>
+</ul>
+
+<h2>Diagnostic Output</h2>
+<p>Start Evolution from a terminal with diagnostic output to see more closely what is happening:</p>
+<pre>G_MESSAGES_DEBUG=evolution-groupwise evolution 2&gt;&amp;1 | tee /tmp/evolution.log</pre>
+<p>The calendar and address book services run in the background; their output goes to the system
+journal:</p>
+<pre>systemctl --user set-environment G_MESSAGES_DEBUG=evolution-groupwise
+evolution --force-shutdown
+journalctl --user -f | grep evolution-calen</pre>
+<div class="note"><b>Privacy:</b> The diagnostic output can contain subject lines, addresses and
+identifiers. Check it before passing it on.</div>
+
+<h2>The gw-cli Tool</h2>
+<p>The command-line tool <code>gw-cli</code> (in the package under
+<span class="path">/usr/lib64/evolution-groupwise/</span> or <span class="path">/usr/lib/…</span>) talks
+directly to the POA and helps with troubleshooting:</p>
+<pre>export GW_HOST=mail.company.com GW_USER=user     # password is asked for
+gw-cli login          # login and user data
+gw-cli folders        # folder list, with the role of the calendars
+gw-cli items FOLDER-ID 20</pre>
+<!-- ============================================================ -->
+<h1 id="vergleich">10&nbsp;&nbsp;Comparison with the GroupWise Client</h1>
+<p>This overview sets the functions of the GroupWise Client for Windows against those of Evolution with
+evolution-groupwise. It follows the structure of the <i>GroupWise Client User Guide</i> (GroupWise 26,
+April 2026) and reflects the state of <b>version 0.11.2</b>; it is kept up to date with every version.</p>
+
+<h2>Present</h2>
+<table>
+	<tr><th style="width:42%">Area in the GroupWise Client</th><th>In Evolution</th></tr>
+	<tr><td>Folder list and system folders; creating, renaming, moving, deleting folders</td>
+		<td>yes, in the client’s order (<a href="#mail-ordner">4.1</a>)</td></tr>
+	<tr><td>Reading, writing, replying to, forwarding mail; attachments, drafts</td>
+		<td>yes; recipients get a genuine GroupWise message, replies are linked to the original
+		(<a href="#mail-senden">4.2</a>)</td></tr>
+	<tr><td>Sending and receiving phone messages</td>
+		<td>yes (<a href="#mail-telefon">4.2</a>)</td></tr>
+	<tr><td>Sent items: delivery status, retracting, resending</td>
+		<td>yes (<a href="#mail-senden">4.2</a>)</td></tr>
+	<tr><td>Signatures</td><td>yes, synced with GroupWise</td></tr>
+	<tr><td>Categories; follow-up flag and Tasklist</td>
+		<td>yes, as labels and categories respectively (<a href="#mail-beschriftungen">4.4</a>)</td></tr>
+	<tr><td>Junk mail: lists, blocking, trusting, settings</td><td>yes (<a href="#mail-junk">4.5</a>)</td></tr>
+	<tr><td>Trash: restoring, emptying</td><td>yes (<a href="#mail-papierkorb">4.3</a>)</td></tr>
+	<tr><td>Search result folders</td>
+		<td>shown, with part of the hits; created in the client (<a href="#mail-suche">4.6</a>)</td></tr>
+	<tr><td>Recurring appointments: shown as a series; this message, all messages, from this one forward
+		changing and deleting</td>
+		<td>yes, for series with a rule (<a href="#kal-termine">5.2</a>); Evolution additionally marks
+		recurring appointments with an icon</td></tr>
+	<tr><td>Appointments and meetings: scheduling, accepting, declining, changing, canceling; Internet
+		invitations</td>
+		<td>yes (<a href="#kal-besprechungen">5.3</a>)</td></tr>
+	<tr><td>Free/busy search, alarms, time zones, resources, preparation and travel time</td>
+		<td>yes (<a href="#kal-reisezeit">5.7</a>)</td></tr>
+	<tr><td>Personal calendars (subcalendars), colors, moving appointments between calendars</td>
+		<td>yes, also creating, renaming and deleting (<a href="#kal-liste">5.1</a>, <a href="#kal-anlegen">5.6</a>)</td></tr>
+	<tr><td>Tasks (including assigned ones) and reminder notes</td><td>yes (<a href="#aufgaben">chapter 6</a>)</td></tr>
+	<tr><td>GroupWise address book, frequent contacts, personal address books; name completion and address
+		selection</td>
+		<td>yes, also creating, renaming and deleting (<a href="#adressbuecher">chapter 7</a>)</td></tr>
+	<tr><td>Rules including out of office; running rules manually</td>
+		<td>yes; nested rules in particular are shown only (<a href="#regeln">chapter 3</a>)</td></tr>
+	<tr><td>Checking mailbox size; changing the password</td>
+		<td>yes, “Mailbox and Password” tab (<a href="#postfach">chapter 3</a>); deleting or archiving by
+		size does not exist there</td></tr>
+	<tr><td>Proxy: granting rights, working as a proxy in another mailbox</td>
+		<td>yes, as proxy accounts (<a href="#mail-proxy">4.8</a>)</td></tr>
+	<tr><td>Shared folders, calendars and address books: sharing and accepting</td>
+		<td>yes (<a href="#mail-freigabe">4.9</a>, <a href="#kal-freigabe">5.8</a>, <a href="#adr-freigabe">chapter 7</a>)</td></tr>
+	<tr><td>Caching mode</td><td>corresponds to Evolution’s offline operation (<a href="#mail-offline">4.7</a>)</td></tr>
+	<tr><td>Notify: notification of new messages</td>
+		<td>Evolution itself; on request, the server reports changes at once (chapter 3, Account Options)</td></tr>
+	<tr><td>Printing, POP3 and IMAP accounts, RSS, LDAP address book, subscribing to Internet calendars</td>
+		<td>Evolution’s own functions, independent of GroupWise</td></tr>
+	<tr><td>Saving a message as a file</td>
+		<td>Evolution: <span class="menu">File → Save as mbox…</span>
+		<!-- VERIFY: exact Evolution core menu wording for "save selected message(s) as an mbox file" was not confirmed, only its tooltip string --> (mbox format), or drag the message into a file manager folder</td></tr>
+</table>
+
+<h2>Not Present, or Only to a Limited Extent</h2>
+<table>
+	<tr><th style="width:42%">Function of the GroupWise Client</th><th>State</th></tr>
+	<tr><td>Custom recurrence by individual dates</td>
+		<td>missing; Evolution creates series by a rule (daily, weekly, monthly, yearly), with
+		exceptions.</td></tr>
+	<tr><td>Changing a series’ rule, adding appointments to a series</td>
+		<td>not possible; delete the appointments no longer wanted and create a new series
+		(<a href="#kal-termine">5.2</a>).</td></tr>
+	<tr><td>Delegating invitations, proposing a new time</td>
+		<td>missing; a delegated invitation is shown as a status.</td></tr>
+	<tr><td>Send options for mail</td>
+		<td>Priority is transferred, and “Request Read Receipt” requests the notification on opening as
+		mail (<a href="#mail-lesebestaetigung">4.2</a>). Notification on deletion, delayed delivery,
+		expiration date, “reply requested”, classification and a hidden subject are missing; the status of
+		a sent message is shown by <span class="menu">Delivery Status…</span>.</td></tr>
+	<tr><td>Searching the whole mailbox on the server (full text)</td>
+		<td>Evolution searches what it knows locally: the message lists and messages already loaded.</td></tr>
+	<tr><td>Adding and writing to proxy calendars</td>
+		<td>yes (<a href="#kal-proxy">5.1</a>), writable according to the rights granted. A proxy calendar
+		added in Evolution stays in Evolution and does not appear in the GroupWise client.</td></tr>
+	<tr><td>Archive</td>
+		<td>GroupWise’s archive has its own, undisclosed format and can only be read with the GroupWise
+		client.</td></tr>
+	<tr><td>Scheduling meetings with Teams, Zoom or WebEx</td><td>missing.</td></tr>
+	<tr><td>S/MIME: sending signed or encrypted</td><td>missing; received messages are shown.</td></tr>
+	<tr><td>Choosing the sender (“From”): mailboxes you are a proxy for (users and resources)</td>
+		<td>present: in the “From” field of your own account, see section 4.8.</td></tr>
+	<tr><td>Alternative (secondary) sender addresses of a mailbox</td><td>missing.</td></tr>
+	<tr><td>Marking messages private; categories on contacts</td><td>missing.</td></tr>
+	<tr><td>Transferring ownership of a shared folder</td><td>yes, for mail folders
+		(<a href="#mail-eigentum">4.9</a>); the previous owner does not stay a participant.</td></tr>
+	<tr><td>Posting into a shared folder (Posted Item)</td><td>missing.</td></tr>
+	<tr><td>Receiving another user’s alarms and notifications</td>
+		<td>The right can be granted; Evolution does not use it.</td></tr>
+	<tr><td>Multi-user calendar</td>
+		<td>no dedicated column view; several calendars can instead be overlaid.</td></tr>
+	<tr><td>Internet calendars subscribed to in GroupWise</td>
+		<td>left out; Evolution can subscribe to such calendars itself.</td></tr>
+	<tr><td>Subtasks in the Tasklist</td><td>missing.</td></tr>
+</table>
+
+<h2>Not Planned</h2>
+<p>Functions tightly bound to the Windows client, or rarely used: routing slips, polls, mentions, quick
+reply, sticky notes, mail merge, document management and Filr attachments, the home page with panels,
+remote mode, newsgroups, SMS, Messenger, and repairing and backing up the mailbox.</p>
+</body>
+</html>
