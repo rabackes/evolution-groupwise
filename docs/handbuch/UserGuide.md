@@ -13,7 +13,7 @@ User Guide
 
 GroupWise mailboxes in Evolution: mail, address books, calendars, tasks and memos over the SOAP interface of the GroupWise Post Office Agent.
 
-Version 0.11.2 · November 2026 bond Software Entwicklung GmbH License: GNU Lesser General Public License 2.1 or later
+Version 0.11.3 · November 2026 bond Software Entwicklung GmbH License: GNU Lesser General Public License 2.1 or later
 
 # 1 Overview
 
@@ -72,14 +72,14 @@ This manual uses Evolution’s names; where it helps clarity, the GroupWise name
 RPM packages are available for openSUSE and Fedora, a .deb package for Debian and Ubuntu. Install the package with your system’s package manager, for example on openSUSE:
 
 ```
-sudo zypper install ./evolution-groupwise-0.11.2-0.x86_64.rpm \
-                    ./evolution-groupwise-lang-0.11.2-0.noarch.rpm
+sudo zypper install ./evolution-groupwise-0.11.3-0.x86_64.rpm \
+                    ./evolution-groupwise-lang-0.11.3-0.noarch.rpm
 ```
 
 or on Debian/Ubuntu:
 
 ```
-sudo apt install ./evolution-groupwise_0.11.2_amd64.deb
+sudo apt install ./evolution-groupwise_0.11.3_amd64.deb
 ```
 
 The package `evolution-groupwise-lang` contains the German translation (for now; more languages may follow). Afterwards, restart Evolution and the background services, most easily by logging out and back in, or with:
@@ -773,7 +773,7 @@ gw-cli items FOLDER-ID 20
 
 # 10 Comparison with the GroupWise Client
 
-This overview sets the functions of the GroupWise Client for Windows against those of Evolution with evolution-groupwise. It follows the structure of the *GroupWise Client User Guide* (GroupWise 26, April 2026) and reflects the state of **version 0.11.2**; it is kept up to date with every version.
+This overview sets the functions of the GroupWise Client for Windows against those of Evolution with evolution-groupwise. It follows the structure of the *GroupWise Client User Guide* (GroupWise 26, April 2026) and reflects the state of **version 0.11.3**; it is kept up to date with every version.
 
 ## Present
 

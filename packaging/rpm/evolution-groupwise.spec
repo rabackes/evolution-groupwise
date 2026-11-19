@@ -10,7 +10,7 @@
 #
 
 Name:           evolution-groupwise
-Version:        0.11.2
+Version:        0.11.3
 Release:        0
 Summary:        GroupWise mailboxes in Evolution
 License:        LGPL-2.1-or-later
@@ -100,6 +100,10 @@ line tool.
 %endif
 
 %changelog
+* Thu Nov 19 2026 Rainer Backes <rbackes@bond.de> - 0.11.3-0
+- Reply to All no longer drops recipients who are in your GroupWise proxy
+  list, even without a local proxy account configured for them (issue #3).
+
 * Wed Nov 11 2026 Rainer Backes <rbackes@bond.de> - 0.11.2-0
 - Development: podman containers (containers/<distro>/build.sh and
   lint.sh) build and lint the package on Fedora, openSUSE Tumbleweed,

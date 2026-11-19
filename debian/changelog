@@ -1,3 +1,11 @@
+evolution-groupwise (0.11.3) trixie; urgency=medium
+
+  * Reply to All no longer drops recipients who are in your GroupWise
+    proxy list, even without a local proxy account configured for them
+    (issue #3).
+
+ -- Rainer Backes <rbackes@bond.de>  Thu, 19 Nov 2026 18:00:00 +0100
+
 evolution-groupwise (0.11.2) trixie; urgency=medium
 
   * Development: podman containers (containers/<distro>/build.sh and
