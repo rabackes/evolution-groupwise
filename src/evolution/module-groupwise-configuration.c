@@ -39,6 +39,7 @@
 #include "e-groupwise-mail-ui.h"
 #include "e-groupwise-name-selector.h"
 #include "e-groupwise-new-item.h"
+#include "e-groupwise-reply-fixup.h"
 #include "e-groupwise-source-config.h"
 #include "e-groupwise-travel-page.h"
 
@@ -298,6 +299,7 @@ e_module_load (GTypeModule *type_module)
 	e_groupwise_mail_ui_type_register (type_module);
 	e_groupwise_name_selector_type_register (type_module);
 	e_groupwise_new_item_type_register (type_module);
+	e_groupwise_reply_fixup_type_register (type_module);
 	e_groupwise_travel_page_type_register (type_module);
 #endif
 }
